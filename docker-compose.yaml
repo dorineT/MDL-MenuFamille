@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:14
+        restart: always
+        environment: 
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+        logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+        networks:
+            - container
+        ports:
+          - '5438:5432'
+        volumes:
+          - ./postgres-data:/var/lib/postgresql/data
+          # copy the sql script to create tables
+          - ./db/sql:/docker-entrypoint-initdb.d
+
+
+  web:
+    container_name: web
+    build:
+        context: ./front
+        dockerfile: web.dockerfile
+    depends_on: 
+      - api
+    networks:
+      - container
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./front/menufamille:/app
+
+  api:
+    container_name: api
+    build:
+        context: ./api
+        dockerfile: api.dockerfile
+    networks:
+      - container
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - ./api/menufamille:/app
+      - pictures_candidats:/usr/src/app/cehers/upload
+
+  proxy:
+    container_name: proxy
+    build:
+      context: ./proxy
+      dockerfile: proxy.dockerfile
+    networks:
+      - container
+    ports:
+      - '8080:8080'
+    depends_on:
+      - web
+      - api
+    volumes:
+      - ./proxy:/app
+      
+networks:
+  container:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pictures_candidats:
