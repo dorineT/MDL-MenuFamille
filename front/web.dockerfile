@@ -1,8 +1,11 @@
 FROM node:latest
 
-WORKDIR /app
-COPY ./menufamille /app 
+ENV CONTAINER_PATH /app
+
+WORKDIR $CONTAINER_PATH
 
 RUN npm install
-RUN npm run build
-	
+
+COPY ./menufamille .
+
+CMD ["npm", "run", "serve"]
