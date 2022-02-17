@@ -23,9 +23,8 @@ services:
 
     web:
         container_name: web
-        build:
-            context: ./front
-            dockerfile: web.dockerfile
+        image: ebiven/vue-cli
+        command: npm run dev
         depends_on: 
           - api
         networks:
@@ -33,7 +32,7 @@ services:
         ports:
           - '8080:8080'
         volumes:
-          - ./front/menufamille:/app
+          - ./front/menufamille:/code
 
     api:
         container_name: api
