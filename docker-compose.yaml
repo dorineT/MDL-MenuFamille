@@ -24,7 +24,7 @@ services:
     web:
         container_name: web
         image: ebiven/vue-cli
-        command: npm run dev
+        command: npm run serve
         depends_on: 
           - api
         networks:
