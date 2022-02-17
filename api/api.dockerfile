@@ -5,5 +5,5 @@ COPY ./menufamille api
 
 WORKDIR /api
 
-RUN node server.js
+CMD [ "node", "server.js" ]
 
