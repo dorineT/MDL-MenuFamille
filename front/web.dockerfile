@@ -4,5 +4,5 @@ WORKDIR /app
 COPY ./menufamille /app 
 
 RUN npm install
-RUN npm run serve
+RUN npm run build
 	
