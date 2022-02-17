@@ -31,7 +31,7 @@ services:
         networks:
           - container
         ports:
-          - '8081:8081'
+          - '8081:8080'
         volumes:
           - ./front/menufamille:/app
           - /app/node_modules
