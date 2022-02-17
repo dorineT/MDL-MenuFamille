@@ -4,8 +4,8 @@ ENV CONTAINER_PATH /app
 
 WORKDIR $CONTAINER_PATH
 
-RUN npm install
-
 COPY ./menufamille .
+
+RUN npm install
 
 CMD ["npm", "run", "serve"]
