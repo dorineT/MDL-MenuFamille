@@ -11,10 +11,6 @@ services:
           options:
             max-size: 10m
             max-file: "3"
-        networks:
-            - container
-        ports:
-          - '5438:5432'
         volumes:
           - ./postgres-data:/var/lib/postgresql/data
           # copy the sql script to create tables
@@ -28,10 +24,6 @@ services:
            dockerfile: web.dockerfile
         depends_on: 
           - api
-        networks:
-          - container
-        ports:
-          - '8081:8080'
         volumes:
           - ./front/menufamille:/app
           - /app/node_modules
@@ -43,13 +35,7 @@ services:
         build:
             context: ./api
             dockerfile: api.dockerfile
-        networks:
-          - container
-        ports:
-          - '3000:3000'
         depends_on:
-          - db
-        links:
           - db
         volumes:
           - ./api/menufamille:/app
@@ -60,8 +46,6 @@ services:
         build:
           context: ./proxy
           dockerfile: proxy.dockerfile
-        networks:
-          - container
         ports:
           - '8080:8080'
         depends_on:
@@ -69,10 +53,7 @@ services:
           - api
         volumes:
           - ./proxy:/app
-      
-networks:
-  container:
-    driver: bridge
+
 
 volumes:
   postgres_data:
