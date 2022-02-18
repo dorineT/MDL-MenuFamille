@@ -10,11 +10,10 @@
         nav
         dense
       >
-        <v-list-item-group
-          v-model="group"
+        <v-list-item-group          
           active-class="teal lighten-4--text text--accent-4"
         >
-          <v-list-item to="/">
+          <v-list-item to="/accueil">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
@@ -50,3 +49,5 @@ export default {
   data: () => ({ drawer: null }),
 };
 </script>
+
+
