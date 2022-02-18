@@ -31,7 +31,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#B2DFDB" >
+    <v-app-bar app color="#A7FFEB" >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Menu famille</v-toolbar-title>
