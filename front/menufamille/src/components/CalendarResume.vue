@@ -4,12 +4,34 @@
       elevation="2"   
         class="cardmargin"
     >
+
+    <v-combobox
+      color="orange lighten-2"
+      label="Choix des menus définis"
+      :items="itemPeriode"></v-combobox>
+
         <v-data-table
             :headers="headers"
-            :items="calendrierSemaine"
-            :items-per-page="5"
+            :items="items"                                          
             class="elevation-8"
-        ></v-data-table>    
+            disable-sort
+                      
+            :footer-props="{             
+              //disableItemsPerPage: false,
+              itemsPerPage:7,
+              itemsPerPageOptions:[7]
+            }"
+        >   
+          <template v-slot:item="{ item }">
+            <tr>
+              <td class="text-xs-right pa-4" > {{ item.name }} </td>
+              <td class="text-xs-right pa-0 " > <v-btn text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn></td>
+              <td class="text-xs-right pa-0 " > <v-btn text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> </td>
+              <td class="text-xs-right pa-0 " > <v-btn text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> </td>
+            </tr>
+          </template>
+
+        </v-data-table>    
     </v-card>
 
 </template>
@@ -25,48 +47,78 @@
             sortable: false,
             value: 'name',
           },
-          { text: 'Lundi\n14/02', value: 'Lundi' },
-          { text: 'Mardi\n15/02', value: 'Mardi' },
-          { text: 'Mercredi\n16/02', value: 'Mercredi' },
-          { text: 'Jeudi\n17/02', value: 'Jeudi' },
-          { text: 'Vendredi\n18/02', value: 'Vendredi' },
-          { text: 'Samedi\n19/02', value: 'Samedi' },
-          { text: 'Dimanche\n20/02', value: 'Dimanche' }
+          { text: 'Matin', value: 'Matin' },
+          { text: 'Midi', value: 'Midi' },
+          { text: 'Soir', value: 'Soir' },
         ],
-        calendrierSemaine: [
+        items: [
           {
-            name: 'Matin',
-            Lundi: '/',
-            Mardi: 'céréale',
-            Mercredi: '/',
-            Jeudi: 'pain grillé',
-            Vendredi: '/',
-            Samedi:'/',
-            Dimanche:'/'
+            name: 'Lundi \n14/02',
+            Matin: 'céréale',
+            Midi: 'croque-monsieur',
+            Soir: 'pain',
           },
-            {
-                name: 'Midi',
-                Lundi: 'croque monsieur',
-                Mardi: '/',
-                Mercredi: 'Pate',
-                Jeudi: 'croque monsieur',
-                Vendredi: 'saucisse patate',
-                Samedi:'Flamekueche',
-                Dimanche:'roti\n18 personnes'
-              },
-              {
-                name: 'Soir',
-                Lundi: 'canard sauce orange',
-                Mardi: 'lapin',
-                Mercredi: '/',
-                Jeudi: 'crepe',
-                Vendredi: 'pancake',
-                Samedi:'frites',
-                Dimanche:'/'
-              }
-        ]}
-    }}
+          {
+            name: 'Mardi \n15/02',
+            Matin: 'crepe',
+            Midi: 'croque-monsieur',
+            Soir: 'lasagne',
 
+          },
+          {
+            name: 'Mercredi \n16/02',
+            Matin: '/',
+            Midi: 'pain',
+            Soir: 'canard',
+
+          },
+          {
+            name: 'Jeudi \n17/02',
+            Matin: 'céréale',
+            Midi: 'croque-monsieur',
+            Soir: 'pain',
+
+          },
+          {
+            name: 'Vendredi \n18/02',
+            Matin: 'flocon d\'avoine',
+            Midi: 'croque-monsieur',
+            Soir: 'frites',
+
+          },
+          {
+            name: 'Samedi \n19/02',
+            Matin: 'céréale',
+            Midi: 'spaghetti',
+            Soir: 'crepe',
+
+          },
+          {
+            name: 'Dimanche \n20/02',
+            Matin: 'céréale',
+            Midi: 'rotî sauce moutarde \n18 personnes',
+            Soir: '/',
+
+          },
+          {
+            name: 'Lundi \n21/02',
+            Matin: 'céréale',
+            Midi: 'rotî sauce moutarde \n18 personnes',
+            Soir: '/',
+
+          }
+        ],
+        itemPeriode: [
+        '14/02 - 20/02'
+        ]
+      }
+    },
+    methods:{
+      goToRecette(text){
+          alert('click ' + text)
+        }
+    }
+}
 </script>
 
 
@@ -76,4 +128,9 @@
 
 .v-data-table
     white-space: pre-wrap
+
+.v-combobox
+  margin: 20px,
+  width: 20cm
+
 </style>

@@ -11,9 +11,9 @@
         dense
       >
         <v-list-item-group          
-          active-class="teal lighten-4--text text--accent-4"
+          active-class="orange lighten-2--text text--accent-4"
         >
-          <v-list-item to="/accueil">
+          <v-list-item to="/">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
@@ -30,7 +30,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#A7FFEB" >
+    <v-app-bar app color="#FFB74D" >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Menu famille</v-toolbar-title>
