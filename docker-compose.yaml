@@ -12,9 +12,9 @@ services:
             max-size: 10m
             max-file: "3"
         volumes:
+          - ./db/sql/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
           - ./postgres-data:/var/lib/postgresql/data
           # copy the sql script to create tables
-          - ./db/sql:/docker-entrypoint-initdb.d
 
 
     web:
