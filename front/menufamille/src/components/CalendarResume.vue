@@ -9,8 +9,8 @@
       color="orange lighten-2"
       label="Choix du menu"
       class="combobox-class"
-      :items="itemPeriode"
-      v-model="comboboxChange"></v-combobox>
+      :items="itemPeriode"      
+      v-model="comboboxMenuSelected"></v-combobox>
 
         <v-data-table
             :headers="headers"
@@ -26,7 +26,7 @@
         > 
 
           <template
-            v-if="IscomboboxChange('no-data')"
+            v-if="IscomboboxChange('Aucun menu sélectionné')"
             v-slot:no-data
           >
             Pas de menu sélectionné
@@ -125,34 +125,33 @@
           }
         ],
         itemPeriode: [
-        '14/02 - 20/02'
+          '14/02 - 20/02'
         ],
-        comboboxMenuSelected: '',
-        comboboxChange: null
+        comboboxMenuSelected: null        
       }
     },
     mounted () {
       console.log(this.$vuetify.breakpoint.width)
-    },
-    methods:{
-      goToRecette(text){
-          alert('click ' + text)
-        },
-      IscomboboxChange(slot){
-        console.log("hekkk " + slot)
-        return this.comboboxChange === slot
-      }
+      this.comboboxMenuSelected='Aucun menu sélectionné'
     },
     watch:{
-      comboboxChange(slot){
-        console.log("hekkk")
-        if(slot === 'no-data'){
+        comboboxMenuSelected(slot){
+        console.log("combobonchange " + slot)
+        if(slot === 'Aucun menu sélectionné'){
           console.log("hello")
           this.items = []
         }
         else{
           this.items = this.plats
         }
+      }
+    },
+    methods:{
+      goToRecette(text){
+          alert('click ' + text)
+        },
+      IscomboboxChange(slot){        
+        return this.comboboxMenuSelected === slot
       }
     }
 }
