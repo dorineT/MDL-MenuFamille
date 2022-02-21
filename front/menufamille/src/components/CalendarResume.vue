@@ -1,9 +1,6 @@
 <template>
 
-    <v-card
-      elevation="2"   
-        class="cardmargin"
-    >
+  <div style="margin: 4px">
 
     <v-combobox
       color="orange lighten-2"
@@ -19,9 +16,10 @@
             disable-sort
             mobile-breakpoint="0"
             :footer-props="{             
-              //disableItemsPerPage: false,
+              'disable-items-per-page':true,
               itemsPerPage:7,      
-              'items-per-page-options': [7,14]
+              'items-per-page-options': [7,14],
+              'items-per-page-text':'Lignes par page',
             }"
         > 
 
@@ -46,7 +44,7 @@
           </template>
 
         </v-data-table>    
-    </v-card>
+    </div>
 
 </template>
 
@@ -57,8 +55,7 @@
         headers: [
           {
             text: 'Période',
-            align: 'start',
-            sortable: false,
+            align: 'start',            
             value: 'name',
           },
           { text: 'Matin', align: 'center',value: 'Matin' },
@@ -119,7 +116,8 @@
           {
             name: 'Lundi \n21/02',
             Matin: 'céréale',
-            Midi: 'rotî sauce moutarde \n18 personnes',
+            Midi: 'rotî sauce moutarde',
+            MidiDesc: '18 personnes',
             Soir: '/',
 
           }
@@ -135,13 +133,11 @@
       this.comboboxMenuSelected='Aucun menu sélectionné'
     },
     watch:{
-        comboboxMenuSelected(slot){
-        console.log("combobonchange " + slot)
-        if(slot === 'Aucun menu sélectionné'){
-          console.log("hello")
+        comboboxMenuSelected(slot){     
+        if(slot === 'Aucun menu sélectionné'){        
           this.items = []
         }
-        else{
+        else{ //check période des menus => Call API
           this.items = this.plats
         }
       }
@@ -159,8 +155,6 @@
 
 
 <style lang="sass">
-.v-card
-  margin: 20px
 
 .v-data-table
   white-space: pre-wrap
