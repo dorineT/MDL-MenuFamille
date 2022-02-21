@@ -4,7 +4,7 @@ CREATE DATABASE MenuFamille;
 create user api with encrypted password 'AF8ns#.<kY:K?b6tH.<^.ft/';
 grant all privileges on database MenuFamille to api;
 
-\c MenuFamille;
+
 
 /*** Définition de la timezone pour le timestamp ***/
 SET TIMEZONE TO 'UTC+1';
