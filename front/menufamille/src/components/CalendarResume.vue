@@ -10,7 +10,7 @@
       label="Choix du menu"
       class="combobox-class"
       :items="itemPeriode"
-      v-model="comboboxMenuSelected"></v-combobox>
+      v-model="comboboxChange"></v-combobox>
 
         <v-data-table
             :headers="headers"
@@ -25,14 +25,15 @@
             }"
         > 
 
-          <template           
-            v-slot:nodata
+          <template
+            v-if="IscomboboxChange('no-data')"
+            v-slot:no-data
           >
-            NO DATA HERE!
+            Pas de menu sélectionné
           </template>
 
 
-          <template v-slot:item="{ item }" v-if="comboboxMenuSelected!==''">
+          <template v-slot:item="{ item }">
             <tr>
               <td class="tdplat"> {{ item.name }} </td>
               <td class="tdplat"> <v-btn text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn></td>
@@ -64,7 +65,8 @@
           { text: 'Midi',align: 'center', value: 'Midi' },
           { text: 'Soir',align: 'center', value: 'Soir' },
         ],
-        items: [
+        items:[],
+        plats: [
           {
             name: 'Lundi \n14/02',
             Matin: 'céréale',
@@ -126,7 +128,7 @@
         '14/02 - 20/02'
         ],
         comboboxMenuSelected: '',
-        nodata:true
+        comboboxChange: null
       }
     },
     mounted () {
@@ -135,7 +137,23 @@
     methods:{
       goToRecette(text){
           alert('click ' + text)
+        },
+      IscomboboxChange(slot){
+        console.log("hekkk " + slot)
+        return this.comboboxChange === slot
+      }
+    },
+    watch:{
+      comboboxChange(slot){
+        console.log("hekkk")
+        if(slot === 'no-data'){
+          console.log("hello")
+          this.items = []
         }
+        else{
+          this.items = this.plats
+        }
+      }
     }
 }
 </script>
