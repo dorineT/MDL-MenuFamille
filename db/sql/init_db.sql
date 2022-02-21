@@ -182,20 +182,20 @@ ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCcalendrier FOREIGN KEY (id_calen
 
 /*** Remplissage table types & tags ***/
 
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'soupe');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'light');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'gaterie');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'gaterie');
 
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'fruit');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'légume');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'produit laitier');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'viande');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'poisson');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'alcool');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'eau');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'sel');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'matière grasse');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'céréale');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruit');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'légume');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit laitier');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'viande');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'poisson');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'alcool');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'eau');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'sel');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');
