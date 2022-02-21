@@ -20,6 +20,13 @@
             <v-list-item-title>Accueil</v-list-item-title>
           </v-list-item>
 
+          <v-list-item to="/créationMenu">
+            <v-list-item-icon>
+              <v-icon>mdi-pencil</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Création Menu</v-list-item-title>
+          </v-list-item>
+
           <v-list-item to="/about">
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
