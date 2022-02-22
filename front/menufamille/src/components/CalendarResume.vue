@@ -33,13 +33,24 @@
 
           <template v-slot:item="{ item }">
             <tr>
-              <td class="tdplat"> {{ item.name }} </td>
-              <td class="tdplat"> <v-btn text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn></td>
+              <td class="tdplat"> {{ item.name }} <br> {{item.date}}
+
+              </td>
               <td class="tdplat"> 
-                <v-btn text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
+                  <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
+                  <p v-else style="color: red">X</p>
+                  
+              </td>
+              <td class="tdplat"> 
+                <v-btn v-if="item.Midi!=='/'" text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
+                <p v-else style="color: red">X</p>
                 <p>{{item.MidiDesc}}</p>  
               </td>
-              <td class="tdplat"> <v-btn text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> </td>
+              <td class="tdplat"> 
+                  <v-btn v-if="item.Soir!=='/'" text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> 
+                  <p v-else style="color: red">X</p>
+              </td>
+                  
             </tr>
           </template>
 
@@ -65,48 +76,55 @@
         items:[],
         plats: [
           {
-            name: 'Lundi \n14/02',
+            name: 'Lundi',
+            date: '14/02',
             Matin: 'céréale',
             Midi: 'croque-monsieur',
             Soir: 'pain',
           },
           {
-            name: 'Mardi \n15/02',
+            name: 'Mardi',
+            date: '15/02',
             Matin: 'crepe',
             Midi: 'croque-monsieur',
             Soir: 'lasagne',
 
           },
           {
-            name: 'Mercredi \n16/02',
+            name: 'Mercredi',
+            date: '16/02',
             Matin: '/',
             Midi: 'pain',
             Soir: 'canard',
 
           },
           {
-            name: 'Jeudi \n17/02',
+            name: 'Jeudi',
+            date: '17/02',
             Matin: 'céréale',
             Midi: 'croque-monsieur',
             Soir: 'pain',
 
           },
           {
-            name: 'Vendredi \n18/02',
+            name: 'Vendredi',
+            date: '18/02',
             Matin: 'flocon d\'avoine',
             Midi: 'croque-monsieur',
             Soir: 'frites',
 
           },
           {
-            name: 'Samedi \n19/02',
+            name: 'Samedi',
+            date: '19/02',
             Matin: 'céréale',
             Midi: 'spaghetti',
             Soir: 'crepe',
 
           },
           {
-            name: 'Dimanche \n20/02',
+            name: 'Dimanche',
+            date: '20/02',
             Matin: 'céréale',
             Midi: 'rotî sauce moutarde',
             MidiDesc:'18 personnes',
@@ -114,7 +132,8 @@
 
           },
           {
-            name: 'Lundi \n21/02',
+            name: 'Lundi',
+            date: '21/02',
             Matin: 'céréale',
             Midi: 'rotî sauce moutarde',
             MidiDesc: '18 personnes',

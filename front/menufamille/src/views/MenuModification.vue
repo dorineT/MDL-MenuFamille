@@ -1,21 +1,25 @@
 <template>
     <v-card       
-        class="cardmargin"
-    >   
-    <calendar-modification-menu
-      :periodeMenu="periode"
-    ></calendar-modification-menu>
+        class="cardmarginModification"
+    >
+      <dialogue-modification-jour-plat></dialogue-modification-jour-plat>
+
+      <calendar-modification-menu
+        :periodeMenu="periode"
+      ></calendar-modification-menu>
     </v-card>
 </template>
 
 
 <script>
 import CalendarModificationMenu from '../components/CalendarModificationMenu.vue'
+import DialogueModificationJourPlat from '../components/DialogueModificationJourPlat.vue'
 export default {
   name: 'MenuModification',
 
   components: {
-    CalendarModificationMenu
+    CalendarModificationMenu,
+    DialogueModificationJourPlat
   },
 
   data (){
@@ -33,7 +37,8 @@ export default {
 </script>
 
 <style lang="sass">
-.cardmargin
+.cardmarginModification
   margin: 10px
-  padding: 10px
+  padding: 15px
+  padding-top: 30px
 </style>
