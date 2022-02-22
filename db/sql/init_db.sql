@@ -59,6 +59,7 @@ CREATE TABLE FAVORIS (
 
 CREATE TABLE RECETTE (
     id_recette SERIAL NOT NULL,
+    nom VARCHAR NOT NULL UNIQUE,
     difficulte INTEGER NOT NULL,
     calorie INTEGER NOT NULL,
     temps_cuisson INTEGER NOT NULL,
