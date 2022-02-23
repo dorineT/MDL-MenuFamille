@@ -25,21 +25,21 @@
 
                   </td>
                   <td class="tdplat"> 
-                      <v-btn text @click="goToRecette(item.Matin)">
+                      <v-btn text @click="goToRecette(item,item.Matin)">
                         <p v-if="item.Matin!=='/'">{{ item.Matin }} </p>
                         <p v-else style="color: red">X</p>
                       
                       </v-btn>                     
                   </td>
                   <td class="tdplat"> 
-                    <v-btn text @click="goToRecette(item.Midi)">
+                    <v-btn text @click="goToRecette(item,item.Midi)">
                         <p v-if="item.Midi!=='/'">{{ item.Midi }} </p>
                         <p v-else style="color: red">X</p>                                        
                     </v-btn>                     
                     <p>{{item.MidiDesc}}</p>  
                   </td>
                   <td class="tdplat"> 
-                      <v-btn  text @click="goToRecette(item.Soir)">
+                      <v-btn  text @click="goToRecette(item,item.Soir)">
                         <p v-if="item.Soir!=='/'">{{ item.Soir }} </p>
                         <p v-else style="color: red">X</p>
                       </v-btn> 
@@ -143,10 +143,10 @@ export default {
         // call api to get the menu
     },
     methods:{
-      goToRecette(text){
-          console.log('click recette calendar ' + text)
+      goToRecette(item,text){
+          console.log('click recette calendar ' +text)
           //open dialogue with even bus
-          eventBus.$emit('openDialog')
+          eventBus.$emit('openDialog', item)
         },
     }
 }

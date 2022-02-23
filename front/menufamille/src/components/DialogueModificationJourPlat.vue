@@ -96,14 +96,17 @@ import {eventBus } from '../main'
         notifications: false,
         sound: true,
         widgets: false,
+        infoMenu: null
       }
     },
     created (){
         eventBus.$on('openDialog', this.openModal)
     },
     methods: {
-        openModal(){
+        openModal(itemReceived){
             this.dialog = true
+            this.infoMenu = itemReceived
+            console.log('Données recues par l\'event dans le modal \n' + JSON.stringify(itemReceived))
         }
     }
   }
