@@ -4,21 +4,21 @@
 
         <div class= "créationMenu">
             <h3> Période :</h3>
-            <constraintscalendar />
+            <Constraintscalendar />
         </div>
     </div>
 </template>
 
 <script>
 
-import constraintscalendar from '../components/constraintscalendar'
-import Constraintscalendar from '../components/constraintscalendar.vue'
+
+import Constraintscalendar from '../components/Constraintscalendar'
 
 export default {
     name: 'CreationMenu',
 
     components: {
-        constraintscalendar,
+        Constraintscalendar,
     }
 
         

@@ -21,7 +21,7 @@ const routes = [
   {
 
     // links to access to the creation menu page
-    path: '/créationMenu',
+    path: '/creationMenu',
     name: 'CreationMenu',
     component: () => import(/* webpackChunkName: "creationMenu" */ '../views/CreationMenu.vue')
   },
