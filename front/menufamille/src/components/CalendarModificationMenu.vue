@@ -21,25 +21,25 @@
 
           <template v-slot:item="{ item }">
             <tr>
-                  <td class="tdplat"> {{ item.name }} <br> {{item.date}}
+                  <td class="tdplat"> {{ item.jour }} <br> {{item.date}}
 
                   </td>
                   <td class="tdplat"> 
-                      <v-btn text @click="goToRecette(item,item.Matin)">
+                      <v-btn text @click="goToRecette(item,'matin')">
                         <p v-if="item.Matin!=='/'">{{ item.Matin }} </p>
                         <p v-else style="color: red">X</p>
                       
                       </v-btn>                     
                   </td>
                   <td class="tdplat"> 
-                    <v-btn text @click="goToRecette(item,item.Midi)">
+                    <v-btn text @click="goToRecette(item,'midi')">
                         <p v-if="item.Midi!=='/'">{{ item.Midi }} </p>
                         <p v-else style="color: red">X</p>                                        
                     </v-btn>                     
                     <p>{{item.MidiDesc}}</p>  
                   </td>
                   <td class="tdplat"> 
-                      <v-btn  text @click="goToRecette(item,item.Soir)">
+                      <v-btn  text @click="goToRecette(item,'soir')">
                         <p v-if="item.Soir!=='/'">{{ item.Soir }} </p>
                         <p v-else style="color: red">X</p>
                       </v-btn> 
@@ -71,14 +71,14 @@ export default {
         ],
         items: [
               {
-                name: 'Lundi',
+                jour: 'Lundi',
                 date: '14/02',
                 Matin: 'céréale',
                 Midi: 'croque-monsieur',
                 Soir: 'pain',
               },
               {
-                name: 'Mardi',
+                jour: 'Mardi',
                 date: '15/02',
                 Matin: 'crepe',
                 Midi: 'croque-monsieur',
@@ -86,7 +86,7 @@ export default {
 
               },
               {
-                name: 'Mercredi',
+                jour: 'Mercredi',
                 date: '16/02',
                 Matin: '/',
                 Midi: 'pain',
@@ -94,7 +94,7 @@ export default {
 
               },
               {
-                name: 'Jeudi',
+                jour: 'Jeudi',
                 date: '17/02',
                 Matin: 'céréale',
                 Midi: 'croque-monsieur',
@@ -102,7 +102,7 @@ export default {
 
               },
               {
-                name: 'Vendredi',
+                jour: 'Vendredi',
                 date: '18/02',
                 Matin: 'flocon d\'avoine',
                 Midi: 'croque-monsieur',
@@ -110,7 +110,7 @@ export default {
 
               },
               {
-                name: 'Samedi',
+                jour: 'Samedi',
                 date: '19/02',
                 Matin: 'céréale',
                 Midi: 'spaghetti',
@@ -118,7 +118,7 @@ export default {
 
               },
               {
-                name: 'Dimanche',
+                jour: 'Dimanche',
                 date: '20/02',
                 Matin: 'céréale',
                 Midi: 'rotî sauce moutarde',
@@ -127,7 +127,7 @@ export default {
 
               },
               {
-                name: 'Lundi',
+                jour: 'Lundi',
                 date: '21/02',
                 Matin: 'céréale',
                 Midi: 'rotî sauce moutarde',
@@ -143,10 +143,10 @@ export default {
         // call api to get the menu
     },
     methods:{
-      goToRecette(item,text){
-          console.log('click recette calendar ' +text)
+      goToRecette(item,periode){
+          console.log('click recette calendar ' + periode)
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item)
+          eventBus.$emit('openDialog', item, periode)
         },
     }
 }

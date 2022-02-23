@@ -33,7 +33,7 @@
 
           <template v-slot:item="{ item }">
             <tr>
-              <td class="tdplat"> {{ item.name }} <br> {{item.date}}
+              <td class="tdplat"> {{ item.jour }} <br> {{item.date}}
 
               </td>
               <td class="tdplat"> 
@@ -76,14 +76,14 @@
         items:[],
         plats: [
           {
-            name: 'Lundi',
+            jour: 'Lundi',
             date: '14/02',
             Matin: 'céréale',
             Midi: 'croque-monsieur',
             Soir: 'pain',
           },
           {
-            name: 'Mardi',
+            jour: 'Mardi',
             date: '15/02',
             Matin: 'crepe',
             Midi: 'croque-monsieur',
@@ -91,7 +91,7 @@
 
           },
           {
-            name: 'Mercredi',
+            jour: 'Mercredi',
             date: '16/02',
             Matin: '/',
             Midi: 'pain',
@@ -99,7 +99,7 @@
 
           },
           {
-            name: 'Jeudi',
+            jour: 'Jeudi',
             date: '17/02',
             Matin: 'céréale',
             Midi: 'croque-monsieur',
@@ -107,7 +107,7 @@
 
           },
           {
-            name: 'Vendredi',
+            jour: 'Vendredi',
             date: '18/02',
             Matin: 'flocon d\'avoine',
             Midi: 'croque-monsieur',
@@ -115,7 +115,7 @@
 
           },
           {
-            name: 'Samedi',
+            jour: 'Samedi',
             date: '19/02',
             Matin: 'céréale',
             Midi: 'spaghetti',
@@ -123,7 +123,7 @@
 
           },
           {
-            name: 'Dimanche',
+            jour: 'Dimanche',
             date: '20/02',
             Matin: 'céréale',
             Midi: 'rotî sauce moutarde',
@@ -132,7 +132,7 @@
 
           },
           {
-            name: 'Lundi',
+            jour: 'Lundi',
             date: '21/02',
             Matin: 'céréale',
             Midi: 'rotî sauce moutarde',
