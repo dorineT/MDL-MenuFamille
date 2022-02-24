@@ -217,7 +217,7 @@ import {eventBus } from '../main'
         suggestions:['petite saucisse - pdt', 'risotto'],
         radioSelectionSuggestion: null,
         newRecetteChoix: null,
-        tagsListe: ['soupe','lunch-box','light','épicé','gaterie','colorie hight'],
+        tagsListe: ['soupe','lunch-box','light','épicé','gaterie / sucre','calorie hight'],
         tagRecetteChoix: null,
         numberPersonneNew: null,
         numberPersonneOld: null
