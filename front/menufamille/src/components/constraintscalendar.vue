@@ -130,7 +130,7 @@
       :label="`Soir`"   
     ></v-checkbox>
  <br>
- <h3>Nombre de personne:</h3>
+ <h3>Nombre de personne :</h3>
    
     <v-form>
       <v-container grid-list-xl>
@@ -151,7 +151,7 @@
     </v-form>
 
 
- <h3>plat identique autorisé:</h3>
+ <h3>Plat identique autorisé :</h3>
 
     <v-form>
       <v-container grid-list-xl>
@@ -182,10 +182,36 @@
           outlined
         ></v-select>
       </v-col>
+<h3>Type de menu :</h3>
+<v-container
+    class="px-0"
+    fluid
+  >
+   <v-radio-group
+      v-model="row"
+      row
+    >
+      <v-radio
+        label="Automatique"
+        value="radio-1"
+      ></v-radio>
+      <v-radio
+        label="Manuel"
+        value="radio-2"
+      ></v-radio>
+    </v-radio-group>
+  </v-container>
 
+<v-checkbox
+      v-model="checkbox6"
+      :label="`Favoris`"   
+    ></v-checkbox>
+    
+     <v-checkbox
+      v-model="checkbox7"
+      :label="`Historique`"   
+    ></v-checkbox>
     </v-container>
-
-  
 </template>
 
 <script>
@@ -197,9 +223,13 @@
         checkbox3: false,
         checkbox4: false,
         checkbox5: false,
+        checkbox7: false,
+        checkbox8: false,
         items: ['FamilleHeureux','FamillePasHeureux'],
         number1: 0,
-        number2: 0,
+        number2: 0, 
+        column: null,
+        row: null,
     numberRule1: val => {
       if(val < 0) return 'Please enter a positive number'
       return true;
@@ -207,6 +237,8 @@
      numberRule2: val => {
       if(val < 0) return 'Please enter a positive number'
       return true;
+
+       
          }
       }
     },
