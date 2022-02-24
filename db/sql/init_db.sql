@@ -312,3 +312,25 @@ EXECUTE PROCEDURE menu_without_family();
 
 /***Calendrier doit être suprimer si il n'a plus de lien avec Menu ***/
 
+
+CREATE OR REPLACE FUNCTION daily_without_menu()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_menu from menu_calendrier where id_menu = new.id_menu) is NULL THEN
+        DELETE FROM calendrier where id_calendrier = old.id_menu;
+    END IF;
+    RETURN new;
+END;
+$$
+
+
+CREATE TRIGGER trg_daily_without_menu
+    AFTER DELETE
+    ON menu
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_without_family();
+
+/***pas 2 fois le même plat ***/
