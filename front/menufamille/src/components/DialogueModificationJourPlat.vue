@@ -206,7 +206,7 @@ import {eventBus } from '../main'
         infoMenu: '',
         periode: '',
         snackbar: false,
-        timeout: 2000,
+        timeout: 3000,
         selectedRadioMenuOuiNon:'oui',
         recetteChoisie: '',
         showModifMenu: false,
@@ -270,17 +270,31 @@ import {eventBus } from '../main'
           if(this.selectedRadioMenuOuiNon === 'non'){
             this.newRecetteChoix = '/'
           }
-
-          if(this.periode === 'matin'){
-            this.infoMenu.Matin = this.newRecetteChoix            
-          }
-          else if(this.periode === 'midi'){
-            this.infoMenu.Midi = this.newRecetteChoix
+         //recette
+          if(this.newRecetteChoix !== null){
+            if(this.periode === 'matin'){
+              this.infoMenu.Matin = this.newRecetteChoix         
+            }
+            else if(this.periode === 'midi'){
+              this.infoMenu.Midi = this.newRecetteChoix
             
-          }else if(this.periode === 'soir'){
-            this.infoMenu.Soir = this.newRecetteChoix            
+            }else if(this.periode === 'soir'){
+              this.infoMenu.Soir = this.newRecetteChoix                   
+            }    
           }
-
+          //number
+          if(this.numberPersonneNew !== this.numberPersonneOld){
+            if(this.periode === 'matin'){         
+              this.infoMenu.MatinNbPers = this.numberPersonneNew        
+            }
+            else if(this.periode === 'midi'){           
+              this.infoMenu.MatinNbPers = this.numberPersonneNew   
+            
+            }else if(this.periode === 'soir'){       
+              this.infoMenu.MatinNbPers = this.numberPersonneNew              
+            }    
+          }
+    
 
           this.dialog = false
           this.snackbar = true
