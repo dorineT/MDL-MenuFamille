@@ -41,7 +41,7 @@
               <v-list-item-title> Menu prévu pour cette période ? </v-list-item-title>
               <v-list-item-subtitle>
                 <v-radio-group
-                  v-model="selectedRadioMenuChoose"
+                  v-model="selectedRadioMenuOuiNon"
                   row
                 >
                   <v-radio
@@ -62,37 +62,119 @@
 
           <v-divider ></v-divider>
           
-          <v-list v-if='selectedRadioMenuChoose==="oui"'>
+          <v-list v-if='selectedRadioMenuOuiNon==="oui"'>
             <v-list-item >
-               <v-expansion-panels >
-                <v-expansion-panel >
-                  <v-expansion-panel-header>
-                    <v-list-item-content>
-                      <v-list-item-title>Recette prévue</v-list-item-title>
-                      <v-list-item-subtitle> {{recetteChoisie}}    </v-list-item-subtitle>
-                    </v-list-item-content>
-                     <v-list-item-content>
-                      <v-btn outlined >Modifier</v-btn>
-                    </v-list-item-content>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    Suggestion supplémentaire faites pour le menu 
-                    ou choix différent => input list de la liste de recette
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-     <!-- changer pour les expended panel avec advanced delete de la liste-->
+              <v-list-item-content>
+
+                <v-list-item-title>
+                   Recette prévue : {{recetteChoisie}} 
+
+                   <v-btn
+                    outlined
+                    rounded
+                    small
+                    color="orange lighten-2"
+                    class="btnInlist "
+                    @click="showModifMenu = !showModifMenu"
+                  >Modifier</v-btn>
+                </v-list-item-title>
+   
+                <div v-if="newRecetteChoix!==null">
+                  <br>
+                Vous avez choisi de remplacer le menu par : 
+
+                  <v-chip                   
+                    class="ma-2"
+                    close
+                    color="orange"
+                    label
+                    outlined
+                    @click:close="resetNewRecette()"
+                  >
+                    {{newRecetteChoix}}
+                  </v-chip>
+                </div>               
+              </v-list-item-content>
+
+
             </v-list-item>
+            <v-expand-transition>
+              <div v-show="showModifMenu">
+              <v-container fluid>
+                <v-row  >
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                  
+                    <v-card>
+                      <v-card-title >
+                        Suggestion
+                      </v-card-title>
+                      <v-card-text>
+                        <v-radio-group v-model="radioSelectionSuggestion" @change="changeChoixPlat()">
+                          <v-radio
+                            v-for="(sugg,n) in suggestions"
+                            :key="n"
+                            :label="sugg"
+                            :value="sugg"
+                            color="orange lighten-2"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-card-text>
+                    </v-card>
+
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-card>
+                      <v-card-title >
+                        Choix parmis la liste de recettes
+                      </v-card-title>
+                      <v-card-text>
+                        <v-autocomplete
+                        color="orange lighten-2"
+                        label="Recette"                      
+                        :items="itemRecettes"      
+                        v-model="comboboxRecetteSelected"
+                        @change="resetSelectedSuggestion()"
+                        no-data-text="Aucune recette correspondante"></v-autocomplete>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
+              </div>
+            </v-expand-transition>
 
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title>Tags choisis</v-list-item-title>
-                <v-list-item-subtitle>
-                  <ul>
-                    <li>to complete</li>
-                  </ul>
-                </v-list-item-subtitle>
+                <v-col xl="6" md="6" sm="6" xs="12">
+                  <v-autocomplete
+                    chips
+                    clearable
+                    deletable-chips
+                    multiple
+                    :items="tagsListe"
+                    color="orange lighten-2"                  
+                    no-data-text="Aucun tag correspondant"
+                  ></v-autocomplete>  
+                </v-col>    
               </v-list-item-content>            
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Nombre de personnes</v-list-item-title>
+                 <v-col xl="6" md="6" sm="6" xs="12">
+                  <v-text-field 
+                    type="number"   
+                    step="1"
+                    min="0"
+                    ref="input"
+                    :rules="[numberRule]"
+                    v-model="numberPersonneNew"
+                    clearable                                 
+                  ></v-text-field>
+                </v-col>  
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         
@@ -124,37 +206,85 @@ import {eventBus } from '../main'
         periode: '',
         snackbar: false,
         timeout: 2000,
-        selectedRadioMenuChoose:'oui',
-        recetteChoisie: ''
+        selectedRadioMenuOuiNon:'oui',
+        recetteChoisie: '',
+        showModifMenu: false,
+        comboboxRecetteSelected: null,
+        itemRecettes: [
+          'lasagne','pate carbo','flammekueche'
+        ],
+        suggestions:['petite saucisse - pdt', 'risotto'],
+        radioSelectionSuggestion: null,
+        newRecetteChoix: null,
+        tagsListe: ['soupe','lunch-box','light','épicé','gaterie','colorie hight'],
+        numberPersonneNew: null,
+        numberPersonneOld: null
+
       }
     },
     created (){
-        eventBus.$on('openDialog', this.openModal)
+        eventBus.$on('openDialog', this.openModal) //listening event form CalendarModificationMenu component
     },
     methods: {
+      /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
         openModal(itemReceived, periode){
             this.dialog = true
             this.infoMenu = itemReceived
             this.periode = periode
             console.log('Données recues par l\'event dans  le modal \n' + JSON.stringify(itemReceived) + ' \n\n pour ' + periode)
 
-            if(itemReceived.Matin ==='/' || itemReceived.Midi ==='/' || itemReceived.Soir ==='/'){
-              this.selectedRadioMenuChoose = 'non'
-            }
-
+            //quelle periode  + menu prévu ?
             if(periode === 'matin'){
               this.recetteChoisie = itemReceived.Matin
+              if(itemReceived.Matin ==='/'){
+                this.selectedRadioMenuOuiNon = 'non'
+              }
             }else if(periode === 'midi'){
               this.recetteChoisie = itemReceived.Midi
+               if(itemReceived.Midi ==='/'){
+                this.selectedRadioMenuOuiNon = 'non'
+              }
             }else{
               this.recetteChoisie = itemReceived.Soir
+               if(itemReceived.Soir ==='/'){
+                this.selectedRadioMenuOuiNon = 'non'
+              }
             }
+            
 
+            //set nb perso
+            this.numberPersonneOld = 3
+            this.numberPersonneNew = this.numberPersonneOld
         },
         sauvegardeMenuJour(){
           this.dialog = false
           this.snackbar = true
-        }
+        },
+        resetSelectedSuggestion(){
+          this.radioSelectionSuggestion = null
+          this.newRecetteChoix = this.comboboxRecetteSelected
+        },
+        changeChoixPlat(){
+          this.comboboxRecetteSelected = null
+          this.newRecetteChoix = this.radioSelectionSuggestion
+      },
+      resetNewRecette(){
+        this.newRecetteChoix = null
+        this.comboboxRecetteSelected = null
+        this.radioSelectionSuggestion = null
+      },
+      /**verifie que le nombre de personnes entre dans le textfiel est positif */
+      numberRule: val => {
+        if(val < 0) return 'Entrez un nombre un nombre positif'
+        return true
+      }
     }
   }
 </script>
+
+<style lang="sass">
+.v-application .primary--text 
+    color: #FFB74D !important
+    caret-color: #FFB74D  !important
+
+</style>
