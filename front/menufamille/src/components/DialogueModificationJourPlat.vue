@@ -266,6 +266,11 @@ import {eventBus } from '../main'
           //mise a jour calendrier
           console.log('update item ' + this.infoMenu.id)
 
+          
+          if(this.selectedRadioMenuOuiNon === 'non'){
+            this.newRecetteChoix = '/'
+          }
+
           if(this.periode === 'matin'){
             this.infoMenu.Matin = this.newRecetteChoix            
           }
