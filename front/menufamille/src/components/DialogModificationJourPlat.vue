@@ -286,6 +286,9 @@ import {eventBus } from '../main'
           }
           //number
           if(this.numberPersonneNew !== this.numberPersonneOld){
+            if(this.numberPersonneNew < 0 ){              
+              return false
+            }
             if(this.periode === 'matin'){         
               this.infoMenu.MatinNbPers = this.numberPersonneNew        
             }
