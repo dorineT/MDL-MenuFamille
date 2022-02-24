@@ -250,3 +250,65 @@ CREATE TRIGGER menu_calendrier_already_valid
     ON menu_calendrier
     FOR EACH ROW
 EXECUTE PROCEDURE menu_calendrier_already_valid_FC();
+
+
+
+/*** la famille doit être suprimer si elle est vide
+bonus l'attribut nb_membre ce met a jour
+ ***/
+
+CREATE OR REPLACE FUNCTION empty_familly_FC()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_membre from famille_membre where id_famille = old.id_famille) is NULL THEN
+        DELETE FROM famille where id_famille = old.id_famille;
+    ELSE
+        UPDATE Famille
+        SET nb_membre = (SELECT count(id_membre) from famille_membre where id_famille = old.id_famille);
+    END IF;
+    RETURN new;
+END;
+$$
+
+
+CREATE TRIGGER empty_familly
+    AFTER DELETE
+    ON famille_membre
+    FOR EACH ROW
+EXECUTE PROCEDURE empty_familly_FC();
+
+CREATE TRIGGER update_familly
+    AFTER update
+    ON famille_membre
+    FOR EACH ROW
+EXECUTE PROCEDURE empty_familly_FC();
+
+
+/*** Menu doit être suprmier si sa famille a été suprimer  ***/
+
+CREATE OR REPLACE FUNCTION menu_without_family()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_famille from menu where id_famille = new.id_famille) is NULL THEN
+        DELETE FROM menu where id_famille = old.id_famille;
+    END IF;
+    RETURN new;
+END;
+$$
+
+CREATE TRIGGER menu_without_family
+    AFTER DELETE
+    ON famille
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_without_family();
+
+
+
+/***Calendrier doit être suprimer si il n'a plus de lien avec Menu ***/
+
