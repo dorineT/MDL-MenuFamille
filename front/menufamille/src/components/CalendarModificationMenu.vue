@@ -71,6 +71,7 @@ export default {
         ],
         items: [
               {
+                id:0,
                 jour: 'Lundi',
                 date: '14/02',
                 Matin: 'céréale',
@@ -78,6 +79,7 @@ export default {
                 Soir: 'pain',
               },
               {
+                id:1,
                 jour: 'Mardi',
                 date: '15/02',
                 Matin: 'crepe',
@@ -86,6 +88,7 @@ export default {
 
               },
               {
+                id:2,
                 jour: 'Mercredi',
                 date: '16/02',
                 Matin: '/',
@@ -94,6 +97,7 @@ export default {
 
               },
               {
+                id:3,
                 jour: 'Jeudi',
                 date: '17/02',
                 Matin: 'céréale',
@@ -102,6 +106,7 @@ export default {
 
               },
               {
+                id:4,
                 jour: 'Vendredi',
                 date: '18/02',
                 Matin: 'flocon d\'avoine',
@@ -110,6 +115,7 @@ export default {
 
               },
               {
+                id:5,
                 jour: 'Samedi',
                 date: '19/02',
                 Matin: 'céréale',
@@ -118,6 +124,7 @@ export default {
 
               },
               {
+                id:6,
                 jour: 'Dimanche',
                 date: '20/02',
                 Matin: 'céréale',
@@ -127,6 +134,7 @@ export default {
 
               },
               {
+                id:7,
                 jour: 'Lundi',
                 date: '21/02',
                 Matin: 'céréale',
@@ -142,12 +150,27 @@ export default {
         console.log('des choses a faire avec l\'api')
         // call api to get the menu
     },
+    created(){
+      eventBus.$on('updateMenuJour', this.updateMenuJour)
+    },
     methods:{
       goToRecette(item,periode){
           console.log('click recette calendar ' + periode)
           //open dialogue with even bus
           eventBus.$emit('openDialog', item, periode)
         },
+
+      updateMenuJour(menuJour, periode){
+        if(periode === 'matin'){
+          this.items[menuJour.id].Matin = menuJour.Matin
+        }
+        else if(periode === 'midi'){
+          this.items[menuJour.id].Midi = menuJour.Midi
+        }
+        else if(periode === 'soir'){
+          this.items[menuJour.id].Soir = menuJour.Soir
+        }
+      }
     }
 }
 </script>

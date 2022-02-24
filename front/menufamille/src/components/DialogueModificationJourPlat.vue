@@ -153,6 +153,7 @@
                     deletable-chips
                     multiple
                     :items="tagsListe"
+                    v-model="tagRecetteChoix"
                     color="orange lighten-2"                  
                     no-data-text="Aucun tag correspondant"
                   ></v-autocomplete>  
@@ -217,6 +218,7 @@ import {eventBus } from '../main'
         radioSelectionSuggestion: null,
         newRecetteChoix: null,
         tagsListe: ['soupe','lunch-box','light','épicé','gaterie','colorie hight'],
+        tagRecetteChoix: null,
         numberPersonneNew: null,
         numberPersonneOld: null
 
@@ -251,14 +253,34 @@ import {eventBus } from '../main'
               }
             }
             
+            //reset
+            this.resetNewRecette()
+            this.tagRecetteChoix = null
 
             //set nb perso
             this.numberPersonneOld = 3
             this.numberPersonneNew = this.numberPersonneOld
         },
         sauvegardeMenuJour(){
+
+          //mise a jour calendrier
+          console.log('update item ' + this.infoMenu.id)
+
+          if(this.periode === 'matin'){
+            this.infoMenu.Matin = this.newRecetteChoix            
+          }
+          else if(this.periode === 'midi'){
+            this.infoMenu.Midi = this.newRecetteChoix
+            
+          }else if(this.periode === 'soir'){
+            this.infoMenu.Soir = this.newRecetteChoix            
+          }
+
+
           this.dialog = false
           this.snackbar = true
+
+          eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
         },
         resetSelectedSuggestion(){
           this.radioSelectionSuggestion = null
