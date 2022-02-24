@@ -1,7 +1,37 @@
 <template>
     <v-container class="checkboxes" fluid>
      
-    <v-checkbox
+    
+
+    <v-stepper v-model="e1">
+    <v-stepper-header>
+      <v-stepper-step
+        :complete="e1 > 1"
+        step="1"
+      >
+        Configuration Menu
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step
+        :complete="e1 > 2"
+        step="2"
+      >
+        Configuration calendrier
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      
+    </v-stepper-header>
+
+    <v-stepper-items>
+      <v-stepper-content step="1">
+        <v-card >
+
+      <h3> Période :</h3>
+        <v-checkbox
       v-model="checkbox1"
       :label="`semaine`"
     ></v-checkbox>
@@ -211,6 +241,42 @@
       v-model="checkbox7"
       :label="`Historique`"   
     ></v-checkbox>
+        </v-card>
+
+        <v-btn
+          color="primary"
+          @click="e1 = 2"
+        >
+          Continue
+        </v-btn>
+
+        <v-btn text>
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-content step="2">
+        <v-card
+          height="200px"
+        ></v-card>
+
+        <v-btn
+          color="primary"
+          @click="e1 = 1"
+        >
+          Continue
+        </v-btn>
+
+        <v-btn text
+        @click="e1 = 1">
+          Cancel
+        </v-btn>
+      </v-stepper-content>
+
+    
+    </v-stepper-items>
+  </v-stepper>
+
     </v-container>
 </template>
 
@@ -230,6 +296,7 @@
         number2: 0, 
         column: null,
         row: null,
+        e1: 1,
     numberRule1: val => {
       if(val < 0) return 'Please enter a positive number'
       return true;

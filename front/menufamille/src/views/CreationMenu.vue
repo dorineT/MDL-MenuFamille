@@ -3,7 +3,7 @@
     <div style="margin: 30px">
 
         <div class= "créationMenu">
-            <h3> Période :</h3>
+            
             <Constraintscalendar />
         </div>
     </div>
