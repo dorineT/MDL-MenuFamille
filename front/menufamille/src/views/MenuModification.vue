@@ -13,7 +13,7 @@
 
 <script>
 import CalendarModificationMenu from '../components/CalendarModificationMenu.vue'
-import DialogueModificationJourPlat from '../components/DialogueModificationJourPlat.vue'
+import DialogueModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 export default {
   name: 'MenuModification',
 

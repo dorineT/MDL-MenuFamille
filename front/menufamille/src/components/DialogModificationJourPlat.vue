@@ -238,16 +238,19 @@ import {eventBus } from '../main'
             //quelle periode  + menu prévu ?
             if(periode === 'matin'){
               this.recetteChoisie = itemReceived.Matin
+              this.numberPersonneOld = itemReceived.MatinNbPers
               if(itemReceived.Matin ==='/'){
                 this.selectedRadioMenuOuiNon = 'non'
               }
             }else if(periode === 'midi'){
               this.recetteChoisie = itemReceived.Midi
+              this.numberPersonneOld = itemReceived.MidiNbPers
                if(itemReceived.Midi ==='/'){
                 this.selectedRadioMenuOuiNon = 'non'
               }
             }else{
               this.recetteChoisie = itemReceived.Soir
+              this.numberPersonneOld = itemReceived.SoirNbPers
                if(itemReceived.Soir ==='/'){
                 this.selectedRadioMenuOuiNon = 'non'
               }
@@ -257,8 +260,7 @@ import {eventBus } from '../main'
             this.resetNewRecette()
             this.tagRecetteChoix = null
 
-            //set nb perso
-            this.numberPersonneOld = 3
+            //set nb perso            
             this.numberPersonneNew = this.numberPersonneOld
         },
         sauvegardeMenuJour(){
