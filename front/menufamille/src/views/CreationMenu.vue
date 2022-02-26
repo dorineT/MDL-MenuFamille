@@ -18,11 +18,7 @@ export default {
     name: 'CreationMenu',
 
     components: {
-        Constraintscalendar,
-    }
-
-        
-    }
         Constraintscalendar
-
+    }        
+}
 </script>
