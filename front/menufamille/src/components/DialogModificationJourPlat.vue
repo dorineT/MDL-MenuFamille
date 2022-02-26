@@ -230,6 +230,7 @@ import {eventBus } from '../main'
     methods: {
       /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
         openModal(itemReceived, periode){
+            this.showModifMenu = false
             this.dialog = true
             this.infoMenu = itemReceived
             this.periode = periode
