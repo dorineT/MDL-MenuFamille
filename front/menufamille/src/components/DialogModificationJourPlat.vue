@@ -236,6 +236,7 @@ import {eventBus } from '../main'
             console.log('Données recues par l\'event dans  le modal \n' + JSON.stringify(itemReceived) + ' \n\n pour ' + periode)
 
             //quelle periode  + menu prévu ?
+            this.selectedRadioMenuOuiNon = 'oui'
             if(periode === 'matin'){
               this.recetteChoisie = itemReceived.Matin
               this.numberPersonneOld = itemReceived.MatinNbPers
@@ -290,13 +291,13 @@ import {eventBus } from '../main'
               return false
             }
             if(this.periode === 'matin'){         
-              this.infoMenu.MatinNbPers = this.numberPersonneNew        
+              this.infoMenu.MatinNbPers = this.numberPersonneNew
             }
             else if(this.periode === 'midi'){           
-              this.infoMenu.MatinNbPers = this.numberPersonneNew   
+              this.infoMenu.MidiNbPers = this.numberPersonneNew   
             
             }else if(this.periode === 'soir'){       
-              this.infoMenu.MatinNbPers = this.numberPersonneNew              
+              this.infoMenu.SoirNbPers = this.numberPersonneNew              
             }    
           }
     
@@ -304,7 +305,7 @@ import {eventBus } from '../main'
           this.dialog = false
           this.snackbar = true
 
-          eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
+          //eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
         },
         resetSelectedSuggestion(){
           this.radioSelectionSuggestion = null

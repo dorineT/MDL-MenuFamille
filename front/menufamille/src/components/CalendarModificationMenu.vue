@@ -151,15 +151,22 @@ export default {
         },
 
       updateMenuJour(menuJour, periode){
-        if(periode === 'matin'){
-          this.menu[menuJour.id].Matin = menuJour.Matin
+        console.log(menuJour)
+        console.log(periode)
+
+        console.log(this.menu.plats)
+        //let menuJourOld = this.menus.plats.find( elem => elem.id === menuJour.id)
+        //console.log('menu trouve ' + menuJourOld)
+
+        /*if(periode === 'matin'){
+          this.menu.plat[menuJour.id].Matin = menuJour.Matin
         }
         else if(periode === 'midi'){
           this.menu[menuJour.id].Midi = menuJour.Midi
         }
         else if(periode === 'soir'){
           this.menu[menuJour.id].Soir = menuJour.Soir
-        }
+        }*/
       }
     }
 }
