@@ -1,7 +1,5 @@
 <template>
     <v-container class="checkboxes" fluid>
-     
-    
 
     <v-stepper v-model="e1">
     <v-stepper-header>
@@ -206,7 +204,7 @@
         sm="6"
       >
         <v-select
-          :items="items"
+          :items="items2"
           label="Famille"
           dense
           outlined
@@ -257,8 +255,51 @@
 
       <v-stepper-content step="2">
         <v-card
-          height="200px"
-        ></v-card>
+        >
+
+        <div style="margin: 4px">
+
+    <v-combobox
+      color="orange lighten-2"
+      label="Choix du menu"
+      class="combobox-class"
+      :items="itemPeriode"      
+      v-model="comboboxMenuSelected"></v-combobox>
+
+        <v-data-table
+            :headers="headers"
+            :items="items"                                          
+            class="elevation-8"
+            disable-sort
+            mobile-breakpoint="0"
+            :footer-props="{             
+              'disable-items-per-page':true,
+              itemsPerPage:7,      
+              'items-per-page-options': [7,14],
+              'items-per-page-text':'Lignes par page',
+            }"
+        > 
+         <template
+            v-if="IscomboboxChange('Aucun menu sélectionné')"
+            v-slot:no-data
+          >
+            Pas de menu sélectionné
+          </template>
+        
+       <template v-slot:item="{ item }">
+            <tr>
+              <td class="tdplat"> {{ item.name }} </td>
+              <td class="tdplat"> <v-btn text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn></td>
+              <td class="tdplat"> 
+                <v-btn text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
+                <p>{{item.MidiDesc}}</p>  
+              </td>
+              <td class="tdplat"> <v-btn text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> </td>
+            </tr>
+          </template>
+          </v-data-table>  
+      </div>  
+    </v-card>
 
         <v-btn
           color="primary"
@@ -278,10 +319,19 @@
   </v-stepper>
 
     </v-container>
+    
 </template>
 
+
+
 <script>
-  export default {
+
+
+
+ 
+  export default {  name: 'Home',
+
+    
     data () {
       return {
         checkbox1: false,
@@ -289,14 +339,98 @@
         checkbox3: false,
         checkbox4: false,
         checkbox5: false,
+        checkbox6: false,
         checkbox7: false,
         checkbox8: false,
-        items: ['FamilleHeureux','FamillePasHeureux'],
+        complete:false,
+        step:1,
+        items2: ['FamilleHeureux','FamillePasHeureux'],
         number1: 0,
         number2: 0, 
         column: null,
         row: null,
         e1: 1,
+        menu:false,
+        date:'',
+        datedebut:'',
+        datefin:'',
+        menu2:false,
+        headers: [
+          {
+            text: 'Période',
+            align: 'start',            
+            value: 'name',
+          },
+          { text: 'Matin', align: 'center',value: 'Matin' },
+          { text: 'Midi',align: 'center', value: 'Midi' },
+          { text: 'Soir',align: 'center', value: 'Soir' },
+        ],
+        items:[],
+        plats: [
+          {
+            name: 'Lundi \n14/02',
+            Matin: 'céréale',
+            Midi: 'croque-monsieur',
+            Soir: 'pain',
+          },
+          {
+            name: 'Mardi \n15/02',
+            Matin: 'crepe',
+            Midi: 'croque-monsieur',
+            Soir: 'lasagne',
+
+          },
+          {
+            name: 'Mercredi \n16/02',
+            Matin: '/',
+            Midi: 'pain',
+            Soir: 'canard',
+
+          },
+          {
+            name: 'Jeudi \n17/02',
+            Matin: 'céréale',
+            Midi: 'croque-monsieur',
+            Soir: 'pain',
+
+          },
+          {
+            name: 'Vendredi \n18/02',
+            Matin: 'flocon d\'avoine',
+            Midi: 'croque-monsieur',
+            Soir: 'frites',
+
+          },
+          {
+            name: 'Samedi \n19/02',
+            Matin: 'céréale',
+            Midi: 'spaghetti',
+            Soir: 'crepe',
+
+          },
+          {
+            name: 'Dimanche \n20/02',
+            Matin: 'céréale',
+            Midi: 'rotî sauce moutarde',
+            MidiDesc:'18 personnes',
+            Soir: '/',
+
+          },
+          {
+            name: 'Lundi \n21/02',
+            Matin: 'céréale',
+            Midi: 'rotî sauce moutarde',
+            MidiDesc: '18 personnes',
+            Soir: '/',
+
+          }
+        ],
+        itemPeriode: [
+          '14/02 - 20/02'
+        ],
+        comboboxMenuSelected: null,        
+      
+    
     numberRule1: val => {
       if(val < 0) return 'Please enter a positive number'
       return true;
@@ -306,15 +440,34 @@
       return true;
 
        
-         }
+         },
+         
+
       }
     },
+    mounted () {
+      console.log(this.$vuetify.breakpoint.width)
+      this.comboboxMenuSelected='Aucun menu sélectionné'
+    },
+    watch:{
+        comboboxMenuSelected(slot){     
+        if(slot === 'Aucun menu sélectionné'){        
+          this.items = []
+        }
+        else{ //check période des menus => Call API
+          this.items = this.plats
+        }
+      }
+    },
+    methods:{
+      goToRecette(text){
+          alert('click ' + text)
+        },
+      IscomboboxChange(slot){        
+        return this.comboboxMenuSelected === slot
+      }
+    }
   }
-
-
-  
-  
-  
 
 
 </script>
