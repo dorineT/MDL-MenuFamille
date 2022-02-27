@@ -13,12 +13,16 @@ const routes = [
   {
     path: '/menuModification',
     name: 'MenuModification',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/MenuModification.vue'),
-    props: true,
-  }
+    component: () => import( '../views/MenuModification.vue'),
+    props: true
+  },
+  {
+
+    // links to access to the creation menu page
+    path: '/creationMenu',
+    name: 'CreationMenu',
+    component: () => import(/* webpackChunkName: "creationMenu" */ '../views/CreationMenu.vue')
+  },
 ]
 
 const router = new VueRouter({
