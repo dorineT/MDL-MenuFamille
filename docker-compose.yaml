@@ -2,19 +2,20 @@ version: '3'
 
 services:
     db:
+        container_name: db
         image: postgres:14
         restart: always
         environment: 
           - POSTGRES_USER=postgres
           - POSTGRES_PASSWORD=postgres
+          - POSTGRES_DB=menufamille
         logging:
           options:
             max-size: 10m
             max-file: "3"
         volumes:
-          - ./postgres-data:/var/lib/postgresql/data
-          # copy the sql script to create tables
-          - ./db/sql:/docker-entrypoint-initdb.d
+          - ./db/sql/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+         
 
 
     web:
@@ -56,5 +57,4 @@ services:
 
 
 volumes:
-  postgres_data:
   pictures_candidats:

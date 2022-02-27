@@ -2,12 +2,12 @@
 
   <div style="margin: 4px">
 
-    <v-combobox
+    <v-select
       color="orange lighten-2"
       label="Choix du menu"
       class="combobox-class"
       :items="itemPeriode"      
-      v-model="comboboxMenuSelected"></v-combobox>
+      v-model="comboboxMenuSelected"></v-select>
 
         <v-data-table
             :headers="headers"
@@ -33,13 +33,25 @@
 
           <template v-slot:item="{ item }">
             <tr>
-              <td class="tdplat"> {{ item.name }} </td>
-              <td class="tdplat"> <v-btn text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn></td>
-              <td class="tdplat"> 
-                <v-btn text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
-                <p>{{item.MidiDesc}}</p>  
+              <td class="tdplat"> {{ item.jour }} <br> {{item.date}}
+
               </td>
-              <td class="tdplat"> <v-btn text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> </td>
+              <td class="tdplat"> 
+                  <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
+                  <p v-else style="color: red">X</p>
+                  <p v-if="item.MatinNbPers!==null">{{item.MatinNbPers}} personnes</p> 
+              </td>
+              <td class="tdplat"> 
+                <v-btn v-if="item.Midi!=='/'" text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
+                <p v-else style="color: red">X</p>
+                <p v-if="item.MidiNbPers!==null">{{item.MidiNbPers}} personnes</p>                  
+              </td>
+              <td class="tdplat"> 
+                  <v-btn v-if="item.Soir!=='/'" text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> 
+                  <p v-else style="color: red">X</p>
+                  <p v-if="item.SoirNbPers!==null">{{item.SoirNbPers}} personnes</p> 
+              </td>
+                  
             </tr>
           </template>
 
@@ -63,74 +75,186 @@
           { text: 'Soir',align: 'center', value: 'Soir' },
         ],
         items:[],
-        plats: [
+        menus: [
           {
-            name: 'Lundi \n14/02',
-            Matin: 'céréale',
-            Midi: 'croque-monsieur',
-            Soir: 'pain',
+            menu_id:0,
+            plats: [
+              {
+                id:0,
+                jour: 'Lundi',
+                date: '14/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'pain',
+                SoirNbPers: null
+              },
+              {
+                id:1,
+                jour: 'Mardi',
+                date: '15/02',
+                Matin: 'crepe',
+                MatinNbPers: null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'lasagne',
+                SoirNbPers: null,
+              },
+              {
+                id:2,
+                jour: 'Mercredi',
+                date: '16/02',
+                Matin: '/',
+                MatinNbPers:null,
+                Midi: 'pain',
+                MidiNbPers: null,
+                Soir: 'canard',
+                SoirNbPers: null,
+              },
+              {
+                id:3,
+                jour: 'Jeudi',
+                date: '17/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'pain',            
+                SoirNbPers: null,
+              },
+              {
+                id:4,
+                jour: 'Vendredi',
+                date: '18/02',
+                Matin: 'flocon d\'avoine',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'frites',
+                SoirNbPers: null,
+              },
+              {
+                id:5,
+                jour: 'Samedi',
+                date: '19/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'spaghetti',
+                MidiNbPers: null,
+                Soir: 'crepe',
+                SoirNbPers: null,
+              },
+              {
+                id:6,
+                jour: 'Dimanche',
+                date: '20/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'rotî sauce moutarde',
+                MidiNbPers:'18',
+                Soir: '/',
+                SoirNbPers: null,
+              },
+              {
+                id:7,
+                jour: 'Lundi',
+                date: '21/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'rotî sauce moutarde',
+                MidiNbPers: '18',
+                Soir: '/',
+                SoirNbPers: null,
+              }
+            ],
+            dateDebut: '14/02/2022',
+            dateFin: '20/02/2022',
+            verrou: true
           },
           {
-            name: 'Mardi \n15/02',
-            Matin: 'crepe',
-            Midi: 'croque-monsieur',
-            Soir: 'lasagne',
-
-          },
-          {
-            name: 'Mercredi \n16/02',
-            Matin: '/',
-            Midi: 'pain',
-            Soir: 'canard',
-
-          },
-          {
-            name: 'Jeudi \n17/02',
-            Matin: 'céréale',
-            Midi: 'croque-monsieur',
-            Soir: 'pain',
-
-          },
-          {
-            name: 'Vendredi \n18/02',
-            Matin: 'flocon d\'avoine',
-            Midi: 'croque-monsieur',
-            Soir: 'frites',
-
-          },
-          {
-            name: 'Samedi \n19/02',
-            Matin: 'céréale',
-            Midi: 'spaghetti',
-            Soir: 'crepe',
-
-          },
-          {
-            name: 'Dimanche \n20/02',
-            Matin: 'céréale',
-            Midi: 'rotî sauce moutarde',
-            MidiDesc:'18 personnes',
-            Soir: '/',
-
-          },
-          {
-            name: 'Lundi \n21/02',
-            Matin: 'céréale',
-            Midi: 'rotî sauce moutarde',
-            MidiDesc: '18 personnes',
-            Soir: '/',
-
+            menu_id: 1,
+            plats: [
+              {
+                id:10,
+                jour: 'Lundi',
+                date: '21/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'pain',
+                SoirNbPers: null
+              },
+              {
+                id:11,
+                jour: 'Mardi',
+                date: '22/02',
+                Matin: 'crepe',
+                MatinNbPers: null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'lasagne',
+                SoirNbPers: null,
+              },
+              {
+                id:12,
+                jour: 'Mercredi',
+                date: '23/02',
+                Matin: '/',
+                MatinNbPers:null,
+                Midi: 'pain',
+                MidiNbPers: null,
+                Soir: 'canard',
+                SoirNbPers: null,
+              },
+              {
+                id:13,
+                jour: 'Jeudi',
+                date: '24/02',
+                Matin: 'céréale',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'pain',            
+                SoirNbPers: null,
+              },
+              {
+                id:14,
+                jour: 'Vendredi',
+                date: '25/02',
+                Matin: 'flocon d\'avoine',
+                MatinNbPers:null,
+                Midi: 'croque-monsieur',
+                MidiNbPers: null,
+                Soir: 'frites',
+                SoirNbPers: null,
+              }
+            ],
+            dateDebut: '21/02/2022',
+            dateFin: '25/02/2022',
+            verrou: true
           }
         ],
-        itemPeriode: [
-          '14/02 - 20/02'
-        ],
+        itemPeriode: [],
         comboboxMenuSelected: null        
       }
     },
     mounted () {
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'
+
+      //select des periodes
+      this.menus.forEach(menu => {
+        if(menu.verrou){
+          let periodeNew = { 
+              text: menu.dateDebut + ' - ' +menu.dateFin,
+              value: menu.menu_id
+            }
+          this.itemPeriode.push(periodeNew)
+        }
+      });
+
     },
     watch:{
         comboboxMenuSelected(slot){     
@@ -138,13 +262,16 @@
           this.items = []
         }
         else{ //check période des menus => Call API
-          this.items = this.plats
+
+          //get id du menu
+          let menuSelected = this.menus.find(menu => menu.menu_id === slot)
+          this.items = menuSelected.plats
         }
       }
     },
     methods:{
       goToRecette(text){
-          alert('click ' + text)
+          alert('Bientot disponible ' + text)
         },
       IscomboboxChange(slot){        
         return this.comboboxMenuSelected === slot
@@ -170,4 +297,8 @@
 
 .tdplat
   text-align: center
+
+.v-application .primary--text 
+  color: #FFB74D !important
+  caret-color: #FFB74D  !important
 </style>

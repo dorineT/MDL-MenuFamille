@@ -49,7 +49,7 @@
                 :key="i"
               >       
                 <v-list-item-content>
-                  <v-list-item-title v-text="item"></v-list-item-title>
+                  <v-list-item-title @click="goToModificationMenu(i, item)" v-text="item"></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -75,6 +75,12 @@
       return{
         menuToValide: ['21/02 - 27/02','28/02 - 6/03'],
         menuToSuggest: ['7/03 - 13/03 ']
+      }
+    },
+
+    methods:{
+      goToModificationMenu(key , item){       
+        this.$router.push({name:'MenuModification', query: {id: key, periode: item}});    
       }
     }
   }
