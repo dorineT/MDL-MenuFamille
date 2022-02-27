@@ -9,55 +9,56 @@ SET TIMEZONE TO 'UTC+1';
 
 /*** Définition des tables avec leur clé primaire ***/
 CREATE TABLE FAMILLE (
-    id_famille SERIAL NOT NULL ,
-    nom VARCHAR NOT NULL ,
-    code_acces VARCHAR UNIQUE NOT NULL,
-    nb_membres INTEGER NOT NULL,
-    PRIMARY KEY (id_famille)
+                         id_famille SERIAL NOT NULL ,
+                         nom VARCHAR NOT NULL ,
+                         code_acces VARCHAR UNIQUE NOT NULL,
+                         nb_membres INTEGER NOT NULL,
+                         PRIMARY KEY (id_famille)
 );
 
 CREATE TYPE type_menu AS ENUM ('manuel','auto','sugestion');
 CREATE TABLE MENU (
-    id_menu SERIAL NOT NULL ,
-    id_famille INTEGER NOT NULL,
-    periode_debut TIMESTAMP NOT NULL ,
-    periode_fin TIMESTAMP NOT NULL ,
-    plat_identique INTEGER DEFAULT -1,
-    type type_menu,
-    PRIMARY KEY (id_menu)
+                      id_menu SERIAL NOT NULL ,
+                      id_famille INTEGER NOT NULL,
+                      periode_debut TIMESTAMP NOT NULL ,
+                      periode_fin TIMESTAMP NOT NULL ,
+                      plat_identique INTEGER DEFAULT -1,
+                      type type_menu,
+                      PRIMARY KEY (id_menu)
 );
 
 CREATE TABLE MEMBRES (
-    id_membre SERIAL NOT NULL,
-    id_token INTEGER NOT NULL,
-    nom VARCHAR NOT NULL,
-    prenom VARCHAR NOT NULL,
-    email VARCHAR NOT NULL UNIQUE,
-    secret VARCHAR NOT NULL,
-    PRIMARY KEY (id_membre)
+                         id_membre SERIAL NOT NULL,
+                         id_token INTEGER NOT NULL,
+                         nom VARCHAR NOT NULL,
+                         prenom VARCHAR NOT NULL,
+                         email VARCHAR NOT NULL UNIQUE,
+                         secret VARCHAR NOT NULL,
+                         PRIMARY KEY (id_membre)
 );
 
 CREATE TABLE REFRESH_TOKEN (
-    id_refreshToken SERIAL NOT NULL,
-    token VARCHAR NOT NULL,
-    date_expiration TIMESTAMP NOT NULL,
-    date_inscription TIMESTAMP default current_timestamp,
-    PRIMARY KEY (id_refreshToken)
+                               id_refreshToken SERIAL NOT NULL,
+                               token VARCHAR NOT NULL,
+                               date_expiration TIMESTAMP NOT NULL,
+                               date_inscription TIMESTAMP default current_timestamp,
+                               PRIMARY KEY (id_refreshToken)
 );
 
 CREATE TABLE FAMILLE_MEMBRE (
-    id_famille INTEGER NOT NULL ,
-    id_membre INTEGER NOT NULL,
-    PRIMARY KEY (id_famille,id_membre)
+                                id_famille INTEGER NOT NULL ,
+                                id_membre INTEGER NOT NULL,
+                                PRIMARY KEY (id_famille,id_membre)
 );
 
 CREATE TABLE FAVORIS (
-    id_recette INTEGER NOT NULL,
-    id_membre INTEGER NOT NULL,
-    PRIMARY KEY (id_membre,id_recette)
+                         id_recette INTEGER NOT NULL,
+                         id_membre INTEGER NOT NULL,
+                         PRIMARY KEY (id_membre,id_recette)
 );
 
 CREATE TABLE RECETTE (
+
     id_recette SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE,
     difficulte INTEGER NOT NULL,
@@ -68,78 +69,81 @@ CREATE TABLE RECETTE (
     nutriscore VARCHAR NOT NULL,
     preparation TEXT,
     PRIMARY KEY (id_recette)
+
 );
 
 CREATE TABLE RECETTE_TAGS (
-    id_recette INTEGER NOT NULL,
-    id_tag INTEGER NOT NULL,
-    PRIMARY KEY (id_recette,id_tag)
+                              id_recette INTEGER NOT NULL,
+                              id_tag INTEGER NOT NULL,
+                              PRIMARY KEY (id_recette,id_tag)
 );
 
 CREATE TABLE RECETTE_CATEGORIES (
-    id_recette INTEGER NOT NULL,
-    id_categorie INTEGER NOT NULL,
-    PRIMARY KEY (id_recette,id_categorie)
+                                    id_recette INTEGER NOT NULL,
+                                    id_categorie INTEGER NOT NULL,
+                                    PRIMARY KEY (id_recette,id_categorie)
 );
 
 CREATE TYPE periode AS ENUM ('matin','midi','soir');
 CREATE TABLE CATEGORIE (
-    id_categorie SERIAL NOT NULL,
-    periode periode,
-    PRIMARY KEY (id_categorie)
+                           id_categorie SERIAL NOT NULL,
+                           periode periode,
+                           PRIMARY KEY (id_categorie)
 );
 
 CREATE TABLE TAG (
-    id_tag SERIAL NOT NULL,
-    nom VARCHAR UNIQUE NOT NULL ,
-    PRIMARY KEY (id_tag)
+                     id_tag SERIAL NOT NULL,
+                     nom VARCHAR UNIQUE NOT NULL ,
+                     PRIMARY KEY (id_tag)
 );
 
 CREATE TABLE RECETTE_DENREE (
-    id_recette INTEGER NOT NULL,
-    id_denree INTEGER NOT NULL,
-    quantite INTEGER NOT NULL,
-    PRIMARY KEY (id_recette,id_denree)
+                                id_recette INTEGER NOT NULL,
+                                id_denree INTEGER NOT NULL,
+                                quantite INTEGER NOT NULL,
+                                PRIMARY KEY (id_recette,id_denree)
 );
 
 
 CREATE TABLE DENREE (
+
     id_denree SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE ,
     nutriscore VARCHAR,
     PRIMARY KEY (id_denree)
+
 );
 
 CREATE TABLE TYPE (
-    id_type SERIAL NOT NULL,
-    nom VARCHAR NOT NULL UNIQUE,
-    PRIMARY KEY (id_type)
+                      id_type SERIAL NOT NULL,
+                      nom VARCHAR NOT NULL UNIQUE,
+                      PRIMARY KEY (id_type)
 );
 
 CREATE TABLE DENREE_TYPE (
-  id_denree INTEGER NOT NULL,
-  id_type INTEGER NOT NULL,
-  PRIMARY KEY (id_denree,id_type)
+                             id_denree INTEGER NOT NULL,
+                             id_type INTEGER NOT NULL,
+                             PRIMARY KEY (id_denree,id_type)
 );
 
 CREATE TABLE CALENDRIER (
-    id_calendrier SERIAL NOT NULL,
-    date TIMESTAMP NOT NULL,
-    nb_personne INTEGER,
-    PRIMARY KEY (id_calendrier)
+                            id_calendrier SERIAL NOT NULL,
+                            date TIMESTAMP NOT NULL,
+                            nb_personne INTEGER,
+                            PRIMARY KEY (id_calendrier)
 );
 
 CREATE TABLE MENU_CALENDRIER (
-    id_menu INTEGER NOT NULL,
-    id_calendrier INTEGER NOT NULL,
-    PRIMARY KEY (id_menu,id_calendrier)
+                                 id_menu INTEGER NOT NULL,
+                                 id_calendrier INTEGER NOT NULL,
+                                 PRIMARY KEY (id_menu,id_calendrier)
 );
 
 CREATE TABLE CALENDRIER_RECETTE (
-    id_calendrier INTEGER NOT NULL,
-    id_recette INTEGER NOT NULL,
-    periode periode,
-    PRIMARY KEY (id_calendrier,id_recette)
+                                    id_calendrier INTEGER NOT NULL,
+                                    id_recette INTEGER NOT NULL,
+                                    periode periode,
+                                    PRIMARY KEY (id_calendrier,id_recette)
 );
 
 /*** Définition des clés étrangères ***/
@@ -179,8 +183,7 @@ ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCmenu FOREIGN KEY (id_menu) REFER
 
 ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCcalendrier FOREIGN KEY (id_calendrier) REFERENCES CALENDRIER(id_calendrier) ON DELETE CASCADE;
 
-/*** Remplissage table types & tags ***/
-
+/*insert tag + type*/
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
@@ -198,3 +201,162 @@ INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'sel');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');
+
+
+/*** 2.on ne peux plus modifier le menu après validation ou periode debut ***/
+
+/*** Détecter par rapport à un BOOL (verrou) et non une date*/
+
+
+CREATE OR REPLACE FUNCTION menu_already_valid_FC()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF OLD.periode_debut <= NOW() THEN
+        RAISE EXCEPTION 'le menu n est plus modifiable';
+    END IF;
+    RETURN new;
+END;
+$$
+
+
+/*** pas utile je pense*/
+CREATE OR REPLACE FUNCTION menu_calendrier_already_valid_FC()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF OLD.menu.periode_debut <= NOW() THEN
+        RAISE EXCEPTION 'vous ne pouvez plus deplacer les jours';
+    END IF;
+    RETURN new;
+END;
+$$
+
+
+CREATE TRIGGER menu_already_valid
+    BEFORE UPDATE
+    ON menu
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_already_valid_FC();
+
+
+CREATE TRIGGER menu_calendrier_already_valid
+    BEFORE UPDATE
+    ON menu_calendrier
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_calendrier_already_valid_FC();
+
+
+
+/*** la famille doit être suprimer si elle est vide => 
+
+
+===> fait par la contrainte on cascade delete
+bonus l'attribut nb_membre ce met a jour
+ ***/
+
+/*
+CREATE OR REPLACE FUNCTION empty_familly_FC()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_membre from famille_membre where id_famille = old.id_famille) is NULL THEN
+        DELETE FROM famille where id_famille = old.id_famille;
+    ELSE
+        UPDATE Famille
+        SET nb_membre = (SELECT count(id_membre) from famille_membre where id_famille = old.id_famille);
+    END IF;
+    RETURN new;
+END;
+$$*/
+
+/*
+
+====>  contrainte cascade delete
+
+CREATE TRIGGER empty_familly
+    AFTER DELETE
+    ON famille_membre
+    FOR EACH ROW
+EXECUTE PROCEDURE empty_familly_FC();
+
+CREATE TRIGGER update_familly
+    AFTER update
+    ON famille_membre
+    FOR EACH ROW
+EXECUTE PROCEDURE empty_familly_FC();*/
+
+
+/*** Menu doit être suprmier si sa famille a été suprimer  ====> IDEM
+
+CREATE OR REPLACE FUNCTION menu_without_family()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_famille from menu where id_famille = new.id_famille) is NULL THEN
+        DELETE FROM menu where id_famille = old.id_famille;
+    END IF;
+    RETURN new;
+END;
+$$   
+
+CREATE TRIGGER menu_without_family
+    AFTER DELETE
+    ON famille
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_without_family();*/
+
+
+
+/***Calendrier doit être suprimer si il n'a plus de lien avec Menu   ===
+
+==== > IDEM
+
+
+***/
+
+/*
+CREATE OR REPLACE FUNCTION daily_without_menu()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (select id_menu from menu_calendrier where id_menu = new.id_menu) is NULL THEN
+        DELETE FROM calendrier where id_calendrier = old.id_menu;
+    END IF;
+    RETURN new;
+END;
+$$
+
+
+CREATE TRIGGER trg_daily_without_menu
+    AFTER DELETE
+    ON menu
+    FOR EACH ROW
+EXECUTE PROCEDURE menu_without_family(); */
+
+/***pas 2 fois le même plat  => NOM en unique 
+
+et la contrainte  plat identique sur la semaine gérée sur  le front (voir back)
+***/
+
+
+/** MANQUANT:
+
+* trigger qui met à jour la table calendrier_plat lorsque le menu passe en mode verrou, tout les plats du menu passe en mode verrou aussi
+bool dans les différentes tables
+
+* + d'autres mais pas en rapport avec des suppressions ou contraintes unique qui sont réalisés sans trigger
+*/
+
+
+
