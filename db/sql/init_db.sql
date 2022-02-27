@@ -106,7 +106,7 @@ CREATE TABLE RECETTE_DENREE (
 CREATE TABLE DENREE (
     id_denree SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE ,
-    nutriscore INTEGER,
+    nutriscore VARCHAR,
     PRIMARY KEY (id_denree)
 );
 
