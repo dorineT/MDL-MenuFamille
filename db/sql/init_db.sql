@@ -1,5 +1,3 @@
-CREATE DATABASE MenuFamille;
-
 /*** Définition de l'utilisateur API ***/
 create user api with encrypted password 'AF8ns#.<kY:K?b6tH.<^.ft/';
 grant all privileges on database MenuFamille to api;
@@ -60,15 +58,18 @@ CREATE TABLE FAVORIS (
 );
 
 CREATE TABLE RECETTE (
-                         id_recette SERIAL NOT NULL,
-                         difficulte INTEGER NOT NULL,
-                         calorie INTEGER NOT NULL,
-                         temps_cuisson INTEGER NOT NULL,
-                         temps_preparation INTEGER NOT NULL,
-                         nb_personne INTEGER NOT NULL,
-                         nutriscore VARCHAR NOT NULL,
-                         preparation TEXT,
-                         PRIMARY KEY (id_recette)
+
+    id_recette SERIAL NOT NULL,
+    nom VARCHAR NOT NULL UNIQUE,
+    difficulte INTEGER NOT NULL,
+    calorie INTEGER NOT NULL,
+    temps_cuisson INTEGER NOT NULL,
+    temps_preparation INTEGER NOT NULL,
+    nb_personne INTEGER NOT NULL,
+    nutriscore VARCHAR NOT NULL,
+    preparation TEXT,
+    PRIMARY KEY (id_recette)
+
 );
 
 CREATE TABLE RECETTE_TAGS (
@@ -105,10 +106,12 @@ CREATE TABLE RECETTE_DENREE (
 
 
 CREATE TABLE DENREE (
-                        id_denree SERIAL NOT NULL,
-                        nom VARCHAR NOT NULL UNIQUE ,
-                        nutriscore INTEGER,
-                        PRIMARY KEY (id_denree)
+
+    id_denree SERIAL NOT NULL,
+    nom VARCHAR NOT NULL UNIQUE ,
+    nutriscore VARCHAR,
+    PRIMARY KEY (id_denree)
+
 );
 
 CREATE TABLE TYPE (
@@ -180,29 +183,24 @@ ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCmenu FOREIGN KEY (id_menu) REFER
 
 ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCcalendrier FOREIGN KEY (id_calendrier) REFERENCES CALENDRIER(id_calendrier) ON DELETE CASCADE;
 
-/*** Remplissage table types & tags ***/
+/*insert tag + type*/
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'gaterie');
 
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'soupe');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'light');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'gaterie');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'vegan');
-INSERT INTO "MenuFamille".tag (id_tag, nom) VALUES (DEFAULT, 'vege');
-
-
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'fruit');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'légume');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'produit laitier');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'viande');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'poisson');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'alcool');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'eau');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'sel');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'matière grasse');
-INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'céréale');
-
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruit');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'légume');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit laitier');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'viande');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'poisson');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'alcool');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'eau');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'sel');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');
 
 
 /*** 2.on ne peux plus modifier le menu après validation ou periode debut ***/
@@ -359,3 +357,6 @@ bool dans les différentes tables
 
 * + d'autres mais pas en rapport avec des suppressions ou contraintes unique qui sont réalisés sans trigger
 */
+
+
+

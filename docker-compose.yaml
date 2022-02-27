@@ -2,11 +2,13 @@ version: '3'
 
 services:
     db:
+        container_name: db
         image: postgres:14
         restart: always
         environment: 
           - POSTGRES_USER=postgres
           - POSTGRES_PASSWORD=postgres
+          - POSTGRES_DB=menufamille
         logging:
           options:
             max-size: 10m

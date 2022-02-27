@@ -49,5 +49,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "editor.quickSuggestions": {
+    "strings": true
+  }
 }
