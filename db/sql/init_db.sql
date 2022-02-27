@@ -357,5 +357,5 @@ et la contrainte  plat identique sur la semaine gérée sur  le front (voir back
 * trigger qui met à jour la table calendrier_plat lorsque le menu passe en mode verrou, tout les plats du menu passe en mode verrou aussi
 bool dans les différentes tables
 
-* + d'autres
+* + d'autres mais pas en rapport avec des suppressions ou contraintes unique qui sont réalisés sans trigger
 */
