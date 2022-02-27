@@ -207,6 +207,8 @@ INSERT INTO "MenuFamille".type (id_type, nom) VALUES (DEFAULT, 'céréale');
 
 /*** 2.on ne peux plus modifier le menu après validation ou periode debut ***/
 
+/*** Détecter par rapport à un BOOL (verrou) et non une date*/
+
 
 CREATE OR REPLACE FUNCTION menu_already_valid_FC()
     RETURNS TRIGGER
@@ -222,7 +224,7 @@ END;
 $$
 
 
-
+/*** pas utile je pense*/
 CREATE OR REPLACE FUNCTION menu_calendrier_already_valid_FC()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
@@ -235,7 +237,6 @@ BEGIN
     RETURN new;
 END;
 $$
-
 
 
 CREATE TRIGGER menu_already_valid
@@ -253,10 +254,14 @@ EXECUTE PROCEDURE menu_calendrier_already_valid_FC();
 
 
 
-/*** la famille doit être suprimer si elle est vide
+/*** la famille doit être suprimer si elle est vide => 
+
+
+===> fait par la contrainte on cascade delete
 bonus l'attribut nb_membre ce met a jour
  ***/
 
+/*
 CREATE OR REPLACE FUNCTION empty_familly_FC()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
@@ -271,8 +276,11 @@ BEGIN
     END IF;
     RETURN new;
 END;
-$$
+$$*/
 
+/*
+
+====>  contrainte cascade delete
 
 CREATE TRIGGER empty_familly
     AFTER DELETE
@@ -284,10 +292,10 @@ CREATE TRIGGER update_familly
     AFTER update
     ON famille_membre
     FOR EACH ROW
-EXECUTE PROCEDURE empty_familly_FC();
+EXECUTE PROCEDURE empty_familly_FC();*/
 
 
-/*** Menu doit être suprmier si sa famille a été suprimer  ***/
+/*** Menu doit être suprmier si sa famille a été suprimer  ====> IDEM
 
 CREATE OR REPLACE FUNCTION menu_without_family()
     RETURNS TRIGGER
@@ -300,19 +308,24 @@ BEGIN
     END IF;
     RETURN new;
 END;
-$$
+$$   
 
 CREATE TRIGGER menu_without_family
     AFTER DELETE
     ON famille
     FOR EACH ROW
-EXECUTE PROCEDURE menu_without_family();
+EXECUTE PROCEDURE menu_without_family();*/
 
 
 
-/***Calendrier doit être suprimer si il n'a plus de lien avec Menu ***/
+/***Calendrier doit être suprimer si il n'a plus de lien avec Menu   ===
+
+==== > IDEM
 
 
+***/
+
+/*
 CREATE OR REPLACE FUNCTION daily_without_menu()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
@@ -331,6 +344,18 @@ CREATE TRIGGER trg_daily_without_menu
     AFTER DELETE
     ON menu
     FOR EACH ROW
-EXECUTE PROCEDURE menu_without_family();
+EXECUTE PROCEDURE menu_without_family(); */
 
-/***pas 2 fois le même plat ***/
+/***pas 2 fois le même plat  => NOM en unique 
+
+et la contrainte  plat identique sur la semaine gérée sur  le front (voir back)
+***/
+
+
+/** MANQUANT:
+
+* trigger qui met à jour la table calendrier_plat lorsque le menu passe en mode verrou, tout les plats du menu passe en mode verrou aussi
+bool dans les différentes tables
+
+* + d'autres
+*/
