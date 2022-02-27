@@ -15,3 +15,7 @@ exports.findAll = (req, res) => {
       });
     });  
 };
+
+
+//un controleur par table
+// pour les jointures, utiliser le include
