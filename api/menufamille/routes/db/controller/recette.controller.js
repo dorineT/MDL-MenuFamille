@@ -50,3 +50,108 @@ the Sequelize should be okay but need testing too */
  * les spec de route (dossier route) dans un fichier dédié (voir type.js)
  * idem un par table
  */
+
+const db = require("../models");
+const Recipe = db.recette;
+const Op = db.Sequelize.Op;
+
+/// GetAllRecipes Simple for CRUD
+
+exports.findAll = (req, res) => {
+    Recipe.findAll()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Recipes."
+      });
+    });  
+};
+
+/// Put CRUD
+
+exports.PutRecipe = (req, res) => {
+    const new_recipe = await Recipe.create({ nom: req[0], difficulte: req[1], calorie: req[2], temps_cuisson: res[3], temps_preparation: req[4], nb_personne: req[5], nutriscore: req[6], preparation: req[7]})
+    .then(res.send(new_recipe.id_recette))
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || "Some error occurred while inserting Recipes"
+        });
+    });
+}
+
+//// Update CRUD
+exports.UpdateRecipe = (req, res) => {
+    let new_recipe = Recipe.findByPk(req[0]);
+
+    new_recipe.set({
+        nom: req[1],
+        difficulte: req[2],
+        calorie: req[3],
+        temps_cuisson: req[4],
+        temps_preparation: req[5],
+        nb_personne: req[6],
+        nutriscore: req[7],
+        preparation: req[8]
+
+    });
+
+    await new_recipe.save();
+}
+
+//// Delete CRUD
+
+exports.DeleteRecipe = (req, res) => {
+    let recipe_to_destroy = Recipe.findByPk(req[0]);
+
+    await recipe_to_destroy.destroy();
+}
+
+/// GetAllRecipes with tags
+
+ exports.findAllTags = (req, res) => {
+    Recipe.findAll({ include: recette_tags })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Recipes."
+      });
+    });  
+};
+
+
+/// GetAllRecipes with tags
+
+exports.findAllTags = (req, res) => {
+    Recipe.findAll({ include: {model: recette_tags, as: "tags" }})
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Recipes."
+      });
+    });  
+};
+
+/// Chercher une recette
+
+exports.findRecipe = (req, res) => {
+    Recipe.findByPk(req[0], { include: recette_tags, recette_categories, recette_denree})
+    .then(data => {
+        res.send(data)
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Recipes."
+        });
+      });  
+};
