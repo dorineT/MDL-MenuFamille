@@ -43,7 +43,7 @@
         value="radio-3"
       ></v-radio>
       <v-radio
-        label="personalisé"
+        label="personnalisé"
         value="radio-4"
       ></v-radio>
     </v-radio-group>
@@ -354,8 +354,8 @@
         complete:false,
         step:1,
         items2: ['FamilleHeureux','FamillePasHeureux'],
-        number1: 0,
-        number2: 0, 
+        number1: null,
+        number2: null, 
         column: null,
         row: null,
         row1: null,
@@ -442,11 +442,11 @@
       
     
     numberRule1: val => {
-      if(val < 0) return 'Please enter a positive number'
+      if(val < 0) return 'Entrez un nombre positif'
       return true;
          },
      numberRule2: val => {
-      if(val < 0) return 'Please enter a positive number'
+      if(val < 0) return 'Entrez un nombre positif'
       return true;
 
        
