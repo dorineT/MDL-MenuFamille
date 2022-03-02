@@ -29,17 +29,26 @@
         <v-card >
 
       <h3> Période :</h3>
-        <v-checkbox
-      v-model="checkbox1"
-      :label="`semaine`"
-    ></v-checkbox>
 
-     <v-checkbox
-      v-model="checkbox2"
-      :label="`personalisé`"   
-    ></v-checkbox>
+      <v-container
+    class="px-0"
+    fluid
+  >
+   <v-radio-group
+      v-model="row"
+      row
+    >
+      <v-radio
+        label="semaine"
+        value="radio-3"
+      ></v-radio>
+      <v-radio
+        label="personalisé"
+        value="radio-4"
+      ></v-radio>
+    </v-radio-group>
+  </v-container>
 
-    <br>
 
  <v-row>
     <v-col
@@ -216,7 +225,7 @@
     fluid
   >
    <v-radio-group
-      v-model="row"
+      v-model="row1"
       row
     >
       <v-radio
@@ -349,6 +358,7 @@
         number2: 0, 
         column: null,
         row: null,
+        row1: null,
         e1: 1,
         menu:false,
         date:'',
