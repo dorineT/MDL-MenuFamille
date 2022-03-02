@@ -8,19 +8,24 @@
       class="combobox-class"
       :items="itemPeriode"      
       v-model="comboboxMenuSelected"></v-select>
+<!--mobile-breakpoint="0"-->
 
         <v-data-table
             :headers="headers"
             :items="items"                                          
             class="elevation-8"
             disable-sort
-            mobile-breakpoint="0"
+            
             :footer-props="{             
               'disable-items-per-page':true,
               itemsPerPage:7,      
               'items-per-page-options': [7,14],
               'items-per-page-text':'Lignes par page',
             }"
+          hide-default-footer
+          hide-default-header
+          @page-count="pageCount = $event"
+          :page.sync="page"
         > 
 
           <template
@@ -55,7 +60,12 @@
             </tr>
           </template>
 
-        </v-data-table>    
+        </v-data-table>
+      <v-pagination
+        v-model="page"
+        :length="pageCount"
+        color="green"
+      ></v-pagination>
     </div>
 
 </template>
@@ -237,7 +247,9 @@
           }
         ],
         itemPeriode: [],
-        comboboxMenuSelected: null        
+        comboboxMenuSelected: null,
+        pageCount: 0,
+        page: 1  
       }
     },
     mounted () {
@@ -281,6 +293,18 @@
 </script>
 
 
+<style>
+/*table tr {
+     display:flex;
+     flex-direction: column;
+     float: left;
+  }
+
+  thead,tbody {
+    float: left;
+  }*/
+</style>
+
 <style lang="sass">
 
 .v-data-table
@@ -297,8 +321,11 @@
 
 .tdplat
   text-align: center
+  border: 1px solid
+  border-color: green
 
 .v-application .primary--text 
   color: #FFB74D !important
   caret-color: #FFB74D  !important
+
 </style>
