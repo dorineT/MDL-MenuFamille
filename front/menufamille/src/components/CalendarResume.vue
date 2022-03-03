@@ -23,7 +23,7 @@
               'items-per-page-text':'Lignes par page',
             }"
           hide-default-footer
-          hide-default-header
+         
           @page-count="pageCount = $event"
           :page.sync="page"
         > 
@@ -36,28 +36,34 @@
           </template>
 
 
-          <template v-slot:item="{ item }">
+          <template v-slot:body="">
+            <tr >
+              <td class="tdplat" v-for="item in items" :key="item.id"> 
+                {{ item.jour }} <br> {{item.date}} 
+            </td>
+            </tr>
             <tr>
-              <td class="tdplat"> {{ item.jour }} <br> {{item.date}}
-
-              </td>
-              <td class="tdplat"> 
+              <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                   <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
                   <p v-else style="color: red">X</p>
                   <p v-if="item.MatinNbPers!==null">{{item.MatinNbPers}} personnes</p> 
               </td>
-              <td class="tdplat"> 
+            </tr>
+            <tr>
+              <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn v-if="item.Midi!=='/'" text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
                 <p v-else style="color: red">X</p>
                 <p v-if="item.MidiNbPers!==null">{{item.MidiNbPers}} personnes</p>                  
               </td>
-              <td class="tdplat"> 
+            </tr>
+            <tr>
+              <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                   <v-btn v-if="item.Soir!=='/'" text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> 
                   <p v-else style="color: red">X</p>
                   <p v-if="item.SoirNbPers!==null">{{item.SoirNbPers}} personnes</p> 
               </td>
-                  
             </tr>
+
           </template>
 
         </v-data-table>
@@ -240,7 +246,10 @@
         itemPeriode: [],
         comboboxMenuSelected: null,
         pageCount: 0,
-        page: 1  
+        page: 1,
+        platsMatin:[],
+        platsMidi: [],
+        platsSoir: [] 
       }
     },
     mounted () {
@@ -267,9 +276,14 @@
         else{ //check période des menus => Call API
 
           //get id du menu
+          this.headers = []
+          this.platsMatin  = []
+          this.platsMidi  = []
+          this.platsSoir = []
           let menuSelected = this.menus.find(menu => menu.menu_id === slot)
           this.items = menuSelected.plats
           this.populateHeader(menuSelected)
+          this.fillPlat(menuSelected)
         }
       }
     },
@@ -287,6 +301,24 @@
               text: jourPlat.jour + '\n' + jourPlat.date, 
               align: 'center',
               value: jourPlat.id
+          })
+        })
+      },
+      fillPlat(menu){
+        menu.plats.forEach ( jourPlat => {
+          this.platsMatin.push({
+            Matin: jourPlat.Matin,
+            MatinNbPers: jourPlat.MatinNbPers
+          })
+
+          this.platsMidi.push({
+            Midi: jourPlat.Midi,
+            MidiNbPers: jourPlat.MidiNbPers
+          })
+
+          this.platsSoir.push({
+            Soir: jourPlat.Soir,
+            SoirNbPers: jourPlat.SoirNbPers
           })
         })
       }
