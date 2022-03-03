@@ -12,7 +12,7 @@
 
         <v-data-table
             :headers="headers"
-            :items="items"                                          
+            :items="items"                                  
             class="elevation-8"
             disable-sort
             
@@ -37,11 +37,11 @@
 
 
           <template v-slot:body="">
-            <tr >
+           <!-- <tr >
               <td class="tdplat" v-for="item in items" :key="item.id"> 
                 {{ item.jour }} <br> {{item.date}} 
             </td>
-            </tr>
+            </tr>-->
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                   <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
@@ -71,6 +71,9 @@
         v-model="page"
         :length="pageCount"
         color="green"
+        @next="nextPageMenu"
+        @previous="previousPageMenu"
+        @input="changePageEvent"
       ></v-pagination>
     </div>
 
@@ -247,6 +250,7 @@
         comboboxMenuSelected: null,
         pageCount: 0,
         page: 1,
+        nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
         platsSoir: [] 
@@ -274,16 +278,24 @@
           this.items = []
         }
         else{ //check période des menus => Call API
-
+           
           //get id du menu
           this.headers = []
           this.platsMatin  = []
           this.platsMidi  = []
           this.platsSoir = []
-          let menuSelected = this.menus.find(menu => menu.menu_id === slot)
+          this.nbJourMenu = 0    
+          let menuSelected = this.menus.find(menu => menu.menu_id === slot)  
+          
           this.items = menuSelected.plats
-          this.populateHeader(menuSelected)
-          this.fillPlat(menuSelected)
+
+          this.populateHeader(menuSelected) 
+          
+
+          let indiceEnd = this.items.length < 7 ? this.items.length : 7
+          console.log('length ' + this.items.length) 
+          this.fillPlat(menuSelected,0,indiceEnd)   
+
         }
       }
     },
@@ -296,16 +308,23 @@
       },
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menuSelect){
-        menuSelect.plats.forEach( jourPlat =>{
+        let i = 0;
+        // 7 jour max display dans le cal
+        while(this.nbJourMenu < 7 & i < menuSelect.plats.length){
+          let jourPlat = menuSelect.plats[i]
           this.headers.push({
               text: jourPlat.jour + '\n' + jourPlat.date, 
               align: 'center',
               value: jourPlat.id
           })
-        })
+          i++
+          this.nbJourMenu++
+        }
       },
-      fillPlat(menu){
-        menu.plats.forEach ( jourPlat => {
+      fillPlat(menu,iStart, iEnd){       
+        while(iStart<iEnd){
+          let jourPlat = menu.plats[iStart]
+
           this.platsMatin.push({
             Matin: jourPlat.Matin,
             MatinNbPers: jourPlat.MatinNbPers
@@ -320,7 +339,21 @@
             Soir: jourPlat.Soir,
             SoirNbPers: jourPlat.SoirNbPers
           })
-        })
+
+          iStart++
+        }
+        
+      },
+      //event quand on clique sur page suivante
+      nextPageMenu(){
+        alert('hrllo')
+      },
+      //event quand on clique sur page precedente
+      previousPageMenu(){
+        alert('hrllo')
+      },
+      changePageEvent(number){
+        alert(number)
       }
     }
 }
