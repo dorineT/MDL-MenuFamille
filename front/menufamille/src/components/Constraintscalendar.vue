@@ -6,6 +6,7 @@
       <v-stepper-step
         :complete="e1 > 1"
         step="1"
+        color="error"
       >
         Configuration Menu
       </v-stepper-step>
@@ -15,6 +16,7 @@
       <v-stepper-step
         :complete="e1 > 2"
         step="2"
+        color="error"
       >
         Configuration calendrier
       </v-stepper-step>
@@ -83,14 +85,14 @@
           <v-spacer></v-spacer>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="menu = false"
           >
             Cancel
           </v-btn>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="$refs.menu.save(date)"
           >
             OK
@@ -132,14 +134,14 @@
         > <v-spacer></v-spacer>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="menu2 = false"
           >
             Cancel
           </v-btn>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="$refs.menu2.save(date)"
           >
             OK
@@ -251,7 +253,7 @@
         </v-card>
 
         <v-btn
-          color="primary"
+          color="error"
           @click="e1 = 2"
         >
           Continue
@@ -311,7 +313,7 @@
     </v-card>
 
         <v-btn
-          color="primary"
+          color="error"
           @click="e1 = 1"
         >
           Continue
@@ -490,4 +492,8 @@
  
 }
 
+.v-application .primary--text {
+  color: #FFB74D !important;
+  caret-color: #FFB74D  !important
+}
 </style>.
