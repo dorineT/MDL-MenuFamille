@@ -74,16 +74,7 @@
   export default {
     data () {
       return {
-        headers: [
-          {
-            text: 'Période',
-            align: 'start',            
-            value: 'name',
-          },
-          { text: 'Matin', align: 'center',value: 'Matin' },
-          { text: 'Midi',align: 'center', value: 'Midi' },
-          { text: 'Soir',align: 'center', value: 'Soir' },
-        ],
+        headers: [],
         items:[],
         menus: [
           {
@@ -278,6 +269,7 @@
           //get id du menu
           let menuSelected = this.menus.find(menu => menu.menu_id === slot)
           this.items = menuSelected.plats
+          this.populateHeader(menuSelected)
         }
       }
     },
@@ -287,6 +279,16 @@
         },
       IscomboboxChange(slot){        
         return this.comboboxMenuSelected === slot
+      },
+      //remplir le header de la table avec les jours de la semaine du menu sélectionné
+      populateHeader(menuSelect){
+        menuSelect.plats.forEach( jourPlat =>{
+          this.headers.push({
+              text: jourPlat.jour + '\n' + jourPlat.date, 
+              align: 'center',
+              value: jourPlat.id
+          })
+        })
       }
     }
 }
@@ -323,6 +325,8 @@
   text-align: center
   border: 1px solid
   border-color: green
+  border-radius: 6px
+  margin: 3px
 
 .v-application .primary--text 
   color: #FFB74D !important
