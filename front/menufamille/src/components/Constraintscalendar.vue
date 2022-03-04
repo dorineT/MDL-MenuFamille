@@ -6,6 +6,7 @@
       <v-stepper-step
         :complete="e1 > 1"
         step="1"
+        color="error"
       >
         Configuration Menu
       </v-stepper-step>
@@ -15,6 +16,7 @@
       <v-stepper-step
         :complete="e1 > 2"
         step="2"
+        color="error"
       >
         Configuration calendrier
       </v-stepper-step>
@@ -29,17 +31,26 @@
         <v-card >
 
       <h3> Période :</h3>
-        <v-checkbox
-      v-model="checkbox1"
-      :label="`semaine`"
-    ></v-checkbox>
 
-     <v-checkbox
-      v-model="checkbox2"
-      :label="`personalisé`"   
-    ></v-checkbox>
+      <v-container
+    class="px-0"
+    fluid
+  >
+   <v-radio-group
+      v-model="row"
+      row
+    >
+      <v-radio
+        label="semaine"
+        value="radio-3"
+      ></v-radio>
+      <v-radio
+        label="personnalisé"
+        value="radio-4"
+      ></v-radio>
+    </v-radio-group>
+  </v-container>
 
-    <br>
 
  <v-row>
     <v-col
@@ -51,7 +62,7 @@
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
-        :return-value.sync="date"
+        :return-value.sync="datedebut"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -74,15 +85,15 @@
           <v-spacer></v-spacer>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="menu = false"
           >
             Cancel
           </v-btn>
           <v-btn
             text
-            color="primary"
-            @click="$refs.menu.save(date)"
+            color="error"
+            @click="$refs.menu.save(datedebut)"
           >
             OK
           </v-btn>
@@ -116,22 +127,21 @@
           ></v-text-field>
         </template>
         <v-date-picker
-          v-model="datefin"
-          @input="menu2 = false"
+          v-model="datefin"      
           no-title
           scrollabe
         > <v-spacer></v-spacer>
           <v-btn
             text
-            color="primary"
+            color="error"
             @click="menu2 = false"
           >
             Cancel
           </v-btn>
           <v-btn
             text
-            color="primary"
-            @click="$refs.menu2.save(date)"
+            color="error"
+            @click="$refs.menu2.save(datefin)"
           >
             OK
           </v-btn>
@@ -216,7 +226,7 @@
     fluid
   >
    <v-radio-group
-      v-model="row"
+      v-model="row1"
       row
     >
       <v-radio
@@ -242,7 +252,7 @@
         </v-card>
 
         <v-btn
-          color="primary"
+          color="error"
           @click="e1 = 2"
         >
           Continue
@@ -302,7 +312,7 @@
     </v-card>
 
         <v-btn
-          color="primary"
+          color="error"
           @click="e1 = 1"
         >
           Continue
@@ -331,7 +341,7 @@
  
   export default {  name: 'Home',
 
-    
+ 
     data () {
       return {
         checkbox1: false,
@@ -345,13 +355,14 @@
         complete:false,
         step:1,
         items2: ['FamilleHeureux','FamillePasHeureux'],
-        number1: 0,
-        number2: 0, 
+        number1: null,
+        number2: null, 
         column: null,
         row: null,
+        row1: null,
         e1: 1,
-        menu:false,
-        date:'',
+        menu:false,    
+        date:'',   
         datedebut:'',
         datefin:'',
         menu2:false,
@@ -432,11 +443,11 @@
       
     
     numberRule1: val => {
-      if(val < 0) return 'Please enter a positive number'
+      if(val < 0) return 'Entrez un nombre positif'
       return true;
          },
      numberRule2: val => {
-      if(val < 0) return 'Please enter a positive number'
+      if(val < 0) return 'Entrez un nombre positif'
       return true;
 
        
@@ -457,7 +468,10 @@
         else{ //check période des menus => Call API
           this.items = this.plats
         }
-      }
+      },
+      date () {
+        this.date = this.formatDate(this.date)
+      },
     },
     methods:{
       goToRecette(text){
@@ -465,9 +479,30 @@
         },
       IscomboboxChange(slot){        
         return this.comboboxMenuSelected === slot
-      }
-    }
-  }
+      },
+       formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate (date) {
+        if (!date) return null
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
+
+    },
+    computed: {
+      computedDateFormatted () {
+        return this.formatDate(this.date)
+      },
+    },
+  
+  };
+
+    
 
 
 </script>
@@ -480,4 +515,8 @@
  
 }
 
+.v-application .primary--text {
+  color: #FFB74D !important;
+  caret-color: #FFB74D  !important
+}
 </style>.
