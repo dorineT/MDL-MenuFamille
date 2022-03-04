@@ -15,3 +15,45 @@ exports.findAll = (req, res) => {
       });
     });  
 };
+
+
+/// PUT CRUD
+
+exports.PutRecipe_tag = (req, res) => {
+  const new_rec_tag = await RecetteTag.create({id_recette: req[0], id_tag: req[1]})
+  .then(res.send(new_rec_tag))
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message ||"Some error occurred while putting Recipe/tags"
+    });
+  });
+};
+
+
+/// UPDATE CRUD
+
+/// FAUT EN PARLER
+
+
+/// DELETE CRUD
+
+exports.Delete_Recipe_Tag = (req, res) => {
+  let recipe_tag_to_destroy = RecetteTag.findAll({
+      where: {
+        [Op.add]: [
+              id_recette = req[0],
+              id_tag = req[1]
+            ]
+      }
+  });
+
+  await recipe_tag_to_destroy.destroy()
+  .then(res.send(true))
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || "Some error occurred while deleting Recipe/tags"
+      });
+  });
+};

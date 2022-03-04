@@ -81,7 +81,7 @@ exports.PutRecipe = (req, res) => {
               err.message || "Some error occurred while inserting Recipes"
         });
     });
-}
+};
 
 //// Update CRUD
 exports.UpdateRecipe = (req, res) => {
@@ -99,16 +99,30 @@ exports.UpdateRecipe = (req, res) => {
 
     });
 
-    await new_recipe.save();
-}
+    await new_recipe.save()
+    .then(res.send(true))
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || "Some error occurred while updating Recipes"
+        });
+    });
+};
 
 //// Delete CRUD
 
 exports.DeleteRecipe = (req, res) => {
     let recipe_to_destroy = Recipe.findByPk(req[0]);
 
-    await recipe_to_destroy.destroy();
-}
+    await recipe_to_destroy.destroy()
+    .then(res.send(true))
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || "Some error occurred while deleting Recipes"
+        });
+    });
+};
 
 /// GetAllRecipes with tags
 
