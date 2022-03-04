@@ -1,24 +1,19 @@
 <template>
-
-    <div style="margin: 30px">
-
-        <div class= "créationMenu">
-            
-            <Constraintscalendar />
-        </div>
+  <div style="margin: 30px">
+    <div class="créationMenu">
+      <Constraintscalendar />
     </div>
+  </div>
 </template>
 
 <script>
-
-
-import Constraintscalendar from '../components/Constraintscalendar'
+import Constraintscalendar from "../components/Constraintscalendar";
 
 export default {
-    name: 'CreationMenu',
+  name: "CreationMenu",
 
-    components: {
-        Constraintscalendar
-    }        
-}
+  components: {
+    Constraintscalendar,
+  },
+};
 </script>
