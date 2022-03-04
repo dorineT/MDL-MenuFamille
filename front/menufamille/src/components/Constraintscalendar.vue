@@ -127,8 +127,7 @@
           ></v-text-field>
         </template>
         <v-date-picker
-          v-model="datefin"
-          @input="menu2 = false"
+          v-model="datefin"      
           no-title
           scrollabe
         > <v-spacer></v-spacer>
@@ -366,6 +365,7 @@
         date:'',
         datedebut:'',
         datefin:'',
+        dateFormatted:'',
         menu2:false,
         headers: [
           {
@@ -478,8 +478,13 @@
       IscomboboxChange(slot){        
         return this.comboboxMenuSelected === slot
       }
-    }
-  }
+
+    },
+
+  
+  };
+
+    
 
 
 </script>
