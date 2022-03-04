@@ -8,14 +8,14 @@
       class="combobox-class"
       :items="itemPeriode"      
       v-model="comboboxMenuSelected"></v-select>
-<!--mobile-breakpoint="0"-->
+
 
         <v-data-table
             :headers="headers"
             :items="items"                                  
             class="elevation-8"
             disable-sort
-            
+            mobile-breakpoint="0"
             :footer-props="{             
               'disable-items-per-page':true,
               itemsPerPage:7,      
@@ -75,11 +75,6 @@
       return {
         headers: [],
         items:[],
-        platTri:{
-          platsMatin:[],
-          platsMidi: [],
-          platsSoir: []
-        },
         menus: [
           {
             menu_id:0,
@@ -285,8 +280,7 @@
           
           this.items = menuSelected.plats
 
-          let indiceEnd = this.items.length < 7 ? this.items.length : 7
-          console.log('length ' + this.items.length)
+          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
           this.populateHeader(this.items,0,indiceEnd)
           this.fillPlat(this.items,0,indiceEnd)   
 
@@ -317,6 +311,7 @@
           this.nbJourMenu++
         }
       },
+      /* remplir les différents tableaux avec les repas par separation, matin - midi -soir*/
       fillPlat(menu,iStart, iEnd){    
         
         this.platsMatin = []
@@ -342,38 +337,25 @@
           })
 
           iStart++
-        }
-
-        /*this.platTri.push({
-          platsMatin: this.platsMatin,
-          platsMidi: this.platsMidi,
-          platsSoir: this.platsSoir
-        })*/        
+        }      
       },
       //event quand on clique sur page suivante
       nextPageMenu(){
-        console.log('next page')
         let iStart = (this.page-1) * 7
-        let iEnd = this.page * 7
-        console.log('jour: ' + iStart + ' -> ' + iEnd)
+        let iEnd = this.page * 7     
         this.populateHeader(this.items, iStart, iEnd)
         this.fillPlat(this.items,iStart,iEnd)
       },
       //event quand on clique sur page precedente
       previousPageMenu(){   // p1 : 0 -> 7 (6)   , P2 : 7 -> 14 (13) 
-        console.log('previous page')     
         let iStart = (this.page-1) * 7
-        let iEnd = this.page * 7
-        console.log('jour: ' + iStart + ' -> ' + iEnd)
+        let iEnd = this.page * 7     
         this.populateHeader(this.items, iStart, iEnd)
         this.fillPlat(this.items,iStart,iEnd)
       },
       changePageEvent(newPage){
-        console.log('click page ' + this.page )
-        console.log(newPage) //
         let iStart = (newPage-1) * 7
-        let iEnd = newPage * 7
-        console.log('jour: ' + iStart + ' -> ' + iEnd)
+        let iEnd = newPage * 7      
         this.populateHeader(this.items, iStart, iEnd)
         this.fillPlat(this.items,iStart,iEnd)
       }
