@@ -62,7 +62,7 @@
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
-        :return-value.sync="date"
+        :return-value.sync="datedebut"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -93,7 +93,7 @@
           <v-btn
             text
             color="error"
-            @click="$refs.menu.save(date)"
+            @click="$refs.menu.save(datedebut)"
           >
             OK
           </v-btn>
@@ -141,7 +141,7 @@
           <v-btn
             text
             color="error"
-            @click="$refs.menu2.save(date)"
+            @click="$refs.menu2.save(datefin)"
           >
             OK
           </v-btn>
@@ -341,7 +341,7 @@
  
   export default {  name: 'Home',
 
-    
+ 
     data () {
       return {
         checkbox1: false,
@@ -361,11 +361,10 @@
         row: null,
         row1: null,
         e1: 1,
-        menu:false,
-        date:'',
+        menu:false,    
+        date:'',   
         datedebut:'',
         datefin:'',
-        dateFormatted:'',
         menu2:false,
         headers: [
           {
@@ -469,7 +468,10 @@
         else{ //check période des menus => Call API
           this.items = this.plats
         }
-      }
+      },
+      date () {
+        this.date = this.formatDate(this.date)
+      },
     },
     methods:{
       goToRecette(text){
@@ -477,10 +479,26 @@
         },
       IscomboboxChange(slot){        
         return this.comboboxMenuSelected === slot
-      }
+      },
+       formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate (date) {
+        if (!date) return null
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
 
     },
-
+    computed: {
+      computedDateFormatted () {
+        return this.formatDate(this.date)
+      },
+    },
   
   };
 
