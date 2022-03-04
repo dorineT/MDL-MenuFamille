@@ -34,7 +34,7 @@ exports.PutCategory = (req, res) => {
 exports.UpdateCategory = (req, req) => {
   let new_category = Categorie.findByPk(req[0]);
 
-  new.categorie.set({
+  new_categorie.set({
       periode: req[1]
   });
 
