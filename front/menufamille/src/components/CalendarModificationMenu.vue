@@ -28,23 +28,29 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                  <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
-                  <p v-else style="color: red">X</p>
-                  <p v-if="item.MatinNbPers!==null">{{item.MatinNbPers}} personnes</p> 
+                <v-btn text @click="goToRecette(item,'matin')">
+                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-else style="color: red">X</p>                      
+                  </v-btn>                     
+                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                <v-btn v-if="item.Midi!=='/'" text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
-                <p v-else style="color: red">X</p>
-                <p v-if="item.MidiNbPers!==null">{{item.MidiNbPers}} personnes</p>                  
+                <v-btn text @click="goToRecette(item,'midi')">
+                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-else style="color: red">X</p>                                        
+                </v-btn>               
+                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                  <v-btn v-if="item.Soir!=='/'" text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> 
+                <v-btn  text @click="goToRecette(item,'soir')">
+                  <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
                   <p v-else style="color: red">X</p>
-                  <p v-if="item.SoirNbPers!==null">{{item.SoirNbPers}} personnes</p> 
+                </v-btn> 
+                <p v-if="item.NbPers!==null">{{item.NbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -159,12 +165,11 @@ export default {
       goToRecette(item,periode){
           console.log('click recette calendar ' + periode)
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode)
+          eventBus.$emit('openDialog', item, periode, this.items)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
-        this.nbJourMenu = 0
-        console.log(iStart + ' -> populate '+ iEnd)
+        this.nbJourMenu = 0       
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
@@ -188,18 +193,21 @@ export default {
           let jourPlat = menu[iStart]
 
           this.platsMatin.push({
-            Matin: jourPlat.Matin,
-            MatinNbPers: jourPlat.MatinNbPers
+            id: jourPlat.id,
+            Plat: jourPlat.Matin,
+            NbPers: jourPlat.MatinNbPers
           })
 
           this.platsMidi.push({
-            Midi: jourPlat.Midi,
-            MidiNbPers: jourPlat.MidiNbPers
+            id: jourPlat.id,
+            Plat: jourPlat.Midi,
+            NbPers: jourPlat.MidiNbPers
           })
 
           this.platsSoir.push({
-            Soir: jourPlat.Soir,
-            SoirNbPers: jourPlat.SoirNbPers
+            id: jourPlat.id,
+            Plat: jourPlat.Soir,
+            NbPers: jourPlat.SoirNbPers
           })
 
           iStart++

@@ -247,7 +247,7 @@
       }
     },
     mounted () {
-      console.log(this.$vuetify.breakpoint.width)
+      //console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'
 
       //select des periodes
@@ -264,8 +264,7 @@
     },
     watch:{
         comboboxMenuSelected(slot){     
-        if(slot === 'Aucun menu sélectionné'){ 
-          console.log('aucun menu')       
+        if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }
         else{ //check période des menus => Call API
@@ -297,8 +296,7 @@
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
-        this.nbJourMenu = 0
-        console.log(iStart + ' -> populate '+ iEnd)
+        this.nbJourMenu = 0      
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
@@ -322,16 +320,19 @@
           let jourPlat = menu[iStart]
 
           this.platsMatin.push({
+            id: jourPlat.id,
             Matin: jourPlat.Matin,
             MatinNbPers: jourPlat.MatinNbPers
           })
 
           this.platsMidi.push({
+            id: jourPlat.id,
             Midi: jourPlat.Midi,
             MidiNbPers: jourPlat.MidiNbPers
           })
 
           this.platsSoir.push({
+            id: jourPlat.id,
             Soir: jourPlat.Soir,
             SoirNbPers: jourPlat.SoirNbPers
           })

@@ -35,7 +35,7 @@
           
           subheader
         >
-          <v-subheader>Menu du : {{infoMenu.jour}} {{periode}}  : {{ infoMenu.date}} </v-subheader>
+          <v-subheader>Menu du : {{completeMenu.jour}} {{periode}}  : {{ completeMenu.date}} </v-subheader>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title> Menu prévu pour cette période ? </v-list-item-title>
@@ -103,7 +103,22 @@
               <v-container fluid>
                 <v-row  >
                   <v-col cols="12" sm="6" md="6" lg="6" xl="6">
-                  
+                    <v-card>
+                      <v-card-title >
+                        Choix parmis la liste de recettes
+                      </v-card-title>
+                      <v-card-text>
+                        <v-autocomplete
+                        color="orange lighten-2"
+                        label="Recette"                      
+                        :items="itemRecettes"      
+                        v-model="comboboxRecetteSelected"
+                        @change="resetSelectedSuggestion()"
+                        no-data-text="Aucune recette correspondante"></v-autocomplete>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-card>
                       <v-card-title >
                         Suggestion
@@ -118,23 +133,6 @@
                             color="orange lighten-2"
                           ></v-radio>
                         </v-radio-group>
-                      </v-card-text>
-                    </v-card>
-
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
-                    <v-card>
-                      <v-card-title >
-                        Choix parmis la liste de recettes
-                      </v-card-title>
-                      <v-card-text>
-                        <v-autocomplete
-                        color="orange lighten-2"
-                        label="Recette"                      
-                        :items="itemRecettes"      
-                        v-model="comboboxRecetteSelected"
-                        @change="resetSelectedSuggestion()"
-                        no-data-text="Aucune recette correspondante"></v-autocomplete>
                       </v-card-text>
                     </v-card>
                   </v-col>
@@ -203,7 +201,8 @@ import {eventBus } from '../main'
     data () {
       return {
         dialog: false,
-        infoMenu: '',
+        infoMenu: {},
+        completeMenu:{},
         periode: '',
         snackbar: false,
         timeout: 3000,
@@ -229,34 +228,33 @@ import {eventBus } from '../main'
     },
     methods: {
       /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-        openModal(itemReceived, periode){
+        openModal(itemReceived, periode, menuComplet){
             this.showModifMenu = false
             this.dialog = true
-            this.infoMenu = itemReceived
-            this.periode = periode
-            console.log('Données recues par l\'event dans  le modal \n' + JSON.stringify(itemReceived) + ' \n\n pour ' + periode)
 
-            //quelle periode  + menu prévu ?
-            this.selectedRadioMenuOuiNon = 'oui'
-            if(periode === 'matin'){
-              this.recetteChoisie = itemReceived.Matin
-              this.numberPersonneOld = itemReceived.MatinNbPers
-              if(itemReceived.Matin ==='/'){
-                this.selectedRadioMenuOuiNon = 'non'
-              }
-            }else if(periode === 'midi'){
-              this.recetteChoisie = itemReceived.Midi
-              this.numberPersonneOld = itemReceived.MidiNbPers
-               if(itemReceived.Midi ==='/'){
-                this.selectedRadioMenuOuiNon = 'non'
-              }
-            }else{
-              this.recetteChoisie = itemReceived.Soir
-              this.numberPersonneOld = itemReceived.SoirNbPers
-               if(itemReceived.Soir ==='/'){
-                this.selectedRadioMenuOuiNon = 'non'
-              }
+            this.infoMenu.id = itemReceived.id
+            this.infoMenu.Plat = itemReceived.Plat
+            this.infoMenu.NbPers = itemReceived.NbPers
+
+            //find menu dans le tab
+            console.log(menuComplet)
+            let menuFind = menuComplet.find(el => el.id === this.infoMenu.id)
+            this.completeMenu = {
+              jour: menuFind.jour,
+              date: menuFind.date
             }
+
+            this.periode = periode
+            console.log('Données recues par l\'event dans  le modal \n' + JSON.stringify(itemReceived) + ' \n pour ' + periode)
+
+            //menu prévu ?
+            this.selectedRadioMenuOuiNon = 'oui'
+            this.numberPersonneOld = this.infoMenu.NbPers
+            this.recetteChoisie = this.infoMenu.Plat
+            if(this.infoMenu.Plat ==='/'){
+              this.selectedRadioMenuOuiNon = 'non'
+            }
+            
             
             //reset
             this.resetNewRecette()
@@ -276,32 +274,17 @@ import {eventBus } from '../main'
           }
          //recette
           if(this.newRecetteChoix !== null){
-            if(this.periode === 'matin'){
-              this.infoMenu.Matin = this.newRecetteChoix         
-            }
-            else if(this.periode === 'midi'){
-              this.infoMenu.Midi = this.newRecetteChoix
-            
-            }else if(this.periode === 'soir'){
-              this.infoMenu.Soir = this.newRecetteChoix                   
-            }    
+            this.infoMenu.Plat = this.newRecetteChoix    
           }
           //number
           if(this.numberPersonneNew !== this.numberPersonneOld){
             if(this.numberPersonneNew < 0 ){              
               return false
             }
-            if(this.periode === 'matin'){         
-              this.infoMenu.MatinNbPers = this.numberPersonneNew
-            }
-            else if(this.periode === 'midi'){           
-              this.infoMenu.MidiNbPers = this.numberPersonneNew   
-            
-            }else if(this.periode === 'soir'){       
-              this.infoMenu.SoirNbPers = this.numberPersonneNew              
-            }    
+            this.infoMenu.NbPers = this.numberPersonneNew   
           }
-    
+          
+          console.log(this.infoMenu)
 
           this.dialog = false
           this.snackbar = true
