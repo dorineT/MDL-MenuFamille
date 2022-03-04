@@ -239,22 +239,30 @@ export default {
       updateMenuJour(menuJour, periode){
         console.log(menuJour)
         console.log(periode)
+        
+        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
+        console.log('menu trouve ' + menuJourOld)
 
-        console.log(this.menu.plats)
-        //let menuJourOld = this.menus.plats.find( elem => elem.id === menuJour.id)
-        //console.log('menu trouve ' + menuJourOld)
-
-        /*if(periode === 'matin'){
-          this.menu.plat[menuJour.id].Matin = menuJour.Matin
+        if(periode === 'matin'){
+          menuJourOld.Matin = menuJour.Plat
+          menuJourOld.MatinNbPers = menuJour.NbPers
         }
         else if(periode === 'midi'){
-          this.menu[menuJour.id].Midi = menuJour.Midi
+          console.log('midi up')
+          console.log(this.menu.plats)
+          menuJourOld.Midi = menuJour.Plat
+          menuJourOld.MidiNbPers = menuJour.NbPers
         }
         else if(periode === 'soir'){
-          this.menu[menuJour.id].Soir = menuJour.Soir
-        }*/
-      }
+          menuJourOld.Soir = menuJour.Plat
+          menuJourOld.SoirNbPers = menuJour.NbPers
+        }
 
+        let iStart = (this.page-1) * 7
+        let iEnd = this.page * 7              
+        this.fillPlat(this.items,iStart,iEnd)
+      }
+      
     }
 }
 </script>
