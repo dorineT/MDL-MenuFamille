@@ -21,8 +21,10 @@ exports.findAll = (req, res) => {
 /// PUT CRUD
 
 exports.Put_Recipe_Category = (req, res) => {
-  const new_rec_cat = await RecetteCategorie.create({id_recette: req[0], id_category: req[1]})
-  .then(res.send(new_rec_cat))
+  RecetteCategorie.create({id_recette: req.body.id_recette, id_category: req.body.id_category})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -34,27 +36,61 @@ exports.Put_Recipe_Category = (req, res) => {
 
 /// UPDATE CRUD
 
-/// FAUT EN PARLER
+exports.Update_Recipe_Category = (req, res) => {
+  const id_recipe = req.params.id_recipe;
+  const id_category = req.params.id_category;
+  MenuCalendrier.update(req.body, {
+    where: { [Op.add]: 
+        {id_recipe: id_recipe,
+        id_category: id_category}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Recipe_Category was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Recipe_Category with id_recipe=${id_recipe} && id_category=${id_category}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Menu_Calender with id_recipe=${id_recipe} && id_category=${id_category}`
+      });
+  });
+};
 
 
 /// DELETE CRUD
 
 exports.Delete_Recipe_Category = (req, res) => {
-  let rec_cat_to_destroy = RecetteCategorie.findAll({
-      where: {
-        [Op.add]: [
-              id_recette = req[0],
-              id_category = req[1]
-            ]
-      }
-  });
-
-  await rec_cat_to_destroy.destroy()
-  .then(res.send(true))
+  const id_recipe = req.params.id_recipe;
+  const id_category = req.params.id_category;
+  MenuCalendrier.destroy({
+    where: { [Op.add]: 
+        {id_recipe: id_recipe,
+        id_category: id_category}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Recipe_Category was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Recipe_Category with id_recipe=${id_recipe} && id_category=${id_category}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting Rec/Cate"
+            err.message || `Some error occurred while deleting Menu_Calender with id_recipe=${id_recipe} && id_category=${id_category}`
       });
   });
 };

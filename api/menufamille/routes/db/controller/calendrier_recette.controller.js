@@ -21,8 +21,10 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
   exports.PutCalender_Recipe = (req, res) => {
-    const new_cal_rec = await CalendrierRecette.create({id_calendrier: req[0], id_recette: req[1], periode: req[2]})
-    .then(res.send(new_cal_rec))
+    CalendrierRecette.create({id_calendrier: req.body.id_calendrier, id_recette: req.body.id_recette, periode: req.body.periode})
+    .then(data => {
+      res.send(data);
+    })
     .catch(err => {
       res.status(500).send({
         message:
@@ -33,25 +35,29 @@ exports.findAll = (req, res) => {
 
   //// Update CRUD
 exports.UpdateCalender_Recipe = (req, res) => {
-  let new_cal_rec = CalendrierRecette.findAll({
-    where: {
-      [Op.add]: [
-            id_calendrier = req[0],
-            periode = req[1]
-          ]
+  const id_calendrier = req.params.id_calendrier;
+  const id_recette = req.params.id_recette;
+  CalendrierRecette.update(req.body, {
+    where: { [Op.add]: 
+        {id_calendrier: id_calendrier,
+         id_recette: id_recette}
     }
-});
-
-  new_cal_rec.set({
-      id_recette: req[2]
-  });
-
-  await new_cal_rec.save()
-  .then(res.send(true))
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Calender_Recipe was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Calender_Recipe with id_calendrier =${id_calendrier} && id_recette=${id_recipe}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while updating cal/rec"
+            err.message || `Some error occurred while updating Calender_Recipe with id_calendrier=${id_calendrier} && id_recette=${id_recette}`
       });
   });
 };
@@ -60,23 +66,29 @@ exports.UpdateCalender_Recipe = (req, res) => {
 /// Delete CRUD
 
 exports.DeletCalender_Recipe = (req, res) => {
-  let cal_rec_to_destroy = CalendrierRecette.findAll({
-      where: {
-        [Op.add]: [
-              id_calendrier = req[0],
-              periode = req[1]
-            ]
-      }
-  });
-
-  await cal_rec_to_destroy.destroy()
-  .then(res.send(true))
+  const id_calendrier = req.params.id_calendrier;
+  const id_recette = req.params.id_recette;
+  CalendrierRecette.destroy({
+    where: { [Op.add]: 
+        {id_calendrier: id_calendrier,
+         id_recette: id_recette}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Calender_Recipe was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Calender_Recipe with id_calendrier =${id_calendrier} && id_recette=${id_recipe}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting cal/rec"
+            err.message || `Some error occurred while deleting Calender_Recipe with id_calendrier=${id_calendrier} && id_recette=${id_recette}`
       });
   });
 };
-
-

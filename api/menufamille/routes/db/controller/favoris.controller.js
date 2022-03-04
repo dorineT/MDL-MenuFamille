@@ -20,8 +20,10 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutFavorite = (req, res) => {
-  const new_fav = await Favoris.create({id_recette: req[0], id_membre: req[1]})
-  .then(res.send(new_fav))
+  Favoris.create({id_recette: req.body.id_recette, id_membre: req.body.id_membre})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -33,28 +35,62 @@ exports.PutFavorite = (req, res) => {
 
 //// Update CRUD
 
-/// Faut en parler
+exports.Update_Favoris = (req, res) => {
+  const id_recette = req.params.id_recette;
+  const id_membre = req.params.id_membre;
+  MenuCalendrier.update(req.body, {
+    where: { [Op.add]: 
+        {id_recette: id_recette,
+         id_membre: id_membre}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Favoris was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Favoris with id_recette=${id_recette} && id_membre=${id_membre}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Favoris with id_recette=${id_recette} && id_membre=${id_membre}`
+      });
+  });
+};
 
 
 /// Delete CRUD 
 
 
 exports.DeletCalender_Recipe = (req, res) => {
-  let fav_to_destroy = Favoris.findAll({
-      where: {
-        [Op.add]: [
-              id_recette = req[0],
-              id_membre = req[1]
-            ]
-      }
-  });
-
-  await fav_to_destroy.destroy()
-  .then(res.send(true))
+  const id_recette = req.params.id_recette;
+  const id_membre = req.params.id_membre;
+  MenuCalendrier.destroy({
+    where: { [Op.add]: 
+        {id_recette: id_recette,
+         id_membre: id_membre}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Favoris was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Favoris with id_recette=${id_recette} && id_membre=${id_membre}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting Fav"
+            err.message || `Some error occurred while deleting Favoris with id_recette=${id_recette} && id_membre=${id_membre}`
       });
   });
 };

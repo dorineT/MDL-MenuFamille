@@ -19,8 +19,10 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutMember = (req, res) => {
-  const new_member = await Membres.create({id_token: req[0], nom: req[1], prenom: req[2], email: req[3], secret: res[4]})
-  .then(res.send(new_member.id_membre))
+  Membres.create({id_token: req.body.id_token, nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, secret: req.body.secret})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
       res.status(500).send({
         message:
@@ -32,33 +34,52 @@ exports.PutMember = (req, res) => {
 /// Update CRUD
 
 exports.UpdateMember = (req, res) => {
-  let new_member = Membres.findByPk(req[0]);
-
-  new_member.set({
-    id_token: req[1],
-    nom: req[2],
-    prenom: req[3],
-    email: req[4],
-    secret: req[5]
+  const id = req.params.id;
+  Membres.update(req.body, {
+    where: {id_membre: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Members was Updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Members with id=${id}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Members id=${id}`
+      });
   });
-
-  await new_member.save()
-  .then(res.send(true))
-  .catch(err => res.status(500).send({
-    message:
-      err.message || "Some error occurred while modifing members."
-  }));
 };
+
 
 /// Delete CRUD
 
 exports.DeleteMember = (req, res) => {
-  let member_to_destroy = Membres.findByPk(req[0]);
-
-  await member_to_destroy.destroy()
-  .then(res.send(true))
-  .catch(err => res.status(500).send({
-    message:
-      err.message || "Some error occurred while delete members."
-  }));
-}
+  const id = req.params.id;
+  Membres.destroy({
+    where: {id_membre: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Members was Deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Members with id=${id}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while deleting Members id=${id}`
+      });
+  });
+};

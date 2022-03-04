@@ -20,8 +20,10 @@ exports.findAll = (req, res) => {
 // Put CRUD 
 
 exports.PutFamilly = (req, res) => {
-  const new_familly = await Famille.create({ nom: req[0], code_acces: req[1], nb_members: req[2]})
-  .then(res.send(new_familly.id_famille))
+  Famille.create({ nom: req.body.nom, code_acces: req.body.code_access, nb_members: req.body.nb_members})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -33,35 +35,53 @@ exports.PutFamilly = (req, res) => {
 // Update CRUD
 
 exports.UpdateFamilly = (req, res) => {
-  let new_familly = Famille.findByPk(req[0]);
-
-  new_familly.set({
-    nom: req[1],
-    code_acces: req[2],
-    nb_membres: req[3]
-  });
-
-  await new_familly.save()
-  .then(res.send(true))
+  const id = req.params.id;
+  Famille.update(req.body, {
+    where: {id_famille: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Familly was Updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update familly with id=${id}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while updating Familly"
+            err.message || `Some error occurred while updating familly id=${id}`
       });
   });
 };
 
+
   // Delete CRUD
 
   exports.DeleteFamilly = (req, res) => {
-    let familly_to_destroy = Famille.findByPk(req[0]);
-
-    await familly_to_destroy.destroy()
-    .then(res.send(true))
+    const id = req.params.id;
+    Famille.destroy({
+      where: {id_famille: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Familly was Deleted"
+        });
+      } else{
+        res.send({
+          message: `Cannot delete familly with id=${id}`
+        })
+      }
+    })
     .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while deleting a familly"
-      });
+        res.status(500).send({
+            message:
+              err.message || `Some error occurred while deleting familly id=${id}`
+        });
     });
   };
+  

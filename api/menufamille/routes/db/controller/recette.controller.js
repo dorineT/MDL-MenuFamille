@@ -51,6 +51,7 @@ the Sequelize should be okay but need testing too */
  * idem un par table
  */
 
+const { recette } = require("../models");
 const db = require("../models");
 const Recipe = db.recette;
 const Op = db.Sequelize.Op;
@@ -73,8 +74,10 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutRecipe = (req, res) => {
-    const new_recipe = await Recipe.create({ nom: req[0], difficulte: req[1], calorie: req[2], temps_cuisson: res[3], temps_preparation: req[4], nb_personne: req[5], nutriscore: req[6], preparation: req[7]})
-    .then(res.send(new_recipe.id_recette))
+    Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: res.body.temps_cuisson, temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, preparation: req.body.preparation})
+    .then(data => { 
+        res.send(data);
+      })
     .catch(err => {
         res.status(500).send({
             message:
@@ -85,44 +88,54 @@ exports.PutRecipe = (req, res) => {
 
 //// Update CRUD
 exports.UpdateRecipe = (req, res) => {
-    let new_recipe = Recipe.findByPk(req[0]);
-
-    new_recipe.set({
-        nom: req[1],
-        difficulte: req[2],
-        calorie: req[3],
-        temps_cuisson: req[4],
-        temps_preparation: req[5],
-        nb_personne: req[6],
-        nutriscore: req[7],
-        preparation: req[8]
-
-    });
-
-    await new_recipe.save()
-    .then(res.send(true))
+    const id = req.params.id;
+    Recipe.update(req.body, {
+      where: {id_recette: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Recipe was Updated"
+        });
+      } else{
+        res.send({
+          message: `Cannot update recipe with id=${id}`
+        })
+      }
+    })
     .catch(err => {
         res.status(500).send({
             message:
-              err.message || "Some error occurred while updating Recipes"
+              err.message || `Some error occurred while updating recipe id=${id}`
         });
     });
-};
+  };
 
 //// Delete CRUD
 
 exports.DeleteRecipe = (req, res) => {
-    let recipe_to_destroy = Recipe.findByPk(req[0]);
-
-    await recipe_to_destroy.destroy()
-    .then(res.send(true))
+    const id = req.params.id;
+    Recipe.destroy({
+      where: {id_recette: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Recipe was delete"
+        });
+      } else{
+        res.send({
+          message: `Cannot delete recipe with id=${id}`
+        })
+      }
+    })
     .catch(err => {
         res.status(500).send({
             message:
-              err.message || "Some error occurred while deleting Recipes"
+              err.message || `Some error occurred while deleting recipe id=${id}`
         });
     });
-};
+  };
 
 /// GetAllRecipes with tags
 
@@ -139,26 +152,10 @@ exports.DeleteRecipe = (req, res) => {
     });  
 };
 
-
-/// GetAllRecipes with tags
-
-exports.findAllTags = (req, res) => {
-    Recipe.findAll({ include: {model: recette_tags, as: "tags" }})
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Recipes."
-      });
-    });  
-};
-
 /// Chercher une recette
 
 exports.findRecipe = (req, res) => {
-    Recipe.findByPk(req[0], { include: recette_tags, recette_categories, recette_denree})
+    Recipe.findByPk(req.params.id_recette, { include: recette_tags, recette_categories, recette_denree})
     .then(data => {
         res.send(data)
     })

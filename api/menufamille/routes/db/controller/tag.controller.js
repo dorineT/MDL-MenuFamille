@@ -25,8 +25,10 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutTag = (req, res) => {
-  const new_tag = await Tag.create({nom: req[0]})
-  .then(res.send(new_tag.id_tag))
+  Tag.create({nom: req.body.nom})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
       res.status(500).send({
           message:
@@ -39,34 +41,52 @@ exports.PutTag = (req, res) => {
 /// Update CRUD 
 
 exports.UpdateTag = (req, res) => {
-  const new_tag = Tag.findByPk(req[0])
-
-  new_tag.set({
-    nom: req[1]
+  const id = req.params.id;
+  Tag.update(req.body, {
+    where: {id_tag: id}
   })
-
-  await new_tag.save()
-  .then(res.send(true))
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Tag was Updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update tag with id=${id}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while updating tag"
+            err.message || `Some error occurred while updating Tag id=${id}`
       });
   });
-}
+};
 
 
 /// delete CRUD 
 
 exports.Deletetag = (req, res) => {
-  let tag_to_destroy = Tag.findByPk(req[0])
-
-  await tag_to_destroy.destroy()
-  .then(res.send(true))
+  const id = req.params.id;
+  Tag.destoy({
+    where: {id_tag: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Tag was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete tag with id=${id}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting Tag"
+            err.message || `Some error occurred while deleting Tag id=${id}`
       });
   });
 };

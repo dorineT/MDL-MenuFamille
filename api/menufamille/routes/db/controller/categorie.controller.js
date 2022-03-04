@@ -20,8 +20,10 @@ exports.findAll = (req, res) => {
 // Put CRUD
 
 exports.PutCategory = (req, res) => {
-  const new_category = await Categorie.create({ periode: req[0]})
-  .then(res.send(new_category.id_categorie))
+  Categorie.create({ periode: req.body.periode})
+  .then(data => {
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
         message:
@@ -31,35 +33,55 @@ exports.PutCategory = (req, res) => {
 };
 
 // Update CRUD
+
 exports.UpdateCategory = (req, req) => {
-  let new_category = Categorie.findByPk(req[0]);
-
-  new_categorie.set({
-      periode: req[1]
-  });
-
-  await new_category.save()
-  .then(res.send(true))
-  .catch(err => {
-    res.status(500).send({
-      message:
-      err.message || "Some error occurred while updating Recipe"
+  const id = req.params.id;
+    Categorie.update(req.body, {
+      where: {id_categorie: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Categorie was Updated"
+        });
+      } else{
+        res.send({
+          message: `Cannot update Categorie with id=${id}`
+        })
+      }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || `Some error occurred while updating Categorie id=${id}`
+        });
     });
-  });
-};
+  };
+
 
 
 /// Delete CRUD 
 
 exports.DeleteCategory = (req, res) => {
-  let category_to_destroy = Categorie.findByPk(req[0]);
-
-  await category_to_destroy.destroy()
-  .then(res.send(true))
-  .catch(err => {
-    res.status(500).send({
-      message:
-      err.message || "Some error occurred while deleting Category"
+  const id = req.params.id;
+    Categorie.destroy({
+      where: {id_categorie: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Categorie was destroyed"
+        });
+      } else{
+        res.send({
+          message: `Cannot delete Categorie with id=${id}`
+        })
+      }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || `Some error occurred while deleting Categorie id=${id}`
+        });
     });
-  });
-};
+  };

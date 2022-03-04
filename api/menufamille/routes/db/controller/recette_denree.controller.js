@@ -20,8 +20,10 @@ exports.findAll = (req, res) => {
 /// PUT CRUD
 
 exports.PutRecipe_Denree = (req, res) => {
-  const new_rec_den = await RecetteDenree.create({id_recette: req[0], id_Denree: req[1], quantite: req[2]})
-  .then(res.send(new_rec_den))
+  RecetteDenree.create({id_recette: req.body.id_recette, id_denree: req.body.id_denree, quantite: req.body.quantite})
+  .then(data => {
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -33,49 +35,59 @@ exports.PutRecipe_Denree = (req, res) => {
 
   //// Update CRUD
   exports.UpdateRecipe_Denree = (req, res) => {
-    let new_rec_den = RecetteDenree.findAll({
-      where: {
-        [Op.add]: [
-              id_recette = req[0],
-              id.denree = req[1]
-            ]
+    const id_recette = req.params.id_recipe;
+    const id_denree = req.params.id_denree;
+    RecetteTag.update(req.body, {
+      where: { [Op.add]: 
+          {id_recette: id_recette,
+           id_denree: id_denree}
       }
-  });
-  
-    new_rec_den.set({
-        qunatite: req[2]
-    });
-  
-    await new_rec_den.save()
-    .then(res.send(true))
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Recipe_Denree was updated"
+        });
+      } else{
+        res.send({
+          message: `Cannot update Recipe_Denree with id_recette=${id_recette} && id_denree=${id_denree}`
+        })
+      }
+    })
     .catch(err => {
         res.status(500).send({
             message:
-              err.message || "Some error occurred while updating Recipe/denree"
+              err.message || `Some error occurred while updating Recipe_Denree with id_recette=${id_recette} && id_denree=${id_denree}`
         });
     });
   };
-  
-
 
 /// DELETE CRUD
 
 exports.Delete_Recipe_Denree = (req, res) => {
-  let rec_den_to_destroy = RecetteDenree.findAll({
-     where: {
-       [Op.add]: [
-              id_recette = req[0],
-              id.denree = req[1]
-           ]
-      }
-  }); 
-
-  await rec_den_to_destroy.destroy()
-  .then(res.send(true))
+  const id_recette = req.params.id_recipe;
+  const id_denree = req.params.id_denree;
+  RecetteTag.destroy({
+    where: { [Op.add]: 
+        {id_recette: id_recette,
+         id_denree: id_denree}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Recipe_Denree was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Recipe_Denree with id_recette=${id_recette} && id_denree=${id_denree}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting Recipe/denree"
+            err.message || `Some error occurred while deleting Recipe_Denree with id_recette=${id_recette} && id_denree=${id_denree}`
       });
   });
 };

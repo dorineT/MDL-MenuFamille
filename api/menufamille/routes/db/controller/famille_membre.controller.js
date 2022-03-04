@@ -19,8 +19,10 @@ exports.findAll = (req, res) => {
 
 // PUT CRUD
 exports.PutFamillyMember = (req, res) => {
-  const new_fam_mem = await FamilleMembre.create({id_famille: req[0], id_membre: req[1]})
-  .then(res.send([new_fam_mem.id_famille, new_fam_mem.id_membre]))
+  FamilleMembre.create({id_famille: req.body.id_famille, id_membre: req.body.id_membre})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -32,28 +34,61 @@ exports.PutFamillyMember = (req, res) => {
 
 /// UPDATE CRUD 
 
-  /// JE DOIS EN PARLER 
+exports.Update_Familly_Member  = (req, res) => {
+  const id_famille = req.params.id_famille;
+  const id_membre = req.params.id_membre;
+  MenuCalendrier.update(req.body, {
+    where: { [Op.add]: 
+        {id_famille: id_famille,
+         id_membre: id_membre}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Familly_Member was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      });
+  });
+};
 
 
 /// DELETE CRUD 
 
 exports.DeleteFamillyMember = (req, res) => {
-  let fam_mem_to_destroy = DenreeType.findAll({
-    where: {
-      [Op.add]: [
-            id_famille = req[0],
-            id_member = req[1]
-          ]
-      }
-  });
-
-
-  await fam_mem_to_destroy.destroy()
-  .then(res.send(true))
+  const id_famille = req.params.id_famille;
+  const id_membre = req.params.id_membre;
+  MenuCalendrier.destroy({
+    where: { [Op.add]: 
+        {id_famille: id_famille,
+         id_membre: id_membre}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Familly_Member was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      })
+    }
+  })
   .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Some error occurred while deleting  Familly/member"
-    });
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while deleting Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      });
   });
 };

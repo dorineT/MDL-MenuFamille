@@ -24,12 +24,14 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutType = (req, res) => {
-  const new_type = await Type.create({nom: req[0]})
-  .then(res.send(new_type.id_type))
+  Type.create({nom: req.body.nom})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while inserting Types"
+            err.message || "Some error occurred while inserting type"
       });
   });
 };
@@ -38,34 +40,52 @@ exports.PutType = (req, res) => {
 /// Update CRUD 
 
 exports.UpdateType = (req, res) => {
-  const new_type = Type.findByPk(req[0])
-
-  new_type.set({
-    nom: req[1]
+  const id = req.params.id;
+  Type.update(req.body, {
+    where: {id_type: id}
   })
-
-  await new_type.save()
-  .then(res.send(true))
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Type was Updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update type with id=${id}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while updating Type"
+            err.message || `Some error occurred while updating Type id=${id}`
       });
   });
-}
+};
 
 
 /// delete CRUD 
 
 exports.DeleteType = (req, res) => {
-  let type_to_destroy = Type.findByPk(req[0])
-
-  await type_to_destroy.destroy()
-  .then(res.send(true))
+  const id = req.params.id;
+  Type.destoy({
+    where: {id_type: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Type was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete type with id=${id}`
+      })
+    }
+  })
   .catch(err => {
       res.status(500).send({
           message:
-            err.message || "Some error occurred while deleting Type"
+            err.message || `Some error occurred while deleting Type id=${id}`
       });
   });
 };

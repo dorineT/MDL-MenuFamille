@@ -1,4 +1,5 @@
 const db = require("../models");
+const categorieModels = require("../models/categorie.models");
 const Calendrier = db.calendrier;
 const Op = db.Sequelize.Op;
 
@@ -21,8 +22,10 @@ exports.findAll = (req, res) => {
 // Put CRUD
 
 exports.PutCalender = (req, res) => {
-  const new_calenders = await Calendrier.create({ date: req[0], nb_personne: req[1]})
-  .then(res.send(new_calenders.id_menu))
+  Calendrier.create({ date: req.body.date, nb_personne: req.body.nb_personne})
+  .then(data => { 
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -34,19 +37,25 @@ exports.PutCalender = (req, res) => {
 // Update CRUD
 
 exports.UpdateCalender = (req, res) => {
-  let new_calenders = await Calendrier.findByPk(req[0]);
-
-  new_calenders.set({
-      date: req[1],
-      nb_personne: req[2]
-  });
-
-  await new_calenders.save()
-    .then(res.send(true))
+    const id = req.params.id;
+    Calendrier.update(req.body, {
+      where: {id_calendrier: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Calender was Updated"
+        });
+      } else{
+        res.send({
+          message: `Cannot update Calender with id=${id}`
+        })
+      }
+    })
     .catch(err => {
         res.status(500).send({
             message:
-              err.message || "Some error occurred while updating Calenders"
+              err.message || `Some error occurred while updating Calenders id=${id}`
         });
     });
   };
@@ -55,14 +64,25 @@ exports.UpdateCalender = (req, res) => {
   // Delete CRUD
 
   exports.DeleteCalender = (req, res) => {
-    let calender_to_destroy = Calendrier.findByPk(req[0]);
-
-    await calender_to_destroy.destroy()
-    .then(res.send(true))
+    const id = req.params.id;
+    Calendrier.destroy({
+      where: {id_calendrier: id}
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Calender was deleted"
+        });
+      } else{
+        res.send({
+          message: `Cannot delete Calender with id=${id}`
+        })
+      }
+    })
     .catch(err => {
         res.status(500).send({
             message:
-              err.message || "Some error occurred while deleting Calenders"
+              err.message || `Some error occurred while deleting Calenders id=${id}`
         });
     });
   };

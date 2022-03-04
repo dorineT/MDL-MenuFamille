@@ -19,8 +19,10 @@ exports.findAll = (req, res) => {
 
 /// PUT CRUD
 exports.PutDenreeType = (req, res) => {
-  const new_denr_type = await DenreeType.create({id_denree: req[0], id_type: req[1]})
-  .then(res.send([new_denr_type.id_denree, new_denr_type.id_type]))
+  DenreeType.create({id_denree: req.body.id_denree, id_type: req.body.id_type})
+  .then(data => {
+    res.send(data);
+  })
   .catch(err => {
     res.status(500).send({
       message:
@@ -32,28 +34,61 @@ exports.PutDenreeType = (req, res) => {
 
 /// UPDATE CRUD 
 
-  /// JE DOIS EN PARLER 
+exports.Update_Denree_type = (req, res) => {
+  const id_denree = req.params.id_denree;
+  const id_type = req.params.id_type;
+  DenreeType.update(req.body, {
+    where: { [Op.add]: 
+        {id_denree: id_denree,
+        id_type: id_type}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Denree_type was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Denree_type with id_denree=${id_denree} && id_type=${id_type}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Denree_type with id_denree=${id_denree} && id_type=${id_type}`
+      });
+  });
+};
 
 
 /// DELETE CRUD 
 
 exports.DeleteDenreeType = (req, res) => {
-  let denree_type_to_destroy = DenreeType.findAll({
-    where: {
-      [Op.add]: [
-            id_denree = req[0],
-            id_type = req[1]
-          ]
-      }
-  });
-
-
-  await denree_type_to_destroy.destroy()
-  .then(res.send(true))
+  const id_denree = req.params.id_denree;
+  const id_type = req.params.id_type;
+  DenreeType.destroy({
+    where: { [Op.add]: 
+        {id_denree: id_denree,
+        id_type: id_type}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Denree_type was deleted"
+      });
+    } else{
+      res.send({
+        message: `Cannot delete Denree_type with id_denree=${id_denree} && id_type=${id_type}`
+      })
+    }
+  })
   .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Some error occurred while deleting Denree/type"
-    });
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while deleting Denree_type with id_denree=${id_denree} && id_type=${id_type}`
+      });
   });
 };
