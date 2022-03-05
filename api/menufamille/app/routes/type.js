@@ -1,5 +1,5 @@
 const Router = require('express-promise-router')
-const type = require("./db/controller/type.controller.js");
+const type = require("../db/controller/type.controller.js");
 
 
 // create a new express-promise-router
