@@ -1,9 +1,9 @@
 const express = require('express')
-const mountRoutes = require('./routes')
+const mountRoutes = require('./app/routes')
 const app = express()
 const port = 3000
 
-const db = require("./routes/db/models");
+const db = require("./app/db/models");
 db.sequelize.sync();
 mountRoutes(app)
 

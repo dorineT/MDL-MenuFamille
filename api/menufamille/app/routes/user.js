@@ -19,5 +19,5 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.post("/signup",[verifySignUp.checkDuplicateUsernameOrEmail],auth.signup);
+router.post("/signup",[verifySignUp.checkDuplicateEmail],auth.signup);
 router.post("/signin", auth.signin);
