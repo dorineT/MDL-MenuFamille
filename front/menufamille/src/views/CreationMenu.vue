@@ -1,18 +1,16 @@
 <template>
    <v-container fluid>
-    <v-stepper v-model="e1">
+    <v-stepper v-model="e1" alt-labels>
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1" color="green">
-          Configuration global
+           Global
         </v-stepper-step>
 
         <v-divider></v-divider>
 
         <v-stepper-step :complete="e1 > 2" step="2" color="green">
-          Configuration jour/jour
+          Détails
         </v-stepper-step>
-
-        <v-divider></v-divider>
       </v-stepper-header>
 
       <v-stepper-items>
@@ -62,4 +60,7 @@ export default {
 <style lang="sass">
 .flexDroite
   float: right
+
+
+
 </style>

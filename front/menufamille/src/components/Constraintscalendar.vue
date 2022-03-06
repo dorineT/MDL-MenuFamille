@@ -4,7 +4,7 @@
      <v-form>
     <h3>Période :</h3>   
     <v-container class="px-0" fluid>
-      <v-radio-group v-model="row" row>
+      <v-radio-group v-model="choixPeriode" row>
         <v-radio label="semaine" value="semaine"></v-radio>
         <v-radio label="personnalisé" value="peronalise"></v-radio>
       </v-radio-group>
@@ -93,59 +93,134 @@
     <br />
 
     
-      <v-container grid-list-xl fluid>
-        <h3>Nombre de personne :</h3>
-        <v-layout wrap>
-          <v-flex xs12 sm6 md3>
+      <v-container grid-list-xl fluid>        
+        <v-row wrap>
+          <v-col xs12 sm6 md3>
+            <h3>Nombre de personnes :</h3>
             <v-text-field
               type="number"
               step="any"
               min="0"
               ref="input"
               :rules="[numberRule2]"
-              v-model="nbPersonnes"
+              v-model.number="nbPersonnes"
             ></v-text-field>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-container>
  
-      <v-container grid-list-xl fluid>
-        <h3>Plat identique autorisé :</h3>
-        <v-layout wrap>
-          <v-flex xs12 sm6 md3>
-            Matin :
-            <v-text-field
-              type="number"
-              step="any"
-              min="0"
-              ref="input"
-              :rules="[numberRule2]"
-              v-model="nbPlatMatin"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md3>
-            Midi : 
-            <v-text-field
-              type="number"
-              step="any"
-              min="0"
-              ref="input"
-              :rules="[numberRule2]"
-              v-model="nbPlatMidi"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6 md3>
-            Soir
-            <v-text-field
-              type="number"
-              step="any"
-              min="0"
-              ref="input"
-              :rules="[numberRule2]"
-              v-model="nbPlatSoir"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
+      <v-container  fluid>            
+        <v-row>          
+          <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+            <v-card>
+              <v-card-title>
+                Matin
+              </v-card-title>
+              <v-card-subtitle>
+                Plats identiques autorisés :
+              </v-card-subtitle>
+              <v-card-text>
+                <v-text-field
+                  type="number"
+                  step="any"
+                  min="0"
+                  ref="input"
+                  :rules="[numberRule2]"
+                  v-model.number="nbPlatMatin"
+                ></v-text-field>
+              </v-card-text>             
+              <v-divider></v-divider>
+              <v-card-subtitle>
+                Tags
+              </v-card-subtitle>
+              <v-card-text>
+                <v-autocomplete
+                  chips
+                  clearable
+                  deletable-chips
+                  multiple
+                  :items="tagsListe"
+                  v-model="tagsMatin"
+                  color="orange lighten-2"                  
+                  no-data-text="Aucun tag correspondant"
+                ></v-autocomplete> 
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+            <v-card>
+              <v-card-title>
+                Midi
+              </v-card-title>
+              <v-card-subtitle>
+                Plats identiques autorisés :
+              </v-card-subtitle>
+              <v-card-text>
+                <v-text-field
+                  type="number"
+                  step="any"
+                  min="0"
+                  ref="input"
+                  :rules="[numberRule2]"
+                  v-model.number="nbPlatMidi"
+                ></v-text-field>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-subtitle>
+                Tags
+              </v-card-subtitle>
+              <v-card-text>
+                <v-autocomplete
+                  chips
+                  clearable
+                  deletable-chips
+                  multiple
+                  :items="tagsListe"
+                  v-model="tagsMidi"
+                  color="orange lighten-2"                  
+                  no-data-text="Aucun tag correspondant"
+                ></v-autocomplete> 
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+            <v-card>
+              <v-card-title>
+                Soir
+              </v-card-title>
+              <v-card-subtitle>
+                Plats identiques autorisés :
+              </v-card-subtitle>
+              <v-card-text>
+                <v-text-field
+                  type="number"
+                  step="any"
+                  min="0"
+                  ref="input"
+                  :rules="[numberRule2]"
+                  v-model.number="nbPlatSoir"
+                ></v-text-field>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-subtitle>
+                Tags
+              </v-card-subtitle>
+              <v-card-text>
+                <v-autocomplete
+                  chips
+                  clearable
+                  deletable-chips
+                  multiple
+                  :items="tagsListe"
+                  v-model="tagsSoir"
+                  color="orange lighten-2"                  
+                  no-data-text="Aucun tag correspondant"
+                ></v-autocomplete> 
+              </v-card-text>  
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
 
     <v-container class="px-0" fluid>
@@ -178,7 +253,7 @@ export default {
       nbPlatMatin: null,
       nbPlatMidi: null,
       nbPlatSoir: null,
-      row: null,
+      choixPeriode: null,
       choixTypeMenu: 'manuel',
       choixMenuAutomatique: null,
       menu: false,    
@@ -186,6 +261,10 @@ export default {
       dateFin: "",  
       menu2: false,
       disabledChoixMenuAutomatique: true,
+      tagsListe: ['sel', 'sucre', 'lunch'],
+      tagsMatin: null,
+      tagsMidi: null,
+      tagsSoir: null,
 
       numberRule1: (val) => {
         if (val < 0) return "Entrez un nombre positif";
@@ -220,6 +299,13 @@ export default {
   },
   computed: {
     computedDateFormattedDebut() {
+      if(this.choixPeriode === 'semaine'){                
+        var date = new Date(this.dateDebut);
+        // add 7 days
+        date.setDate(date.getDate() + 6);
+        console.log(date)        
+      }
+      this.computedDateFormattedFin
       return this.formatDate(this.dateDebut);
     },
     computedDateFormattedFin() {
@@ -248,12 +334,7 @@ export default {
   color: green /*#FFB74D*/ !important
   caret-color: green /*#FFB74D*/  !important 
 
-
-@media only screen and (max-width: 959px)
-  .v-stepper:not(.v-stepper--vertical) .v-stepper__label
-    display: flex !important
-
-
-
+.v-card
+  padding: 5px
 </style>
 .
