@@ -4,7 +4,7 @@
      <v-form>
     <h3>Période :</h3>   
     <v-container class="px-0" fluid>
-      <v-radio-group v-model="choixPeriode" row>
+      <v-radio-group v-model="choixPeriode" row @change="textFieldDisabled = false">
         <v-radio label="semaine" value="semaine"></v-radio>
         <v-radio label="personnalisé" value="peronalise"></v-radio>
       </v-radio-group>
@@ -20,6 +20,7 @@
           transition="scale-transition"
           offset-y
           min-width="auto"
+          :disabled="textFieldDisabled"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
@@ -28,7 +29,7 @@
               prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
-              v-on="on"
+              v-on="on"           
             ></v-text-field>
           </template>
           <v-date-picker v-model="dateDebut" no-title scrollable locale="fr">
@@ -55,6 +56,7 @@
           transition="scale-transition"
           offset-y
           min-width="auto"
+          :disabled="textFieldDisabled"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
@@ -63,7 +65,7 @@
               prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
-              v-on="on"
+              v-on="on"           
             ></v-text-field>
           </template>
           <v-date-picker v-model="dateFin" no-title scrollabe locale="fr">
@@ -254,6 +256,7 @@ export default {
       nbPlatMidi: null,
       nbPlatSoir: null,
       choixPeriode: null,
+      textFieldDisabled: true,
       choixTypeMenu: 'manuel',
       choixMenuAutomatique: null,
       menu: false,    
@@ -298,11 +301,19 @@ export default {
   },
   computed: {
     computedDateFormattedDebut() {
-      if(this.choixPeriode === 'semaine'){                
+      if(this.choixPeriode === 'semaine' & this.dateDebut!= ""){                     
         var date = new Date(this.dateDebut);
         // add 7 days
-        date.setDate(date.getDate() + 6);
-        console.log(date)        
+        let newdatesecond = date.setDate(date.getDate() + 6);
+        console.log(newdatesecond)
+        let newDate = new Date(newdatesecond)
+
+        console.log(newDate)
+        let month = (newDate.getMonth() + 1 > 12) ? '01' : newDate.getMonth()+1  
+        let day =  newDate.getDay()
+        let year = newDate.getFullYear()
+
+        console.log(month+'-'+day+'-'+year)
       }
       this.computedDateFormattedFin
       return this.formatDate(this.dateDebut);
@@ -322,16 +333,16 @@ export default {
 
 
 .v-application .primary--text
-  color: green /*#FFB74D*/ !important
-  caret-color: green /*#FFB74D*/  !important
+  color: #9CCC65 /*#FFB74D*/ !important
+  caret-color: #9CCC65 /*#FFB74D*/  !important
 
 .v-application .accent 
-    background-color: green !important
-    border-color: green !important
+    background-color: #9CCC65 !important
+    border-color: #9CCC65 !important
 
 .v-application .accent--text
-  color: green /*#FFB74D*/ !important
-  caret-color: green /*#FFB74D*/  !important 
+  color: #9CCC65 /*#FFB74D*/ !important
+  caret-color: #9CCC65 /*#FFB74D*/  !important 
 
 .v-card
   padding: 5px

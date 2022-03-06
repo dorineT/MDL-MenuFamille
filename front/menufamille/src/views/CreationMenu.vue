@@ -2,13 +2,13 @@
    <v-container fluid>
     <v-stepper v-model="e1" alt-labels>
       <v-stepper-header>
-        <v-stepper-step :complete="e1 > 1" step="1" color="green">
+        <v-stepper-step :complete="e1 > 1" step="1" color="#9CCC65">
            Global
         </v-stepper-step>
 
         <v-divider></v-divider>
 
-        <v-stepper-step :complete="e1 > 2" step="2" color="green">
+        <v-stepper-step :complete="e1 > 2" step="2" color="#9CCC65">
           Détails
         </v-stepper-step>
       </v-stepper-header>
@@ -19,7 +19,7 @@
           
           <div class="flexDroite">
             <v-btn text > Retour </v-btn>
-            <v-btn color="green" @click="e1 = 2"> Continue </v-btn>    
+            <v-btn color="#9CCC65" @click="e1 = 2"> Continue </v-btn>    
           </div>        
         </v-stepper-content>
 
@@ -27,7 +27,7 @@
           <CalendarConstraintDayDay/>
           <div class="flexDroite">
             <v-btn text @click="e1 = 1"> Retour </v-btn>
-            <v-btn color="green" @click="e1 = 1"> Continue </v-btn>    
+            <v-btn color="#9CCC65" @click="e1 = 1"> Continue </v-btn>    
           </div>        
         </v-stepper-content>
       </v-stepper-items>
@@ -60,7 +60,5 @@ export default {
 <style lang="sass">
 .flexDroite
   float: right
-
-
 
 </style>
