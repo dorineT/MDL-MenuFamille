@@ -25,7 +25,7 @@
                 :key="i"
               >       
                 <v-list-item-content>
-                  <v-list-item-title v-text="item"></v-list-item-title>
+                  <v-list-item-title  @click="goToSuggestionMenu(i, item)" v-text="item"></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -81,6 +81,9 @@
     methods:{
       goToModificationMenu(key , item){       
         this.$router.push({name:'MenuModification', query: {id: key, periode: item}});    
+      },
+      goToSuggestionMenu(key, item){
+        this.$router.push({name:'MenuSuggestion', query: {id: key, periode: item}});
       }
     }
   }
