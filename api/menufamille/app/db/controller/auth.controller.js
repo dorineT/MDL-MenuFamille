@@ -78,7 +78,7 @@ exports.refreshToken = async (req, res) => {
       });
       return;
     }
-    const user = await refreshToken.getUser();
+    const user = await Membre.findOne({where: {id_membre: refreshToken.id_membre}});
     let newAccessToken = jwt.sign({ id: user.id_membre }, config.secret, {
       expiresIn: config.jwtExpiration,
     });
