@@ -1,31 +1,45 @@
+const config = require("../../config/auth.config");
+const { v4:uuidv4 } = require("uuid");
+
+
+
+
 module.exports = (sequelize, Sequelize) => {
     const Refresh_token = sequelize.define("refresh_token", {
-      id_refreshToken: {
+      id_refreshtoken: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true
       },
+      id_membre : {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       token: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       date_expiration: {
         type: Sequelize.DATE,
-        allowNull: false
-      },
-      date_inscription: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      },
-      date_changement: {
-        type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
       }
     },
     {
-      timestamps: true,
-      createdAt: 'date_inscription',
-      updateAt:  'date_changement'
+      timestamps: false
     });
+    Refresh_token.createToken = async function (user) {
+      let expiredAt = new Date();
+      expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
+      let _token = uuidv4();
+      let refreshToken = await this.create({
+        token: _token,
+        id_membre: user.id_membre,
+        date_expiration: expiredAt.getTime(),
+      });
+      return refreshToken.token;
+    };
+    Refresh_token.verifyExpiration = (token) => {
+      return token.date_expiration.getTime() < new Date().getTime();
+    };
     return Refresh_token;
   };

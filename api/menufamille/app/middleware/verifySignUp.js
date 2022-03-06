@@ -2,6 +2,7 @@ const db = require("../db/models");
 const Membre = db.membres;
 checkDuplicateEmail = (req, res, next) => {
     // Email
+    console.log(req.body)
     Membre.findOne({
       where: {
         email: req.body.email
@@ -21,5 +22,5 @@ checkDuplicateEmail = (req, res, next) => {
 
 const verifySignUp = {
     checkDuplicateEmail: checkDuplicateEmail
-  };
+};
 module.exports = verifySignUp;

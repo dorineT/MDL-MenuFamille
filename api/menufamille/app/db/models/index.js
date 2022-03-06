@@ -42,8 +42,8 @@ db.famille.hasMany(db.menu, {foreignKey: 'id_famille', onDelete: 'CASCADE'})
 db.menu.belongsTo(db.famille, {foreignKey: 'id_famille', onDelete: 'CASCADE'})
 
 // Membre -> RefreshToken (O:O)
-db.refreshToken.hasOne(db.membres, {foreignKey: 'id_token',onDelete: 'RESTRICT'})
-db.membres.belongsTo(db.refreshToken, {foreignKey: 'id_token', onDelete: 'RESTRICT'})
+db.refreshToken.belongsTo(db.membres, {foreignKey: 'id_membre',targetKey: 'id_membre',onDelete: 'RESTRICT'})
+db.membres.hasOne(db.refreshToken, {foreignKey: 'id_membre',targetKey: 'id_membre', onDelete: 'RESTRICT'})
 
 // Famille -> Membre (M:M)
 db.famille.belongsToMany(

@@ -1,48 +1,38 @@
 const db = require("../models");
 const config = require("../../config/auth.config");
 const Membre = db.membres;
-const Token = db.refreshToken;
+const RefreshToken = db.refreshToken;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
   // Save User to Database
-  Token.create({
-    token: bcrypt.hashSync(req.body.secret, 8)
+  Membre.create({
+    nom: req.body.nom,
+    prenom: req.body.prenom,
+    email: req.body.email,
+    secret: bcrypt.hashSync(req.body.password, 8)
   })
-    .then(token => {
-        Membre.create({id_token: token.id_token, nom: req.body.nom, prenom: req.body.prenom, email: req.body.email, secret: req.body.secret})
-        .then(_ => { 
-            res.send({ message: "User was registered successfully!" });
-        })
-        .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while inserting Member"
-            });
-        });
+    .then(_ => {
+      res.send({ message: "User was registered successfully!" });
     })
     .catch(err => {
-      res.status(500).send({ 
-          message: err.message || "Some error occurred while inserting Member" 
-        });
+      res.status(500).send({ message: err.message });
     });
 };
 
 exports.signin = (req, res) => {
   Membre.findOne({
-    attributes: ['id_membre','nom','prenom','email', 'token'],
     where: {
       email: req.body.email
-    },
-    include: [Token]
+    }
   })
-    .then(membre => {
-      if (!membre) {
+    .then(async (user) => {
+      if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.token,
-        membre.token
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.secret
       );
       if (!passwordIsValid) {
         return res.status(401).send({
@@ -50,19 +40,53 @@ exports.signin = (req, res) => {
           message: "Invalid Password!"
         });
       }
-      var token = jwt.sign({ id: membre.id_membre }, config.secret, {
-        expiresIn: 86400 // 24 hours
+      const token = jwt.sign({ id: user.id_membre }, config.secret, {
+        expiresIn: config.jwtExpiration
       });
-      
-      res.status(200).send({
-        id: membre.id,
-        nom: membre.nom,
-        prenom: membre.prenom,
-        email: membre.email,
-        accessToken: token
-      });
+      let refreshToken = await RefreshToken.createToken(user);
+        res.status(200).send({
+          id_membre: user.id_membre,
+          nom: user.nom,
+          email: user.email,
+          prenom: user.prenom,
+          accessToken: token,
+          refreshToken: refreshToken,
+        });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
     });
+};
+
+exports.refreshToken = async (req, res) => {
+  const { refreshToken: requestToken } = req.body;
+  if (requestToken == null) {
+    return res.status(403).json({ message: "Refresh Token is required!" });
+  }
+  try {
+    let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
+    console.log(refreshToken)
+    if (!refreshToken) {
+      res.status(403).json({ message: "Refresh token is not in database!" });
+      return;
+    }
+    if (RefreshToken.verifyExpiration(refreshToken)) {
+      RefreshToken.destroy({ where: { id_refreshToken: refreshToken.id_refreshToken } });
+      
+      res.status(403).json({
+        message: "Refresh token was expired. Please make a new signin request",
+      });
+      return;
+    }
+    const user = await refreshToken.getUser();
+    let newAccessToken = jwt.sign({ id: user.id_membre }, config.secret, {
+      expiresIn: config.jwtExpiration,
+    });
+    return res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: refreshToken.token,
+    });
+  } catch (err) {
+    return res.status(500).send({ message: err });
+  }
 };
