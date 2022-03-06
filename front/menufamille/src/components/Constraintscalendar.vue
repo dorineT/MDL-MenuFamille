@@ -289,12 +289,11 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    disabledChoixAutomatique(){
-      this.disabledChoixMenuAutomatique = ! this.disabledChoixMenuAutomatique
-
+    disabledChoixAutomatique(){      
       if(!this.disabledChoixMenuAutomatique){
         this.choixMenuAutomatique = 'null'
       }
+      this.disabledChoixMenuAutomatique = ! this.disabledChoixMenuAutomatique
     }
   },
   computed: {
