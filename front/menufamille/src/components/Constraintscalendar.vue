@@ -300,12 +300,23 @@
 			//
 		},
 		watch: {
-			//
+      computedDateFormattedDebut(){
+        if (this.choixPeriode === "semaine" & this.dateDebut != "") {
+          let date = new Date(this.dateDebut);
+          // add 7 days
+          let newDate = new Date()
+          newDate = this.addDays(date,6)
+
+          let month = newDate.getMonth() + 1 ;
+          let day = newDate.getDate()
+          let year = newDate.getFullYear();
+          this.dateFin = year + "-" + month + "-" + day				
+        }
+      }
 		},
 		methods: {
 			formatDate(date) {
-				if (!date) return null;
-        console.log(date + ' date format')
+				if (!date) return null;       
 				const [year, month, day] = date.split("-");
 				return `${day}/${month}/${year}`;
 			},
@@ -323,25 +334,6 @@
 		},
 		computed: {
 			computedDateFormattedDebut() {
-				if ((this.choixPeriode === "semaine") & (this.dateDebut != "")) {
-					let date = new Date(this.dateDebut);
-					// add 7 days
-          let newDate = new Date()
-					newDate = this.addDays(date,6)
-
-					console.log("new date " + newDate);
-
-					let month = newDate.getMonth() + 1 ;
-					let day = newDate.getDate()
-					let year = newDate.getFullYear();
-
-          let dateFin = year + "-" + month + "-" + day
-          console.log(dateFin)
-
-          this.dateFin = dateFin
-					
-				}
-				this.computedDateFormattedFin;
 				return this.formatDate(this.dateDebut);
 			},
 			computedDateFormattedFin() {
