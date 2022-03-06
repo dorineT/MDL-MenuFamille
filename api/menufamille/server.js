@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const mountRoutes = require('./app/routes')
 const app = express()
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8080"
 };
 
 const db = require("./app/db/models");
