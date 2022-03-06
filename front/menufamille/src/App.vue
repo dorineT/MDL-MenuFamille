@@ -32,7 +32,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#FFB74D" >
+    <v-app-bar app color="#FFB74D"  v-if="loggedIn">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Menu famille</v-toolbar-title>
@@ -48,7 +48,10 @@
 
 export default {
   name: 'App',
-  data: () => ({ drawer: false }),
+  data: () => ({ 
+    drawer: false,
+    loggedIn:false,  }
+  ),
 };
 </script>
 
