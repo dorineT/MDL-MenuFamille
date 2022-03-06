@@ -29,7 +29,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.Plat !=='/'">{{ item.Plat }} </p>
                     <p v-else style="color: red">X</p>                      
                   </v-btn>                     
                 <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
@@ -38,7 +39,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.Plat!=='/'">{{ item.Plat }} </p>
                     <p v-else style="color: red">X</p>                                        
                 </v-btn>               
                 <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
@@ -47,7 +49,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                  <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                  <p v-else-if="item.Plat!=='/'">{{ item.Plat }} </p>
                   <p v-else style="color: red">X</p>
                 </v-btn> 
                 <p v-if="item.NbPers!==null">{{item.NbPers }} personnes </p>  
@@ -82,7 +85,7 @@ export default {
               id:10,
               jour: 'Lundi',
               date: '21/02',
-              Matin: '',
+              Matin: '/',
               MatinNbPers:null,
               Midi: '',
               MidiNbPers: null,
@@ -104,11 +107,11 @@ export default {
               id:12,
               jour: 'Mercredi',
               date: '23/02',
-              Matin: '',
+              Matin: '/',
               MatinNbPers:null,
-              Midi: '',
+              Midi: '/',
               MidiNbPers: null,
-              Soir: '',
+              Soir: '/',
               SoirNbPers: null,
             },
             {
@@ -233,7 +236,7 @@ export default {
         this.fillPlat(this.items,iStart,iEnd)
       },
 
-      /// UPDATE CALENDRIER ////
+      /// UPDATE CALENDRIER  à corriger////
 
       updateMenuJour(menuJour, periode){
         console.log(menuJour)
