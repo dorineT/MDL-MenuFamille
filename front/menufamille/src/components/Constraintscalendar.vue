@@ -46,7 +46,7 @@
 									prepend-icon="mdi-calendar"
 									readonly
 									v-bind="attrs"
-									v-on="on"
+									v-on="on"              
 								></v-text-field>
 							</template>
 							<v-date-picker
@@ -84,7 +84,7 @@
 									prepend-icon="mdi-calendar"
 									readonly
 									v-bind="attrs"
-									v-on="on"
+									v-on="on"                
 								></v-text-field>
 							</template>
 							<v-date-picker
@@ -312,7 +312,7 @@
           let year = newDate.getFullYear();
           this.dateFin = year + "-" + month + "-" + day				
         }
-      }
+      },
 		},
 		methods: {
 			formatDate(date) {
@@ -330,6 +330,16 @@
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
+      },
+      checkDate(){
+        console.log("hello")
+        if(this.dateDebut != "" & this.dateFin != "" && this.choixPeriode === 'personalise'){
+          let debut = new Date(this.dateDebut)
+          let fin = new Date(this.dateFin)
+
+          console.log(' debut ' + debut.getTime())
+          console.log(' fin ' + fin.getTime())
+        }
       }
 		},
 		computed: {
