@@ -92,3 +92,7 @@ exports.DeleteFamillyMember = (req, res) => {
       });
   });
 };
+
+exports.parentBoard = (req, res) => {
+  res.status(200).send("Parent content.");
+};

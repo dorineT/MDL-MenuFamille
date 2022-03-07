@@ -1,6 +1,7 @@
 // ./routes/index.js
 const type = require('./type.js')
 const user = require('./user.js')
+const famille = require('./famille')
 const swaggerUi = require('swagger-ui-express'),
 swaggerDocument = require('../../swagger.json');
 module.exports = app => {
@@ -11,5 +12,6 @@ module.exports = app => {
   );
   app.use('/type', type)
   app.use('/user', user)
+  app.use('/family', famille)
   // etc..
 }

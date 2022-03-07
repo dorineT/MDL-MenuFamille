@@ -49,6 +49,7 @@ CREATE TABLE REFRESH_TOKEN (
 CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
+                                role VARCHAR NOT NULL,
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
