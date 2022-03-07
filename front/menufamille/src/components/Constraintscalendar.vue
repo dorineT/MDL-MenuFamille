@@ -14,15 +14,16 @@
 						@change="
 							() => {
 								textFieldDisabled = false;
-								textFieldFinDisabled = false;
+								textFieldFinDisabled = false;								
 							}
-						"
+						"					
 						required
+						:rules="ruleRadioButton"
 					>
 						<v-radio
 							label="semaine"
 							value="semaine"
-							@click="textFieldFinDisabled = true"
+							@click="changeValueSemaine"
 						></v-radio>
 						<v-radio
 							label="personnalisé"
@@ -52,6 +53,7 @@
 									v-bind="attrs"
 									v-on="on"
 									required
+									:rules="[checkDateDebut]"
 								></v-text-field>
 							</template>
 							<v-date-picker
@@ -60,6 +62,7 @@
 								scrollable
 								locale="fr"
 								:first-day-of-week="1"
+								:min="minDateToday"
 							>
 								<v-spacer></v-spacer>
 								<v-btn text color="green" @click="menu = false">
@@ -91,6 +94,7 @@
 									v-bind="attrs"
 									v-on="on"
 									required
+									:rules="[checkDateFin]"
 								></v-text-field>
 							</template>
 							<v-date-picker
@@ -99,6 +103,7 @@
 								scrollabe
 								locale="fr"
 								:first-day-of-week="1"
+								:min="minDateToday"
 							>
 								<v-spacer></v-spacer>
 								<v-btn text color="green" @click="menu2 = false">
@@ -250,6 +255,7 @@
 						row
 						@change="disabledChoixAutomatique"
 						required
+						:rules="ruleRadioButton"
 					>
 						<v-radio label="Manuel (mode suggestion)" value="manuel"></v-radio>
 						<v-radio label="Automatique" value="automatique"></v-radio>
@@ -286,8 +292,8 @@
 					choixPeriode: null,
 					choixTypeMenu: "manuel",
 					choixMenuAutomatique: null,
-					dateDebut: "",
-					dateFin: "",
+					dateDebut: null,
+					dateFin: null,
 					tagsMatin: null,
 					tagsMidi: null,
 					tagsSoir: null,
@@ -299,11 +305,14 @@
 				menu: false,
 				menu2: false,
 				disabledChoixMenuAutomatique: true,
-				tagsListe: ["sel", "sucre", "lunch"],
+				tagsListe: ["sel", "sucre", "lunch"],			
 
 				nbPlatRule: [
 					v => !!v || 'Champ requis',
 					v => (v && v > 0) || 'Chiffre supérieur à 0',
+				],
+				ruleRadioButton: [
+					v => !!v || 'Champ requis'
 				],
 
 			};
@@ -316,18 +325,18 @@
 		},
 		watch: {
 			computedDateFormattedDebut() {
-				if ((this.form.choixPeriode === "semaine") & (this.form.dateDebut != "")) {
+				if ((this.form.choixPeriode === "semaine") & (this.form.dateDebut != null)) {
 					let date = new Date(this.form.dateDebut);
 					// add 7 days
 					let newDate = new Date();
 					newDate = this.addDays(date, 6);
 
-					let month = newDate.getMonth() + 1;
-					let day = newDate.getDate();
+					let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
+					let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
 					let year = newDate.getFullYear();
 					this.form.dateFin = year + "-" + month + "-" + day;
 				}
-			},
+			}
 		},
 		methods: {
 			formatDate(date) {
@@ -346,18 +355,43 @@
 				result.setDate(result.getDate() + days);
 				return result;
 			},
-			checkDate() {
-				console.log("hello");
+			checkDateDebut(){
+				if(this.form.dateDebut === null) return 'Champs requis'
+				return this.checkDate()
+			},
+			checkDateFin(){
+				if(this.form.dateFin === null) return 'Champs requis'
+				return this.checkDate()
+			},
+			checkDate() {						
 				if (
-					(this.form.dateDebut != "") & (this.dateFin != "") &&
-					this.form.choixPeriode === "personalise"
+					(this.form.dateDebut != null & this.form.dateFin != null &
+					this.form.choixPeriode === "personalise")
 				) {
+					console.log("check date")
 					let debut = new Date(this.form.dateDebut);
 					let fin = new Date(this.form.dateFin);
-
-					console.log(" debut " + debut.getTime());
-					console.log(" fin " + fin.getTime());
+					if(debut > fin) return 'Date de fin inférieure à la date de début'
+					console.log(debut.getTime())
+					console.log(fin.getTime())
+					if(debut.getTime() === fin.getTime()) return 'Veuillez entrez une période de plus d\'un jour'
 				}
+				return true
+			},
+			changeValueSemaine(){			
+				if(this.form.dateDebut != null){
+					let date = new Date(this.form.dateDebut);
+					// add 7 days
+					let newDate = new Date();
+					newDate = this.addDays(date, 6);
+
+					let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
+					let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
+					let year = newDate.getFullYear();
+					this.form.dateFin = year + "-" + month + "-" + day;
+				}
+
+				this.textFieldFinDisabled = true
 			},
 			validateForm() {
 				console.log("validate");		
@@ -374,6 +408,14 @@
 			computedDateFormattedFin() {
 				return this.formatDate(this.form.dateFin);
 			},
+			minDateToday(){
+				let newDate = new Date();			
+				let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
+				let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
+				let year = newDate.getFullYear();
+				console.log(year + "-" + month + "-" + day)
+				return year + "-" + month + "-" + day;
+			}
 		},
 	};
 </script>
