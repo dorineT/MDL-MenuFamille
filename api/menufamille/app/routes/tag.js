@@ -1,5 +1,5 @@
 const Router = require('express-promise-router')
-const type = require("../db/controller/type.controller.js");
+const tag = require("../db/controller/tag.controller.js");
 
 
 // create a new express-promise-router
@@ -9,11 +9,11 @@ const router = new Router()
 module.exports = router
 
 
-    // Retrieve all Types
-router.get('/', type.findAll);
+    // Retrieve all Calender
+router.get('/', tag.findAll);
 
-router.post('/PutType', type.PutType);
+router.post('/PutTag', tag.PutTag);
 
-router.update('/UpdateType/:id', type.UpdateType);
+router.update('/UpdateTag/:id', tag.UpdateTag);
 
-router.delete('/DeleteType/:id', type.DeleteType);
+router.delete('/DeleteTag/:id', tag.Deletetag);

@@ -1,5 +1,5 @@
 const Router = require('express-promise-router')
-const type = require("../db/controller/type.controller.js");
+const denree = require("../db/controller/denree.controller.js");
 
 
 // create a new express-promise-router
@@ -10,10 +10,10 @@ module.exports = router
 
 
     // Retrieve all Types
-router.get('/', type.findAll);
+router.get('/', denree.findAll);
 
-router.post('/PutType', type.PutType);
+router.post('/PutDenree', denree.PutDenree);
 
-router.update('/UpdateType/:id', type.UpdateType);
+router.update('/UpdateDenree/:id', denree.UpdateDenree);
 
-router.delete('/DeleteType/:id', type.DeleteType);
+router.delete('/DeleteDenree/:id', denree.DeleteDenree);

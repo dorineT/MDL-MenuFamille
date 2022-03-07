@@ -62,7 +62,7 @@ exports.UpdateMenu = (req, res) => {
 
 /// Delete CRUD 
 
-exports.UpdateMenu = (req, res) => {
+exports.DeleteMenu = (req, res) => {
   const id = req.params.id;
     Menu.destroy({
       where: {id_menu: id}

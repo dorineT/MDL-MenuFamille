@@ -9,6 +9,18 @@ const router = new Router()
 module.exports = router
 
 
-/** TODO complete */
-// Retrieve all Types 
-// router.get("/", recette.findAll);
+
+// Retrieve all Recipes 
+router.get("/", recette.findAll);
+
+router.post('/PutRecipe', recette.PutRecipe);
+
+router.update('/UpdateRecipe/:id', recette.UpdateRecipe);
+
+router.delete('/DeleteRecipe/:id', recette.DeleteRecipe);
+
+router.get('/FindWithTags', recette.find_All_Tags);
+
+router.get('/FindRecipe/:id', recette.find_Recipe);
+
+router.get('/FindFromTags', recette.find_Recipe_tags);
