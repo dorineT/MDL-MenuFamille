@@ -54,6 +54,7 @@ the Sequelize should be okay but need testing too */
 const { recette } = require("../models");
 const db = require("../models");
 const Recipe = db.recette;
+const Tag = db.tag;
 const Op = db.Sequelize.Op;
 
 /// GetAllRecipes Simple for CRUD
@@ -139,7 +140,7 @@ exports.DeleteRecipe = (req, res) => {
 
 /// GetAllRecipes with tags
 
- exports.findAllTags = (req, res) => {
+ exports.find_All_Tags = (req, res) => {
     Recipe.findAll({ include: recette_tags })
     .then(data => {
       res.send(data);
@@ -154,8 +155,8 @@ exports.DeleteRecipe = (req, res) => {
 
 /// Chercher une recette
 
-exports.findRecipe = (req, res) => {
-    Recipe.findByPk(req.params.id_recette, { include: recette_tags, recette_categories, recette_denree})
+exports.find_Recipe = (req, res) => {
+    Recipe.findByPk(req.params.id_recette, { include: recette_tags, categorie, denree})
     .then(data => {
         res.send(data)
     })
@@ -166,3 +167,40 @@ exports.findRecipe = (req, res) => {
         });
       });  
 };
+
+/// envoyer les recettes (nom et id seulement, pas besoin de plus) qui matchent les tags globaux du menu ou les tags precis du calendrier jour)
+
+exports.find_Recipe_tags = (req, res) => {
+  const tags = req.body.tag;
+  let datas = null;
+  let tmp = [];
+  tags.forEach(tag => {
+    Tag.findAll({
+      where:  {
+        nom: tag
+      },attributes: {
+      exclude: 
+            ["nom", "id_tag"]
+      },include: 
+            {model: "recette", attributes: ["id_recette", "nom"]
+      },include: 
+            {model: "recette_tags", attributes: {
+                                                  exclude: ["id_recette", "id_tags"]
+                                                }
+      }
+    }).then(data_big => {
+      if(datas == null){
+        datas = data_big;
+      }else {
+        datas.forEach(data => {
+          if (data_big.include(data)){
+            tmp.push(data);
+          }
+        });
+        datas = tmp;
+        tmp = [];
+      }
+    })
+  })
+  .then(res.send(datas));
+}
