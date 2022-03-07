@@ -1,11 +1,15 @@
 <template>
 	<div>
 		<v-card>
-			<v-form>
+			<v-form
+				ref="form"
+				v-model="valid"
+				lazy-validation
+			>
 				<h3>Période :</h3>
 				<v-container class="px-0" fluid>
 					<v-radio-group
-						v-model="choixPeriode"
+						v-model="form.choixPeriode"
 						row
 						@change="
 							() => {
@@ -13,6 +17,7 @@
 								textFieldFinDisabled = false;
 							}
 						"
+						required
 					>
 						<v-radio
 							label="semaine"
@@ -32,8 +37,7 @@
 						<v-menu
 							ref="menu"
 							v-model="menu"
-							:close-on-content-click="false"
-							:return-value.sync="dateDebut"
+							:close-on-content-click="false"						
 							transition="scale-transition"
 							offset-y
 							min-width="auto"
@@ -46,11 +50,12 @@
 									prepend-icon="mdi-calendar"
 									readonly
 									v-bind="attrs"
-									v-on="on"              
+									v-on="on"
+									required
 								></v-text-field>
 							</template>
 							<v-date-picker
-								v-model="dateDebut"
+								v-model="form.dateDebut"
 								no-title
 								scrollable
 								locale="fr"
@@ -60,7 +65,7 @@
 								<v-btn text color="green" @click="menu = false">
 									Annuler
 								</v-btn>
-								<v-btn text color="green" @click="$refs.menu.save(dateDebut)">
+								<v-btn text color="green" @click="$refs.menu.save(form.dateDebut)">
 									OK
 								</v-btn>
 							</v-date-picker>
@@ -84,11 +89,12 @@
 									prepend-icon="mdi-calendar"
 									readonly
 									v-bind="attrs"
-									v-on="on"                
+									v-on="on"
+									required
 								></v-text-field>
 							</template>
 							<v-date-picker
-								v-model="dateFin"
+								v-model="form.dateFin"
 								no-title
 								scrollabe
 								locale="fr"
@@ -98,7 +104,7 @@
 								<v-btn text color="green" @click="menu2 = false">
 									Annuler
 								</v-btn>
-								<v-btn text color="green" @click="$refs.menu2.save(dateFin)">
+								<v-btn text color="green" @click="$refs.menu2.save(form.dateFin)">
 									OK
 								</v-btn>
 							</v-date-picker>
@@ -108,11 +114,11 @@
 				</v-row>
 
 				<br />
-				<v-checkbox v-model="matinCheck" label="Matin"></v-checkbox>
+				<v-checkbox v-model="form.matinCheck" label="Matin"></v-checkbox>
 
-				<v-checkbox v-model="midiCheck" label="Midi"></v-checkbox>
+				<v-checkbox v-model="form.midiCheck" label="Midi"></v-checkbox>
 
-				<v-checkbox v-model="soirCheck" label=" Soir"></v-checkbox>
+				<v-checkbox v-model="form.soirCheck" label=" Soir"></v-checkbox>
 				<br />
 
 				<v-container grid-list-xl fluid>
@@ -124,8 +130,9 @@
 								step="any"
 								min="0"
 								ref="input"
-								:rules="[numberRule2]"
-								v-model.number="nbPersonnes"
+								:rules="nbPlatRule"
+								v-model.number="form.nbPersonnes"
+								required
 							></v-text-field>
 						</v-col>
 					</v-row>
@@ -145,8 +152,9 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="[numberRule2]"
-										v-model.number="nbPlatMatin"
+										:rules="nbPlatRule"
+										v-model.number="form.nbPlatMatin"
+										required
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
@@ -158,7 +166,7 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
-										v-model="tagsMatin"
+										v-model="form.tagsMatin"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
 									></v-autocomplete>
@@ -177,8 +185,9 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="[numberRule2]"
-										v-model.number="nbPlatMidi"
+										:rules="nbPlatRule"
+										v-model.number="form.nbPlatMidi"
+										required
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
@@ -190,7 +199,7 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
-										v-model="tagsMidi"
+										v-model="form.tagsMidi"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
 									></v-autocomplete>
@@ -210,8 +219,9 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="[numberRule2]"
-										v-model.number="nbPlatSoir"
+										:rules="nbPlatRule"
+										v-model.number="form.nbPlatSoir"
+										required
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
@@ -223,7 +233,7 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
-										v-model="tagsSoir"
+										v-model="form.tagsSoir"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
 									></v-autocomplete>
@@ -236,16 +246,17 @@
 				<v-container class="px-0" fluid>
 					<h3>Type de menu :</h3>
 					<v-radio-group
-						v-model="choixTypeMenu"
+						v-model="form.choixTypeMenu"
 						row
 						@change="disabledChoixAutomatique"
+						required
 					>
 						<v-radio label="Manuel (mode suggestion)" value="manuel"></v-radio>
 						<v-radio label="Automatique" value="automatique"></v-radio>
 					</v-radio-group>
 					<br />
 					<v-radio-group
-						v-model="choixMenuAutomatique"
+						v-model="form.choixMenuAutomatique"
 						row
 						:disabled="disabledChoixMenuAutomatique"
 					>
@@ -259,95 +270,109 @@
 </template>
 
 <script>
+	import { eventBus } from "../main";
 	export default {
 		name: "ConstraintCalendar",
 		data() {
 			return {
-				matinCheck: false,
-				midiCheck: false,
-				soirCheck: false,
-				complete: false,
-				nbPersonnes: null,
-				nbPlatMatin: null,
-				nbPlatMidi: null,
-				nbPlatSoir: null,
-				choixPeriode: null,
+				form:{
+					matinCheck: false,
+					midiCheck: false,
+					soirCheck: false,		
+					nbPersonnes: null,
+					nbPlatMatin: null,
+					nbPlatMidi: null,
+					nbPlatSoir: null,
+					choixPeriode: null,
+					choixTypeMenu: "manuel",
+					choixMenuAutomatique: null,
+					dateDebut: "",
+					dateFin: "",
+					tagsMatin: null,
+					tagsMidi: null,
+					tagsSoir: null,
+				},
+
+				valid: true,
 				textFieldDisabled: true,
 				textFieldFinDisabled: false,
-				choixTypeMenu: "manuel",
-				choixMenuAutomatique: null,
 				menu: false,
-				dateDebut: "",
-				dateFin: "",
 				menu2: false,
 				disabledChoixMenuAutomatique: true,
 				tagsListe: ["sel", "sucre", "lunch"],
-				tagsMatin: null,
-				tagsMidi: null,
-				tagsSoir: null,
 
-				numberRule1: (val) => {
-					if (val < 0) return "Entrez un nombre positif";
-					return true;
-				},
-				numberRule2: (val) => {
-					if (val < 0) return "Entrez un nombre positif";
-					return true;
-				},
+				nbPlatRule: [
+					v => !!v || 'Champ requis',
+					v => (v && v > 0) || 'Chiffre supérieur à 0',
+				],
+
 			};
 		},
 		mounted() {
 			//
 		},
+		created() {
+			eventBus.$on('validateFormContrainte', this.validateForm);
+		},
 		watch: {
-      computedDateFormattedDebut(){
-        if (this.choixPeriode === "semaine" & this.dateDebut != "") {
-          let date = new Date(this.dateDebut);
-          // add 7 days
-          let newDate = new Date()
-          newDate = this.addDays(date,6)
+			computedDateFormattedDebut() {
+				if ((this.form.choixPeriode === "semaine") & (this.form.dateDebut != "")) {
+					let date = new Date(this.form.dateDebut);
+					// add 7 days
+					let newDate = new Date();
+					newDate = this.addDays(date, 6);
 
-          let month = newDate.getMonth() + 1 ;
-          let day = newDate.getDate()
-          let year = newDate.getFullYear();
-          this.dateFin = year + "-" + month + "-" + day				
-        }
-      },
+					let month = newDate.getMonth() + 1;
+					let day = newDate.getDate();
+					let year = newDate.getFullYear();
+					this.form.dateFin = year + "-" + month + "-" + day;
+				}
+			},
 		},
 		methods: {
 			formatDate(date) {
-				if (!date) return null;       
+				if (!date) return null;
 				const [year, month, day] = date.split("-");
 				return `${day}/${month}/${year}`;
 			},
 			disabledChoixAutomatique() {
 				if (!this.disabledChoixMenuAutomatique) {
-					this.choixMenuAutomatique = "null";
+					this.form.choixMenuAutomatique = "null";
 				}
 				this.disabledChoixMenuAutomatique = !this.disabledChoixMenuAutomatique;
 			},
-      addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-      },
-      checkDate(){
-        console.log("hello")
-        if(this.dateDebut != "" & this.dateFin != "" && this.choixPeriode === 'personalise'){
-          let debut = new Date(this.dateDebut)
-          let fin = new Date(this.dateFin)
+			addDays(date, days) {
+				var result = new Date(date);
+				result.setDate(result.getDate() + days);
+				return result;
+			},
+			checkDate() {
+				console.log("hello");
+				if (
+					(this.form.dateDebut != "") & (this.dateFin != "") &&
+					this.form.choixPeriode === "personalise"
+				) {
+					let debut = new Date(this.form.dateDebut);
+					let fin = new Date(this.form.dateFin);
 
-          console.log(' debut ' + debut.getTime())
-          console.log(' fin ' + fin.getTime())
-        }
-      }
+					console.log(" debut " + debut.getTime());
+					console.log(" fin " + fin.getTime());
+				}
+			},
+			validateForm() {
+				console.log("validate");		
+				if(this.$refs.form.validate()){
+					eventBus.$emit('formValideOK')
+				}
+
+			},
 		},
 		computed: {
 			computedDateFormattedDebut() {
-				return this.formatDate(this.dateDebut);
+				return this.formatDate(this.form.dateDebut);
 			},
 			computedDateFormattedFin() {
-				return this.formatDate(this.dateFin);
+				return this.formatDate(this.form.dateFin);
 			},
 		},
 	};

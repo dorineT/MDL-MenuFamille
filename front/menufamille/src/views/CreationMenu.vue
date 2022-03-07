@@ -14,13 +14,14 @@
       </v-stepper-header>
 
       <v-stepper-items>
-        <v-stepper-content step="1">
-          <Constraintscalendar/>
+        <v-stepper-content step="1">         
+            <Constraintscalendar></Constraintscalendar>
           
-          <div class="flexDroite">
-            <v-btn text > Retour </v-btn>
-            <v-btn color="#9CCC65" @click="e1 = 2"> Continue </v-btn>    
-          </div>        
+            <div class="flexDroite">
+              <v-btn text > Retour </v-btn>
+              <v-btn color="#9CCC65" @click="submit"> Continue </v-btn>    
+            </div>  
+          
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -38,7 +39,7 @@
 <script>
 import Constraintscalendar from "../components/Constraintscalendar";
 import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
-
+import {eventBus } from '../main'
 export default {
   name: "CreationMenu",
 
@@ -48,9 +49,21 @@ export default {
   },
 
   data(){
-    return{
+    return{    
       e1: 1,
       step: 1,
+      form: null
+    }
+  },
+  created(){
+    eventBus.$on('formValideOK', this.stepAvance)
+  },
+  methods: {
+    submit() {
+      eventBus.$emit('validateFormContrainte')
+    },
+    stepAvance(){
+      this.e1 = 2
     }
   }
 };
