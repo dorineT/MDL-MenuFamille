@@ -1,5 +1,8 @@
 <template>
    <v-container fluid>
+
+    <dialogue-modification-jour-plat :stringUpdateModal="'updateMenuJourCreate'"></dialogue-modification-jour-plat>
+
     <v-stepper v-model="e1" alt-labels>
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1" color="#9CCC65">
@@ -38,14 +41,16 @@
 
 <script>
 import Constraintscalendar from "../components/Constraintscalendar";
-//import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
+import DialogueModificationJourPlat from '../components/DialogModificationJourPlat.vue'
+import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
 import {eventBus } from '../main'
 export default {
   name: "CreationMenu",
 
   components: {
     Constraintscalendar,
-    CalendarConstraintDayDay: () => import('../components/CalendarConstraintDayDay')
+    CalendarConstraintDayDay,//: () => import('../components/CalendarConstraintDayDay'),
+    DialogueModificationJourPlat
   },
 
   data(){
@@ -62,7 +67,7 @@ export default {
   methods: {
     submit() {
       eventBus.$emit('validateFormContrainte')
-      this.keyConstraintDay += 1
+      //this.keyConstraintDay += 1 // force le refresh du composant calendrier
     },
     stepAvance(dataForm){  
       this.form = dataForm

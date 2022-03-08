@@ -2,7 +2,7 @@
     <v-card       
         class="cardmarginModification"
     >
-      <dialogue-modification-jour-plat></dialogue-modification-jour-plat>
+      <dialogue-modification-jour-plat :stringUpdateModal="'updateMenuJour'"></dialogue-modification-jour-plat>
 
       <calendar-modification-menu
         :periodeMenu="periode"

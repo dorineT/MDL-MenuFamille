@@ -97,6 +97,7 @@
 </template>
 
 <script>
+	import { eventBus } from "../main";
 	export default {
 		props: ["formData"],
 		data() {
@@ -109,6 +110,7 @@
 				platsMidi: [],
 				platsSoir: [],
 				jours: [],
+				items: [],				
 			};
 		},
 		mounted() {
@@ -120,9 +122,18 @@
 				this.fillPlat(0, indiceEnd);
 			}
 		},
+		created() {
+			console.log('created days days')
+			//if(!this.alreadyAbonne){
+				console.log('abonnement')
+				eventBus.$on('updateMenuJourCreate', this.updateMenuJourCreate)				
+			//}			
+		},
 		methods: {
 			goToRecette(item, periode) {
 				console.log("recette click" + item + " " + periode);
+				let menuFind = this.items.find((el) => el.id === item.id);
+				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
 			},
 			//rempli un tableau contenant des dates en fonction de la periode définie
 			populateTabJours() {
@@ -179,9 +190,6 @@
 				this.platsMidi = [];
 				this.platsSoir = [];
 
-				let i = iStart + iEnd;
-				let j = iEnd + iEnd;
-
 				while ((iStart < iEnd) & (iStart < this.jours.length)) {
 					this.platsMatin.push({
 						id: iStart,
@@ -191,17 +199,41 @@
 					});
 
 					this.platsMidi.push({
-						id: i,
+						id: iStart,
 						Plat: this.formData.midiCheck ? null : "/",
 						NbPers: this.formData.nbPersonnes,
 						Tags: this.formData.tagsMidi,
 					});
 
 					this.platsSoir.push({
-						id: j,
+						id: iStart,
 						Plat: this.formData.soirCheck ? null : "/",
 						NbPers: this.formData.nbPersonnes,
 						Tags: this.formData.tagsSoir,
+					});
+
+					let month =
+						this.jours[iStart].getMonth() < 10
+							? "0" + (this.jours[iStart].getMonth() + 1)
+							: this.jours[iStart].getMonth() + 1;
+					let day =
+						this.jours[iStart].getDate() < 10
+							? "0" + this.jours[iStart].getDate()
+							: this.jours[iStart].getDate();
+
+					this.items.push({
+						id: iStart,
+						jour: this.getNameOfDay(this.jours[iStart].getDay()),
+						date: day + "/" + month,
+						Matin: this.formData.matinCheck ? null : "/",
+						MatinNbPers: this.formData.nbPersonnes,
+						TagsMatin: this.formData.tagsMatin,
+						Midi: this.formData.midiCheck ? null : "/",
+						MidiNbPers: this.formData.nbPersonnes,
+						TagsMidi: this.formData.tagsMidi,
+						Soir: this.formData.soirCheck ? null : "/",
+						SoirNbPers: this.formData.nbPersonnes,
+						TagsSoir: this.formData.tagsSoir,
 					});
 
 					iStart++;
@@ -227,6 +259,38 @@
 				let iEnd = newPage * 7;
 				this.populateHeader(iStart, iEnd);
 				this.fillPlat(iStart, iEnd);
+			},
+
+			/// UPDATE
+			updateMenuJourCreate(item, periode) {
+				console.log("update calendrier configuration " + periode);				
+
+				let menuJourOld = this.items.find((elem) => elem.id === item.id);			
+
+				console.log(menuJourOld)
+/*
+				let newTags = [];
+				item.TagsChoix.forEach((el) => {
+					newTags.push(el);
+				});
+
+				if (periode === "matin") {
+					menuJourOld.Matin = item.Plat;
+					menuJourOld.MatinNbPers = item.NbPers;
+					menuJourOld.TagsMatin = newTags;
+				} else if (periode === "midi") {		
+					menuJourOld.Midi = item.Plat;
+					menuJourOld.MidiNbPers = item.NbPers;
+					menuJourOld.TagsMidi = newTags;
+				} else if (periode === "soir") {
+					menuJourOld.Soir = item.Plat;
+					menuJourOld.SoirNbPers = item.NbPers;
+					menuJourOld.TagsSoir = newTags;
+				}
+
+				let iStart = (this.page - 1) * 7;
+				let iEnd = this.page * 7;
+				this.fillPlat(iStart, iEnd);*/
 			},
 		},
 	};

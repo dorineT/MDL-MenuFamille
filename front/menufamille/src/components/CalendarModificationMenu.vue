@@ -88,7 +88,10 @@ export default {
               Midi: 'croque-monsieur',
               MidiNbPers: null,
               Soir: 'pain',
-              SoirNbPers: null
+              SoirNbPers: null,
+              TagsMatin:[],
+              TagsMidi: [],
+              TagsSoir: []
             },
             {
               id:11,
@@ -100,6 +103,9 @@ export default {
               MidiNbPers: null,
               Soir: 'lasagne',
               SoirNbPers: null,
+              TagsMatin:[],
+              TagsMidi: [],
+              TagsSoir: []
             },
             {
               id:12,
@@ -111,6 +117,9 @@ export default {
               MidiNbPers: null,
               Soir: 'canard',
               SoirNbPers: null,
+              TagsMatin:[],
+              TagsMidi: [],
+              TagsSoir: []
             },
             {
               id:13,
@@ -122,6 +131,9 @@ export default {
               MidiNbPers: null,
               Soir: 'pain',            
               SoirNbPers: null,
+              TagsMatin:[],
+              TagsMidi: [],
+              TagsSoir: []
             },
             {
               id:14,
@@ -133,11 +145,14 @@ export default {
               MidiNbPers: null,
               Soir: 'frites',
               SoirNbPers: null,
+              TagsMatin:['sucre'],
+              TagsMidi: ['sel'],
+              TagsSoir: []
             }
           ],
           dateDebut: '21/02/2022',
           dateFin: '25/02/2022',
-          verrou: true            
+          verrou: false            
         },
         items: [],
         pageCount: 0,
@@ -164,8 +179,11 @@ export default {
       //// Affichage calendrier ///
       goToRecette(item,periode){
           console.log('click recette calendar ' + periode)
+
+
+          let menuFind = this.items.find(el => el.id === item.id)
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode, this.items)
+          eventBus.$emit('openDialog', item, periode, menuFind.jour, menuFind.date)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -195,19 +213,22 @@ export default {
           this.platsMatin.push({
             id: jourPlat.id,
             Plat: jourPlat.Matin,
-            NbPers: jourPlat.MatinNbPers
+            NbPers: jourPlat.MatinNbPers,
+            Tags: jourPlat.TagsMatin
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
             Plat: jourPlat.Midi,
-            NbPers: jourPlat.MidiNbPers
+            NbPers: jourPlat.MidiNbPers,
+            Tags: jourPlat.TagsMidi
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
             Plat: jourPlat.Soir,
-            NbPers: jourPlat.SoirNbPers
+            NbPers: jourPlat.SoirNbPers,
+            Tags: jourPlat.TagsSoir
           })
 
           iStart++
@@ -243,19 +264,27 @@ export default {
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
         console.log('menu trouve ' + menuJourOld)
 
+        let newTags = []
+        menuJour.TagsChoix.forEach(el => {
+          newTags.push(el)
+        });
+
         if(periode === 'matin'){
           menuJourOld.Matin = menuJour.Plat
           menuJourOld.MatinNbPers = menuJour.NbPers
+          menuJourOld.TagsMatin = newTags 
         }
         else if(periode === 'midi'){
           console.log('midi up')
           console.log(this.menu.plats)
           menuJourOld.Midi = menuJour.Plat
           menuJourOld.MidiNbPers = menuJour.NbPers
+          menuJourOld.TagsMidi = newTags 
         }
         else if(periode === 'soir'){
           menuJourOld.Soir = menuJour.Plat
           menuJourOld.SoirNbPers = menuJour.NbPers
+          menuJourOld.TagsSoir = newTags 
         }
 
         let iStart = (this.page-1) * 7
