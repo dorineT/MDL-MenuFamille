@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Types
 router.get('/', type.findAll);
 
-router.post('/PutType', type.PutType);
+router.put('/PutType', type.PutType);
 
-router.update('/UpdateType/:id', type.UpdateType);
+router.post('/UpdateType/:id', type.UpdateType);
 
 router.delete('/DeleteType/:id', type.DeleteType);
