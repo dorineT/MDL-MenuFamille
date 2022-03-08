@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import MenuModification from '../views/MenuModification.vue'
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,7 @@ const routes = [
   {
     path: '/menuModification',
     name: 'MenuModification',
-    component: () => import( '../views/MenuModification.vue'),
+    component: MenuModification,
     props: true
   },
   {
