@@ -34,7 +34,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'matin')">
 									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === null" style="color: green">
+									<p v-else-if="item.Plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
 									<p v-else>{{ item.Plat }}</p>
@@ -52,7 +52,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'midi')">
 									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === null" style="color: green">
+									<p v-else-if="item.Plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
 									<p v-else>{{ item.Plat }}</p>
@@ -70,7 +70,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'soir')">
 									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === null" style="color: green">
+									<p v-else-if="item.Plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
 									<p v-else>{{ item.Plat }}</p>
@@ -99,7 +99,6 @@
 <script>
 	import { eventBus } from "../main";
 	export default {
-		props: ["formData"],
 		data() {
 			return {
 				headers: [],
@@ -110,30 +109,36 @@
 				platsMidi: [],
 				platsSoir: [],
 				jours: [],
-				items: [],				
+				items: [],
+				formData: {},
 			};
 		},
-		mounted() {
-			if (this.formData != null) {
-				this.populateTabJours();
 
-				let indiceEnd = this.jours.length < 7 ? this.jours.length : 7;
-				this.populateHeader(0, indiceEnd);
-				this.fillPlat(0, indiceEnd);
-			}
-		},
 		created() {
-			console.log('created days days')
+			console.log("created days days");
 			//if(!this.alreadyAbonne){
-				console.log('abonnement')
-				eventBus.$on('updateMenuJourCreate', this.updateMenuJourCreate)				
-			//}			
+			console.log("abonnement");
+			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
+			eventBus.$on("configurationDD", this.setUpData);
+
+			//}
 		},
 		methods: {
 			goToRecette(item, periode) {
 				console.log("recette click" + item + " " + periode);
 				let menuFind = this.items.find((el) => el.id === item.id);
 				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
+			},
+			setUpData(form) {
+				if (form != null) {
+					this.formData = form;
+					this.populateTabJours();
+
+					let indiceEnd = this.jours.length < 7 ? this.jours.length : 7;
+					this.fillItems();
+					this.populateHeader(0, indiceEnd);
+					this.fillPlat(0, indiceEnd);
+				}
 			},
 			//rempli un tableau contenant des dates en fonction de la periode définie
 			populateTabJours() {
@@ -190,54 +195,62 @@
 				this.platsMidi = [];
 				this.platsSoir = [];
 
-				while ((iStart < iEnd) & (iStart < this.jours.length)) {
+				while ((iStart < iEnd) & (iStart < this.items.length)) {
+					let jourPlat = this.items[iStart];
+
 					this.platsMatin.push({
-						id: iStart,
-						Plat: this.formData.matinCheck ? null : "/",
-						NbPers: this.formData.nbPersonnes,
-						Tags: this.formData.tagsMatin,
+						id: jourPlat.id,
+						Plat: jourPlat.Matin,
+						NbPers: jourPlat.MatinNbPers,
+						Tags: jourPlat.TagsMatin,
 					});
 
 					this.platsMidi.push({
-						id: iStart,
-						Plat: this.formData.midiCheck ? null : "/",
-						NbPers: this.formData.nbPersonnes,
-						Tags: this.formData.tagsMidi,
+						id: jourPlat.id,
+						Plat: jourPlat.Midi,
+						NbPers: jourPlat.MidiNbPers,
+						Tags: jourPlat.TagsMidi,
 					});
 
 					this.platsSoir.push({
-						id: iStart,
-						Plat: this.formData.soirCheck ? null : "/",
-						NbPers: this.formData.nbPersonnes,
-						Tags: this.formData.tagsSoir,
-					});
-
-					let month =
-						this.jours[iStart].getMonth() < 10
-							? "0" + (this.jours[iStart].getMonth() + 1)
-							: this.jours[iStart].getMonth() + 1;
-					let day =
-						this.jours[iStart].getDate() < 10
-							? "0" + this.jours[iStart].getDate()
-							: this.jours[iStart].getDate();
-
-					this.items.push({
-						id: iStart,
-						jour: this.getNameOfDay(this.jours[iStart].getDay()),
-						date: day + "/" + month,
-						Matin: this.formData.matinCheck ? null : "/",
-						MatinNbPers: this.formData.nbPersonnes,
-						TagsMatin: this.formData.tagsMatin,
-						Midi: this.formData.midiCheck ? null : "/",
-						MidiNbPers: this.formData.nbPersonnes,
-						TagsMidi: this.formData.tagsMidi,
-						Soir: this.formData.soirCheck ? null : "/",
-						SoirNbPers: this.formData.nbPersonnes,
-						TagsSoir: this.formData.tagsSoir,
+						id: jourPlat.id,
+						Plat: jourPlat.Soir,
+						NbPers: jourPlat.SoirNbPers,
+						Tags: jourPlat.TagsSoir,
 					});
 
 					iStart++;
 				}
+			},
+			fillItems() {
+				this.items = []
+				for (let i = 0; i < this.jours.length; i++) {
+					let month =
+						this.jours[i].getMonth() < 10
+							? "0" + (this.jours[i].getMonth() + 1)
+							: this.jours[i].getMonth() + 1;
+					let day =
+						this.jours[i].getDate() < 10
+							? "0" + this.jours[i].getDate()
+							: this.jours[i].getDate();
+
+					this.items.push({
+						id: i,
+						jour: this.getNameOfDay(this.jours[i].getDay()),
+						date: day + "/" + month,
+						Matin: this.formData.matinCheck ? "" : "/",
+						MatinNbPers: this.formData.nbPersonnes,
+						TagsMatin: this.formData.tagsMatin,
+						Midi: this.formData.midiCheck ? "" : "/",
+						MidiNbPers: this.formData.nbPersonnes,
+						TagsMidi: this.formData.tagsMidi,
+						Soir: this.formData.soirCheck ? "" : "/",
+						SoirNbPers: this.formData.nbPersonnes,
+						TagsSoir: this.formData.tagsSoir,
+					});
+				}
+
+				console.log(this.items);
 			},
 			//event quand on clique sur page suivante
 			nextPageMenu() {
@@ -263,12 +276,10 @@
 
 			/// UPDATE
 			updateMenuJourCreate(item, periode) {
-				console.log("update calendrier configuration " + periode);				
+				console.log("update calendrier configuration " + periode);
 
 				let menuJourOld = this.items.find((elem) => elem.id === item.id);			
 
-				console.log(menuJourOld)
-/*
 				let newTags = [];
 				item.TagsChoix.forEach((el) => {
 					newTags.push(el);
@@ -278,7 +289,7 @@
 					menuJourOld.Matin = item.Plat;
 					menuJourOld.MatinNbPers = item.NbPers;
 					menuJourOld.TagsMatin = newTags;
-				} else if (periode === "midi") {		
+				} else if (periode === "midi") {
 					menuJourOld.Midi = item.Plat;
 					menuJourOld.MidiNbPers = item.NbPers;
 					menuJourOld.TagsMidi = newTags;
@@ -288,9 +299,9 @@
 					menuJourOld.TagsSoir = newTags;
 				}
 
-				let iStart = (this.page - 1) * 7;
-				let iEnd = this.page * 7;
-				this.fillPlat(iStart, iEnd);*/
+				let iStart = (this.page - 1) * 7
+				let iEnd = this.page * 7
+				this.fillPlat(iStart, iEnd)
 			},
 		},
 	};

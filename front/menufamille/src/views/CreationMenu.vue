@@ -28,7 +28,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <CalendarConstraintDayDay :formData="form" :key="keyConstraintDay"/>
+          <CalendarConstraintDayDay/>
           <div class="flexDroite">
             <v-btn text @click="e1 = 1"> Retour </v-btn>
             <v-btn color="#9CCC65" @click="e1 = 1"> Continue </v-btn>    
@@ -72,6 +72,7 @@ export default {
     stepAvance(dataForm){  
       this.form = dataForm
       this.e1 = 2
+      eventBus.$emit('configurationDD', this.form)
     }
   }
 };
