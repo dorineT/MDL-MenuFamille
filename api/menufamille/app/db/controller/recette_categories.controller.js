@@ -21,7 +21,7 @@ exports.findAll = (req, res) => {
 /// PUT CRUD
 
 exports.Put_Recipe_Category = (req, res) => {
-  RecetteCategorie.create({id_recette: req.body.id_recette, id_category: req.body.id_category})
+  RecetteCategorie.create({id_recette: req.body.id_recette, id_categorie: req.body.id_categorie})
   .then(data => { 
     res.send(data);
   })
@@ -37,12 +37,12 @@ exports.Put_Recipe_Category = (req, res) => {
 /// UPDATE CRUD
 
 exports.Update_Recipe_Category = (req, res) => {
-  const id_recipe = req.params.id_recipe;
-  const id_category = req.params.id_category;
+  const id_recipe = req.params.id_recette;
+  const id_category = req.params.id_categorie;
   MenuCalendrier.update(req.body, {
     where: { [Op.add]: 
-        {id_recipe: id_recipe,
-        id_category: id_category}
+        {id_recette: id_recipe,
+        id_categorie: id_category}
     }
   })
   .then(num =>{
@@ -72,8 +72,8 @@ exports.Delete_Recipe_Category = (req, res) => {
   const id_category = req.params.id_category;
   MenuCalendrier.destroy({
     where: { [Op.add]: 
-        {id_recipe: id_recipe,
-        id_category: id_category}
+       {id_recette: id_recipe,
+        id_categorie: id_category}
     }
   })
   .then(num =>{

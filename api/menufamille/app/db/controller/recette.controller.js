@@ -55,6 +55,8 @@ const { recette } = require("../models");
 const db = require("../models");
 const Recipe = db.recette;
 const Tag = db.tag;
+const Categorie = db.categorie;
+const Denree = db.denree;
 const Op = db.Sequelize.Op;
 
 /// GetAllRecipes Simple for CRUD
@@ -75,7 +77,8 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutRecipe = (req, res) => {
-    Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: res.body.temps_cuisson, temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, preparation: req.body.preparation})
+  console.log(req.body);
+    Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, preparation: req.body.preparation})
     .then(data => { 
         res.send(data);
       })
@@ -156,7 +159,7 @@ exports.DeleteRecipe = (req, res) => {
 /// Chercher une recette
 
 exports.find_Recipe = (req, res) => {
-    Recipe.findByPk(req.params.id_recette, { include: recette_tags, categorie, denree})
+    Recipe.findByPk(req.params.id, {include: {model: Tag}}, {include: {model: Categorie}}, {include: {model: Denree}})
     .then(data => {
         res.send(data)
     })

@@ -69,7 +69,7 @@ exports.UpdateTag = (req, res) => {
 
 exports.Deletetag = (req, res) => {
   const id = req.params.id;
-  Tag.destoy({
+  Tag.destroy({
     where: {id_tag: id}
   })
   .then(num =>{
