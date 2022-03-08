@@ -372,8 +372,6 @@
 					let debut = new Date(this.form.dateDebut);
 					let fin = new Date(this.form.dateFin);
 					if(debut > fin) return 'Date de fin inférieure à la date de début'
-					console.log(debut.getTime())
-					console.log(fin.getTime())
 					if(debut.getTime() === fin.getTime()) return 'Veuillez entrez une période de plus d\'un jour'
 				}
 				return true
@@ -393,10 +391,9 @@
 
 				this.textFieldFinDisabled = true
 			},
-			validateForm() {
-				console.log("validate");		
+			validateForm() {						
 				if(this.$refs.form.validate()){
-					eventBus.$emit('formValideOK')
+					eventBus.$emit('formValideOK', this.form)
 				}
 
 			},
@@ -412,8 +409,7 @@
 				let newDate = new Date();			
 				let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
 				let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
-				let year = newDate.getFullYear();
-				console.log(year + "-" + month + "-" + day)
+				let year = newDate.getFullYear();		
 				return year + "-" + month + "-" + day;
 			}
 		},
