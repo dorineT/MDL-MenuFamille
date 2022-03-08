@@ -52,4 +52,11 @@ export default {
 };
 </script>
 
+<style lang="sass">
+.v-application
+  font-family: 'Mansalva', cursive !important
+  .title // To pin point specific classes of some components
+    font-family: 'Mansalva', cursive !important
+</style>
+
 

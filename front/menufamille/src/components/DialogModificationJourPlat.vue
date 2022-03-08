@@ -101,7 +101,7 @@
             <v-expand-transition>
               <div v-show="showModifMenu">
               <v-container fluid>
-                <v-row  >
+                <v-row >
                   <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-card>
                       <v-card-title >
@@ -278,18 +278,19 @@ import {eventBus } from '../main'
           }
           //number
           if(this.numberPersonneNew !== this.numberPersonneOld){
-            if(this.numberPersonneNew < 0 ){              
+            if(this.numberPersonneNew <= 0 ){              
               return false
             }
             this.infoMenu.NbPers = this.numberPersonneNew   
           }
           
-          console.log(this.infoMenu)
+          console.log(this.infoMenu) 
 
           this.dialog = false
           this.snackbar = true
-
-          //eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
+          
+          // envoi uniquement le menu jour modifie 
+          eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
         },
         resetSelectedSuggestion(){
           this.radioSelectionSuggestion = null
@@ -306,7 +307,7 @@ import {eventBus } from '../main'
       },
       /**verifie que le nombre de personnes entre dans le textfiel est positif */
       numberRule: val => {
-        if(val < 0) return 'Entrez un nombre un nombre positif'
+        if(val <= 0) return 'Entrez un nombre un nombre supérieur à 0'
         return true
       }
     }

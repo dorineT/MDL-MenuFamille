@@ -1,24 +1,78 @@
 <template>
+   <v-container fluid>
+    <v-stepper v-model="e1" alt-labels>
+      <v-stepper-header>
+        <v-stepper-step :complete="e1 > 1" step="1" color="#9CCC65">
+           Global
+        </v-stepper-step>
 
-    <div style="margin: 30px">
+        <v-divider></v-divider>
 
-        <div class= "créationMenu">
-            
-            <Constraintscalendar />
-        </div>
-    </div>
+        <v-stepper-step :complete="e1 > 2" step="2" color="#9CCC65">
+          Détails
+        </v-stepper-step>
+      </v-stepper-header>
+
+      <v-stepper-items>
+        <v-stepper-content step="1">         
+            <Constraintscalendar/>
+          
+            <div class="flexDroite">
+              <v-btn text > Retour </v-btn>
+              <v-btn color="#9CCC65" @click="submit"> Continue </v-btn>    
+            </div>  
+          
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <CalendarConstraintDayDay :formData="form"/>
+          <div class="flexDroite">
+            <v-btn text @click="e1 = 1"> Retour </v-btn>
+            <v-btn color="#9CCC65" @click="e1 = 1"> Continue </v-btn>    
+          </div>        
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-container>
 </template>
 
 <script>
-
-
-import Constraintscalendar from '../components/Constraintscalendar'
-
+import Constraintscalendar from "../components/Constraintscalendar";
+//import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
+import {eventBus } from '../main'
 export default {
-    name: 'CreationMenu',
+  name: "CreationMenu",
 
-    components: {
-        Constraintscalendar
-    }        
-}
+  components: {
+    Constraintscalendar,
+    CalendarConstraintDayDay: () => import('../components/CalendarConstraintDayDay')
+  },
+
+  data(){
+    return{    
+      e1: 1,
+      step: 1,
+      form: null
+    }
+  },
+  created(){
+    eventBus.$on('formValideOK', this.stepAvance)
+  },
+  methods: {
+    submit() {
+      eventBus.$emit('validateFormContrainte')
+    },
+    stepAvance(dataForm){
+      this.form = dataForm
+      this.e1 = 2
+    }
+  }
+};
 </script>
+
+
+<style lang="sass">
+.flexDroite
+  float: right
+
+</style>
