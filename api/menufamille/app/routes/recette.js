@@ -13,9 +13,9 @@ module.exports = router
 // Retrieve all Recipes 
 router.get("/", recette.findAll);
 
-router.post('/PutRecipe', recette.PutRecipe);
+router.put('/PutRecipe', recette.PutRecipe);
 
-router.update('/UpdateRecipe/:id', recette.UpdateRecipe);
+router.post('/UpdateRecipe/:id', recette.UpdateRecipe);
 
 router.delete('/DeleteRecipe/:id', recette.DeleteRecipe);
 

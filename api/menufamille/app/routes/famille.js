@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Famille
 router.get('/', famille.findAll);
 
-router.post('/PutFamille', famille.PutFamilly);
+router.put('/PutFamille', famille.PutFamilly);
 
-router.update('/UpdateFamille/:id', famille.UpdateFamilly);
+router.post('/UpdateFamille/:id', famille.UpdateFamilly);
 
 router.delete('/DeleteFamille/:id', famille.DeleteFamilly);

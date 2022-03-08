@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', calendrier.findAll);
 
-router.post('/PutCalendrier', calendrier.PutCalender);
+router.put('/PutCalendrier', calendrier.PutCalender);
 
-router.update('/UpdateCalendrier/:id', calendrier.UpdateCalender);
+router.post('/UpdateCalendrier/:id', calendrier.UpdateCalender);
 
 router.delete('/DeleteCalendrier/:id', calendrier.DeleteCalender);

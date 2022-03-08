@@ -34,7 +34,7 @@ exports.PutCategory = (req, res) => {
 
 // Update CRUD
 
-exports.UpdateCategory = (req, req) => {
+exports.UpdateCategory = (req, res) => {
   const id = req.params.id;
     Categorie.update(req.body, {
       where: {id_categorie: id}

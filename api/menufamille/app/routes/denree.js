@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Types
 router.get('/', denree.findAll);
 
-router.post('/PutDenree', denree.PutDenree);
+router.put('/PutDenree', denree.PutDenree);
 
-router.update('/UpdateDenree/:id', denree.UpdateDenree);
+router.post('/UpdateDenree/:id', denree.UpdateDenree);
 
 router.delete('/DeleteDenree/:id', denree.DeleteDenree);

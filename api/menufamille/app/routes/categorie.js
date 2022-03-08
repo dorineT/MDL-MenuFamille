@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Types
 router.get('/', categorie.findAll);
 
-router.post('/PutCategorie', categorie.PutCategory);
+router.put('/PutCategorie', categorie.PutCategory);
 
-router.update('/UpdateCategorie/:id', categorie.UpdateCategory);
+router.post('/UpdateCategorie/:id', categorie.UpdateCategory);
 
 router.delete('/DeleteCategorie/:id', categorie.DeleteCategory);
