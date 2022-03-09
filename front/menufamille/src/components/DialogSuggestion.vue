@@ -66,7 +66,8 @@
               <v-list-item-content>
 
                 <v-list-item-title>
-                   Recette prévue : {{recetteChoisie}} 
+                <p v-if="recetteChoisie!==''">Recette prévue : {{recetteChoisie}} </p>
+                <p v-else><br></p>
                 </v-list-item-title>
    
                      
@@ -114,7 +115,7 @@
                   >
                     {{newRecetteChoix}}
                   </v-chip>
-                </div>          
+                </div>       
             
           </v-list>
         
@@ -129,7 +130,7 @@
       text
       color="orange lighten-2"
     >
-      Menu sauvegardé !
+      Menu suggéré sauvegardé !
 
     </v-snackbar>
 
