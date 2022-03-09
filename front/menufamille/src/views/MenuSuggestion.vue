@@ -13,11 +13,13 @@
 
 <script>
 import CalendarModificationMenu from '../components/CalendarSuggestion.vue'
+import DialogueModificationJourPlat from '../components/DialogSuggestion.vue'
 export default {
   name: 'MenuSuggestion',
 
   components: {
     CalendarModificationMenu,
+    DialogueModificationJourPlat
   
   },
 
