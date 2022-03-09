@@ -33,14 +33,20 @@
 								:key="i + 'matin'"
 							>
 								<v-btn text @click="goToRecette(item, 'matin')">
-									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === ''" style="color: green">
+									<p
+										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										style="color: green"
+									>
+										tags
+									</p>
+									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
-									<p v-else>{{ item.Plat }}</p>
+									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.NbPers !== formData.nbPersonnes">
-									{{ item.NbPers }} personnes
+								<p v-if="item.nbPers !== formData.nbPersonnes">
+									{{ item.nbPers }} personnes
 								</p>
 							</td>
 						</tr>
@@ -51,14 +57,20 @@
 								:key="i + 'midi'"
 							>
 								<v-btn text @click="goToRecette(item, 'midi')">
-									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === ''" style="color: green">
+									<p
+										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										style="color: green"
+									>
+										tags
+									</p>
+									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
-									<p v-else>{{ item.Plat }}</p>
+									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.NbPers !== formData.nbPersonnes">
-									{{ item.NbPers }} personnes
+								<p v-if="item.nbPers !== formData.nbPersonnes">
+									{{ item.nbPers }} personnes
 								</p>
 							</td>
 						</tr>
@@ -69,14 +81,20 @@
 								:key="i + 'soir'"
 							>
 								<v-btn text @click="goToRecette(item, 'soir')">
-									<p v-if="item.Plat === '/'" style="color: red">X</p>
-									<p v-else-if="item.Plat === ''" style="color: green">
+									<p
+										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										style="color: green"
+									>
+										tags
+									</p>
+									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
-									<p v-else>{{ item.Plat }}</p>
+									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.NbPers !== formData.nbPersonnes">
-									{{ item.NbPers }} personnes
+								<p v-if="item.nbPers !== formData.nbPersonnes">
+									{{ item.nbPers }} personnes
 								</p>
 							</td>
 						</tr>
@@ -93,7 +111,13 @@
 				@input="changePageEvent"
 			></v-pagination>
 		</div>
+		<v-snackbar v-model="errorMessage.error" text color="red">
+			{{ errorMessage.matin }}
+			{{ errorMessage.midi }}
+			{{ errorMessage.soir }}
+		</v-snackbar>
 	</v-card>
+
 </template>
 
 <script>
@@ -111,21 +135,21 @@
 				jours: [],
 				items: [],
 				formData: {},
+				errorMessage: {
+					matin: "",
+					midi: "",
+					soir: "",
+					error: false,
+				},
 			};
 		},
 
 		created() {
-			console.log("created days days");
-			//if(!this.alreadyAbonne){
-			console.log("abonnement");
 			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
 			eventBus.$on("configurationDD", this.setUpData);
-
-			//}
 		},
 		methods: {
 			goToRecette(item, periode) {
-				console.log("recette click" + item + " " + periode);
 				let menuFind = this.items.find((el) => el.id === item.id);
 				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
 			},
@@ -200,30 +224,30 @@
 
 					this.platsMatin.push({
 						id: jourPlat.id,
-						Plat: jourPlat.Matin,
-						NbPers: jourPlat.MatinNbPers,
-						Tags: jourPlat.TagsMatin,
+						plat: jourPlat.matin,
+						nbPers: jourPlat.matinNbPers,
+						tags: jourPlat.tagsMatin,
 					});
 
 					this.platsMidi.push({
 						id: jourPlat.id,
-						Plat: jourPlat.Midi,
-						NbPers: jourPlat.MidiNbPers,
-						Tags: jourPlat.TagsMidi,
+						plat: jourPlat.midi,
+						nbPers: jourPlat.midiNbPers,
+						tags: jourPlat.tagsMidi,
 					});
 
 					this.platsSoir.push({
 						id: jourPlat.id,
-						Plat: jourPlat.Soir,
-						NbPers: jourPlat.SoirNbPers,
-						Tags: jourPlat.TagsSoir,
+						plat: jourPlat.soir,
+						nbPers: jourPlat.soirNbPers,
+						tags: jourPlat.tagsSoir,
 					});
 
 					iStart++;
 				}
 			},
 			fillItems() {
-				this.items = []
+				this.items = [];
 				for (let i = 0; i < this.jours.length; i++) {
 					let month =
 						this.jours[i].getMonth() < 10
@@ -238,19 +262,17 @@
 						id: i,
 						jour: this.getNameOfDay(this.jours[i].getDay()),
 						date: day + "/" + month,
-						Matin: this.formData.matinCheck ? "" : "/",
-						MatinNbPers: this.formData.nbPersonnes,
-						TagsMatin: this.formData.tagsMatin,
-						Midi: this.formData.midiCheck ? "" : "/",
-						MidiNbPers: this.formData.nbPersonnes,
-						TagsMidi: this.formData.tagsMidi,
-						Soir: this.formData.soirCheck ? "" : "/",
-						SoirNbPers: this.formData.nbPersonnes,
-						TagsSoir: this.formData.tagsSoir,
+						matin: this.formData.matinCheck ? "" : "/",
+						matinNbPers: this.formData.nbPersonnes,
+						tagsMatin: this.formData.tagsMatin,
+						midi: this.formData.midiCheck ? "" : "/",
+						midiNbPers: this.formData.nbPersonnes,
+						tagsMidi: this.formData.tagsMidi,
+						soir: this.formData.soirCheck ? "" : "/",
+						soirNbPers: this.formData.nbPersonnes,
+						tagsSoir: this.formData.tagsSoir,
 					});
 				}
-
-				console.log(this.items);
 			},
 			//event quand on clique sur page suivante
 			nextPageMenu() {
@@ -278,30 +300,150 @@
 			updateMenuJourCreate(item, periode) {
 				console.log("update calendrier configuration " + periode);
 
-				let menuJourOld = this.items.find((elem) => elem.id === item.id);			
+				let menuJourOld = this.items.find((elem) => elem.id === item.id);
+
+				/*let menuJourNew = {
+						id: menuJourOld.id,
+						jour: menuJourOld.jour,
+						date: menuJourOld.date,					
+						matin: menuJourOld.matin,
+						matinNbPers: menuJourOld.matinNbPers,
+						tagsMatin: menuJourOld.tagsMatin,
+						midi: menuJourOld.matin,
+						midiNbPers: menuJourOld.matinNbPers,
+						tagsMidi: menuJourOld.tagsMatin,
+						soir: menuJourOld.matin,
+						soirNbPers: menuJourOld.matinNbPers,
+						tagsSoir: menuJourOld.tagsMatin,
+					}*/
+
+				let menuJourSave = {
+					id: menuJourOld.id,
+					jour: menuJourOld.jour,
+					date: menuJourOld.date,
+					matin: menuJourOld.matin,
+					matinNbPers: menuJourOld.matinNbPers,
+					tagsMatin: menuJourOld.tagsMatin,
+					midi: menuJourOld.matin,
+					midiNbPers: menuJourOld.matinNbPers,
+					tagsMidi: menuJourOld.tagsMatin,
+					soir: menuJourOld.matin,
+					soirNbPers: menuJourOld.matinNbPers,
+					tagsSoir: menuJourOld.tagsMatin,
+				};
+
+				//menuJourOld = menuJourNew
 
 				let newTags = [];
-				item.TagsChoix.forEach((el) => {
+				item.tagsChoix.forEach((el) => {
 					newTags.push(el);
 				});
 
 				if (periode === "matin") {
-					menuJourOld.Matin = item.Plat;
-					menuJourOld.MatinNbPers = item.NbPers;
-					menuJourOld.TagsMatin = newTags;
+					menuJourOld.matin = item.plat;
+					menuJourOld.matinNbPers = item.nbPers;
+					menuJourOld.tagsMatin = newTags;
+
+					if(this.formData.nbPlatMatin !== null){
+						this.errorMessage.matin = this.verifContraintePlatMatin();
+					}
+
 				} else if (periode === "midi") {
-					menuJourOld.Midi = item.Plat;
-					menuJourOld.MidiNbPers = item.NbPers;
-					menuJourOld.TagsMidi = newTags;
+					menuJourOld.midi = item.plat;
+					menuJourOld.midiNbPers = item.nbPers;
+					menuJourOld.tagsMidi = newTags;
+
+					if(this.formData.nbPlatMidi !== null){
+						this.errorMessage.midi = this.verifContraintePlatMidi();
+					}
 				} else if (periode === "soir") {
-					menuJourOld.Soir = item.Plat;
-					menuJourOld.SoirNbPers = item.NbPers;
-					menuJourOld.TagsSoir = newTags;
+					menuJourOld.soir = item.plat;
+					menuJourOld.soirNbPers = item.nbPers;
+					menuJourOld.tagsSoir = newTags;
+					
+					if(this.formData.nbPlatSoir !== null){
+						this.errorMessage.soir = this.verifContraintePlatSoir();
+					}
 				}
 
-				let iStart = (this.page - 1) * 7
-				let iEnd = this.page * 7
-				this.fillPlat(iStart, iEnd)
+				if (
+					(this.errorMessage.matin !== "") |
+					(this.errorMessage.midi !== "") |
+					(this.errorMessage.soir !== "")
+				) {
+					console.log(this.errorMessage);
+					menuJourOld = menuJourSave;
+					this.errorMessage.error = true;
+				} else {
+					let iStart = (this.page - 1) * 7;
+					let iEnd = this.page * 7;
+					this.fillPlat(iStart, iEnd);
+					this.errorMessage.error = false;
+				}
+			},
+
+			verifContraintePlatMatin() {
+				const count = {};
+
+				this.items.forEach((element) => {
+					if ((element.midi !== "/") & (element.matin != "")) {
+						if (count[element.matin]) {
+							count[element.matin] += 1;
+						} else {
+							count[element.matin] = 1;
+						}
+					}
+				});
+
+				for (const item in count) {
+					if (count[item] > this.formData.nbPlatMatin) {
+						return "Contrainte de plat identique non respectée pour le matin";
+					}
+				}
+				return "";
+			},
+
+			verifContraintePlatMidi() {
+				const count = {};
+
+				this.items.forEach((element) => {
+					if ((element.midi !== "/") & (element.midi != "")) {
+						if (count[element.midi]) {
+							count[element.midi] += 1;
+						} else {
+							count[element.midi] = 1;
+						}
+					}
+				});
+
+				for (const item in count) {
+					console.log(count[item] + " " + item);
+					if (count[item] > this.formData.nbPlatMidi) {
+						return "Contrainte de plat identique non respectée pour le midi";
+					}
+				}
+				return "";
+			},
+			verifContraintePlatSoir() {
+				const count = {};
+
+				this.items.forEach((element) => {
+					if ((element.midi !== "/") & (element.soir != "")) {
+						if (count[element.soir]) {
+							count[element.soir] += 1;
+						} else {
+							count[element.soir] = 1;
+						}
+					}
+				});
+
+				for (const item in count) {
+					console.log(count[item] + " " + item);
+					if (count[item] > this.formData.nbPlatSoir) {
+						return "Contrainte de plat identique non respectée pour le soir";
+					}
+				}
+				return "";
 			},
 		},
 	};

@@ -31,7 +31,7 @@
           <CalendarConstraintDayDay/>
           <div class="flexDroite">
             <v-btn text @click="e1 = 1"> Retour </v-btn>
-            <v-btn color="#9CCC65" @click="e1 = 1"> Continue </v-btn>    
+            <v-btn color="#9CCC65" @click="stepComplete"> Continue </v-btn>    
           </div>        
         </v-stepper-content>
       </v-stepper-items>
@@ -58,7 +58,6 @@ export default {
       e1: 1,
       step: 1,
       form: null,
-      keyConstraintDay:0
     }
   },
   created(){
@@ -66,13 +65,16 @@ export default {
   },
   methods: {
     submit() {
-      eventBus.$emit('validateFormContrainte')
-      //this.keyConstraintDay += 1 // force le refresh du composant calendrier
+      eventBus.$emit('validateFormContrainte')     
     },
     stepAvance(dataForm){  
       this.form = dataForm
       this.e1 = 2
       eventBus.$emit('configurationDD', this.form)
+    },
+    stepComplete(){
+      //creation du menu terminee
+      console.log('fini')
     }
   }
 };

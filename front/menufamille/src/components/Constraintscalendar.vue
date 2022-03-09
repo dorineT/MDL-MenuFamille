@@ -139,7 +139,7 @@
 					<v-row>
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title>  <v-checkbox v-model="form.matinCheck" label="Matin"></v-checkbox></v-card-title>
+								<v-card-title>  <v-checkbox v-model="form.matinCheck" label="matin"></v-checkbox></v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -149,13 +149,14 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="nbPlatRule"
+										:rules="form.matinCheck ? nbPlatRule : []"
 										v-model.number="form.nbPlatMatin"
 										required
+										:disabled="!form.matinCheck"
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
-								<v-card-subtitle> Tags </v-card-subtitle>
+								<v-card-subtitle> tags </v-card-subtitle>
 								<v-card-text>
 									<v-autocomplete
 										chips
@@ -166,13 +167,14 @@
 										v-model="form.tagsMatin"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
+										:disabled="!form.matinCheck"
 									></v-autocomplete>
 								</v-card-text>
 							</v-card>
 						</v-col>
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title> <v-checkbox v-model="form.midiCheck" label="Midi"></v-checkbox></v-card-title>
+								<v-card-title> <v-checkbox v-model="form.midiCheck" label="midi"></v-checkbox></v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -182,13 +184,14 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="nbPlatRule"
+										:rules="form.midiCheck ? nbPlatRule : []"
 										v-model.number="form.nbPlatMidi"
 										required
+										:disabled="!form.midiCheck"
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
-								<v-card-subtitle> Tags </v-card-subtitle>
+								<v-card-subtitle> tags </v-card-subtitle>
 								<v-card-text>
 									<v-autocomplete
 										chips
@@ -199,6 +202,7 @@
 										v-model="form.tagsMidi"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
+										:disabled="!form.midiCheck"
 									></v-autocomplete>
 								</v-card-text>
 							</v-card>
@@ -206,7 +210,7 @@
 
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title> <v-checkbox v-model="form.soirCheck" label="Soir"></v-checkbox></v-card-title>
+								<v-card-title> <v-checkbox v-model="form.soirCheck" label="soir"></v-checkbox></v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -216,13 +220,14 @@
 										step="any"
 										min="0"
 										ref="input"
-										:rules="nbPlatRule"
+										:rules="form.soirCheck ? nbPlatRule : []"
 										v-model.number="form.nbPlatSoir"
 										required
+										:disabled="!form.soirCheck"
 									></v-text-field>
 								</v-card-text>
 								<v-divider></v-divider>
-								<v-card-subtitle> Tags </v-card-subtitle>
+								<v-card-subtitle> tags </v-card-subtitle>
 								<v-card-text>
 									<v-autocomplete
 										chips
@@ -233,6 +238,7 @@
 										v-model="form.tagsSoir"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
+										:disabled="!form.soirCheck"
 									></v-autocomplete>
 								</v-card-text>
 							</v-card>
@@ -286,9 +292,9 @@
 					choixMenuAutomatique: null,
 					dateDebut: null,
 					dateFin: null,
-					tagsMatin: null,
-					tagsMidi: null,
-					tagsSoir: null,
+					tagsMatin: [],
+					tagsMidi: [],
+					tagsSoir: [],
 				},
 
 				valid: true,
@@ -299,7 +305,7 @@
 				disabledChoixMenuAutomatique: true,
 				tagsListe: ["sel", "sucre", "lunch"],			
 
-				nbPlatRule: [
+				nbPlatRule: [								
 					v => !!v || 'Champ requis',
 					v => (v && v > 0) || 'Chiffre supérieur à 0',
 				],
@@ -328,7 +334,7 @@
 					let year = newDate.getFullYear();
 					this.form.dateFin = year + "-" + month + "-" + day;
 				}
-			}
+			},
 		},
 		methods: {
 			formatDate(date) {
@@ -359,8 +365,7 @@
 				if (
 					(this.form.dateDebut != null & this.form.dateFin != null &
 					this.form.choixPeriode === "personalise")
-				) {
-					console.log("check date")
+				) {				
 					let debut = new Date(this.form.dateDebut);
 					let fin = new Date(this.form.dateFin);
 					if(debut > fin) return 'Date de fin inférieure à la date de début'
@@ -428,4 +433,3 @@
 .v-card
   padding: 5px
 </style>
-.

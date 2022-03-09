@@ -29,28 +29,31 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
-                    <p v-else style="color: red">X</p>                      
+                    <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>
+                    <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                    <p v-else>{{ item.plat }} </p>                   
                   </v-btn>                     
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
-                    <p v-else style="color: red">X</p>                                        
+                    <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>
+                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                  <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
-                  <p v-else style="color: red">X</p>
+                  <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>                  
+                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                  <p v-else>{{ item.plat }} </p>
                 </v-btn> 
-                <p v-if="item.NbPers!==null">{{item.NbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -83,71 +86,71 @@ export default {
               id:10,
               jour: 'Lundi',
               date: '21/02',
-              Matin: 'céréale',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'pain',
-              SoirNbPers: null,
-              TagsMatin:[],
-              TagsMidi: [],
-              TagsSoir: []
+              matin: 'céréale',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'pain',
+              soirNbPers: null,
+              tagsMatin:[],
+              tagsMidi: [],
+              tagsSoir: []
             },
             {
               id:11,
               jour: 'Mardi',
               date: '22/02',
-              Matin: 'crepe',
-              MatinNbPers: null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'lasagne',
-              SoirNbPers: null,
-              TagsMatin:[],
-              TagsMidi: [],
-              TagsSoir: []
+              matin: 'crepe',
+              matinNbPers: null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'lasagne',
+              soirNbPers: null,
+              tagsMatin:[],
+              tagsMidi: [],
+              tagsSoir: []
             },
             {
               id:12,
               jour: 'Mercredi',
               date: '23/02',
-              Matin: '/',
-              MatinNbPers:null,
-              Midi: 'pain',
-              MidiNbPers: null,
-              Soir: 'canard',
-              SoirNbPers: null,
-              TagsMatin:[],
-              TagsMidi: [],
-              TagsSoir: []
+              matin: '/',
+              matinNbPers:null,
+              midi: 'pain',
+              midiNbPers: null,
+              soir: 'canard',
+              soirNbPers: null,
+              tagsMatin:[],
+              tagsMidi: [],
+              tagsSoir: []
             },
             {
               id:13,
               jour: 'Jeudi',
               date: '24/02',
-              Matin: 'céréale',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'pain',            
-              SoirNbPers: null,
-              TagsMatin:[],
-              TagsMidi: [],
-              TagsSoir: []
+              matin: 'céréale',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'pain',            
+              soirNbPers: null,
+              tagsMatin:[],
+              tagsMidi: [],
+              tagsSoir: []
             },
             {
               id:14,
               jour: 'Vendredi',
               date: '25/02',
-              Matin: 'flocon d\'avoine',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'frites',
-              SoirNbPers: null,
-              TagsMatin:['sucre'],
-              TagsMidi: ['sel'],
-              TagsSoir: []
+              matin: 'flocon d\'avoine',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'frites',
+              soirNbPers: null,
+              tagsMatin:['sucre'],
+              tagsMidi: ['sel'],
+              tagsSoir: []
             }
           ],
           dateDebut: '21/02/2022',
@@ -212,23 +215,23 @@ export default {
 
           this.platsMatin.push({
             id: jourPlat.id,
-            Plat: jourPlat.Matin,
-            NbPers: jourPlat.MatinNbPers,
-            Tags: jourPlat.TagsMatin
+            plat: jourPlat.matin,
+            nbPers: jourPlat.matinNbPers,
+            tags: jourPlat.tagsMatin
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
-            Plat: jourPlat.Midi,
-            NbPers: jourPlat.MidiNbPers,
-            Tags: jourPlat.TagsMidi
+            plat: jourPlat.midi,
+            nbPers: jourPlat.midiNbPers,
+            tags: jourPlat.tagsMidi
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
-            Plat: jourPlat.Soir,
-            NbPers: jourPlat.SoirNbPers,
-            Tags: jourPlat.TagsSoir
+            plat: jourPlat.soir,
+            nbPers: jourPlat.soirNbPers,
+            tags: jourPlat.tagsSoir
           })
 
           iStart++
@@ -265,26 +268,26 @@ export default {
         console.log('menu trouve ' + menuJourOld)
 
         let newTags = []
-        menuJour.TagsChoix.forEach(el => {
+        menuJour.tagsChoix.forEach(el => {
           newTags.push(el)
         });
 
         if(periode === 'matin'){
-          menuJourOld.Matin = menuJour.Plat
-          menuJourOld.MatinNbPers = menuJour.NbPers
-          menuJourOld.TagsMatin = newTags 
+          menuJourOld.matin = menuJour.plat
+          menuJourOld.matinNbPers = menuJour.nbPers
+          menuJourOld.tagsMatin = newTags 
         }
         else if(periode === 'midi'){
           console.log('midi up')
           console.log(this.menu.plats)
-          menuJourOld.Midi = menuJour.Plat
-          menuJourOld.MidiNbPers = menuJour.NbPers
-          menuJourOld.TagsMidi = newTags 
+          menuJourOld.midi = menuJour.plat
+          menuJourOld.midiNbPers = menuJour.nbPers
+          menuJourOld.tagsMidi = newTags 
         }
         else if(periode === 'soir'){
-          menuJourOld.Soir = menuJour.Plat
-          menuJourOld.SoirNbPers = menuJour.NbPers
-          menuJourOld.TagsSoir = newTags 
+          menuJourOld.soir = menuJour.plat
+          menuJourOld.soirNbPers = menuJour.nbPers
+          menuJourOld.tagsSoir = newTags 
         }
 
         let iStart = (this.page-1) * 7

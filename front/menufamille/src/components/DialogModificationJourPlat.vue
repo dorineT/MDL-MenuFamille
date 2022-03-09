@@ -102,7 +102,14 @@
 											</v-card-text>
 										</v-card>
 									</v-col>
-									<v-col cols="12" sm="6" md="6" lg="6" xl="6">
+									<v-col
+										cols="12"
+										sm="6"
+										md="6"
+										lg="6"
+										xl="6"
+										v-if="stringUpdateModal !== 'updateMenuJourCreate'"
+									>
 										<v-card>
 											<v-card-title> Suggestion </v-card-title>
 											<v-card-text>
@@ -128,7 +135,7 @@
 
 					<v-list-item>
 						<v-list-item-content>
-							<v-list-item-title>Tags choisis</v-list-item-title>
+							<v-list-item-title>tags choisis</v-list-item-title>
 							<v-col xl="6" md="6" sm="6" xs="12">
 								<v-autocomplete
 									chips
@@ -136,7 +143,7 @@
 									deletable-chips
 									multiple
 									:items="tagsListe"
-									v-model="infoMenu.TagsChoix"
+									v-model="infoMenu.tagsChoix"
 									color="orange lighten-2"
 									no-data-text="Aucun tag correspondant"
 								></v-autocomplete>
@@ -204,10 +211,10 @@
 					"light",
 					"épicé",
 					"gaterie",
-          "sucre",
-          "sel",
+					"sucre",
+					"sel",
 					"calorie hight",
-				],				
+				],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 			};
@@ -222,70 +229,64 @@
 				this.dialog = true;
 
 				this.infoMenu.id = itemReceived.id;
-				this.infoMenu.Plat = itemReceived.Plat;
-				this.infoMenu.NbPers = itemReceived.NbPers;
+				this.infoMenu.plat = itemReceived.plat;
+				this.infoMenu.nbPers = itemReceived.nbPers;
 				this.jourSemaine = jourSemaine;
 				this.date = date;
-        this.infoMenu.TagsChoix = []
- 
-        if(itemReceived.Tags != null){
-          itemReceived.Tags.forEach((el) => {
-            console.log(el);
-            if (el != null) {
-              this.infoMenu.TagsChoix.push(el)
-            }
-          })
-        }
 
-        console.log(this.infoMenu.TagsChoix)
+				this.infoMenu.tagsChoix = [];
+
+				if (itemReceived.tags != null) {
+					itemReceived.tags.forEach((el) => {						
+						if (el != null) {
+							this.infoMenu.tagsChoix.push(el);
+						}
+					});
+				}
+
+						
 				this.periode = periode;
-				console.log(
-					"Données recues par l'event dans  le modal \n" +
-						JSON.stringify(itemReceived) +
-						" \n pour " +
-						periode
-				);
-
+	
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = "oui";
-				this.numberPersonneOld = this.infoMenu.NbPers;
-				this.recetteChoisie = this.infoMenu.Plat;
-				if (this.infoMenu.Plat === "/") {
+				this.numberPersonneOld = this.infoMenu.nbPers;
+				this.recetteChoisie = this.infoMenu.plat;
+				if (
+					(this.infoMenu.plat === "/") &
+					(this.infoMenu.tagsChoix.length === 0)
+				) {		
 					this.selectedRadioMenuOuiNon = "non";
 				}
 
 				//reset
-				this.resetNewRecette();			
+				this.resetNewRecette();
 
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;
 			},
 			sauvegardeMenuJour() {
 				//mise a jour calendrier
-				console.log("update item " + this.infoMenu.id);
 
 				if (this.selectedRadioMenuOuiNon === "non") {
 					this.newRecetteChoix = "/";
 				}
 				//recette
 				if (this.newRecetteChoix !== null) {
-					this.infoMenu.Plat = this.newRecetteChoix;
+					this.infoMenu.plat = this.newRecetteChoix;
 				}
 				//number
 				if (this.numberPersonneNew !== this.numberPersonneOld) {
 					if (this.numberPersonneNew <= 0) {
 						return false;
 					}
-					this.infoMenu.NbPers = this.numberPersonneNew;
+					this.infoMenu.nbPers = this.numberPersonneNew;
 				}
 
-				console.log(this.infoMenu);
-
 				this.dialog = false;
-				this.snackbar = true;
 
-				// envoi uniquement le menu jour modifie
-				console.log(this.stringUpdateModal);
+				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
+
+				// envoi uniquement le menu jour modifie			
 				eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
 			},
 			resetSelectedSuggestion() {

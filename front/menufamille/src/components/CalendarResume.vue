@@ -34,23 +34,23 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                  <v-btn v-if="item.Matin!=='/'" text @click="goToRecette(item.Matin)">{{ item.Matin }} </v-btn>
+                  <v-btn v-if="item.matin!=='/'" text @click="goToRecette(item.matin)">{{ item.matin }} </v-btn>
                   <p v-else style="color: red">X</p>
-                  <p v-if="item.MatinNbPers!==null">{{item.MatinNbPers}} personnes</p> 
+                  <p v-if="item.matinNbPers!==null">{{item.matinNbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                <v-btn v-if="item.Midi!=='/'" text @click="goToRecette(item.Midi)">{{ item.Midi }}</v-btn> 
+                <v-btn v-if="item.midi!=='/'" text @click="goToRecette(item.midi)">{{ item.midi }}</v-btn> 
                 <p v-else style="color: red">X</p>
-                <p v-if="item.MidiNbPers!==null">{{item.MidiNbPers}} personnes</p>                  
+                <p v-if="item.midiNbPers!==null">{{item.midiNbPers}} personnes</p>                  
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                  <v-btn v-if="item.Soir!=='/'" text @click="goToRecette(item.Soir)">{{ item.Soir }} </v-btn> 
+                  <v-btn v-if="item.soir!=='/'" text @click="goToRecette(item.soir)">{{ item.soir }} </v-btn> 
                   <p v-else style="color: red">X</p>
-                  <p v-if="item.SoirNbPers!==null">{{item.SoirNbPers}} personnes</p> 
+                  <p v-if="item.soirNbPers!==null">{{item.soirNbPers}} personnes</p> 
               </td>
             </tr>
             </tbody>
@@ -83,89 +83,89 @@
                 id:0,
                 jour: 'Lundi',
                 date: '14/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'pain',
-                SoirNbPers: null
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'pain',
+                soirNbPers: null
               },
               {
                 id:1,
                 jour: 'Mardi',
                 date: '15/02',
-                Matin: 'crepe',
-                MatinNbPers: null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'lasagne',
-                SoirNbPers: null,
+                matin: 'crepe',
+                matinNbPers: null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'lasagne',
+                soirNbPers: null,
               },
               {
                 id:2,
                 jour: 'Mercredi',
                 date: '16/02',
-                Matin: '/',
-                MatinNbPers:null,
-                Midi: 'pain',
-                MidiNbPers: null,
-                Soir: 'canard',
-                SoirNbPers: null,
+                matin: '/',
+                matinNbPers:null,
+                midi: 'pain',
+                midiNbPers: null,
+                soir: 'canard',
+                soirNbPers: null,
               },
               {
                 id:3,
                 jour: 'Jeudi',
                 date: '17/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'pain',            
-                SoirNbPers: null,
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'pain',            
+                soirNbPers: null,
               },
               {
                 id:4,
                 jour: 'Vendredi',
                 date: '18/02',
-                Matin: 'flocon d\'avoine',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'frites',
-                SoirNbPers: null,
+                matin: 'flocon d\'avoine',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'frites',
+                soirNbPers: null,
               },
               {
                 id:5,
                 jour: 'Samedi',
                 date: '19/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'spaghetti',
-                MidiNbPers: null,
-                Soir: 'crepe',
-                SoirNbPers: null,
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'spaghetti',
+                midiNbPers: null,
+                soir: 'crepe',
+                soirNbPers: null,
               },
               {
                 id:6,
                 jour: 'Dimanche',
                 date: '20/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'rotî sauce moutarde',
-                MidiNbPers:'18',
-                Soir: '/',
-                SoirNbPers: null,
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'rotî sauce moutarde',
+                midiNbPers:'18',
+                soir: '/',
+                soirNbPers: null,
               },
               {
                 id:7,
                 jour: 'Lundi',
                 date: '21/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'rotî sauce moutarde',
-                MidiNbPers: '18',
-                Soir: '/',
-                SoirNbPers: null,
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'rotî sauce moutarde',
+                midiNbPers: '18',
+                soir: '/',
+                soirNbPers: null,
               }
             ],
             dateDebut: '14/02/2022',
@@ -179,56 +179,56 @@
                 id:10,
                 jour: 'Lundi',
                 date: '21/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'pain',
-                SoirNbPers: null
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'pain',
+                soirNbPers: null
               },
               {
                 id:11,
                 jour: 'Mardi',
                 date: '22/02',
-                Matin: 'crepe',
-                MatinNbPers: null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'lasagne',
-                SoirNbPers: null,
+                matin: 'crepe',
+                matinNbPers: null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'lasagne',
+                soirNbPers: null,
               },
               {
                 id:12,
                 jour: 'Mercredi',
                 date: '23/02',
-                Matin: '/',
-                MatinNbPers:null,
-                Midi: 'pain',
-                MidiNbPers: null,
-                Soir: 'canard',
-                SoirNbPers: null,
+                matin: '/',
+                matinNbPers:null,
+                midi: 'pain',
+                midiNbPers: null,
+                soir: 'canard',
+                soirNbPers: null,
               },
               {
                 id:13,
                 jour: 'Jeudi',
                 date: '24/02',
-                Matin: 'céréale',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'pain',            
-                SoirNbPers: null,
+                matin: 'céréale',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'pain',            
+                soirNbPers: null,
               },
               {
                 id:14,
                 jour: 'Vendredi',
                 date: '25/02',
-                Matin: 'flocon d\'avoine',
-                MatinNbPers:null,
-                Midi: 'croque-monsieur',
-                MidiNbPers: null,
-                Soir: 'frites',
-                SoirNbPers: null,
+                matin: 'flocon d\'avoine',
+                matinNbPers:null,
+                midi: 'croque-monsieur',
+                midiNbPers: null,
+                soir: 'frites',
+                soirNbPers: null,
               }
             ],
             dateDebut: '21/02/2022',
@@ -321,20 +321,20 @@
 
           this.platsMatin.push({
             id: jourPlat.id,
-            Matin: jourPlat.Matin,
-            MatinNbPers: jourPlat.MatinNbPers
+            matin: jourPlat.matin,
+            matinNbPers: jourPlat.matinNbPers
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
-            Midi: jourPlat.Midi,
-            MidiNbPers: jourPlat.MidiNbPers
+            midi: jourPlat.midi,
+            midiNbPers: jourPlat.midiNbPers
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
-            Soir: jourPlat.Soir,
-            SoirNbPers: jourPlat.SoirNbPers
+            soir: jourPlat.soir,
+            soirNbPers: jourPlat.soirNbPers
           })
 
           iStart++
