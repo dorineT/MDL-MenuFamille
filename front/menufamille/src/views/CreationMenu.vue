@@ -21,7 +21,7 @@
             <Constraintscalendar/>
           
             <div class="flexDroite">
-              <v-btn text > Retour </v-btn>
+              <v-btn text disabled> Retour </v-btn>
               <v-btn color="#9CCC65" @click="submit"> Continue </v-btn>    
             </div>  
           
@@ -30,7 +30,7 @@
         <v-stepper-content step="2">
           <CalendarConstraintDayDay/>
           <div class="flexDroite">
-            <v-btn text @click="e1 = 1"> Retour </v-btn>
+            <v-btn text @click="retourClick()"> Retour </v-btn>
             <v-btn color="#9CCC65" @click="stepComplete"> Continue </v-btn>    
           </div>        
         </v-stepper-content>
@@ -58,6 +58,7 @@ export default {
       e1: 1,
       step: 1,
       form: null,
+      items: []
     }
   },
   created(){
@@ -74,7 +75,13 @@ export default {
     },
     stepComplete(){
       //creation du menu terminee
-      console.log('fini')
+      console.log('fini + post bd')
+      //faire un post a la bd
+      eventBus.$emit('creationMenuDone')
+    },
+    retourClick(){
+      // + get items 
+      this.e1 = 1
     }
   }
 };

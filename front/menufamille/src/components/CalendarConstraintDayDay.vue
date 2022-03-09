@@ -34,7 +34,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'matin')">
 									<p
-										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
 										tags
@@ -58,7 +58,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'midi')">
 									<p
-										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
 										tags
@@ -82,7 +82,7 @@
 							>
 								<v-btn text @click="goToRecette(item, 'soir')">
 									<p
-										v-if="(item.plat === '/') & (item.tags.length > 0)"
+										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
 										tags
@@ -147,6 +147,7 @@
 		created() {
 			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
 			eventBus.$on("configurationDD", this.setUpData);
+			eventBus.$on('creationMenuDone', this.creationMenuDone)
 		},
 		methods: {
 			goToRecette(item, periode) {
@@ -360,7 +361,7 @@
 					menuJourOld.soir = item.plat;
 					menuJourOld.soirNbPers = item.nbPers;
 					menuJourOld.tagsSoir = newTags;
-					
+
 					if(this.formData.nbPlatSoir !== null){
 						this.errorMessage.soir = this.verifContraintePlatSoir();
 					}
@@ -445,6 +446,19 @@
 				}
 				return "";
 			},
+
+			creationMenuDone(){
+				let menuNew = {
+					menu_id: null,
+					dateDebut: this.formData.dateDebut,
+					dateFin: this.formData.dateFin,
+					verrou: false,
+					plats: this.items
+				}
+				console.log('menu créé')
+				console.log(menuNew)
+				this.$router.push('/');
+			}
 		},
 	};
 </script>

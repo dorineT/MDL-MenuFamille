@@ -303,7 +303,16 @@
 				menu: false,
 				menu2: false,
 				disabledChoixMenuAutomatique: true,
-				tagsListe: ["sel", "sucre", "lunch"],			
+				tagsListe: [
+					"soupe",
+					"lunch-box",
+					"light",
+					"épicé",
+					"gaterie",
+					"sucre",
+					"sel",
+					"calorie hight"
+				],			
 
 				nbPlatRule: [								
 					v => !!v || 'Champ requis',

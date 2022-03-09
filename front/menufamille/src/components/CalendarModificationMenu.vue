@@ -29,7 +29,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>
+                    <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green">tags</p>
+                    <p v-else-if="item.plat === ''" style="color: green">+</p>
                     <p v-else-if="item.plat==='/'" style="color: red">X</p>
                     <p v-else>{{ item.plat }} </p>                   
                   </v-btn>                     
@@ -39,7 +40,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>
+                    <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green">tags</p>
+                  <p v-else-if="item.plat === ''" style="color: green">+</p>
                   <p v-else-if="item.plat==='/'" style="color: red">X</p>
                   <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
@@ -49,7 +51,8 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.plat === '/' &  item.tags.length > 0" style="color: green">tags</p>                  
+                  <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green">tags</p>     
+                  <p v-else-if="item.plat === ''" style="color: green">+</p>             
                   <p v-else-if="item.plat==='/'" style="color: red">X</p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
