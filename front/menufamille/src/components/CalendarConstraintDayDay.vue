@@ -303,21 +303,6 @@
 
 				let menuJourOld = this.items.find((elem) => elem.id === item.id);
 
-				/*let menuJourNew = {
-						id: menuJourOld.id,
-						jour: menuJourOld.jour,
-						date: menuJourOld.date,					
-						matin: menuJourOld.matin,
-						matinNbPers: menuJourOld.matinNbPers,
-						tagsMatin: menuJourOld.tagsMatin,
-						midi: menuJourOld.matin,
-						midiNbPers: menuJourOld.matinNbPers,
-						tagsMidi: menuJourOld.tagsMatin,
-						soir: menuJourOld.matin,
-						soirNbPers: menuJourOld.matinNbPers,
-						tagsSoir: menuJourOld.tagsMatin,
-					}*/
-
 				let menuJourSave = {
 					id: menuJourOld.id,
 					jour: menuJourOld.jour,
@@ -331,9 +316,7 @@
 					soir: menuJourOld.matin,
 					soirNbPers: menuJourOld.matinNbPers,
 					tagsSoir: menuJourOld.tagsMatin,
-				};
-
-				//menuJourOld = menuJourNew
+				};	
 
 				let newTags = [];
 				item.tagsChoix.forEach((el) => {

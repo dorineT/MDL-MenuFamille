@@ -23,7 +23,7 @@
 		<v-app-bar app color="#FFB74D">
 			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-			<v-toolbar-title><div class="divTitle">Fourchette & Couteau </div></v-toolbar-title>
+			<v-toolbar-title><div class="divTitle">Forchete & Coûtê </div></v-toolbar-title>
 		</v-app-bar>
 
 		<v-main>
@@ -48,6 +48,7 @@
 .divTitle
   color: black
   font-family: 'Brush Script MT', cursive
+  font-size: 30px
 </style>
 
 

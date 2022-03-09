@@ -180,6 +180,8 @@ export default {
     },
     created(){
       eventBus.$on('updateMenuJour', this.updateMenuJour)
+      eventBus.$on('validationModification', this.valideMenu)
+      eventBus.$on('saveModification', this.saveMenu)
     },
     methods:{
       //// Affichage calendrier ///
@@ -296,6 +298,13 @@ export default {
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
         this.fillPlat(this.items,iStart,iEnd)
+      },
+      valideMenu(){
+        this.menu.verrou = true
+        eventBus.$emit('postMenuModification', this.menu)
+      },
+      saveMenu(){
+        eventBus.$emit('postMenuModification', this.menu)
       }
       
     }
