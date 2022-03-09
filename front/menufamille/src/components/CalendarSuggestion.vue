@@ -2,7 +2,7 @@
 
   <div style="margin: 4px">
       
-      <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
+      <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
       
       <v-data-table
             :headers="headers"
@@ -70,6 +70,8 @@
       ></v-pagination>
     </div>
 
+<!-- dialog-->
+
 </template>
 
 <script>
@@ -84,7 +86,7 @@ export default {
             {
               id:10,
               jour: 'Lundi',
-              date: '21/02',
+              date: '7/03',
               Matin: '/',
               MatinNbPers:null,
               Midi: '',
@@ -95,7 +97,7 @@ export default {
             {
               id:11,
               jour: 'Mardi',
-              date: '22/02',
+              date: '8/03',
               Matin: '',
               MatinNbPers: null,
               Midi: '',
@@ -106,7 +108,7 @@ export default {
             {
               id:12,
               jour: 'Mercredi',
-              date: '23/02',
+              date: '9/03',
               Matin: '/',
               MatinNbPers:null,
               Midi: '/',
@@ -117,7 +119,7 @@ export default {
             {
               id:13,
               jour: 'Jeudi',
-              date: '24/02',
+              date: '10/03',
               Matin: '',
               MatinNbPers:null,
               Midi: '',
@@ -128,7 +130,7 @@ export default {
             {
               id:14,
               jour: 'Vendredi',
-              date: '25/02',
+              date: '11/03',
               Matin: '',
               MatinNbPers:null,
               Midi: '',
@@ -137,8 +139,8 @@ export default {
               SoirNbPers: null,
             }
           ],
-          dateDebut: '21/02/2022',
-          dateFin: '25/02/2022',
+          dateDebut: '7/03/2022',
+          dateFin: '11/03/2022',
           verrou: true            
         },
         items: [],
