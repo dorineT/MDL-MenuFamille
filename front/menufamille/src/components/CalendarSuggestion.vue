@@ -238,17 +238,19 @@ export default {
         this.fillPlat(this.items,iStart,iEnd)
       },
 
-      /// UPDATE CALENDRIER  à corriger////
+      /// UPDATE CALENDRIER////
 
       updateMenuJour(menuJour, periode){
         console.log(menuJour)
         console.log(periode)
+   
 
        
-        let menuJourOld = this.menus.plats.find( elem => elem.id === menuJour.id)
+        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
         console.log('menu trouve ' + menuJourOld)
 
         if(periode === 'matin'){
+          console.log('matin up')
           menuJourOld.Matin = menuJour.Plat
           menuJourOld.MatinNbPers = menuJour.NbPers
         }
