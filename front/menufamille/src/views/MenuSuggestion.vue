@@ -19,24 +19,24 @@
       </v-col>
     </v-row>
  </v-container>
-      <dialogue-modification-jour-plat></dialogue-modification-jour-plat>
+      <dialog-suggestion></dialog-suggestion>
 
-      <calendar-modification-menu
+      <calendar-suggestion
         :periodeMenu="periode"
-      ></calendar-modification-menu>
+      ></calendar-suggestion>
     </v-card>
 </template>
 
 
 <script>
-import CalendarModificationMenu from '../components/CalendarSuggestion.vue'
-import DialogueModificationJourPlat from '../components/DialogSuggestion.vue'
+import CalendarSuggestion from '../components/CalendarSuggestion.vue'
+import DialogSuggestion from '../components/DialogSuggestion.vue'
 export default {
-  name: 'MenuSuggestion',
+ 
 
   components: {
-    CalendarModificationMenu,
-    DialogueModificationJourPlat
+    CalendarSuggestion,
+    DialogSuggestion
   
   },
 
