@@ -1,7 +1,24 @@
 <template>
-    <v-card       
+ 
+    <v-card  
+   
         class="cardSuggestion"
     >
+    <v-container fluid>
+    <v-row align="center">
+      <v-col
+        class="d-flex"
+        cols="12"
+        sm="6"
+      >     
+      <v-select
+          :items="nomFamille"
+          label="Famille"
+          outlined
+        ></v-select>
+      </v-col>
+    </v-row>
+ </v-container>
       <dialogue-modification-jour-plat></dialogue-modification-jour-plat>
 
       <calendar-modification-menu
@@ -26,7 +43,8 @@ export default {
   data (){
     return{
       periode: null,
-      idPeriode: null
+      idPeriode: null,
+      nomFamille:['BonneFamille', 'SuperFamille']
         
     }
   },

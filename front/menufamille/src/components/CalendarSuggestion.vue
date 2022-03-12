@@ -81,10 +81,10 @@ export default {
     data () {
       return {headers: [],
       menu: {          
-          menu_id: 1,
+          menu_id: 2,
           plats: [
             {
-              id:10,
+              id:15,
               jour: 'Lundi',
               date: '7/03',
               Matin: '/',
@@ -95,7 +95,7 @@ export default {
               SoirNbPers: null
             },
             {
-              id:11,
+              id:16,
               jour: 'Mardi',
               date: '8/03',
               Matin: '',
@@ -106,7 +106,7 @@ export default {
               SoirNbPers: null,
             },
             {
-              id:12,
+              id:17,
               jour: 'Mercredi',
               date: '9/03',
               Matin: '/',
@@ -117,7 +117,7 @@ export default {
               SoirNbPers: null,
             },
             {
-              id:13,
+              id:18,
               jour: 'Jeudi',
               date: '10/03',
               Matin: 'pizza',
@@ -128,7 +128,7 @@ export default {
               SoirNbPers: null,
             },
             {
-              id:14,
+              id:19,
               jour: 'Vendredi',
               date: '11/03',
               Matin: '',

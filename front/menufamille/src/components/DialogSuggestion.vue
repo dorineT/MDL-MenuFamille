@@ -218,6 +218,7 @@ import {eventBus } from '../main'
           
           
           console.log(this.infoMenu) 
+          
 
           this.dialog = false
           this.snackbar = true
