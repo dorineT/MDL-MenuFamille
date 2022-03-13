@@ -2,6 +2,7 @@
 // Table de base
 const type = require('./type.js')
 const user = require('./user.js')
+
 const recette = require('./recette.js')
 const menu = require('./menu.js')
 const calendrier = require('./calendrier.js')
@@ -21,6 +22,8 @@ const recette_categories = require('./recette_categories.js')
 const recette_denree = require('./recette_denree.js')
 const recette_tags = require('./recette_tags.js')
 
+const famille = require('./famille')
+const product = require('./product');
 const swaggerUi = require('swagger-ui-express'),
 swaggerDocument = require('../../swagger.json');
 
@@ -33,6 +36,7 @@ module.exports = app => {
   // Tables de base
   app.use('/type', type)
   app.use('/user', user)
+  
   app.use('/recette', recette)
   app.use('/menu', menu)
   app.use('/calendrier', calendrier)
@@ -53,5 +57,9 @@ module.exports = app => {
   app.use('/recette_categories', recette_categories)
   app.use('/recette_denree', recette_denree)
   app.use('/recette_tags', recette_tags)
+
+  app.use('/family', famille)
+  app.use('/product', product)
+  // etc..
 
 }

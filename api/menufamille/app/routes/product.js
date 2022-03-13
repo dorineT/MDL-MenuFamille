@@ -1,7 +1,7 @@
 const Router = require('express-promise-router')
+const scraping = require('../middleware/scraping');
 const auth = require("../db/controller/auth.controller");
 const { verifySignUp, authJwt } = require("../middleware")
-const role = require("../db/controller/famille_membre.controller");
 
 
 
@@ -20,8 +20,4 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.post("/signup",verifySignUp.checkDuplicateEmail,auth.signup);
-router.post("/signin", auth.signin);
-router.post("/refreshtoken", auth.refreshToken);
-
-router.get("/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard)
+router.get('/:product', scraping.getProduct);

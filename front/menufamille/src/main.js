@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import setupInterceptors from './services/setupInterceptors';
+
 //import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
@@ -13,8 +15,11 @@ import vuetify from './plugins/vuetify'
 // Optionally install the BootstrapVue icon components plugin
 //Vue.use(IconsPlugin)
 
+
+
 Vue.config.productionTip = false
 export const eventBus = new Vue();
+setupInterceptors(store)
 new Vue({
   router,
   store,

@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../../config/auth.config");
 const Membre = db.membres;
 const RefreshToken = db.refreshToken;
+const Role = db.famille_membre;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
@@ -44,14 +45,22 @@ exports.signin = (req, res) => {
         expiresIn: config.jwtExpiration
       });
       let refreshToken = await RefreshToken.createToken(user);
+      var authorities = [];
+      Role.findAll({where: {id_membre: user.id_membre}}).then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          authorities.push([roles[i].id_famille, roles[i].role])
+        }
+
         res.status(200).send({
           id_membre: user.id_membre,
           nom: user.nom,
           email: user.email,
           prenom: user.prenom,
+          roles: authorities,
           accessToken: token,
           refreshToken: refreshToken,
         });
+      });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
@@ -82,9 +91,10 @@ exports.refreshToken = async (req, res) => {
     let newAccessToken = jwt.sign({ id: user.id_membre }, config.secret, {
       expiresIn: config.jwtExpiration,
     });
+    
     return res.status(200).json({
       accessToken: newAccessToken,
-      refreshToken: refreshToken.token,
+      refreshToken: refreshToken.token
     });
   } catch (err) {
     return res.status(500).send({ message: err });
