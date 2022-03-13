@@ -107,7 +107,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
 */
 
 
-///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BD. carte #34
+///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BDD. carte #34
 
 
 exports.Get_Current_Locked_Menu = (req, res) => {
@@ -137,7 +137,7 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte.
+//// Envoyer les menus non-verrouilles + suggestion ouverte  /!\ ne pas tester, pas de Islocked dans la BDD..
 
 exports.Get_Manual_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
@@ -162,7 +162,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non vérrouillés
+//// Envoyer les menus non vérrouillés  /!\ ne pas tester, pas de Islocked dans la BDD.
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;

@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', tag.findAll);
 
-router.put('/PutTag', tag.PutTag);
+router.post('/', tag.PutTag);
 
-router.post('/UpdateTag/:id', tag.UpdateTag);
+router.post('/:id', tag.UpdateTag);
 
-router.delete('/DeleteTag/:id', tag.Deletetag);
+router.delete('/:id', tag.Deletetag);

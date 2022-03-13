@@ -13,14 +13,16 @@ module.exports = router
 // Retrieve all Recipes 
 router.get("/", recette.findAll);
 
-router.put('/PutRecipe', recette.PutRecipe);
+router.post('/', recette.PutRecipe);
 
-router.post('/UpdateRecipe/:id', recette.UpdateRecipe);
+router.put('/:id', recette.UpdateRecipe);
 
-router.delete('/DeleteRecipe/:id', recette.DeleteRecipe);
+router.delete('/:id', recette.DeleteRecipe);
 
 router.get('/FindWithTags', recette.find_All_Tags);
 
 router.get('/FindRecipe/:id', recette.find_Recipe);
 
 router.get('/FindFromTags', recette.find_Recipe_tags);
+
+router.get('/Allinfo', recette.find_Recipe_all_info)

@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', recette_denree.findAll);
 
-router.put('/PutRecetteDenree', recette_denree.PutRecipe_Denree);
+router.post('/', recette_denree.PutRecipe_Denree);
 
-router.post('/UpdateRecetteDenree/:id_recette/:id_denree', recette_denree.UpdateRecipe_Denree);
+router.put('/:id_recette/:id_denree', recette_denree.UpdateRecipe_Denree);
 
-router.delete('/DeleteRecetteDenree/:id_recette/:id_denree', recette_denree.Delete_Recipe_Denree);
+router.delete('/:id_recette/:id_denree', recette_denree.Delete_Recipe_Denree);

@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', menu_calendrier.findAll);
 
-router.put('/PutMenuCalendrier', menu_calendrier.Put_Menu_Calender);
+router.post('/', menu_calendrier.Put_Menu_Calender);
 
-router.post('/UpdateMenuCalendrier/:id_menu/:id_calendrier', menu_calendrier.Update_Menu_Calender);
+router.put('/:id_menu/:id_calendrier', menu_calendrier.Update_Menu_Calender);
 
-router.delete('/DeleteMenuCalendrier/:id_menu/:id_calendrier', menu_calendrier.Delete_Menu_Calender);
+router.delete('/:id_menu/:id_calendrier', menu_calendrier.Delete_Menu_Calender);

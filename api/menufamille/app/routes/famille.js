@@ -26,11 +26,11 @@ router.use(function(req, res, next) { //toujours en premier
 // difference avec le type de requete donc un / ou /:id est ok
 router.get('/', famille.findAll);
 
-router.put('/PutFamille', famille.PutFamilly);
+router.post('/', famille.PutFamilly);
 
-router.post('/UpdateFamille/:id', famille.UpdateFamilly);
+router.put('/:id', famille.UpdateFamilly);
 
-router.delete('/DeleteFamille/:id', famille.DeleteFamilly);
+router.delete('/:id', famille.DeleteFamilly);
 
 //doit etre ajoute sur toutes les requetes
 router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard) 

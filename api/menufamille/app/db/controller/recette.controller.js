@@ -159,7 +159,7 @@ exports.DeleteRecipe = (req, res) => {
 /// Chercher une recette
 
 exports.find_Recipe = (req, res) => {
-    Recipe.findByPk(req.params.id, {include: {model: Tag}}, {include: {model: Categorie}}, {include: {model: Denree}})
+    Recipe.findByPk(req.params.id, {include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: []}}]})
     .then(data => {
         res.send(data)
     })
@@ -169,6 +169,21 @@ exports.find_Recipe = (req, res) => {
             err.message || "Some error occurred while retrieving Recipes."
         });
       });  
+};
+
+/// Chercher recette avec toutes les infos #40
+
+exports.find_Recipe_all_info = (req, res) => {
+  Recipe.findAll({include: {model: Tag, through: {attributes: []}}}, {attributes: ["id_recette", "nom"]})
+  .then(data => {
+      res.send(data)
+  })
+  .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Recipes."
+      });
+    });  
 };
 
 /// envoyer les recettes (nom et id seulement, pas besoin de plus) qui matchent les tags globaux du menu ou les tags precis du calendrier jour) #40

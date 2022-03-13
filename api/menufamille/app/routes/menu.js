@@ -12,11 +12,11 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', menu.findAll);
 
-router.put('/PutMenu', menu.PutMenu);
+router.post('/', menu.PutMenu);
 
-router.post('/UpdateMenu/:id', menu.UpdateMenu);
+router.put('/:id', menu.UpdateMenu);
 
-router.delete('/DeleteMenu/:id', menu.DeleteMenu);
+router.delete('/:id', menu.DeleteMenu);
 
 router.get('/GetLockedMenu/:id_fam', menu.Get_Current_Locked_Menu);
 
