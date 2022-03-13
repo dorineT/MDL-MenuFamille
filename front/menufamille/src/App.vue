@@ -21,9 +21,11 @@
 		</v-navigation-drawer>
 
 		<v-app-bar app color="#FFB74D">
-			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-			<v-toolbar-title><div class="divTitle">Forchete & Coûtê </div></v-toolbar-title>
+			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>	
+			<v-container fluid>
+				<v-toolbar-title style="align-content: center"><div class="divTitle">Forchete & Coûtê </div></v-toolbar-title>
+			</v-container>
+			
 		</v-app-bar>
 
 		<v-main>
@@ -48,7 +50,8 @@
 .divTitle
   color: black
   font-family: 'Brush Script MT', cursive
-  font-size: 30px
+  font-size: 30px  
+  text-align: center
 </style>
 
 

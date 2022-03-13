@@ -273,16 +273,20 @@
 			sauvegardeMenuJour() {
 				//mise a jour calendrier
 				console.log("new recette choix " + this.newRecetteChoix)
+				console.log('select radio oui / non : ' + this.selectedRadioMenuOuiNon)
+				
+				console.log('' === "" )
 				if (this.selectedRadioMenuOuiNon === "non") {
 					this.newRecetteChoix = "/";
 				}
-				if (this.selectedRadioMenuOuiNon === "oui" & this.recetteChoisie==="/") {
+				else if (this.selectedRadioMenuOuiNon === "oui" & (this.recetteChoisie==="/" | this.recetteChoisie===null)) {
+					console.log("hello")
 					this.newRecetteChoix = "";
 				}
-				//recette
-				if (this.newRecetteChoix !== null) {
-					this.infoMenu.plat = this.newRecetteChoix;
-				}
+				//recette			
+				this.infoMenu.plat = this.newRecetteChoix;
+				
+
 				//number
 				if (this.numberPersonneNew !== this.numberPersonneOld) {
 					if (this.numberPersonneNew <= 0) {

@@ -47,6 +47,9 @@ export default {
   created(){
     eventBus.$on('postMenuModification', this.postMenu)
   },
+   destroyed() {
+    eventBus.$off('postMenuModification');
+  },
   methods: {
     valideModification(){    
       eventBus.$emit('validationModification')

@@ -37,7 +37,7 @@
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
-										tags
+										<strong>Tags</strong>
 									</p>
 									<p v-else-if="item.plat === '/'" style="color: red">X</p>
 									<p v-else-if="item.plat === ''" style="color: green">
@@ -61,7 +61,7 @@
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
-										tags
+										<strong>Tags</strong>
 									</p>
 									<p v-else-if="item.plat === '/'" style="color: red">X</p>
 									<p v-else-if="item.plat === ''" style="color: green">
@@ -85,7 +85,7 @@
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
 									>
-										tags
+										<strong>Tags</strong>
 									</p>
 									<p v-else-if="item.plat === '/'" style="color: red">X</p>
 									<p v-else-if="item.plat === ''" style="color: green">
