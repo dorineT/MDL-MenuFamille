@@ -7,6 +7,10 @@ module.exports = (sequelize, Sequelize) => {
       id_membre: {
         type: Sequelize.INTEGER,
         primaryKey: true
+      },
+      role: {
+        type: Sequelize.STRING,
+        allowNull: false
       }
     },
     {

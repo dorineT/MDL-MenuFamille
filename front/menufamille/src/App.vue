@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10">
+		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
 					<v-list-item to="/">
@@ -20,12 +20,12 @@
 			</v-list>
 		</v-navigation-drawer>
 
-		<v-app-bar app color="#FFB74D">
+		<v-app-bar app color="#FFB74D" v-if="loggedIn">
 			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>	
 			<v-container fluid>
 				<v-toolbar-title style="align-content: center"><div class="divTitle">Forchete & Coûtê </div></v-toolbar-title>
 			</v-container>
-			
+			<v-btn @click="logOut">Déconnexion</v-btn>
 		</v-app-bar>
 
 		<v-main>
@@ -35,10 +35,30 @@
 </template>
 
 <script>
-	export default {
-		name: "App",
-		data: () => ({ drawer: false }),
-	};
+import EventBus from "./common/EventBus";
+
+export default {
+  name: "App",
+  data: () => ({
+    drawer: false,
+    loggedIn: true,
+  }),
+  methods: {
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
+    },
+  },
+    mounted() {
+    EventBus.on("logout", () => {
+      this.logOut();
+    });
+  },
+    beforeDestroy() {
+      EventBus.remove("logout");
+  },
+};
+
 </script>
 
 <style lang="sass">

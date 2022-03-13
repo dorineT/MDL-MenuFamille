@@ -29,7 +29,6 @@ CREATE TABLE MENU (
 
 CREATE TABLE MEMBRES (
                          id_membre SERIAL NOT NULL,
-                         id_token INTEGER NOT NULL,
                          nom VARCHAR NOT NULL,
                          prenom VARCHAR NOT NULL,
                          email VARCHAR NOT NULL UNIQUE,
@@ -38,16 +37,19 @@ CREATE TABLE MEMBRES (
 );
 
 CREATE TABLE REFRESH_TOKEN (
-                               id_refreshToken SERIAL NOT NULL,
-                               token VARCHAR NOT NULL,
-                               date_expiration TIMESTAMP NOT NULL,
+                               id_refreshtoken SERIAL NOT NULL,
+                               id_membre INTEGER NOT NULL,
+                               token VARCHAR,
+                               date_expiration TIMESTAMP,
                                date_inscription TIMESTAMP default current_timestamp,
+                               date_changement TIMESTAMP,
                                PRIMARY KEY (id_refreshToken)
 );
 
 CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
+                                role VARCHAR NOT NULL,
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
@@ -149,7 +151,7 @@ CREATE TABLE CALENDRIER_RECETTE (
 /*** Définition des clés étrangères ***/
 ALTER TABLE MENU ADD CONSTRAINT pk_MUfamille FOREIGN KEY (id_famille) REFERENCES FAMILLE(id_famille) ON DELETE CASCADE;
 
-ALTER TABLE MEMBRES ADD CONSTRAINT pk_MEtoken FOREIGN KEY (id_token) REFERENCES REFRESH_TOKEN(id_refreshToken) ON DELETE RESTRICT;
+ALTER TABLE REFRESH_TOKEN ADD CONSTRAINT pk_RNtoken FOREIGN KEY (id_membre) REFERENCES MEMBRES(id_membre) ON DELETE RESTRICT;
 
 ALTER TABLE FAMILLE_MEMBRE ADD CONSTRAINT pk_FMfamille FOREIGN KEY (id_famille) REFERENCES FAMILLE(id_famille) ON DELETE CASCADE;
 

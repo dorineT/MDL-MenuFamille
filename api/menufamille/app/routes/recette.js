@@ -1,5 +1,5 @@
 const Router = require('express-promise-router')
-const recette = require("./db/controller/recette.controller.js");
+const recette = require("../db/controller/recette.controller.js");
 
 
 // create a new express-promise-router

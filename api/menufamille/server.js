@@ -1,12 +1,22 @@
 const express = require('express')
-const mountRoutes = require('./routes')
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const mountRoutes = require('./app/routes')
 const app = express()
-const port = 3000
+var corsOptions = {
+  origin: "http://localhost:8080"
+};
 
-const db = require("./routes/db/models");
+const db = require("./app/db/models");
 db.sequelize.sync();
+app.use(cors(corsOptions));
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 mountRoutes(app)
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`)
 })
