@@ -25,4 +25,4 @@ router.get('/FindRecipe/:id', recette.find_Recipe);
 
 router.get('/FindFromTags', recette.find_Recipe_tags);
 
-router.get('/Allinfo', recette.find_Recipe_all_info)
+router.get('/AllTags', recette.find_Recipe_With_Tags)
