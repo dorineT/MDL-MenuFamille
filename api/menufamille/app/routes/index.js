@@ -22,7 +22,6 @@ const recette_categories = require('./recette_categories.js')
 const recette_denree = require('./recette_denree.js')
 const recette_tags = require('./recette_tags.js')
 
-const famille = require('./famille')
 const product = require('./product');
 const swaggerUi = require('swagger-ui-express'),
 swaggerDocument = require('../../swagger.json');

@@ -16,6 +16,18 @@ exports.findAll = (req, res) => {
     });  
 };
 
+exports.findById = (req, res) => {
+  Type.findOne({where: {id_type: parseInt(req.params.id)}})
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving tutorials."
+    });
+  });  
+};
 
 //un controleur par table
 // pour les jointures, utiliser le include
@@ -23,8 +35,8 @@ exports.findAll = (req, res) => {
 
 /// Put CRUD
 
-exports.PutType = (req, res) => {
-  console.log(req.body);
+exports.putType = (req, res) => {
+  console.log(req.body.nom);
   Type.create({nom: req.body.nom})
   .then(data => { 
     res.send(data);
