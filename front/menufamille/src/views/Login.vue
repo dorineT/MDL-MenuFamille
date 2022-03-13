@@ -109,6 +109,7 @@ export default {
               this.$router.push("/");
             },
             (error) => {
+              console.log(error)
               this.invalid = true;
               this.loading = false;
               this.message =
