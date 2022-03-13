@@ -159,7 +159,7 @@ exports.DeleteRecipe = (req, res) => {
 /// Chercher une recette
 
 exports.find_Recipe = (req, res) => {
-    Recipe.findByPk(req.params.id, {include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: []}}]})
+    Recipe.findByPk(req.params.id, {include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]})
     .then(data => {
         res.send(data)
     })

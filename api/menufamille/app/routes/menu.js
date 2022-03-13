@@ -25,3 +25,5 @@ router.get('/GetManualUnlockedMenu/:id_fam', menu.Get_Manual_Unlocked_Menu);
 router.get('/GetUnlockedMenu/:id_fam', menu.Get_Unlocked_Menu);
 
 router.get('/GetMenuId/:id', menu.Get_Menu_By_Id);
+
+router.get('/GetAllInfo/:id', menu.Get_Menu_All_Info_PK);

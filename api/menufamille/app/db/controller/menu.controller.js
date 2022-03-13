@@ -1,6 +1,11 @@
 const { calendrier, recette } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
+const Calendrier = db.calendrier;
+const Recette = db.recette;
+const Tag = db.tag;
+const Categorie = db.categorie;
+const Denree = db.denree;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Menus from the database.
@@ -86,14 +91,16 @@ exports.DeleteMenu = (req, res) => {
     });
   };
 
-
-/*
-//// envoyer toutes les données concernant un menu (calendrier, plats, recettes, tag, propositions de recettes) carte #44
-//// On a pas de lien entre Menu et tag,
+///GetMenuAllInfo
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu, { include:  {all: true, nested: true}}) // Sinon tester { include: calendrier, recette} où {include: calendrier { include: calendrier_recette { include: recette { include: recette_tag {include: tag}, recette_categorie {include: categorie}}}}}
+  Menu.findByPk(id_menu,{ include: [{model: Calendrier, through: {attributes: []}, 
+                            include: [{model: Recette, through: {attributes: ["periode"]}, 
+                              include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]
+                            }]
+                          }]
+                        })
   .then(data => {
     res.send(data);
   })
@@ -104,7 +111,6 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
     });
   });  
 };
-*/
 
 
 ///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BDD. carte #34
