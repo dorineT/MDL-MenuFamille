@@ -3,26 +3,25 @@
 const type = require('./type.js')
 const user = require('./user.js')
 
-const recette = require('./recette.js')
-const menu = require('./menu.js')
-const calendrier = require('./calendrier.js')
-const categorie = require('./categorie.js')
-const denree = require('./denree.js')
-const famille = require('./famille.js')
-const tag = require('./tag.js')
-const membres = require('./membres.js')
+const recette = require('./recette.js');
+const menu = require('./menu.js');
+const calendrier = require('./calendrier.js');
+const categorie = require('./categorie.js');
+const denree = require('./denree.js');
+const famille = require('./famille.js');
+const tag = require('./tag.js');
+const membres = require('./membres.js');
 
 // Tables de liens
-const calendrier_recette = require('./calendrier_recette.js')
-const denree_type = require('./denree_type.js')
-const famille_membre = require('./famille_membre.js')
-const favoris = require('./favoris.js')
-const menu_calendrier = require('./menu_calendrier.js')
-const recette_categories = require('./recette_categories.js')
-const recette_denree = require('./recette_denree.js')
-const recette_tags = require('./recette_tags.js')
+const calendrier_recette = require('./calendrier_recette.js');
+const denree_type = require('./denree_type.js');
+const famille_membre = require('./famille_membre.js');
+const favoris = require('./favoris.js');
+const menu_calendrier = require('./menu_calendrier.js');
+const recette_categories = require('./recette_categories.js');
+const recette_denree = require('./recette_denree.js');
+const recette_tags = require('./recette_tags.js');
 
-const famille = require('./famille')
 const product = require('./product');
 const swaggerUi = require('swagger-ui-express'),
 swaggerDocument = require('../../swagger.json');
