@@ -29,31 +29,31 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.Plat !=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.plat !=='/'">{{ item.plat }} </p>
                     <p v-else style="color: red">X</p>                      
                   </v-btn>                     
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
                     <p v-else style="color: red">X</p>                                        
                 </v-btn>               
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.Plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                  <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                  <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
                   <p v-else style="color: red">X</p>
                 </v-btn> 
-                <p v-if="item.NbPers!==null">{{item.NbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -87,56 +87,56 @@ export default {
               id:15,
               jour: 'Lundi',
               date: '7/03',
-              Matin: '/',
-              MatinNbPers:null,
-              Midi: '',
-              MidiNbPers: null,
-              Soir: '',
-              SoirNbPers: null
+              matin: '/',
+              matinNbPers:null,
+              midi: '',
+              midiNbPers: null,
+              soir: '',
+              soirNbPers: null
             },
             {
               id:16,
               jour: 'Mardi',
               date: '8/03',
-              Matin: '',
-              MatinNbPers: null,
-              Midi: '',
-              MidiNbPers: null,
-              Soir: '',
-              SoirNbPers: null,
+              matin: '',
+              matinNbPers: null,
+              midi: '',
+              midiNbPers: null,
+              soir: '',
+              soirNbPers: null,
             },
             {
               id:17,
               jour: 'Mercredi',
               date: '9/03',
-              Matin: '/',
-              MatinNbPers:null,
-              Midi: '/',
-              MidiNbPers: null,
-              Soir: '/',
-              SoirNbPers: null,
+              matin: '/',
+              matinNbPers:null,
+              midi: '/',
+              midiNbPers: null,
+              soir: '/',
+              soirNbPers: null,
             },
             {
               id:18,
               jour: 'Jeudi',
               date: '10/03',
-              Matin: 'pizza',
-              MatinNbPers:null,
-              Midi: '',
-              MidiNbPers: null,
-              Soir: '',            
-              SoirNbPers: null,
+              matin: 'pizza',
+              matinNbPers:null,
+              midi: '',
+              midiNbPers: null,
+              soir: '',            
+              soirNbPers: null,
             },
             {
               id:19,
               jour: 'Vendredi',
               date: '11/03',
-              Matin: '',
-              MatinNbPers:null,
-              Midi: '',
-              MidiNbPers: null,
-              Soir: '',
-              SoirNbPers: null,
+              matin: '',
+              matinNbPers:null,
+              midi: '',
+              midiNbPers: null,
+              soir: '',
+              soirNbPers: null,
             }
           ],
           dateDebut: '7/03/2022',
@@ -198,20 +198,20 @@ export default {
 
           this.platsMatin.push({
             id: jourPlat.id,
-            Plat: jourPlat.Matin,
-            NbPers: jourPlat.MatinNbPers
+            plat: jourPlat.matin,
+            nbPers: jourPlat.matinNbPers
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
-            Plat: jourPlat.Midi,
-            NbPers: jourPlat.MidiNbPers
+            plat: jourPlat.midi,
+            nbPers: jourPlat.midiNbPers
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
-            Plat: jourPlat.Soir,
-            NbPers: jourPlat.SoirNbPers
+            plat: jourPlat.soir,
+            nbPers: jourPlat.soirNbPers
           })
 
           iStart++
@@ -251,18 +251,18 @@ export default {
 
         if(periode === 'matin'){
           console.log('matin up')
-          menuJourOld.Matin = menuJour.Plat
-          menuJourOld.MatinNbPers = menuJour.NbPers
+          menuJourOld.matin = menuJour.plat
+          menuJourOld.matinNbPers = menuJour.nbPers
         }
         else if(periode === 'midi'){
           console.log('midi up')
           console.log(this.menu.plats)
-          menuJourOld.Midi = menuJour.Plat
-          menuJourOld.MidiNbPers = menuJour.NbPers
+          menuJourOld.midi = menuJour.plat
+          menuJourOld.midiNbPers = menuJour.nbPers
         }
         else if(periode === 'soir'){
-          menuJourOld.Soir = menuJour.Plat
-          menuJourOld.SoirNbPers = menuJour.NbPers
+          menuJourOld.soir = menuJour.plat
+          menuJourOld.soirNbPers = menuJour.nbPers
         }
 
         let iStart = (this.page-1) * 7

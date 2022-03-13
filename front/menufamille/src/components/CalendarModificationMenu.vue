@@ -29,28 +29,28 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.plat!=='/'">{{ item.plat }} </p>
                     <p v-else style="color: red">X</p>                      
                   </v-btn>                     
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                    <p v-if="item.plat!=='/'">{{ item.plat }} </p>
                     <p v-else style="color: red">X</p>                                        
                 </v-btn>               
-                <p v-if="item.NbPers!==null">{{item.NbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.Plat!=='/'">{{ item.Plat }} </p>
+                  <p v-if="item.plat!=='/'">{{ item.plat }} </p>
                   <p v-else style="color: red">X</p>
                 </v-btn> 
-                <p v-if="item.NbPers!==null">{{item.NbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -83,56 +83,56 @@ export default {
               id:10,
               jour: 'Lundi',
               date: '21/02',
-              Matin: 'céréale',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'pain',
-              SoirNbPers: null
+              matin: 'céréale',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'pain',
+              soirNbPers: null
             },
             {
               id:11,
               jour: 'Mardi',
               date: '22/02',
-              Matin: 'crepe',
-              MatinNbPers: null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'lasagne',
-              SoirNbPers: null,
+              matin: 'crepe',
+              matinNbPers: null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'lasagne',
+              soirNbPers: null,
             },
             {
               id:12,
               jour: 'Mercredi',
               date: '23/02',
-              Matin: '/',
-              MatinNbPers:null,
-              Midi: 'pain',
-              MidiNbPers: null,
-              Soir: 'canard',
-              SoirNbPers: null,
+              matin: '/',
+              matinNbPers:null,
+              midi: 'pain',
+              midiNbPers: null,
+              soir: 'canard',
+              soirNbPers: null,
             },
             {
               id:13,
               jour: 'Jeudi',
               date: '24/02',
-              Matin: 'céréale',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'pain',            
-              SoirNbPers: null,
+              matin: 'céréale',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'pain',            
+              soirNbPers: null,
             },
             {
               id:14,
               jour: 'Vendredi',
               date: '25/02',
-              Matin: 'flocon d\'avoine',
-              MatinNbPers:null,
-              Midi: 'croque-monsieur',
-              MidiNbPers: null,
-              Soir: 'frites',
-              SoirNbPers: null,
+              matin: 'flocon d\'avoine',
+              matinNbPers:null,
+              midi: 'croque-monsieur',
+              midiNbPers: null,
+              soir: 'frites',
+              soirNbPers: null,
             }
           ],
           dateDebut: '21/02/2022',
@@ -194,20 +194,20 @@ export default {
 
           this.platsMatin.push({
             id: jourPlat.id,
-            Plat: jourPlat.Matin,
-            NbPers: jourPlat.MatinNbPers
+            plat: jourPlat.matin,
+            nbPers: jourPlat.matinNbPers
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
-            Plat: jourPlat.Midi,
-            NbPers: jourPlat.MidiNbPers
+            plat: jourPlat.midi,
+            nbPers: jourPlat.midiNbPers
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
-            Plat: jourPlat.Soir,
-            NbPers: jourPlat.SoirNbPers
+            plat: jourPlat.soir,
+            nbPers: jourPlat.soirNbPers
           })
 
           iStart++
@@ -244,18 +244,18 @@ export default {
         console.log('menu trouve ' + menuJourOld)
 
         if(periode === 'matin'){
-          menuJourOld.Matin = menuJour.Plat
-          menuJourOld.MatinNbPers = menuJour.NbPers
+          menuJourOld.matin = menuJour.plat
+          menuJourOld.matinNbPers = menuJour.nbPers
         }
         else if(periode === 'midi'){
           console.log('midi up')
           console.log(this.menu.plats)
-          menuJourOld.Midi = menuJour.Plat
-          menuJourOld.MidiNbPers = menuJour.NbPers
+          menuJourOld.midi = menuJour.plat
+          menuJourOld.midiNbPers = menuJour.nbPers
         }
         else if(periode === 'soir'){
-          menuJourOld.Soir = menuJour.Plat
-          menuJourOld.SoirNbPers = menuJour.NbPers
+          menuJourOld.soir = menuJour.plat
+          menuJourOld.soirNbPers = menuJour.nbPers
         }
 
         let iStart = (this.page-1) * 7

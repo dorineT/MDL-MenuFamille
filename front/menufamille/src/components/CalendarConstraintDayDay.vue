@@ -31,10 +31,10 @@
 								:key="i + 'matin'"
 							>
 								<v-btn text @click="goToRecette(item, 'matin')">
-									<p v-if="item.Plat !== '/'">{{ item.Plat }}</p>
+									<p v-if="item.plat !== '/'">{{ item.plat }}</p>
 									<p v-else style="color: red">X</p>
 								</v-btn>
-								<p v-if="item.NbPers !== null">{{ item.NbPers }} personnes</p>
+								<p v-if="item.nbPers !== null">{{ item.nbPers }} personnes</p>
 							</td>
 						</tr>
 						<tr>
@@ -44,10 +44,10 @@
 								:key="i + 'midi'"
 							>
 								<v-btn text @click="goToRecette(item, 'midi')">
-									<p v-if="item.Plat !== '/'">{{ item.Plat }}</p>
+									<p v-if="item.plat !== '/'">{{ item.plat }}</p>
 									<p v-else style="color: red">X</p>
 								</v-btn>
-								<p v-if="item.NbPers !== null">{{ item.NbPers }} personnes</p>
+								<p v-if="item.nbPers !== null">{{ item.nbPers }} personnes</p>
 							</td>
 						</tr>
 						<tr>
@@ -57,10 +57,10 @@
 								:key="i + 'soir'"
 							>
 								<v-btn text @click="goToRecette(item, 'soir')">
-									<p v-if="item.Plat !== '/'">{{ item.Plat }}</p>
+									<p v-if="item.plat !== '/'">{{ item.plat }}</p>
 									<p v-else style="color: red">X</p>
 								</v-btn>
-								<p v-if="item.NbPers !== null">{{ item.NbPers }} personnes</p>
+								<p v-if="item.nbPers !== null">{{ item.nbPers }} personnes</p>
 							</td>
 						</tr>
 					</tbody>

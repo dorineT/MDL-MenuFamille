@@ -233,8 +233,8 @@ import {eventBus } from '../main'
             this.dialog = true
 
             this.infoMenu.id = itemReceived.id
-            this.infoMenu.Plat = itemReceived.Plat
-            this.infoMenu.NbPers = itemReceived.NbPers
+            this.infoMenu.plat = itemReceived.plat
+            this.infoMenu.nbPers = itemReceived.nbPers
 
             //find menu dans le tab
             console.log(menuComplet)
@@ -249,9 +249,9 @@ import {eventBus } from '../main'
 
             //menu prévu ?
             this.selectedRadioMenuOuiNon = 'oui'
-            this.numberPersonneOld = this.infoMenu.NbPers
-            this.recetteChoisie = this.infoMenu.Plat
-            if(this.infoMenu.Plat ==='/'){
+            this.numberPersonneOld = this.infoMenu.nbPers
+            this.recetteChoisie = this.infoMenu.plat
+            if(this.infoMenu.plat ==='/'){
               this.selectedRadioMenuOuiNon = 'non'
             }
             
@@ -274,14 +274,14 @@ import {eventBus } from '../main'
           }
          //recette
           if(this.newRecetteChoix !== null){
-            this.infoMenu.Plat = this.newRecetteChoix    
+            this.infoMenu.plat = this.newRecetteChoix    
           }
           //number
           if(this.numberPersonneNew !== this.numberPersonneOld){
             if(this.numberPersonneNew <= 0 ){              
               return false
             }
-            this.infoMenu.NbPers = this.numberPersonneNew   
+            this.infoMenu.nbPers = this.numberPersonneNew   
           }
           
           console.log(this.infoMenu) 

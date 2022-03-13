@@ -29,60 +29,16 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>        
-
-        <v-list
-          
-          subheader
-        >
-          <v-subheader>Menu du : {{completeMenu.jour}} {{periode}}  : {{ completeMenu.date}} </v-subheader>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title> Menu prévu pour cette période ? </v-list-item-title>
-              <v-list-item-subtitle>
-                <v-radio-group
-                  v-model="selectedRadioMenuOuiNon"
-                  row
-                >
-                  <v-radio
-                    label="Oui"
-                    value="oui"
-                    color="orange lighten-2"
-                  ></v-radio>
-                  <v-radio
-                    label="Non"
-                    value="non"
-                    color="orange lighten-2"
-                  ></v-radio>
-                </v-radio-group>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          </v-list>
-
+        
+          <h3 style="margin: 10px">Menu du : {{completeMenu.jour}} {{periode}}  : {{ completeMenu.date}} </h3>
+       
           <v-divider ></v-divider>
           
-          <v-list v-if='selectedRadioMenuOuiNon==="oui"'>
-            <v-list-item >
-              <v-list-item-content>
-
-                <v-list-item-title>
-                <p v-if="recetteChoisie!==''">Recette prévue : {{recetteChoisie}} </p>
-                <p v-else><br></p>
-                </v-list-item-title>
-   
-                     
-              </v-list-item-content>
 
 
-            </v-list-item>
-            <v-expand-transition>
-              <div>
-              <v-container fluid>
-                <v-row >
-                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-card>
                       <v-card-title >
-                        la liste des recettes
+                        Choisissez votre plat ! &#128523; &#127789;
                       </v-card-title>
                       <v-card-text>
                         <v-autocomplete
@@ -94,16 +50,11 @@
                         no-data-text="Aucune recette correspondante"></v-autocomplete>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                  
-                </v-row>
-              </v-container>
-              </div>
-            </v-expand-transition>
+
 
             <div v-if="newRecetteChoix!==null">
                   <br>
-                Vous avez choisi de remplacer le menu par : 
+                Vous avez choisi de suggérer :
 
                   <v-chip                   
                     class="ma-2"
@@ -116,8 +67,7 @@
                     {{newRecetteChoix}}
                   </v-chip>
                 </div>       
-            
-          </v-list>
+                  
         
       </v-card>
     </v-dialog>
@@ -148,24 +98,20 @@ import {eventBus } from '../main'
         periode: '',
         snackbar: false,
         timeout: 3000,
-        selectedRadioMenuOuiNon:'oui',
         recetteChoisie: '',
         comboboxRecetteSelected: null,
         itemRecettes: [
           'lasagne','pate carbo','flammekueche','petite saucisse -pdt','risotto','pizza','frite'
         ],
-   
-     
+        
         newRecetteChoix: null,
-       
-       
-    
-      
-
       }
     },
     created (){
         eventBus.$on('openDialog', this.openModal) //listening event form CalendarModificationMenu component
+    },
+    destroy (){
+        eventBus.$off('openDialog') //listening event form CalendarModificationMenu component
     },
     methods: {
       /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
@@ -173,8 +119,8 @@ import {eventBus } from '../main'
             this.dialog = true
 
             this.infoMenu.id = itemReceived.id
-            this.infoMenu.Plat = itemReceived.Plat
-            this.infoMenu.NbPers = itemReceived.NbPers
+            this.infoMenu.plat = itemReceived.plat
+            this.infoMenu.nbPers = itemReceived.nbPers
 
             //find menu dans le tab
             console.log(menuComplet)
@@ -190,8 +136,8 @@ import {eventBus } from '../main'
             //menu prévu ?
             this.selectedRadioMenuOuiNon = 'oui'
          
-            this.recetteChoisie = this.infoMenu.Plat
-            if(this.infoMenu.Plat ==='/'){
+            this.recetteChoisie = this.infoMenu.plat
+            if(this.infoMenu.plat ==='/'){
               this.selectedRadioMenuOuiNon = 'non'
             }
             
@@ -213,7 +159,7 @@ import {eventBus } from '../main'
           }
          //recette
           if(this.newRecetteChoix !== null){
-            this.infoMenu.Plat = this.newRecetteChoix    
+            this.infoMenu.plat = this.newRecetteChoix    
           }
           
           

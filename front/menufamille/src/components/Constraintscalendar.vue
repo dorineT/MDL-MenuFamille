@@ -119,11 +119,11 @@
 				</v-row>
 
 				<br />
-				<v-checkbox v-model="form.matinCheck" label="Matin"></v-checkbox>
+				<v-checkbox v-model="form.matinCheck" label="matin"></v-checkbox>
 
-				<v-checkbox v-model="form.midiCheck" label="Midi"></v-checkbox>
+				<v-checkbox v-model="form.midiCheck" label="midi"></v-checkbox>
 
-				<v-checkbox v-model="form.soirCheck" label=" Soir"></v-checkbox>
+				<v-checkbox v-model="form.soirCheck" label=" soir"></v-checkbox>
 				<br />
 
 				<v-container grid-list-xl fluid>
@@ -147,7 +147,7 @@
 					<v-row>
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title> Matin </v-card-title>
+								<v-card-title> matin </v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -180,7 +180,7 @@
 						</v-col>
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title> Midi </v-card-title>
+								<v-card-title> midi </v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -214,7 +214,7 @@
 
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
-								<v-card-title> Soir </v-card-title>
+								<v-card-title> soir </v-card-title>
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
