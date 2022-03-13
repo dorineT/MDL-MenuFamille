@@ -67,7 +67,7 @@ exports.Update_Favoris = (req, res) => {
 /// Delete CRUD 
 
 
-exports.DeletCalender_Recipe = (req, res) => {
+exports.DeletFavoris = (req, res) => {
   const id_recette = req.params.id_recette;
   const id_membre = req.params.id_membre;
   MenuCalendrier.destroy({

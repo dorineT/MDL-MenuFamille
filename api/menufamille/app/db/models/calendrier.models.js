@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Calendrier = sequelize.define("calendrier", {
-      id_menu: {
+      id_calendrier: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true

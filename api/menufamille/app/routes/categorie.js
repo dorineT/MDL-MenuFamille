@@ -1,5 +1,5 @@
 const Router = require('express-promise-router')
-const type = require("../db/controller/type.controller.js");
+const categorie = require("../db/controller/categorie.controller.js");
 
 
 // create a new express-promise-router
@@ -10,10 +10,10 @@ module.exports = router
 
 
     // Retrieve all Types
-router.get('/', type.findAll);
+router.get('/', categorie.findAll);
 
-router.put('/PutType', type.PutType);
+router.put('/PutCategorie', categorie.PutCategory);
 
-router.post('/UpdateType/:id', type.UpdateType);
+router.post('/UpdateCategorie/:id', categorie.UpdateCategory);
 
-router.delete('/DeleteType/:id', type.DeleteType);
+router.delete('/DeleteCategorie/:id', categorie.DeleteCategory);

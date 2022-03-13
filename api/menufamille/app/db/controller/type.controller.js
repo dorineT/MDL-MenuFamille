@@ -24,6 +24,7 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutType = (req, res) => {
+  console.log(req.body);
   Type.create({nom: req.body.nom})
   .then(data => { 
     res.send(data);
@@ -68,7 +69,7 @@ exports.UpdateType = (req, res) => {
 
 exports.DeleteType = (req, res) => {
   const id = req.params.id;
-  Type.destoy({
+  Type.destroy({
     where: {id_type: id}
   })
   .then(num =>{
