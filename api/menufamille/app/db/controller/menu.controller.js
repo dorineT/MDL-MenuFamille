@@ -184,3 +184,20 @@ exports.Get_Unlocked_Menu = (req, res) => {
     });
   });  
 };
+
+
+//// GetById
+
+exports.Get_Menu_By_Id = (req, res) => {
+  const id = req.params.id;
+  Menu.findByPk(id)
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || `Some error occurred while retrieving Menus with id=${id}.`
+    });
+  });  
+};
