@@ -281,7 +281,7 @@
 				if (this.selectedRadioMenuOuiNon === "non") {
 					this.newRecetteChoix = "/";
 				}
-				else if (this.selectedRadioMenuOuiNon === "oui" & (this.recetteChoisie==="/" | this.recetteChoisie===null)) {
+				else if (this.selectedRadioMenuOuiNon === "oui" & (this.newRecetteChoix==="/" | this.newRecetteChoix===null)) {
 					console.log("hello")
 					this.newRecetteChoix = "";
 				}
