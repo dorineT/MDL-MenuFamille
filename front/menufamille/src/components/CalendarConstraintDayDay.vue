@@ -33,6 +33,7 @@
 								:key="i + 'matin'"
 							>
 								<v-btn text @click="goToRecette(item, 'matin')">
+
 									<p
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
@@ -48,6 +49,7 @@
 								<p v-if="item.nbPers !== formData.nbPersonnes">
 									{{ item.nbPers }} personnes
 								</p>
+
 							</td>
 						</tr>
 						<tr>
@@ -96,6 +98,7 @@
 								<p v-if="item.nbPers !== formData.nbPersonnes">
 									{{ item.nbPers }} personnes
 								</p>
+
 							</td>
 						</tr>
 					</tbody>

@@ -140,6 +140,7 @@
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
 								<v-card-title>  <v-checkbox v-model="form.matinCheck" label="matin"></v-checkbox></v-card-title>
+
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -174,7 +175,9 @@
 						</v-col>
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
+
 								<v-card-title> <v-checkbox v-model="form.midiCheck" label="midi"></v-checkbox></v-card-title>
+
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>
@@ -210,7 +213,9 @@
 
 						<v-col cols="12" sm="4" md="4" lg="4" xl="4">
 							<v-card>
+
 								<v-card-title> <v-checkbox v-model="form.soirCheck" label="soir"></v-checkbox></v-card-title>
+
 								<v-card-subtitle>
 									Plats identiques autorisés :
 								</v-card-subtitle>

@@ -264,8 +264,10 @@
 					this.selectedRadioMenuOuiNon = "non";
 				}
 
+
 				//reset
 				this.resetNewRecette();
+
 
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;
@@ -296,6 +298,7 @@
 				}
 
 				this.dialog = false;
+
 
 				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
 

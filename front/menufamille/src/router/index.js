@@ -18,11 +18,17 @@ const routes = [
     props: true
   },
   {
+    path: '/menuSuggestion',
+    name: 'MenuSuggestion',
+    component: () => import( '../views/MenuSuggestion.vue'),
+    
+  },
+  {
 
     // links to access to the creation menu page
     path: '/creationMenu',
     name: 'CreationMenu',
-    component: () => import(/* webpackChunkName: "creationMenu" */ '../views/CreationMenu.vue')
+    component: () => import('../views/CreationMenu.vue')
   },
 ]
 

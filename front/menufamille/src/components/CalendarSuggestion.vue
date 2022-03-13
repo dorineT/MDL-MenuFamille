@@ -2,12 +2,12 @@
 
   <div style="margin: 4px">
       
-      <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
+      <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
       
       <v-data-table
             :headers="headers"
             :items="items"                                  
-            class="elevation-8"
+            class="suggTable"
             disable-sort
             mobile-breakpoint="0"
             :footer-props="{             
@@ -29,12 +29,9 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item,'matin')">
-
-                    <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
-                    <p v-else-if="item.plat === ''" style="color: green">+</p>
-                    <p v-else-if="item.plat==='/'" style="color: red">X</p>
-                    <p v-else>{{ item.plat }} </p>                   
-
+                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.plat !=='/'">{{ item.plat }} </p>
+                    <p v-else style="color: red">X</p>                      
                   </v-btn>                     
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
@@ -42,10 +39,9 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
-                  <p v-else-if="item.plat === ''" style="color: green">+</p>
-                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
-                  <p v-else>{{ item.plat }} </p>                                    
+                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
+                    <p v-else style="color: red">X</p>                                        
                 </v-btn>               
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
@@ -53,10 +49,9 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                  <p v-else-if="item.plat === ''" style="color: green">+</p>             
-                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
-                  <p v-else>{{ item.plat }} </p>
+                  <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                  <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
+                  <p v-else style="color: red">X</p>
                 </v-btn> 
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
@@ -75,6 +70,8 @@
       ></v-pagination>
     </div>
 
+
+
 </template>
 
 <script>
@@ -82,87 +79,69 @@ import {eventBus } from '../main'
 export default {
     props:['periodeMenu'],
     data () {
-      return {
-        headers: [],
-        menu: {          
-          menu_id: 1,
+      return {headers: [],
+      menu: {          
+          menu_id: 2,
           plats: [
             {
-              id:10,
+              id:15,
               jour: 'Lundi',
-              date: '21/02',
-              matin: 'céréale',
-              matinNbPers:null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'pain',
-
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-
-            },
-            {
-              id:11,
-              jour: 'Mardi',
-              date: '22/02',
-              matin: 'crepe',
-              matinNbPers: null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'lasagne',
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-            },
-            {
-              id:12,
-              jour: 'Mercredi',
-              date: '23/02',
+              date: '7/03',
               matin: '/',
               matinNbPers:null,
-              midi: 'pain',
+              midi: '',
               midiNbPers: null,
-              soir: 'canard',
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
+              soir: '',
+              soirNbPers: null
             },
             {
-              id:13,
+              id:16,
+              jour: 'Mardi',
+              date: '8/03',
+              matin: '',
+              matinNbPers: null,
+              midi: '',
+              midiNbPers: null,
+              soir: '',
+              soirNbPers: null,
+            },
+            {
+              id:17,
+              jour: 'Mercredi',
+              date: '9/03',
+              matin: '/',
+              matinNbPers:null,
+              midi: '/',
+              midiNbPers: null,
+              soir: '/',
+              soirNbPers: null,
+            },
+            {
+              id:18,
               jour: 'Jeudi',
-              date: '24/02',
-              matin: 'céréale',
+              date: '10/03',
+              matin: 'pizza',
               matinNbPers:null,
-              midi: 'croque-monsieur',
+              midi: '',
               midiNbPers: null,
-              soir: 'pain',            
+              soir: '',            
               soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
             },
             {
-              id:14,
+              id:19,
               jour: 'Vendredi',
-              date: '25/02',
-              matin: 'flocon d\'avoine',
+              date: '11/03',
+              matin: '',
               matinNbPers:null,
-              midi: 'croque-monsieur',
+              midi: '',
               midiNbPers: null,
-              soir: 'frites',
+              soir: '',
               soirNbPers: null,
-              tagsMatin:['sucre'],
-              tagsMidi: ['sel'],
-              tagsSoir: []
             }
           ],
-          dateDebut: '21/02/2022',
-          dateFin: '25/02/2022',
-          verrou: false            
+          dateDebut: '7/03/2022',
+          dateFin: '11/03/2022',
+          verrou: true            
         },
         items: [],
         pageCount: 0,
@@ -170,8 +149,8 @@ export default {
         nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
-        platsSoir: []          
-      }
+        platsSoir: []      
+         }
     },
     mounted(){
         console.log('des choses a faire avec l\'api')
@@ -184,18 +163,13 @@ export default {
     },
     created(){
       eventBus.$on('updateMenuJour', this.updateMenuJour)
-      eventBus.$on('validationModification', this.valideMenu)
-      eventBus.$on('saveModification', this.saveMenu)
     },
     methods:{
       //// Affichage calendrier ///
       goToRecette(item,periode){
           console.log('click recette calendar ' + periode)
-
-
-          let menuFind = this.items.find(el => el.id === item.id)
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode, menuFind.jour, menuFind.date)
+          eventBus.$emit('openDialog', item, periode, this.items)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -225,22 +199,19 @@ export default {
           this.platsMatin.push({
             id: jourPlat.id,
             plat: jourPlat.matin,
-            nbPers: jourPlat.matinNbPers,
-            tags: jourPlat.tagsMatin
+            nbPers: jourPlat.matinNbPers
           })
 
           this.platsMidi.push({
             id: jourPlat.id,
             plat: jourPlat.midi,
-            nbPers: jourPlat.midiNbPers,
-            tags: jourPlat.tagsMidi
+            nbPers: jourPlat.midiNbPers
           })
 
           this.platsSoir.push({
             id: jourPlat.id,
             plat: jourPlat.soir,
-            nbPers: jourPlat.soirNbPers,
-            tags: jourPlat.tagsSoir
+            nbPers: jourPlat.soirNbPers
           })
 
           iStart++
@@ -267,50 +238,38 @@ export default {
         this.fillPlat(this.items,iStart,iEnd)
       },
 
-      /// UPDATE CALENDRIER ////
+      /// UPDATE CALENDRIER////
 
       updateMenuJour(menuJour, periode){
         console.log(menuJour)
         console.log(periode)
-        
+   
+
+       
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
         console.log('menu trouve ' + menuJourOld)
 
-        let newTags = []
-        menuJour.tagsChoix.forEach(el => {
-          newTags.push(el)
-        });
-
         if(periode === 'matin'){
+          console.log('matin up')
           menuJourOld.matin = menuJour.plat
           menuJourOld.matinNbPers = menuJour.nbPers
-          menuJourOld.tagsMatin = newTags 
         }
         else if(periode === 'midi'){
           console.log('midi up')
           console.log(this.menu.plats)
           menuJourOld.midi = menuJour.plat
           menuJourOld.midiNbPers = menuJour.nbPers
-          menuJourOld.tagsMidi = newTags 
         }
         else if(periode === 'soir'){
           menuJourOld.soir = menuJour.plat
           menuJourOld.soirNbPers = menuJour.nbPers
-          menuJourOld.tagsSoir = newTags 
         }
 
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
         this.fillPlat(this.items,iStart,iEnd)
-      },
-      valideMenu(){
-        this.menu.verrou = true
-        eventBus.$emit('postMenuModification', this.menu)
-      },
-      saveMenu(){
-        eventBus.$emit('postMenuModification', this.menu)
-      }
-      
+        }
+
     }
 }
 </script>
