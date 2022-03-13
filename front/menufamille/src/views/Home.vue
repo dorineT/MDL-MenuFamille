@@ -25,7 +25,7 @@
                 :key="i"
               >       
                 <v-list-item-content>
-                  <v-list-item-title v-text="item"></v-list-item-title>
+                  <v-list-item-title  @click="goToSuggestionMenu(i, item)" v-text="item"></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -47,9 +47,11 @@
               <v-list-item
                 v-for="(item, i) in menuToValide"
                 :key="i"
+
+                @click="goToModificationMenu(i, item)"
               >       
-                <v-list-item-content>
-                  <v-list-item-title @click="goToModificationMenu(i, item)" v-text="item"></v-list-item-title>
+                <v-list-item-content >
+                  <v-list-item-title  v-text="item"></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -65,7 +67,6 @@
   import CalendarResume from '../components/CalendarResume'
 
   export default {
-    name: 'Home',
 
     components: {
       CalendarResume,
@@ -79,8 +80,11 @@
     },
 
     methods:{
-      goToModificationMenu(key , item){       
+      goToModificationMenu(key , item){        
         this.$router.push({name:'MenuModification', query: {id: key, periode: item}});    
+      },
+      goToSuggestionMenu(key, item){
+        this.$router.push({name:'MenuSuggestion', query: {id: key, periode: item}});
       }
     }
   }
