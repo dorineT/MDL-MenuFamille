@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', recette_categories.findAll);
 
-router.put('/PutRecetteCategorie', recette_categories.Put_Recipe_Category);
+router.post('/', recette_categories.Put_Recipe_Category);
 
-router.post('/UpdateRecetteCategorie/:id_recette/:id_categorie', recette_categories.Update_Recipe_Category);
+router.put('/:id_recette/:id_categorie', recette_categories.Update_Recipe_Category);
 
-router.delete('/DeleteRecetteCategorie/:id_recette/:id_categorie', recette_categories.Delete_Recipe_Category);
+router.delete('/:id_recette/:id_categorie', recette_categories.Delete_Recipe_Category);

@@ -12,8 +12,8 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', favoris.findAll);
 
-router.put('/PutCalendrier', favoris.PutFavorite);
+router.post('/', favoris.PutFavorite);
 
-router.post('/UpdateCalendrier/:id_recette/:id_membre', favoris.Update_Favoris);
+router.put('/:id_recette/:id_membre', favoris.Update_Favoris);
 
-router.delete('/DeleteCalendrier/:id_recette/:id_membre', favoris.DeletFavoris);
+router.delete(':id_recette/:id_membre', favoris.DeletFavoris);

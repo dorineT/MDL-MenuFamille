@@ -1,6 +1,11 @@
 const { calendrier, recette } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
+const Calendrier = db.calendrier;
+const Recette = db.recette;
+const Tag = db.tag;
+const Categorie = db.categorie;
+const Denree = db.denree;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Menus from the database.
@@ -86,14 +91,16 @@ exports.DeleteMenu = (req, res) => {
     });
   };
 
-
-/*
-//// envoyer toutes les données concernant un menu (calendrier, plats, recettes, tag, propositions de recettes) carte #44
-//// On a pas de lien entre Menu et tag,
+///GetMenuAllInfo
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu, { include:  {all: true, nested: true}}) // Sinon tester { include: calendrier, recette} où {include: calendrier { include: calendrier_recette { include: recette { include: recette_tag {include: tag}, recette_categorie {include: categorie}}}}}
+  Menu.findByPk(id_menu,{ include: [{model: Calendrier, through: {attributes: []}, 
+                            include: [{model: Recette, through: {attributes: ["periode"]}, 
+                              include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]
+                            }]
+                          }]
+                        })
   .then(data => {
     res.send(data);
   })
@@ -104,10 +111,9 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
     });
   });  
 };
-*/
 
 
-///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BD. carte #34
+///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BDD. carte #34
 
 
 exports.Get_Current_Locked_Menu = (req, res) => {
@@ -137,7 +143,7 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte.
+//// Envoyer les menus non-verrouilles + suggestion ouverte  /!\ ne pas tester, pas de Islocked dans la BDD..
 
 exports.Get_Manual_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
@@ -162,7 +168,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non vérrouillés
+//// Envoyer les menus non vérrouillés  /!\ ne pas tester, pas de Islocked dans la BDD.
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
@@ -181,6 +187,23 @@ exports.Get_Unlocked_Menu = (req, res) => {
     res.status(500).send({
       message:
         err.message || "Some error occurred while retrieving unlocked Menus."
+    });
+  });  
+};
+
+
+//// GetById
+
+exports.Get_Menu_By_Id = (req, res) => {
+  const id = req.params.id;
+  Menu.findByPk(id)
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || `Some error occurred while retrieving Menus with id=${id}.`
     });
   });  
 };
