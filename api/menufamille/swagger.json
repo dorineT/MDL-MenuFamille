@@ -21,13 +21,7 @@
           ],
           "responses": {
             "200": {
-              "description": "An paged array of users",
-              "headers": {
-                "x-next": {
-                  "type": "string",
-                  "description": "A link to the next page of responses"
-                }
-              },
+              "description": "array of users",
               "schema": {
                 "$ref": "#/definitions/Pets"
               }
@@ -35,7 +29,7 @@
             "default": {
               "description": "unexpected error",
               "schema": {
-                "$ref": "#/definitions/Error"
+                "$ref": "./definitions/errors.yaml"
               }
             }
           }
