@@ -17,12 +17,25 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: false
       },
-      plat_identique: {
+      plat_identique_matin: {
           type: Sequelize.INTEGER,
           defaultValue: -1    
       },
+      plat_identique_midi: {
+        type: Sequelize.INTEGER,
+        defaultValue: -1    
+    },
+    plat_identique_soir: {
+      type: Sequelize.INTEGER,
+      defaultValue: -1    
+  },
       type: {
           type: Sequelize.ENUM('manuel','auto','sugestion')
+      },
+      verrou:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
       }
     },
     {
