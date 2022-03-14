@@ -6,8 +6,11 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true
       },
       date: {
-        type: Sequelize.DATE,
-        allowNull: false
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+        get: function() {
+          return this.getDataValue('date').toLocaleString('fr-BE', {timeZone: 'UTC'}).slice(0,10);
+        }
       },
       nb_personne: {
         type: Sequelize.INTEGER,

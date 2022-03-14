@@ -10,12 +10,18 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false
       },
       periode_debut: {
-        type: Sequelize.DATE,
-        allowNull: false
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+        get: function() {
+          return this.getDataValue('periode_debut').toLocaleString('fr-BE', {timeZone: 'UTC'}).slice(0,10);
+        }
       },
       periode_fin: {
-        type: Sequelize.DATE,
-        allowNull: false
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+        get: function() {
+          return this.getDataValue('periode_fin').toLocaleString('fr-BE', {timeZone: 'UTC'}).slice(0,10);
+        }
       },
       plat_identique_matin: {
           type: Sequelize.INTEGER,
