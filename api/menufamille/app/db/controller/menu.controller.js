@@ -131,7 +131,9 @@ exports.Get_Current_Locked_Menu = (req, res) => {
       {
         model: Calendrier,
         include: {
-          model: Recette
+          model: Recette,
+          through: {attributes: ["periode"]}, 
+          attributes:['nom']
         }
       }
     ]  

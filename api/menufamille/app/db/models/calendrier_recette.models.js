@@ -11,10 +11,15 @@ module.exports = (sequelize, Sequelize) => {
       },
       id_recette: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
       },
       periode: {
         type: Sequelize.ENUM('matin','midi','soir')
+      },
+      isRecette:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defautValue: false
       }
     },
     {
