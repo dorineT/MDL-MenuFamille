@@ -120,27 +120,27 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
 exports.Get_Current_Locked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   const date = Date.now();
-  Menu.findAll({
+  db.menu.findAll({
     where : 
     {
       id_famille: id_fam,
       verrou: true,
       periode_fin: {[Op.gte]: date}
-    },
-    include: [
+    },  
+    include: [ 
       {
-        model: Calendrier,
-        include: {
-          model: Recette,
-          through: {attributes: ["periode"]}, 
-          attributes:['nom']
-        }
+        model: db.calendrier,
+        include: [
+          {
+            model: db.calendrier_recette,
+            include: {model: db.recette, required: false, attributes: ['nom']}
+          }
+        ]
       }
-    ]  
+    ]
   })
-
-  .then(data => {
-    res.send(data);
+  .then(menuGlobal => {
+    res.send(menuGlobal);
   })
   .catch(err => {
     res.status(500).send({

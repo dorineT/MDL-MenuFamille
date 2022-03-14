@@ -243,8 +243,6 @@ export default {
       updateMenuJour(menuJour, periode){
         console.log(menuJour)
         console.log(periode)
-   
-
        
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
         console.log('menu trouve ' + menuJourOld)

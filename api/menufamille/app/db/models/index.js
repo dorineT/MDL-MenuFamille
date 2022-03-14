@@ -174,6 +174,9 @@ db.calendrier.belongsToMany(
   }
 )
 
+db.calendrier.hasMany(db.calendrier_recette, {foreignKey: 'id_calendrier',targetKey: 'id_calendrier'})
+db.calendrier_recette.belongsTo(db.calendrier,  {foreignKey: 'id_calendrier',targetKey: 'id_calendrier'})
+
 db.recette.belongsToMany(
   db.calendrier, 
   {
@@ -182,6 +185,9 @@ db.recette.belongsToMany(
       onDelete: 'CASCADE'
   }
 )
+
+db.recette.hasMany(db.calendrier_recette,  {foreignKey: 'id_recette',targetKey: 'id_recette'})
+db.calendrier_recette.belongsTo(db.recette, {foreignKey: 'id_recette',targetKey: 'id_recette'})
 
 // Menu -> Calendrier (M:M)
 db.menu.belongsToMany(

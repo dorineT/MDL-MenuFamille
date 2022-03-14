@@ -41,8 +41,13 @@ export default {
   name: "App",
   data: () => ({
     drawer: false,
-    loggedIn: true,
+    //loggedIn: true,
   }),
+  computed:{
+	loggedIn(){		
+		return this.$store.state.auth.status.loggedIn;	
+	}
+  },
   methods: {
     logOut() {
       this.$store.dispatch("auth/logout");

@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
       periode: {
         type: Sequelize.ENUM('matin','midi','soir')
       },
-      isRecette:{
+      is_recette:{
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defautValue: false

@@ -70,12 +70,14 @@
 </template>
 
 <script>
+import MenuDao from './../services/api.menu'
+let DAOMenu = new MenuDao()
   export default {
     data () {
       return {
         headers: [],
         items:[],
-        menus: [
+        /*menus: [
           {
             menu_id:0,
             plats: [
@@ -235,7 +237,8 @@
             dateFin: '25/02/2022',
             verrou: true
           }
-        ],
+        ],*/
+        menus: null,
         itemPeriode: [],
         comboboxMenuSelected: null,
         pageCount: 0,
@@ -246,24 +249,30 @@
         platsSoir: [] 
       }
     },
-    mounted () {
-      //console.log(this.$vuetify.breakpoint.width)
-      this.comboboxMenuSelected='Aucun menu sélectionné'
 
-      //select des periodes
-      this.menus.forEach(menu => {
-        if(menu.verrou){
+    async created () {
+      console.log(this.$vuetify.breakpoint.width)
+      this.comboboxMenuSelected='Aucun menu sélectionné'      
+
+      this.menus = await DAOMenu.getMenuLock()
+
+
+      console.log('data ' + this.menus)
+
+      this.menus.forEach(menu => { 
+          console.log('menu. date ' + menu.dateDebut)       
           let periodeNew = { 
               text: menu.dateDebut + ' - ' +menu.dateFin,
               value: menu.menu_id
             }
-          this.itemPeriode.push(periodeNew)
-        }
+            console.log(periodeNew)
+          this.itemPeriode.push(periodeNew)        
       });
 
     },
     watch:{
-        comboboxMenuSelected(slot){     
+        comboboxMenuSelected(slot){
+          console.log(slot + ' id menu')   
         if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }

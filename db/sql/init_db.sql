@@ -149,7 +149,7 @@ CREATE TABLE CALENDRIER_RECETTE (
                                     id_calendrier INTEGER NOT NULL,
                                     id_recette INTEGER NOT NULL,
                                     periode periode,
-                                    isRecette Bool NOT NULL DEFAULT false,
+                                    is_recette Bool NOT NULL DEFAULT false,
                                     UNIQUE (id_calendrier, id_recette, periode),
                                     PRIMARY KEY (id_periode)
 );
