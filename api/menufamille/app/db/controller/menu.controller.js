@@ -95,10 +95,10 @@ exports.DeleteMenu = (req, res) => {
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu,{ include: [{model: Calendrier, through: {attributes: []}, 
-                            include: [{model: Recette, through: {attributes: ["periode"]}, 
-                              include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]
-                            }]
+  Menu.findByPk(id_menu,{ 
+                          include: [
+                            {model: Calendrier, through: {attributes: []}, 
+                                include: [{model: Recette, through: {attributes: ["periode"]}, attributes:['nom']}]
                           }]
                         })
   .then(data => {
@@ -113,24 +113,30 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
 };
 
 
-///// envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines) /!\ ne pas tester, pas de Islocked dans la BDD. carte #34
-
-
+/**
+ * envoyer les menus verrouillés dont la date n'est pas passée (pas des menus qui datent de 2 semaines)
+ * pour une famille donnée
+ */
 exports.Get_Current_Locked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   const date = Date.now();
   Menu.findAll({
-    where : { [Op.and]: 
+    where : 
+    {
+      id_famille: id_fam,
+      verrou: true,
+      periode_fin: {[Op.gte]: date}
+    },
+    include: [
       {
-        id_famille: id_fam,
-        est_verrouille: true,
-        periode_fin: 
-        {
-            [Op.lt]: date /// Lower than 
+        model: Calendrier,
+        include: {
+          model: Recette
         }
-      } 
-    }
-  }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
+      }
+    ]  
+  })
+
   .then(data => {
     res.send(data);
   })
@@ -151,7 +157,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
     where : { [Op.and]: 
       {
         id_famille: id_fam,
-        est_verrouille: false,
+        verrou: false,
         type: 'manuel'
       } 
     }
@@ -176,7 +182,7 @@ exports.Get_Unlocked_Menu = (req, res) => {
     where : { [Op.and]: 
       {
         id_famille: id_fam,
-        est_verrouille: false,
+        verrou: false,
       } 
     }
   }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
