@@ -3,6 +3,10 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
+  dialectOptions:{
+    useUTC:true
+  },
+  timezone: '+01:00',
   define: {
     freezeTableName: true
   },
@@ -36,6 +40,7 @@ db.recette = require("./recette.models")(sequelize, Sequelize);
 db.refreshToken = require("./refreshToken.models")(sequelize, Sequelize);
 db.tag = require("./tag.models")(sequelize, Sequelize);
 db.type = require("./type.models")(sequelize, Sequelize);
+db.tag_periode = require("./tag_periode.models")(sequelize, Sequelize);
 
 // Menu -> Famille (O:M)
 db.famille.hasMany(db.menu, {foreignKey: 'id_famille', onDelete: 'CASCADE'})
@@ -197,4 +202,22 @@ db.calendrier.belongsToMany(
   }
 )
 
+// Calendrier_recette -> tag (M:M)
+db.calendrier_recette.belongsToMany(
+  db.tag, 
+  { 
+      through: db.tag_periode,
+      foreignKey: 'id_periode',
+      onDelete: 'CASCADE'
+  }
+)
+
+db.tag.belongsToMany(
+  db.calendrier_recette, 
+  {
+      through: db.tag_periode,
+      foreignKey: 'id_tag',
+      onDelete: 'CASCADE'
+  }
+)
 module.exports = db;

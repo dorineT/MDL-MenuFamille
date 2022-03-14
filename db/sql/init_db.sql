@@ -22,8 +22,11 @@ CREATE TABLE MENU (
                       id_famille INTEGER NOT NULL,
                       periode_debut TIMESTAMP NOT NULL ,
                       periode_fin TIMESTAMP NOT NULL ,
-                      plat_identique INTEGER DEFAULT -1,
+                      plat_identique_matin INTEGER NOT NULL DEFAULT -1,
+                      plat_identique_midi INTEGER NOT NULL DEFAULT -1,
+                      plat_identique_soir INTEGER NOT NULL DEFAULT -1,
                       type type_menu,
+                      verrou BOOL NOT NULL DEFAULT false,
                       PRIMARY KEY (id_menu)
 );
 
@@ -142,10 +145,18 @@ CREATE TABLE MENU_CALENDRIER (
 );
 
 CREATE TABLE CALENDRIER_RECETTE (
+                                    id_periode SERIAL NOT NULL,
                                     id_calendrier INTEGER NOT NULL,
                                     id_recette INTEGER NOT NULL,
                                     periode periode,
-                                    PRIMARY KEY (id_calendrier,id_recette)
+                                    UNIQUE (id_calendrier, id_recette),
+                                    PRIMARY KEY (id_periode)
+);
+
+CREATE TABLE TAG_PERIODE (
+                                    id_periode INTEGER NOT NULL,
+                                    id_tag INTEGER NOT NULL,
+                                    PRIMARY KEY (id_periode,id_tag)
 );
 
 /*** Définition des clés étrangères ***/
@@ -184,6 +195,11 @@ ALTER TABLE CALENDRIER_RECETTE ADD CONSTRAINT pk_CRcalendrier FOREIGN KEY (id_ca
 ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCmenu FOREIGN KEY (id_menu) REFERENCES MENU(id_menu) ON DELETE CASCADE;
 
 ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCcalendrier FOREIGN KEY (id_calendrier) REFERENCES CALENDRIER(id_calendrier) ON DELETE CASCADE;
+
+ALTER TABLE TAG_PERIODE ADD CONSTRAINT pk_TPtag FOREIGN KEY (id_tag) REFERENCES TAG(id_tag) ON DELETE CASCADE;
+
+ALTER TABLE TAG_PERIODE ADD CONSTRAINT pk_TPperiode FOREIGN KEY (id_periode) REFERENCES CALENDRIER_RECETTE(id_periode) ON DELETE CASCADE;
+
 
 /*insert tag + type*/
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
