@@ -8,11 +8,20 @@ const type = require("../db/controller/type.controller.js");
 const router = new Router()
 module.exports = router
 
+router.use(function(req, res, next) { //toujours en premier
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+});
 
     // Retrieve all Types
 router.get('/', type.findAll);
 
-router.post('/', type.PutType);
+router.get('/:id', type.findById);
+
+router.post('/', type.putType);
 
 router.put('/:id', type.UpdateType);
 
