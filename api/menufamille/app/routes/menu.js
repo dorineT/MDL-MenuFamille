@@ -18,7 +18,8 @@ router.put('/:id', menu.UpdateMenu);
 
 router.delete('/:id', menu.DeleteMenu);
 
-router.get('/GetLockedMenu/:id_fam', menu.Get_Current_Locked_Menu);
+//utilise pour la recup de menus verrouillés avec toute leur infos
+router.get('/GetLockedMenu/:id_fam', menu.Get_Current_Locked_Menu); 
 
 router.get('/GetManualUnlockedMenu/:id_fam', menu.Get_Manual_Unlocked_Menu);
 

@@ -255,6 +255,8 @@ let DAOMenu = new MenuDao()
       this.comboboxMenuSelected='Aucun menu sélectionné'      
 
       this.menus = await DAOMenu.getMenuLock()
+      console.log('menu received')
+      console.log(this.menus)
 
       this.menus.forEach(menu => {         
           let periodeNew = { 
