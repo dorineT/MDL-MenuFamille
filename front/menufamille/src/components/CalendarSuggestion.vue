@@ -28,11 +28,13 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
+                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
                 <v-btn text @click="goToRecette(item,'matin')">
                     <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
                     <p v-else-if="item.plat !=='/'">{{ item.plat }} </p>
-                    <p v-else style="color: red">X</p>                      
-                  </v-btn>                     
+                                    
+                  </v-btn>      
+                                     
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
@@ -161,13 +163,13 @@ export default {
         // call api to get the menu ou pas besoin
     },
     created(){
-      eventBus.$on('updateMenuJour', this.updateMenuJour)
+      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)
     },
     methods:{
       //// Affichage calendrier ///
       goToRecette(item,periode){      
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode, this.items)
+          eventBus.$emit('openDialogSuggestion', item, periode, this.items)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -238,7 +240,7 @@ export default {
 
       /// UPDATE CALENDRIER////
 
-      updateMenuJour(menuJour, periode){
+      updateMenuSuggestionJour(menuJour, periode){
        
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
 
