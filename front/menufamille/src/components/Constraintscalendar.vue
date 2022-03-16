@@ -149,7 +149,7 @@
 										type="number"
 										step="any"
 										min="0"
-										ref="input"
+										ref="input"										
 										:rules="form.matinCheck ? nbPlatRule : []"
 										v-model.number="form.nbPlatMatin"
 										required
@@ -320,9 +320,10 @@
 				],			
 
 				nbPlatRule: [								
-					v => !!v || 'Champ requis',
-					v => (v && v > 0) || 'Chiffre supérieur à 0',
+					v => (!!v  || 'Champ requis'),
+					v => (v && v >= 0) || 'Chiffre supérieur positif ou 0',
 				],
+
 				ruleRadioButton: [
 					v => !!v || 'Champ requis'
 				],

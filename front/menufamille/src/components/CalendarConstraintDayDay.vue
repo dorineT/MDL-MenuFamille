@@ -440,12 +440,18 @@
 			creationMenuDone(){
 				let menuNew = {
 					menu_id: null,
+					idFamile: this.$store.state.auth.user.id_membre,
 					dateDebut: this.formData.dateDebut,
 					dateFin: this.formData.dateFin,
+					nbPlatMatin: this.formData.nbPlatMatin,
+					nbPlatMidi: this.formData.nbPlatMidi,
+					nbPlatSoir: this.formData.nbPlatSoir,
+					type: this.formData.choixTypeMenu,
 					verrou: false,
-					plats: this.items
+					plats: this.items,					
 				}
-				DAOMenu.sendMenuCreate(menuNew, this.$store.state.auth.user.id_membre)
+				console.log(menuNew)
+				DAOMenu.sendMenuCreate(menuNew)
 				this.$router.push('/');
 			}
 		},
