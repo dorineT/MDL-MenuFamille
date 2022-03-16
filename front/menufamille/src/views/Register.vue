@@ -13,15 +13,33 @@
     <div style="margin-top: 3em">
       <v-card style="margin: 0 auto; width: 40em" class="elevation-12">
         <v-toolbar color="#9CCC65" dark flat>
-          <v-toolbar-title>Connexion</v-toolbar-title>
+          <v-toolbar-title>Inscription</v-toolbar-title>
           <v-spacer />
           <v-icon>mdi-account</v-icon>
         </v-toolbar>
         <v-card-text>
           <v-form
           ref="form"
-          @submit.prevent="handleLogin"
+          @submit.prevent="handleRegister"
           >
+          <div>
+              <v-text-field
+                label="Prénom"
+                type="text"
+                required
+                :rules="firstnameRules"
+                v-model="user.firstname"
+              />
+            </div>
+            <div>
+              <v-text-field
+                label="Nom"
+                type="text"
+                required
+                :rules="lastnameRules"
+                v-model="user.lastname"
+              />
+            </div>
             <div>
               <v-text-field
                 label="Email"
@@ -44,7 +62,7 @@
               type="submit"
               color="#9CCC65"
               style="color: white; float: right"
-              >Connexion</v-btn
+              >Inscription</v-btn
             >
             <br /><br />
           </v-form>
@@ -56,7 +74,7 @@
             sticky
             style="color:white"
         >
-        Pas encore inscrit? <v-btn text color="primary" @click="$router.push('/register');" >S'enregistrer</v-btn>
+        Déjà inscrit? <v-btn text color="primary" @click="$router.push('/login');" >Se connecter</v-btn>
         </v-banner>
       </v-card>
     </div>
@@ -76,60 +94,68 @@
   </div>
 </template>
 
+
+
+
+
 <script>
-import User from "../models/user";
+import User from '../models/user';
 export default {
-  name: "Login",
+  name: 'Register',
   data() {
     return {
-      user: new User("", ""),
-      loading: false,
+      user: new User('', '', '', ''),
+      submitted: false,
       invalid: false,
-      message: "",
+      message: '',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       passwordRules: [
-        v => !!v || 'Name is required'
+        v => !!v || 'Password is required'
       ],
+      lastnameRules: [
+        v => !!v || 'Lastname is required'
+      ],
+      firstnameRules: [
+        v => !!v || 'Fisrtname is required'
+      ]
     };
   },
   computed: {
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
-    },
+    }
   },
-  created() {
+  mounted() {
     if (this.loggedIn) {
-      this.$router.push("/");
+      this.$router.push('/');
     }
   },
   methods: {
-    handleLogin() {
-      this.loading = true;
-      if (!this.$refs.form.validate()) {
-          this.loading = false;
-          return;
-      }
-        if (this.user.email && this.user.password) {
-          this.$store.dispatch("auth/login", this.user).then(
-            () => {
-              this.$router.push("/");
+    handleRegister() {
+      this.message = '';
+      this.submitted = true;
+        if (this.$refs.form.validate()) {
+          this.$store.dispatch('auth/register', this.user).then(
+            data => {
+              this.message = data.message;
+              this.invalid = false;
+              this.$router.push("/login");
+            
             },
-            (error) => {
-              console.log(error)
-              this.invalid = true;
-              this.loading = false;
+            error => {
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString();
+              this.invalid = true;
             }
           );
         }
-    },
-  },
+    }
+  }
 };
 </script>
 
