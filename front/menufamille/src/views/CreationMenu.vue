@@ -64,6 +64,9 @@ export default {
   created(){
     eventBus.$on('formValideOK', this.stepAvance)
   },
+  destroyed() {
+    eventBus.$off("formValideOK",); //listening event form CalendarModificationMenu component
+  },
   methods: {
     submit() {
       eventBus.$emit('validateFormContrainte')     

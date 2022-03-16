@@ -222,6 +222,9 @@
 		created() {
 			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component
 		},
+		destroyed() {
+			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
+		},
 		watch:{
 			
 		},

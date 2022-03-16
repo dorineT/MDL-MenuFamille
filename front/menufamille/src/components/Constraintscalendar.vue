@@ -335,6 +335,9 @@
 		created() {
 			eventBus.$on('validateFormContrainte', this.validateForm);
 		},
+		destroyed() {
+			eventBus.$off('validateFormContrainte');
+		},
 		watch: {
 			computedDateFormattedDebut() {
 				if ((this.form.choixPeriode === "semaine") & (this.form.dateDebut != null)) {

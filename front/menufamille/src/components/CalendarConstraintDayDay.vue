@@ -152,6 +152,11 @@
 			eventBus.$on("configurationDD", this.setUpData);
 			eventBus.$on('creationMenuDone', this.creationMenuDone)
 		},
+		destroyed(){
+			eventBus.$off("updateMenuJourCreate")
+			eventBus.$off("configurationDD")
+			eventBus.$off('creationMenuDone')
+		},
 		methods: {
 			goToRecette(item, periode) {
 				let menuFind = this.items.find((el) => el.id === item.id);

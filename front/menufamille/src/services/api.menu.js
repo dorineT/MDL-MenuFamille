@@ -1,4 +1,5 @@
 import api from './api'
+import moment from 'moment'
 
 export default class MenuDao{
     /**
@@ -61,19 +62,19 @@ export default class MenuDao{
                 })
                 
             });
-            console.log(menus)
-            //return menus;
-          });
-          console.log('fff' + menus)
-         return menus 
+                      
+          });  
+        console.log(menus)          
+        return menus 
     }
 
     getDay(date){
-      let dateJour = new Date(date)
-      return this.getNameOfDay(dateJour.getDay())
+      let dateJour = moment(date, "DD-MM-YYYY");
+      return dateJour.locale('fr').format('dddd')
     }
   
-    getNameOfDay(day) {
+    /*getNameOfDay(day) {
+      console.log(' day : ' + day)
       if (day == 0) return "Dimanche";
       else if (day == 1) return "Lundi";
       else if (day == 2) return "Mardi";
@@ -81,7 +82,7 @@ export default class MenuDao{
       else if (day == 4) return "Jeudi";
       else if (day == 5) return "Vendredi";
       return "Samedi";
-    }
+    }*/
 
 }
 

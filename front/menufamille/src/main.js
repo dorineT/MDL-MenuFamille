@@ -15,7 +15,9 @@ import setupInterceptors from './services/setupInterceptors';
 // Optionally install the BootstrapVue icon components plugin
 //Vue.use(IconsPlugin)
 
-
+import moment from 'moment'
+//Vue.prototype.moment = moment
+Vue.use(moment)
 
 Vue.config.productionTip = false
 export const eventBus = new Vue();
