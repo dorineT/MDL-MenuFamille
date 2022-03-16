@@ -194,9 +194,7 @@ export default {
     },
     methods:{
       //// Affichage calendrier ///
-      goToRecette(item,periode){
-          console.log('click recette calendar ' + periode)
-
+      goToRecette(item,periode){    
 
           let menuFind = this.items.find(el => el.id === item.id)
           //open dialogue with even bus
@@ -274,12 +272,8 @@ export default {
 
       /// UPDATE CALENDRIER ////
 
-      updateMenuJour(menuJour, periode){
-        console.log(menuJour)
-        console.log(periode)
-        
-        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
-        console.log('menu trouve ' + menuJourOld)
+      updateMenuJour(menuJour, periode){        
+        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)   
 
         let newTags = []
         menuJour.tagsChoix.forEach(el => {
@@ -292,8 +286,6 @@ export default {
           menuJourOld.tagsMatin = newTags 
         }
         else if(periode === 'midi'){
-          console.log('midi up')
-          console.log(this.menu.plats)
           menuJourOld.midi = menuJour.plat
           menuJourOld.midiNbPers = menuJour.nbPers
           menuJourOld.tagsMidi = newTags 

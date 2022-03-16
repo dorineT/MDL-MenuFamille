@@ -152,8 +152,7 @@ export default {
         platsSoir: []      
          }
     },
-    mounted(){
-        console.log('des choses a faire avec l\'api')
+    mounted(){  
         this.items = this.menu.plats
 
         let indiceEnd = this.items.length < 7 ? this.items.length : 7       
@@ -166,8 +165,7 @@ export default {
     },
     methods:{
       //// Affichage calendrier ///
-      goToRecette(item,periode){
-          console.log('click recette calendar ' + periode)
+      goToRecette(item,periode){      
           //open dialogue with even bus
           eventBus.$emit('openDialog', item, periode, this.items)
         },
@@ -241,20 +239,14 @@ export default {
       /// UPDATE CALENDRIER////
 
       updateMenuJour(menuJour, periode){
-        console.log(menuJour)
-        console.log(periode)
        
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
-        console.log('menu trouve ' + menuJourOld)
 
         if(periode === 'matin'){
-          console.log('matin up')
           menuJourOld.matin = menuJour.plat
           menuJourOld.matinNbPers = menuJour.nbPers
         }
         else if(periode === 'midi'){
-          console.log('midi up')
-          console.log(this.menu.plats)
           menuJourOld.midi = menuJour.plat
           menuJourOld.midiNbPers = menuJour.nbPers
         }

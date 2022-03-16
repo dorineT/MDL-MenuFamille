@@ -301,8 +301,7 @@
 			},
 
 			/// UPDATE
-			updateMenuJourCreate(item, periode) {
-				console.log("update calendrier configuration " + periode);
+			updateMenuJourCreate(item, periode) {				
 
 				let menuJourOld = this.items.find((elem) => elem.id === item.id);
 
@@ -357,8 +356,7 @@
 					(this.errorMessage.matin !== "") |
 					(this.errorMessage.midi !== "") |
 					(this.errorMessage.soir !== "")
-				) {
-					console.log(this.errorMessage);
+				) {				
 					menuJourOld = menuJourSave;
 					this.errorMessage.error = true;
 				} else {
@@ -403,8 +401,7 @@
 					}
 				});
 
-				for (const item in count) {
-					console.log(count[item] + " " + item);
+				for (const item in count) {					
 					if (count[item] > this.formData.nbPlatMidi) {
 						return "Contrainte de plat identique non respectée pour le midi";
 					}
@@ -424,8 +421,7 @@
 					}
 				});
 
-				for (const item in count) {
-					console.log(count[item] + " " + item);
+				for (const item in count) {				
 					if (count[item] > this.formData.nbPlatSoir) {
 						return "Contrainte de plat identique non respectée pour le soir";
 					}
@@ -441,8 +437,6 @@
 					verrou: false,
 					plats: this.items
 				}
-				console.log('menu créé')
-				console.log(menuNew)
 				this.$router.push('/');
 			}
 		},

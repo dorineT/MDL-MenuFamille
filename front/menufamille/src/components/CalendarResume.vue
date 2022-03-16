@@ -256,23 +256,17 @@ let DAOMenu = new MenuDao()
 
       this.menus = await DAOMenu.getMenuLock()
 
-
-      console.log('data ' + this.menus)
-
-      this.menus.forEach(menu => { 
-          console.log('menu. date ' + menu.dateDebut)       
+      this.menus.forEach(menu => {         
           let periodeNew = { 
               text: menu.dateDebut + ' - ' +menu.dateFin,
               value: menu.menu_id
-            }
-            console.log(periodeNew)
+            }     
           this.itemPeriode.push(periodeNew)        
       });
 
     },
     watch:{
-        comboboxMenuSelected(slot){
-          console.log(slot + ' id menu')   
+        comboboxMenuSelected(slot){    
         if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }

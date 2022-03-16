@@ -228,8 +228,6 @@
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
 			openModal(itemReceived, periode, jourSemaine, date) {
-				console.log('boite dialogue: ')
-				console.log(itemReceived)
 				
 				this.showModifMenu = false;
 				this.dialog = true;
@@ -274,15 +272,10 @@
 			},
 			sauvegardeMenuJour() {
 				//mise a jour calendrier
-				console.log("new recette choix " + this.newRecetteChoix)
-				console.log('select radio oui / non : ' + this.selectedRadioMenuOuiNon)
-				
-				console.log('' === "" )
 				if (this.selectedRadioMenuOuiNon === "non") {
 					this.newRecetteChoix = "/";
 				}
-				else if (this.selectedRadioMenuOuiNon === "oui" & (this.newRecetteChoix==="/" | this.newRecetteChoix===null)) {
-					console.log("hello")
+				else if (this.selectedRadioMenuOuiNon === "oui" & (this.newRecetteChoix==="/" | this.newRecetteChoix===null)) {				
 					this.newRecetteChoix = "";
 				}
 				//recette			
@@ -302,9 +295,7 @@
 
 				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
 
-				// envoi uniquement le menu jour modifie
-				console.log('Update boite de dialogue')	
-				console.log(this.infoMenu)			
+				// envoi uniquement le menu jour modifie		
 				eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
 			},
 			resetSelectedSuggestion() {

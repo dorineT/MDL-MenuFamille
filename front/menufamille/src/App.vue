@@ -23,9 +23,9 @@
 		<v-app-bar app color="#FFB74D" v-if="loggedIn">
 			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>	
 			<v-container fluid>
-				<v-toolbar-title style="align-content: center"><div class="divTitle">Forchete & Coûtê </div></v-toolbar-title>
+				<v-toolbar-title style="align-content: center"><div class="divTitle">Menu Famille</div></v-toolbar-title>				
 			</v-container>
-			<v-btn @click="logOut">Déconnexion</v-btn>
+			<v-btn text @click="logOut" class="divTitle"><strong>Déconnexion</strong></v-btn>
 		</v-app-bar>
 
 		<v-main>
