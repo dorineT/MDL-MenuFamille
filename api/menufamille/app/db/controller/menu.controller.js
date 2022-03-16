@@ -29,7 +29,8 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
   exports.PutMenu = (req, res) => {
-    Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
+    console.log(req.body)
+   /* Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
     .then(data => { 
       res.send(data);
     })
@@ -38,7 +39,7 @@ exports.findAll = (req, res) => {
         message:
           err.message || "Some error occurred while insering in Menu"
       });
-    });
+    });*/
   };
 
 /// Update CRUD

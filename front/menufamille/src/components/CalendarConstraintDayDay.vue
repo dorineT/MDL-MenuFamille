@@ -125,6 +125,9 @@
 
 <script>
 	import { eventBus } from "../main";
+	import MenuDao from './../services/api.menu'
+	let DAOMenu = new MenuDao()
+
 	export default {
 		data() {
 			return {
@@ -442,6 +445,7 @@
 					verrou: false,
 					plats: this.items
 				}
+				DAOMenu.sendMenuCreate(menuNew, this.$store.state.auth.user.id_membre)
 				this.$router.push('/');
 			}
 		},

@@ -254,9 +254,7 @@ let DAOMenu = new MenuDao()
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'      
 
-      this.menus = await DAOMenu.getMenuLock()
-      console.log('menu received')
-      console.log(this.menus)
+      this.menus = await DAOMenu.getMenuLock(this.$store.state.auth.user.id_membre)
 
       this.menus.forEach(menu => {         
           let periodeNew = { 

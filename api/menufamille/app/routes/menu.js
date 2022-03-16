@@ -12,6 +12,7 @@ module.exports = router
     // Retrieve all Calender
 router.get('/', menu.findAll);
 
+//creation d'un menu
 router.post('/', menu.PutMenu);
 
 router.put('/:id', menu.UpdateMenu);
