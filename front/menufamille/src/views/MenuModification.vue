@@ -26,6 +26,9 @@ import CalendarModificationMenu from '../components/CalendarModificationMenu.vue
 import DialogueModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 import {eventBus } from '../main'
 
+import MenuDao from './../services/api.menu'
+let DAOMenu = new MenuDao()
+
 export default {
   name: 'MenuModification',
 
@@ -58,9 +61,8 @@ export default {
       eventBus.$emit('saveModification')
     },
     postMenu(menu){
-      console.log('post api')
-      console.log(menu)
-      this.$router.push('/');
+      DAOMenu.sendMenuUpdate(menu, this.$store.state.auth.user.id_membre)
+      if(this.$router.path !== '/') this.$router.push('/');
     }
   }
 }

@@ -19,12 +19,24 @@ export default class MenuDao{
     /**
      * Envoie le nouveau menu à l'api par post
      * @param newMenu le nouveau menu
+     * @param idFamille l'id de la famille
      */
     sendMenuCreate(newMenu, idFamille){  
         api.post("/menu/",{
           menu: newMenu,
           id_famille: idFamille
         })
+    }
+
+    /**
+     * Envoie le menu modifié
+     * @param {*} newMenu le menu a modifier
+     */
+    sendMenuUpdate(newMenu){
+      console.log('hello update')
+      api.put("/menu/",{
+        menu: newMenu,
+      })
     }
 
 }

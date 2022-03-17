@@ -278,7 +278,7 @@
 					this.items.push({
 						id: i,
 						jour: this.getNameOfDay(this.jours[i].getDay()),
-						date: day + "/" + month,
+						date: day + "/" + month+"/"+this.jours[i].getFullYear(),
 						matin: this.formData.matinCheck ? "" : "/",
 						matinNbPers: this.formData.nbPersonnes,
 						tagsMatin: this.formData.tagsMatin,
