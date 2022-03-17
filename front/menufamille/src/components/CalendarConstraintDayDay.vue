@@ -40,7 +40,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -65,7 +67,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -89,7 +93,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -112,12 +118,11 @@
 				@next="nextPageMenu"
 				@previous="previousPageMenu"
 				@input="changePageEvent"
+				class="marginClass"
 			></v-pagination>
 		</div>
 		<v-snackbar v-model="errorMessage.error" text color="red">
-			{{ errorMessage.matin }}
-			{{ errorMessage.midi }}
-			{{ errorMessage.soir }}
+			{{ errorMessage.message }}
 		</v-snackbar>
 	</v-card>
 
@@ -125,6 +130,7 @@
 
 <script>
 	import { eventBus } from "../main";
+	import moment from 'moment'
 	import checkContrainte from './../services/checkContrainteMenu'
 	import MenuDao from './../services/api.menu'
 	let DAOMenu = new MenuDao()
@@ -143,9 +149,7 @@
 				items: [],
 				formData: {},
 				errorMessage: {
-					matin: "",
-					midi: "",
-					soir: "",
+					message: "",
 					error: false,
 				},
 			};
@@ -313,6 +317,7 @@
 			updateMenuJourCreate(item, periode) {				
 
 				let menuJourOld = this.items.find((elem) => elem.id === item.id);
+				this.errorMessage.message = ""				
 
 				let menuJourSave = {
 					id: menuJourOld.id,
@@ -340,7 +345,7 @@
 					menuJourOld.tagsMatin = newTags;
 
 					if(this.formData.nbPlatMatin !== null){
-						this.errorMessage.matin = checkContrainte.verifContraintePlatMatin();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMatin, 'matin');
 					}
 
 				} else if (periode === "midi") {
@@ -349,30 +354,37 @@
 					menuJourOld.tagsMidi = newTags;
 
 					if(this.formData.nbPlatMidi !== null){
-						this.errorMessage.midi = checkContrainte.verifContraintePlatMidi();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMidi, 'midi');
 					}
 				} else if (periode === "soir") {
-					menuJourOld.soir = item.plat;
-					menuJourOld.soirNbPers = item.nbPers;
-					menuJourOld.tagsSoir = newTags;
+					menuJourOld.soir = item.plat
+					menuJourOld.soirNbPers = item.nbPers
+					menuJourOld.tagsSoir = newTags
 
 					if(this.formData.nbPlatSoir !== null){
-						this.errorMessage.soir = checkContrainte.verifContraintePlatSoir();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatSoir, 'soir');
 					}
 				}
 
-				if (
-					(this.errorMessage.matin !== "") |
-					(this.errorMessage.midi !== "") |
-					(this.errorMessage.soir !== "")
-				) {				
-					menuJourOld = menuJourSave;
-					this.errorMessage.error = true;
+				if (this.errorMessage.message !== "") {
+					console.log('reset menu')				
+					menuJourOld.matin = menuJourSave.matin
+					menuJourOld.midi = menuJourSave.midi
+					menuJourOld.soir = menuJourSave.soir
+					menuJourOld.matinNbPers = menuJourSave.matinNbPers
+					menuJourOld.midiNbPers = menuJourSave.midiNbPers
+					menuJourOld.soirNbPers = menuJourSave.soirNbPers
+					menuJourOld.tagsMatin = menuJourSave.tagsMatin
+					menuJourOld.tagsMidi = menuJourSave.tagsMidi
+					menuJourOld.tagsSoir = menuJourSave.tagsSoir
+
+					this.errorMessage.error = true
 				} else {
-					let iStart = (this.page - 1) * 7;
-					let iEnd = this.page * 7;
-					this.fillPlat(iStart, iEnd);
-					this.errorMessage.error = false;
+					console.log('ok menu')
+					let iStart = (this.page - 1) * 7
+					let iEnd = this.page * 7
+					this.fillPlat(iStart, iEnd)		
+					this.errorMessage.error = false			
 				}
 			},
 			
@@ -381,8 +393,8 @@
 				let menuNew = {
 					menu_id: null,
 					idFamile: this.$store.state.auth.user.id_membre,
-					dateDebut: this.formData.dateDebut,
-					dateFin: this.formData.dateFin,
+					dateDebut: moment(this.formData.dateDebut).format("DD/MM/YYYY"),
+					dateFin: moment(this.formData.dateFin).format("DD/MM/YYYY"),
 					nbPlatMatin: this.formData.nbPlatMatin,
 					nbPlatMidi: this.formData.nbPlatMidi,
 					nbPlatSoir: this.formData.nbPlatSoir,
@@ -405,4 +417,8 @@
 
 .tdplat
   text-align: center
+
+.marginClass
+  margin-top: 20px
+  margin-bottom: 20px  
 </style>

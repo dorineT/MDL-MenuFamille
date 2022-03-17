@@ -16,7 +16,7 @@
           tile
         >
           <v-list>
-            <v-subheader>Suggestion :</v-subheader>
+            <v-subheader>Menus disponible à la suggestion :</v-subheader>
             <v-list-item-group              
               color="primary"
             >

@@ -31,8 +31,12 @@
                 <v-btn text @click="goToRecette(item,'matin')">
 
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
-                    <p v-else-if="item.plat === ''" style="color: green">+</p>
-                    <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                    <p v-else-if="item.plat === ''" style="color: green">
+                      <v-icon color="green" large>mdi-plus</v-icon>
+                    </p>
+                    <p v-else-if="item.plat==='/'" style="color: red">
+                      <v-icon color="red">mdi-close-thick</v-icon>
+                    </p>
                     <p v-else>{{ item.plat }} </p>                   
 
                   </v-btn>                     
@@ -43,8 +47,10 @@
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item,'midi')">
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
-                  <p v-else-if="item.plat === ''" style="color: green">+</p>
-                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                  <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>
+                  <p v-else-if="item.plat==='/'" style="color: red">
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
                   <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
@@ -54,8 +60,12 @@
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
                   <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                  <p v-else-if="item.plat === ''" style="color: green">+</p>             
-                  <p v-else-if="item.plat==='/'" style="color: red">X</p>
+                  <p v-else-if="item.plat === ''" style="color: green">
+                    <v-icon color="green" large>mdi-plus</v-icon>
+                  </p>             
+                  <p v-else-if="item.plat==='/'" style="color: red">
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
@@ -72,13 +82,14 @@
         @next="nextPageMenu"
         @previous="previousPageMenu"
         @input="changePageEvent"
+        class="marginClass"
       ></v-pagination>
 
       <v-container grid-list-xs fluid>
-        <h4>Contraintes sur le nombre de plats autorisés</h4>
-        <v-row>
+        Contraintes sur le nombre de plats autorisés
+        <v-row class="paddingclass">
           <v-col>
-            <v-card xs="12" sm="4" lg="4" xl="4">
+            <v-card class="paddingclass" xs="12" sm="4" lg="4" xl="4">
               <v-card-title>Matin</v-card-title>
               <v-text-field
                 type="number"
@@ -86,12 +97,12 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="nbPlatMatin"                            
+                v-model.number="menu.nbPlatMatin"                            
               ></v-text-field>
             </v-card>
           </v-col>
           <v-col>
-            <v-card xs="12" sm="4" lg="4" xl="4">
+            <v-card class="paddingclass" xs="12" sm="4" lg="4" xl="4">
                <v-card-title>Midi</v-card-title>
               <v-text-field
                 type="number"
@@ -99,12 +110,12 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="nbPlatMidi"                            
+                v-model.number="menu.nbPlatMidi"                            
               ></v-text-field>
             </v-card>
           </v-col>
           <v-col>
-            <v-card xs="12" sm="4" lg="4" xl="4">
+            <v-card class="paddingclass" xs="12" sm="4" lg="4" xl="4">
                <v-card-title>Soir</v-card-title>
               <v-text-field
                 type="number"
@@ -112,7 +123,7 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="nbPlatSoir"                            
+                v-model.number="menu.nbPlatSoir"                            
               ></v-text-field>
             </v-card>
           </v-col>
@@ -120,9 +131,7 @@
       </v-container>
 
       <v-snackbar v-model="errorMessage.error" text color="red">
-        {{ errorMessage.matin }}
-        {{ errorMessage.midi }}
-        {{ errorMessage.soir }}
+        {{ errorMessage.message }}
       </v-snackbar>
     </div>
 
@@ -227,9 +236,7 @@ export default {
         platsMidi: [],
         platsSoir: [],
         errorMessage: {
-          matin: "",
-          midi: "",
-          soir: "",
+          message: "",
           error: false,
         }, 
         
@@ -339,7 +346,23 @@ export default {
       /// UPDATE CALENDRIER ////
 
       updateMenuJour(menuJour, periode){        
-        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)   
+        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
+        this.errorMessage.message = ""
+
+        let menuJourSave = {
+          id: menuJourOld.id,
+          jour: menuJourOld.jour,
+          date: menuJourOld.date,
+          matin: menuJourOld.matin,
+          matinNbPers: menuJourOld.matinNbPers,
+          tagsMatin: menuJourOld.tagsMatin,
+          midi: menuJourOld.matin,
+          midiNbPers: menuJourOld.matinNbPers,
+          tagsMidi: menuJourOld.tagsMatin,
+          soir: menuJourOld.matin,
+          soirNbPers: menuJourOld.matinNbPers,
+          tagsSoir: menuJourOld.tagsMatin,
+        };
 
         let newTags = []
         menuJour.tagsChoix.forEach(el => {
@@ -352,7 +375,7 @@ export default {
           menuJourOld.tagsMatin = newTags 
 
           if(this.menu.nbPlatMatin !== null){
-            this.errorMessage.matin = checkContrainte.verifContraintePlatMatin();
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatMatin, 'matin');
           }
         }
         else if(periode === 'midi'){
@@ -360,8 +383,8 @@ export default {
           menuJourOld.midiNbPers = menuJour.nbPers
           menuJourOld.tagsMidi = newTags 
 
-          if(this.menu.nbPlatMatin !== null){
-            this.errorMessage.matin = checkContrainte.verifContraintePlatMidi();
+          if(this.menu.nbPlatMidi !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatMidi, 'midi');
           }
         }
         else if(periode === 'soir'){
@@ -369,14 +392,31 @@ export default {
           menuJourOld.soirNbPers = menuJour.nbPers
           menuJourOld.tagsSoir = newTags
           
-          if(this.menu.nbPlatMatin !== null){
-            this.errorMessage.matin = checkContrainte.verifContraintePlatSoir();
+          if(this.menu.nbPlatSoir !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatSoir, 'soir');
           }
         }
 
-        let iStart = (this.page-1) * 7
-        let iEnd = this.page * 7              
-        this.fillPlat(this.items,iStart,iEnd)
+
+        if (this.errorMessage.message !== "") {      			
+          menuJourOld.matin = menuJourSave.matin
+          menuJourOld.midi = menuJourSave.midi
+          menuJourOld.soir = menuJourSave.soir
+          menuJourOld.matinNbPers = menuJourSave.matinNbPers
+          menuJourOld.midiNbPers = menuJourSave.midiNbPers
+          menuJourOld.soirNbPers = menuJourSave.soirNbPers
+          menuJourOld.tagsMatin = menuJourSave.tagsMatin
+          menuJourOld.tagsMidi = menuJourSave.tagsMidi
+          menuJourOld.tagsSoir = menuJourSave.tagsSoir
+
+          this.errorMessage.error = true
+        } else {
+          let iStart = (this.page-1) * 7
+          let iEnd = this.page * 7              
+          this.fillPlat(this.items,iStart,iEnd)
+          this.errorMessage.error = false			
+        }
+
       },
       valideMenu(){
         this.menu.verrou = true
@@ -398,4 +438,11 @@ export default {
 
 .tdplat
   text-align: center
+
+.paddingclass
+  padding: 10px
+
+.marginClass
+  margin-top: 20px
+  margin-bottom: 20px  
 </style>
