@@ -297,6 +297,7 @@
 					choixMenuAutomatique: null,
 					dateDebut: null,
 					dateFin: null,
+					daysUntilSuggestion: 2,
 					tagsMatin: [],
 					tagsMidi: [],
 					tagsSoir: [],

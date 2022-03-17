@@ -125,6 +125,7 @@
 
 <script>
 	import { eventBus } from "../main";
+	import checkContrainte from './../services/checkContrainteMenu'
 	import MenuDao from './../services/api.menu'
 	let DAOMenu = new MenuDao()
 
@@ -339,7 +340,7 @@
 					menuJourOld.tagsMatin = newTags;
 
 					if(this.formData.nbPlatMatin !== null){
-						this.errorMessage.matin = this.verifContraintePlatMatin();
+						this.errorMessage.matin = checkContrainte.verifContraintePlatMatin();
 					}
 
 				} else if (periode === "midi") {
@@ -348,7 +349,7 @@
 					menuJourOld.tagsMidi = newTags;
 
 					if(this.formData.nbPlatMidi !== null){
-						this.errorMessage.midi = this.verifContraintePlatMidi();
+						this.errorMessage.midi = checkContrainte.verifContraintePlatMidi();
 					}
 				} else if (periode === "soir") {
 					menuJourOld.soir = item.plat;
@@ -356,7 +357,7 @@
 					menuJourOld.tagsSoir = newTags;
 
 					if(this.formData.nbPlatSoir !== null){
-						this.errorMessage.soir = this.verifContraintePlatSoir();
+						this.errorMessage.soir = checkContrainte.verifContraintePlatSoir();
 					}
 				}
 
@@ -374,68 +375,7 @@
 					this.errorMessage.error = false;
 				}
 			},
-
-			verifContraintePlatMatin() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.matin != "")) {
-						if (count[element.matin]) {
-							count[element.matin] += 1;
-						} else {
-							count[element.matin] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {
-					if (count[item] > this.formData.nbPlatMatin) {
-						return "Contrainte de plat identique non respectée pour le matin";
-					}
-				}
-				return "";
-			},
-
-			verifContraintePlatMidi() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.midi != "")) {
-						if (count[element.midi]) {
-							count[element.midi] += 1;
-						} else {
-							count[element.midi] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {					
-					if (count[item] > this.formData.nbPlatMidi) {
-						return "Contrainte de plat identique non respectée pour le midi";
-					}
-				}
-				return "";
-			},
-			verifContraintePlatSoir() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.soir != "")) {
-						if (count[element.soir]) {
-							count[element.soir] += 1;
-						} else {
-							count[element.soir] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {				
-					if (count[item] > this.formData.nbPlatSoir) {
-						return "Contrainte de plat identique non respectée pour le soir";
-					}
-				}
-				return "";
-			},
+			
 
 			creationMenuDone(){
 				let menuNew = {
@@ -448,6 +388,7 @@
 					nbPlatSoir: this.formData.nbPlatSoir,
 					type: this.formData.choixTypeMenu,
 					verrou: false,
+					daysUntilSuggestion: this.formData.daysUntilSuggestion,
 					plats: this.items,					
 				}
 				console.log(menuNew)

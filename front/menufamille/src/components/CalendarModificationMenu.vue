@@ -73,12 +73,64 @@
         @previous="previousPageMenu"
         @input="changePageEvent"
       ></v-pagination>
+
+      <v-container grid-list-xs fluid>
+        <h4>Contraintes sur le nombre de plats autorisés</h4>
+        <v-row>
+          <v-col>
+            <v-card xs="12" sm="4" lg="4" xl="4">
+              <v-card-title>Matin</v-card-title>
+              <v-text-field
+                type="number"
+                step="any"
+                min="0"
+                ref="input"
+                :rules="nbPlatRule"
+                v-model.number="nbPlatMatin"                            
+              ></v-text-field>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card xs="12" sm="4" lg="4" xl="4">
+               <v-card-title>Midi</v-card-title>
+              <v-text-field
+                type="number"
+                step="any"
+                min="0"
+                ref="input"
+                :rules="nbPlatRule"
+                v-model.number="nbPlatMidi"                            
+              ></v-text-field>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card xs="12" sm="4" lg="4" xl="4">
+               <v-card-title>Soir</v-card-title>
+              <v-text-field
+                type="number"
+                step="any"
+                min="0"
+                ref="input"
+                :rules="nbPlatRule"
+                v-model.number="nbPlatSoir"                            
+              ></v-text-field>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-snackbar v-model="errorMessage.error" text color="red">
+        {{ errorMessage.matin }}
+        {{ errorMessage.midi }}
+        {{ errorMessage.soir }}
+      </v-snackbar>
     </div>
 
 </template>
 
 <script>
 import {eventBus } from '../main'
+import checkContrainte from '../services/checkContrainteMenu'
 export default {
     props:['periodeMenu'],
     data () {
@@ -162,6 +214,9 @@ export default {
           ],
           dateDebut: '21/02/2022',
           dateFin: '25/02/2022',
+          nbPlatMatin: null,
+          nbPlatMidi: null,
+          nbPlatSoir: null,
           verrou: false            
         },
         items: [],
@@ -170,7 +225,18 @@ export default {
         nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
-        platsSoir: []          
+        platsSoir: [],
+        errorMessage: {
+          matin: "",
+          midi: "",
+          soir: "",
+          error: false,
+        }, 
+        
+        nbPlatRule: [								    
+          v => (v >= 0) || 'Chiffre supérieur positif ou 0',
+        ],
+        
       }
     },
     mounted(){
@@ -284,16 +350,28 @@ export default {
           menuJourOld.matin = menuJour.plat
           menuJourOld.matinNbPers = menuJour.nbPers
           menuJourOld.tagsMatin = newTags 
+
+          if(this.menu.nbPlatMatin !== null){
+            this.errorMessage.matin = checkContrainte.verifContraintePlatMatin();
+          }
         }
         else if(periode === 'midi'){
           menuJourOld.midi = menuJour.plat
           menuJourOld.midiNbPers = menuJour.nbPers
           menuJourOld.tagsMidi = newTags 
+
+          if(this.menu.nbPlatMatin !== null){
+            this.errorMessage.matin = checkContrainte.verifContraintePlatMidi();
+          }
         }
         else if(periode === 'soir'){
           menuJourOld.soir = menuJour.plat
           menuJourOld.soirNbPers = menuJour.nbPers
-          menuJourOld.tagsSoir = newTags 
+          menuJourOld.tagsSoir = newTags
+          
+          if(this.menu.nbPlatMatin !== null){
+            this.errorMessage.matin = checkContrainte.verifContraintePlatSoir();
+          }
         }
 
         let iStart = (this.page-1) * 7
