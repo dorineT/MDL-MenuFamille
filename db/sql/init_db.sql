@@ -154,6 +154,14 @@ CREATE TABLE CALENDRIER_RECETTE (
                                     PRIMARY KEY (id_periode)
 );
 
+CREATE TABLE SUGGESTION (
+                                    id_periode INTEGER NOT NULL,
+                                    id_recette INTEGER NOT NULL,
+                                    id_membre INTEGER NOT NULL,
+                                    id_menu INTEGER NOT NULL,
+                                    PRIMARY KEY (id_periode, id_recette, id_membre, id_menu)
+);
+
 CREATE TABLE TAG_PERIODE (
                                     id_periode INTEGER NOT NULL,
                                     id_tag INTEGER NOT NULL,
@@ -200,6 +208,14 @@ ALTER TABLE MENU_CALENDRIER ADD CONSTRAINT pk_MCcalendrier FOREIGN KEY (id_calen
 ALTER TABLE TAG_PERIODE ADD CONSTRAINT pk_TPtag FOREIGN KEY (id_tag) REFERENCES TAG(id_tag) ON DELETE CASCADE;
 
 ALTER TABLE TAG_PERIODE ADD CONSTRAINT pk_TPperiode FOREIGN KEY (id_periode) REFERENCES CALENDRIER_RECETTE(id_periode) ON DELETE CASCADE;
+
+ALTER TABLE SUGGESTION ADD CONSTRAINT pk_SNrecette FOREIGN KEY (id_recette) REFERENCES RECETTE(id_recette) ON DELETE CASCADE;
+
+ALTER TABLE SUGGESTION ADD CONSTRAINT pk_SNmembre FOREIGN KEY (id_membre) REFERENCES MEMBRES(id_membre) ON DELETE CASCADE;
+
+ALTER TABLE SUGGESTION ADD CONSTRAINT pk_SNperiode FOREIGN KEY (id_periode) REFERENCES CALENDRIER_RECETTE(id_periode) ON DELETE CASCADE;
+
+ALTER TABLE SUGGESTION ADD CONSTRAINT pk_SNmenu FOREIGN KEY (id_menu) REFERENCES MENU(id_menu) ON DELETE CASCADE;
 
 
 /*insert tag + type*/
