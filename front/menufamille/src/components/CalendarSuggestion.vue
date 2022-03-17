@@ -29,32 +29,36 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
-                <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.plat !=='/'">{{ item.plat }} </p>
-                                    
-                  </v-btn>      
-                                     
+                <p v-else>
+                  <v-btn text @click="goToRecette(item,'matin')">
+                      <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                      <p v-else>{{ item.plat }} </p>                                 
+                      </v-btn>      
+                </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
+                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
+              <p v-else>
                 <v-btn text @click="goToRecette(item,'midi')">
                     <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
-                    <p v-else style="color: red">X</p>                                        
-                </v-btn>               
+                    <p v-else>{{ item.plat }} </p>                                       
+                </v-btn>       
+              </p>        
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
+                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
+              <p v-else>
                 <v-btn  text @click="goToRecette(item,'soir')">
                   <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
-                  <p v-else style="color: red">X</p>
+                  <p v-else>{{ item.plat }} </p>
                 </v-btn> 
+              </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
@@ -100,11 +104,11 @@ export default {
               id:16,
               jour: 'Mardi',
               date: '8/03',
-              matin: '',
+              matin: '/',
               matinNbPers: null,
-              midi: '',
+              midi: '/',
               midiNbPers: null,
-              soir: '',
+              soir: '/',
               soirNbPers: null,
             },
             {
