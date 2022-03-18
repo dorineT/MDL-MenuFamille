@@ -99,6 +99,7 @@ exports.DeleteMenu = (req, res) => {
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
+  let menu = [];
   Menu.findByPk(id_menu, {
       include: [
         {
@@ -124,10 +125,59 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
         }
       ]
   })
-  .then(data => {
-    res.send(data);
-  })
-  .catch(err => {
+  .then(response => {
+
+    //traitement des donnees avant de les envoyer
+    //sinon trop lent dans le fron
+      menu.push({
+        menu_id: response.id_menu,
+        dateDebut: response.periode_debut,
+        dateFin: response.periode_fin,
+        verrou: response.verrou,
+        plats:[]
+      })
+
+      let j = 0
+      //get les jours
+      response.calendriers.forEach(jourItem => {
+        
+        menu.plats.push({
+          id: jourItem.id_calendrier,
+          date: jourItem.date,
+          jour: getDay(jourItem.date),
+          tags: jourItem.tags
+        })
+
+        jourItem.calendrier_recettes.forEach(periodeItem =>{
+          let recette = ""
+          if(periodeItem.recette === null & periodeItem.is_recette){
+            recette = ""
+          }
+          else if(periodeItem.recette === null & !periodeItem.is_recette){
+            recette = "/"
+          }else{
+            recette = periodeItem.recette.nom
+          }
+
+          if(periodeItem.periode === 'matin'){
+            menus.plats[j].matin = recette
+            menus.plats[j].matinNbPers = jourItem.nb_personne
+          }
+          else if(periodeItem.periode === 'midi'){
+            menus.plats[j].midi = recette
+            menus.plats[j].midiNbPers = jourItem.nb_personne
+          }
+          else{
+            menus.plats[j].soir = recette
+            menus.plats[j].soirNbPers = jourItem.nb_personne
+          }
+        })
+
+        j++
+
+      })
+      res.send(menus);      
+}).catch(err => {
     res.status(500).send({
       message:
         err.message || "Some error occurred while retrieving Menus."
