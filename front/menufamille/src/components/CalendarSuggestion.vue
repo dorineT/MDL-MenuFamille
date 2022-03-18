@@ -163,6 +163,9 @@ export default {
     created(){
       eventBus.$on('updateMenuJour', this.updateMenuJour)
     },
+    destroyed(){
+      eventBus.$off('updateMenuJour')
+    },
     methods:{
       //// Affichage calendrier ///
       goToRecette(item,periode){      

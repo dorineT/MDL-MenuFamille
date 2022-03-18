@@ -40,7 +40,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -65,7 +67,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -89,7 +93,9 @@
 									>
 										<strong>Tags</strong>
 									</p>
-									<p v-else-if="item.plat === '/'" style="color: red">X</p>
+									<p v-else-if="item.plat === '/'" style="color: red">
+										<v-icon color="red">mdi-close-thick</v-icon>
+									</p>
 									<p v-else-if="item.plat === ''" style="color: green">
 										<v-icon color="green" large>mdi-plus</v-icon>
 									</p>
@@ -112,12 +118,11 @@
 				@next="nextPageMenu"
 				@previous="previousPageMenu"
 				@input="changePageEvent"
+				class="marginClass"
 			></v-pagination>
 		</div>
 		<v-snackbar v-model="errorMessage.error" text color="red">
-			{{ errorMessage.matin }}
-			{{ errorMessage.midi }}
-			{{ errorMessage.soir }}
+			{{ errorMessage.message }}
 		</v-snackbar>
 	</v-card>
 
@@ -125,6 +130,11 @@
 
 <script>
 	import { eventBus } from "../main";
+	import moment from 'moment'
+	import checkContrainte from './../services/checkContrainteMenu'
+	import MenuDao from './../services/api.menu'
+	let DAOMenu = new MenuDao()
+
 	export default {
 		data() {
 			return {
@@ -139,9 +149,7 @@
 				items: [],
 				formData: {},
 				errorMessage: {
-					matin: "",
-					midi: "",
-					soir: "",
+					message: "",
 					error: false,
 				},
 			};
@@ -152,10 +160,16 @@
 			eventBus.$on("configurationDD", this.setUpData);
 			eventBus.$on('creationMenuDone', this.creationMenuDone)
 		},
+		destroyed(){
+			eventBus.$off("updateMenuJourCreate")
+			eventBus.$off("configurationDD")
+			eventBus.$off('creationMenuDone')
+		},
 		methods: {
 			goToRecette(item, periode) {
 				let menuFind = this.items.find((el) => el.id === item.id);
 				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
+				console.log('jjj')
 			},
 			setUpData(form) {
 				if (form != null) {
@@ -265,7 +279,7 @@
 					this.items.push({
 						id: i,
 						jour: this.getNameOfDay(this.jours[i].getDay()),
-						date: day + "/" + month,
+						date: day + "/" + month+"/"+this.jours[i].getFullYear(),
 						matin: this.formData.matinCheck ? "" : "/",
 						matinNbPers: this.formData.nbPersonnes,
 						tagsMatin: this.formData.tagsMatin,
@@ -304,6 +318,7 @@
 			updateMenuJourCreate(item, periode) {				
 
 				let menuJourOld = this.items.find((elem) => elem.id === item.id);
+				this.errorMessage.message = ""				
 
 				let menuJourSave = {
 					id: menuJourOld.id,
@@ -321,7 +336,7 @@
 				};	
 
 				let newTags = [];
-				item.tagsChoix.forEach((el) => {
+				item.tags.forEach((el) => {
 					newTags.push(el);
 				});
 
@@ -331,7 +346,7 @@
 					menuJourOld.tagsMatin = newTags;
 
 					if(this.formData.nbPlatMatin !== null){
-						this.errorMessage.matin = this.verifContraintePlatMatin();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMatin, 'matin');
 					}
 
 				} else if (periode === "midi") {
@@ -340,103 +355,57 @@
 					menuJourOld.tagsMidi = newTags;
 
 					if(this.formData.nbPlatMidi !== null){
-						this.errorMessage.midi = this.verifContraintePlatMidi();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMidi, 'midi');
 					}
 				} else if (periode === "soir") {
-					menuJourOld.soir = item.plat;
-					menuJourOld.soirNbPers = item.nbPers;
-					menuJourOld.tagsSoir = newTags;
+					menuJourOld.soir = item.plat
+					menuJourOld.soirNbPers = item.nbPers
+					menuJourOld.tagsSoir = newTags
 
 					if(this.formData.nbPlatSoir !== null){
-						this.errorMessage.soir = this.verifContraintePlatSoir();
+						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatSoir, 'soir');
 					}
 				}
 
-				if (
-					(this.errorMessage.matin !== "") |
-					(this.errorMessage.midi !== "") |
-					(this.errorMessage.soir !== "")
-				) {				
-					menuJourOld = menuJourSave;
-					this.errorMessage.error = true;
+				if (this.errorMessage.message !== "") {
+					console.log('reset menu')				
+					menuJourOld.matin = menuJourSave.matin
+					menuJourOld.midi = menuJourSave.midi
+					menuJourOld.soir = menuJourSave.soir
+					menuJourOld.matinNbPers = menuJourSave.matinNbPers
+					menuJourOld.midiNbPers = menuJourSave.midiNbPers
+					menuJourOld.soirNbPers = menuJourSave.soirNbPers
+					menuJourOld.tagsMatin = menuJourSave.tagsMatin
+					menuJourOld.tagsMidi = menuJourSave.tagsMidi
+					menuJourOld.tagsSoir = menuJourSave.tagsSoir
+
+					this.errorMessage.error = true
 				} else {
-					let iStart = (this.page - 1) * 7;
-					let iEnd = this.page * 7;
-					this.fillPlat(iStart, iEnd);
-					this.errorMessage.error = false;
+					console.log('ok menu')
+					let iStart = (this.page - 1) * 7
+					let iEnd = this.page * 7
+					this.fillPlat(iStart, iEnd)		
+					this.errorMessage.error = false			
 				}
 			},
-
-			verifContraintePlatMatin() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.matin != "")) {
-						if (count[element.matin]) {
-							count[element.matin] += 1;
-						} else {
-							count[element.matin] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {
-					if (count[item] > this.formData.nbPlatMatin) {
-						return "Contrainte de plat identique non respectée pour le matin";
-					}
-				}
-				return "";
-			},
-
-			verifContraintePlatMidi() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.midi != "")) {
-						if (count[element.midi]) {
-							count[element.midi] += 1;
-						} else {
-							count[element.midi] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {					
-					if (count[item] > this.formData.nbPlatMidi) {
-						return "Contrainte de plat identique non respectée pour le midi";
-					}
-				}
-				return "";
-			},
-			verifContraintePlatSoir() {
-				const count = {};
-
-				this.items.forEach((element) => {
-					if ((element.midi !== "/") & (element.soir != "")) {
-						if (count[element.soir]) {
-							count[element.soir] += 1;
-						} else {
-							count[element.soir] = 1;
-						}
-					}
-				});
-
-				for (const item in count) {				
-					if (count[item] > this.formData.nbPlatSoir) {
-						return "Contrainte de plat identique non respectée pour le soir";
-					}
-				}
-				return "";
-			},
+			
 
 			creationMenuDone(){
 				let menuNew = {
 					menu_id: null,
-					dateDebut: this.formData.dateDebut,
-					dateFin: this.formData.dateFin,
+					idFamile: this.$store.state.auth.user.id_membre,
+					dateDebut: moment(this.formData.dateDebut).format("DD/MM/YYYY"),
+					dateFin: moment(this.formData.dateFin).format("DD/MM/YYYY"),
+					nbPlatMatin: this.formData.nbPlatMatin,
+					nbPlatMidi: this.formData.nbPlatMidi,
+					nbPlatSoir: this.formData.nbPlatSoir,
+					type: this.formData.choixTypeMenu,
 					verrou: false,
-					plats: this.items
+					daysUntilSuggestion: this.formData.daysUntilSuggestion,
+					plats: this.items,					
 				}
+				console.log(menuNew)
+				DAOMenu.sendMenuCreate(menuNew)
 				this.$router.push('/');
 			}
 		},
@@ -449,4 +418,8 @@
 
 .tdplat
   text-align: center
+
+.marginClass
+  margin-top: 20px
+  margin-bottom: 20px  
 </style>

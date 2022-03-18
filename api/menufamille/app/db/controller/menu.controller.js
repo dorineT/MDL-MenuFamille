@@ -1,3 +1,4 @@
+const { response } = require("express");
 const { calendrier, recette } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
@@ -7,6 +8,8 @@ const Tag = db.tag;
 const Categorie = db.categorie;
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
+
+const moment = require('moment')
 
 // Retrieve all Menus from the database.
 exports.findAll = (req, res) => {
@@ -26,7 +29,8 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
   exports.PutMenu = (req, res) => {
-    Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
+    console.log(req.body)
+   /* Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
     .then(data => { 
       res.send(data);
     })
@@ -35,7 +39,7 @@ exports.findAll = (req, res) => {
         message:
           err.message || "Some error occurred while insering in Menu"
       });
-    });
+    });*/
   };
 
 /// Update CRUD
@@ -120,6 +124,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
 exports.Get_Current_Locked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   const date = Date.now();
+  let menus = []
   db.menu.findAll({
     where : 
     {
@@ -139,8 +144,59 @@ exports.Get_Current_Locked_Menu = (req, res) => {
       }
     ]
   })
-  .then(menuGlobal => {
-    res.send(menuGlobal);
+  .then(response => {
+
+    //traitement des donnees avant de les envoyer
+    //sinon trop lent dans le front
+    response.forEach(menuItem => {
+      let i = 0
+      menus.push({
+        menu_id: menuItem.id_menu,
+        dateDebut: menuItem.periode_debut,
+        dateFin: menuItem.periode_fin,
+        verrou: menuItem.verrou,
+        plats:[]
+      })
+
+      let j = 0
+      //get les jours
+      menuItem.calendriers.forEach(jourItem => {
+        menus[i].plats.push({
+          id: jourItem.id_calendrier,
+          date: jourItem.date,
+          jour: getDay(jourItem.date)
+        })
+
+        jourItem.calendrier_recettes.forEach(periodeItem =>{
+          let recette = ""
+          if(periodeItem.recette === null & periodeItem.is_recette){
+            recette = ""
+          }
+          else if(periodeItem.recette === null & !periodeItem.is_recette){
+            recette = "/"
+          }else{
+            recette = periodeItem.recette.nom
+          }
+
+          if(periodeItem.periode === 'matin'){
+            menus[i].plats[j].matin = recette
+            menus[i].plats[j].matinNbPers = jourItem.nb_personne
+          }
+          else if(periodeItem.periode === 'midi'){
+            menus[i].plats[j].midi = recette
+            menus[i].plats[j].midiNbPers = jourItem.nb_personne
+          }
+          else{
+            menus[i].plats[j].soir = recette
+            menus[i].plats[j].soirNbPers = jourItem.nb_personne
+          }
+        })
+
+        j++
+
+      })
+      res.send(menus);      
+  });
   })
   .catch(err => {
     res.status(500).send({
@@ -149,6 +205,14 @@ exports.Get_Current_Locked_Menu = (req, res) => {
     });
   });  
 };
+
+/**
+ * Obtenir le jour de la semaine en fonction d'un date donnee
+ */
+function getDay(date){
+  let dateJour = moment(date, "DD-MM-YYYY");
+  return dateJour.locale('fr').format('dddd')
+}
 
 
 //// Envoyer les menus non-verrouilles + suggestion ouverte 
