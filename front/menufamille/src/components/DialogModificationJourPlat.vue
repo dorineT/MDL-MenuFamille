@@ -186,6 +186,11 @@
 
 <script>
 	import { eventBus } from "../main";
+	import RecetteDAO from "../services/api.recette"
+	import TagDAO from '../services/api.tag';
+	let DAORecette = new RecetteDAO()
+	let DAOTag = new TagDAO()
+
 	export default {
 		props: ["stringUpdateModal"],
 		data() {
@@ -205,16 +210,7 @@
 				suggestions: ["petite saucisse - pdt", "risotto"],
 				radioSelectionSuggestion: null,
 				newRecetteChoix: null,
-				tagsListe: [
-					"soupe",
-					"lunch-box",
-					"light",
-					"épicé",
-					"gaterie",
-					"sucre",
-					"sel",
-					"calorie hight",
-				],
+				tagsListe: [],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 			};
@@ -232,7 +228,7 @@
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
 			openModal(itemReceived, periode, jourSemaine, date) {
 				
-				this.showModifMenu = false;
+				this.showModifMenu = false; //display les cartes de mofification de la recette
 				this.dialog = true;
 
 				this.infoMenu.id = itemReceived.id;
@@ -249,6 +245,9 @@
 							this.infoMenu.tagsChoix.push(el);
 						}
 					});
+				}else{
+					//charger tous les tags de la bd
+					
 				}
 
 						
@@ -268,7 +267,6 @@
 
 				//reset
 				this.resetNewRecette();
-
 
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;
