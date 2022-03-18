@@ -95,6 +95,8 @@
 													color="orange lighten-2"
 													label="Recette"
 													:items="itemRecettes"
+													item-text="nom"
+													item-value="nom"
 													v-model="comboboxRecetteSelected"
 													@change="resetSelectedSuggestion()"
 													no-data-text="Aucune recette correspondante"
@@ -143,7 +145,9 @@
 									deletable-chips
 									multiple
 									:items="tagsListe"
-									v-model="infoMenu.tagsChoix"
+									item-text="nom"
+									item-value="nom"
+									v-model="tagsChoix"
 									color="orange lighten-2"
 									no-data-text="Aucun tag correspondant"
 								></v-autocomplete>
@@ -206,11 +210,12 @@
 				recetteChoisie: "",
 				showModifMenu: false,
 				comboboxRecetteSelected: null,
-				itemRecettes: ["lasagne", "pate carbo", "flammekueche"],
+				itemRecettes: [],
 				suggestions: ["petite saucisse - pdt", "risotto"],
 				radioSelectionSuggestion: null,
 				newRecetteChoix: null,
 				tagsListe: [],
+				tagsChoix:[],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 			};
@@ -222,11 +227,27 @@
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
-			
+			tagsChoix(){				
+				let tempTags = this.copyTab(this.tagsChoix)
+				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
+					let tagReTemp = []
+					recette.tags.forEach(tagRecette => {
+						//vérifier que tagtemp est contenu dans tag recette
+						tagReTemp.push(tagRecette.nom)
+					});
+
+					if(tempTags.every(el => {
+						return tagReTemp.includes(el)
+					}))return recette
+				})				
+			},
+			newRecetteChoix(){
+				console.log('change tag en fonction de la recette en question')
+			}
 		},
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			openModal(itemReceived, periode, jourSemaine, date) {
+			async openModal(itemReceived, periode, jourSemaine, date) {
 				
 				this.showModifMenu = false; //display les cartes de mofification de la recette
 				this.dialog = true;
@@ -235,21 +256,25 @@
 				this.infoMenu.plat = itemReceived.plat;
 				this.infoMenu.nbPers = itemReceived.nbPers;
 				this.jourSemaine = jourSemaine;
-				this.date = date;
+				this.date = date;		
 
-				this.infoMenu.tagsChoix = [];
+				//charger tous les tags de la bd
+				this.tagsListeAll = await DAOTag.getAll()	
+				this.tagsListe = this.copyTab(this.tagsListeAll)		
+				//charger toutes les recettes et leur tags
+				this.itemRecettesAll = await DAORecette.getAll()
+				this.itemRecettes = this.copyTab(this.itemRecettesAll)	
 
+				//si on a des tags déjà prédéfini dans l'item recu
 				if (itemReceived.tags != null) {
 					itemReceived.tags.forEach((el) => {						
 						if (el != null) {
-							this.infoMenu.tagsChoix.push(el);
+							// TODO
+							this.tagsChoix.push(el); //devra etre modifier quand le menu sera chargé a partir de l'api !!!!
 						}
 					});
-				}else{
-					//charger tous les tags de la bd
-					
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}
-
 						
 				this.periode = periode;
 	
@@ -259,17 +284,23 @@
 				this.recetteChoisie = this.infoMenu.plat;
 				if (
 					(this.infoMenu.plat === "/") &
-					(this.infoMenu.tagsChoix.length === 0)
+					(this.tagsChoix.length === 0)
 				) {		
 					this.selectedRadioMenuOuiNon = "non";
 				}
-
 
 				//reset
 				this.resetNewRecette();
 
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;
+			},
+			copyTab(source){
+				let cible = []
+				source.forEach(elem => {
+					cible.push(elem)
+				})
+				return cible
 			},
 			sauvegardeMenuJour() {
 				//mise a jour calendrier
@@ -279,9 +310,9 @@
 				else if (this.selectedRadioMenuOuiNon === "oui" & (this.newRecetteChoix==="/" | this.newRecetteChoix===null)) {				
 					this.newRecetteChoix = "";
 				}
-				//recette			
+				//recette et tags
 				this.infoMenu.plat = this.newRecetteChoix;
-				
+				this.infoMenu.tags = this.tagsChoix
 
 				//number
 				if (this.numberPersonneNew !== this.numberPersonneOld) {

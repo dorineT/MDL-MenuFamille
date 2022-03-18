@@ -169,6 +169,7 @@
 			goToRecette(item, periode) {
 				let menuFind = this.items.find((el) => el.id === item.id);
 				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
+				console.log('jjj')
 			},
 			setUpData(form) {
 				if (form != null) {
@@ -335,7 +336,7 @@
 				};	
 
 				let newTags = [];
-				item.tagsChoix.forEach((el) => {
+				item.tags.forEach((el) => {
 					newTags.push(el);
 				});
 

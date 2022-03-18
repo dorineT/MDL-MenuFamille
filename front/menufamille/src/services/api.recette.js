@@ -8,7 +8,7 @@ export default class RecetteDAO{
         let data
         await api.get("/recette/AllTags/")
           .then((response) => {            
-            data = response
+            data = response.data
           }); 
         
         return data

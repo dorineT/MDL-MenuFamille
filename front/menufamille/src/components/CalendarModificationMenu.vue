@@ -31,12 +31,8 @@
                 <v-btn text @click="goToRecette(item,'matin')">
 
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
-                    <p v-else-if="item.plat === ''" style="color: green">
-                      <v-icon color="green" large>mdi-plus</v-icon>
-                    </p>
-                    <p v-else-if="item.plat==='/'" style="color: red">
-                      <v-icon color="red">mdi-close-thick</v-icon>
-                    </p>
+                    <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>
+                    <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                     <p v-else>{{ item.plat }} </p>                   
 
                   </v-btn>                     
@@ -48,9 +44,7 @@
                 <v-btn text @click="goToRecette(item,'midi')">
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
                   <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>
-                  <p v-else-if="item.plat==='/'" style="color: red">
-                    <v-icon color="red">mdi-close-thick</v-icon>
-                  </p>
+                  <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
@@ -60,12 +54,8 @@
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item,'soir')">
                   <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                  <p v-else-if="item.plat === ''" style="color: green">
-                    <v-icon color="green" large>mdi-plus</v-icon>
-                  </p>             
-                  <p v-else-if="item.plat==='/'" style="color: red">
-                    <v-icon color="red">mdi-close-thick</v-icon>
-                  </p>
+                  <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>             
+                  <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
@@ -365,7 +355,7 @@ export default {
         };
 
         let newTags = []
-        menuJour.tagsChoix.forEach(el => {
+        menuJour.tags.forEach(el => {
           newTags.push(el)
         });
 
