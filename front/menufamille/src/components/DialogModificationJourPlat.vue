@@ -228,6 +228,7 @@
 		},
 		watch:{
 			tagsChoix(){				
+				console.log('change tag => change recette')
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -242,7 +243,13 @@
 				})				
 			},
 			newRecetteChoix(){
-				console.log('change tag en fonction de la recette en question')
+				console.log('change tag en fonction de la recette en question')			
+				let recette = this.newRecetteChoix			
+				let recetteObject = this.itemRecettesAll.find(el => el.nom = recette)	
+				console.log(recetteObject)		
+				recetteObject.tags.forEach(el => {
+					this.tagsChoix.push(el)
+				});
 			}
 		},
 		methods: {
