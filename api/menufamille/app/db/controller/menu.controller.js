@@ -95,16 +95,35 @@ exports.DeleteMenu = (req, res) => {
     });
   };
 
-///GetMenuAllInfo
+///GetMenuAllInfo  recupérer un menu avec son id avec jour, les périodes (mêmes celles qui ne sont pas liées à une recette), les recettes et leur tag + les tags qui sont liés aux périodes
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu,{ 
-                          include: [
-                            {model: Calendrier, through: {attributes: []}, 
-                                include: [{model: Recette, through: {attributes: ["periode"]}, attributes:['nom']}]
-                          }]
-                        })
+  Menu.findByPk(id_menu, {
+      include: [
+        {
+          model: db.calendrier,
+          include:[
+            {
+              model: db.calendrier_recette,
+              include: 
+              [
+              {
+                model: db.recette, required: false,
+                include:
+                {
+                  model: db.tag, required: false, through: {attributes: []}
+                }
+              },
+              {
+                model: db.tag, required : false, through: {attributes: []}
+              }
+              ]
+            }
+          ]
+        }
+      ]
+  })
   .then(data => {
     res.send(data);
   })
