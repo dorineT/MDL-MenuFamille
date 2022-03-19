@@ -36,7 +36,7 @@
                     <p v-else>{{ item.plat }} </p>                   
 
                   </v-btn>                     
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
@@ -47,7 +47,7 @@
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
@@ -58,7 +58,7 @@
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
-                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -87,7 +87,7 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="menu.nbPlatMatin"                            
+                v-model.number="menu.plat_identique_matin"                            
               ></v-text-field>
             </v-card>
           </v-col>
@@ -100,7 +100,7 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="menu.nbPlatMidi"                            
+                v-model.number="menu.plat_identique_midi"                            
               ></v-text-field>
             </v-card>
           </v-col>
@@ -113,7 +113,7 @@
                 min="0"
                 ref="input"
                 :rules="nbPlatRule"
-                v-model.number="menu.nbPlatSoir"                            
+                v-model.number="menu.plat_identique_soir"                            
               ></v-text-field>
             </v-card>
           </v-col>
@@ -131,6 +131,7 @@
 import {eventBus } from '../main'
 import checkContrainte from '../services/checkContrainteMenu'
 import MenuDAO from '../services/api.menu'
+import moment from 'moment'
 let DAOMenu = new MenuDAO()
 
 export default {
@@ -138,89 +139,7 @@ export default {
     data () {
       return {
         headers: [],
-        menu: {          
-          menu_id: 1,
-          plats: [
-            {
-              id:10,
-              jour: 'Lundi',
-              date: '21/02',
-              matin: 'céréale',
-              matinNbPers:null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'pain',
-
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-
-            },
-            {
-              id:11,
-              jour: 'Mardi',
-              date: '22/02',
-              matin: 'crepe',
-              matinNbPers: null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'lasagne',
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-            },
-            {
-              id:12,
-              jour: 'Mercredi',
-              date: '23/02',
-              matin: '/',
-              matinNbPers:null,
-              midi: 'pain',
-              midiNbPers: null,
-              soir: 'canard',
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-            },
-            {
-              id:13,
-              jour: 'Jeudi',
-              date: '24/02',
-              matin: 'céréale',
-              matinNbPers:null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'pain',            
-              soirNbPers: null,
-              tagsMatin:[],
-              tagsMidi: [],
-              tagsSoir: []
-            },
-            {
-              id:14,
-              jour: 'Vendredi',
-              date: '25/02',
-              matin: 'flocon d\'avoine',
-              matinNbPers:null,
-              midi: 'croque-monsieur',
-              midiNbPers: null,
-              soir: 'frites',
-              soirNbPers: null,
-              tagsMatin:['sucre'],
-              tagsMidi: ['sel'],
-              tagsSoir: []
-            }
-          ],
-          dateDebut: '21/02/2022',
-          dateFin: '25/02/2022',
-          nbPlatMatin: null,
-          nbPlatMidi: null,
-          nbPlatSoir: null,
-          verrou: false            
-        },
+        menu: {},
         items: [],
         pageCount: 0,
         page: 1,
@@ -239,21 +158,19 @@ export default {
         
       }
     },
-    mounted(){
-        console.log('des choses a faire avec l\'api')
-        this.items = this.menu.plats
+    async created(){ 
+      this.menu = await DAOMenu.getMenuById(1)  
+      this.nbPersonneFamille = 2 // doit etre pris dans le store ou dans la bd
 
-        let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-        this.populateHeader(this.items,0,indiceEnd)
-        this.fillPlat(this.items,0,indiceEnd) 
-        // call api to get the menu ou pas besoin
-    },
-    async created(){
+      console.log(this.menu)
+      this.items = this.menu.calendriers
+      let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+      this.populateHeader(this.items,0,indiceEnd)
+      this.fillPlat(this.items,0,indiceEnd) 
+
       eventBus.$on('updateMenuJour', this.updateMenuJour)
       eventBus.$on('validationModification', this.valideMenu)
       eventBus.$on('saveModification', this.saveMenu)
-
-      this.menu = await DAOMenu.getMenuById(1)
     },
     destroy(){
       eventBus.$off('validationModification')
@@ -275,9 +192,9 @@ export default {
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
           this.headers.push({
-              text: jourPlat.jour + '\n' + jourPlat.date, 
+              text: moment(jourPlat.date, 'DD-MM-YYYY').locale('fr').format('dddd') + '\n' + jourPlat.date, 
               align: 'center',
-              value: jourPlat.id
+              value: jourPlat.id_calendrier
           })
           iStart++
           this.nbJourMenu++
@@ -292,26 +209,33 @@ export default {
 
         while(iStart<iEnd & iStart<menu.length){
           let jourPlat = menu[iStart]
+          console.log(jourPlat)
 
+          let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
-            id: jourPlat.id,
-            plat: jourPlat.matin,
-            nbPers: jourPlat.matinNbPers,
-            tags: jourPlat.tagsMatin
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
+            nbPers: jourPlat.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[1]
           this.platsMidi.push({
-            id: jourPlat.id,
-            plat: jourPlat.midi,
-            nbPers: jourPlat.midiNbPers,
-            tags: jourPlat.tagsMidi
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
+            nbPers: jourPlat.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[1]
           this.platsSoir.push({
-            id: jourPlat.id,
-            plat: jourPlat.soir,
-            nbPers: jourPlat.soirNbPers,
-            tags: jourPlat.tagsSoir
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
+            nbPers: jourPlat.nb_personne,
+            tags: periode.tags
           })
 
           iStart++
@@ -340,7 +264,8 @@ export default {
 
       /// UPDATE CALENDRIER ////
 
-      updateMenuJour(menuJour, periode){        
+      updateMenuJour(menuJour, periode){  
+        console.log('update pass')      
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
         this.errorMessage.message = ""
 
@@ -369,8 +294,8 @@ export default {
           menuJourOld.matinNbPers = menuJour.nbPers
           menuJourOld.tagsMatin = newTags 
 
-          if(this.menu.nbPlatMatin !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatMatin, 'matin');
+          if(this.menu.plat_identique_matin !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 'matin');
           }
         }
         else if(periode === 'midi'){
@@ -378,8 +303,8 @@ export default {
           menuJourOld.midiNbPers = menuJour.nbPers
           menuJourOld.tagsMidi = newTags 
 
-          if(this.menu.nbPlatMidi !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatMidi, 'midi');
+          if(this.menu.plat_identique_midi !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_midi, 'midi');
           }
         }
         else if(periode === 'soir'){
@@ -387,8 +312,8 @@ export default {
           menuJourOld.soirNbPers = menuJour.nbPers
           menuJourOld.tagsSoir = newTags
           
-          if(this.menu.nbPlatSoir !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.nbPlatSoir, 'soir');
+          if(this.menu.plat_identique_soir !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_soir, 'soir');
           }
         }
 

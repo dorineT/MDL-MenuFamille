@@ -45,9 +45,14 @@ export default class MenuDao{
         
       await api.get("/menu/GetAllInfo/"+idMenu)
         .then((response) => {            
-          menu = response.data
-                      
-        });        
+          menu = response.data  
+          
+          menu.plat_identique_matin = menu.plat_identique_matin === -1 ? null : menu.plat_identique_matin
+          menu.plat_identique_midi = menu.plat_identique_midi === -1 ? null : menu.plat_identique_midi
+          menu.plat_identique_soir = menu.plat_identique_soir === -1 ? null : menu.plat_identique_soir
+        });
+               
+
       return menu
     }
 
