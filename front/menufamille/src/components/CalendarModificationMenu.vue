@@ -130,6 +130,9 @@
 <script>
 import {eventBus } from '../main'
 import checkContrainte from '../services/checkContrainteMenu'
+import MenuDAO from '../services/api.menu'
+let DAOMenu = new MenuDAO()
+
 export default {
     props:['periodeMenu'],
     data () {
@@ -245,10 +248,12 @@ export default {
         this.fillPlat(this.items,0,indiceEnd) 
         // call api to get the menu ou pas besoin
     },
-    created(){
+    async created(){
       eventBus.$on('updateMenuJour', this.updateMenuJour)
       eventBus.$on('validationModification', this.valideMenu)
       eventBus.$on('saveModification', this.saveMenu)
+
+      this.menu = await DAOMenu.getMenuById(1)
     },
     destroy(){
       eventBus.$off('validationModification')

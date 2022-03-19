@@ -74,7 +74,7 @@
 
     data (){
       return{
-        menuToValide: ['21/02 - 27/02','28/02 - 6/03'],
+        menuToValide: ['21/02 - 27/02','28/02 - 6/03'], // il faudra passer l'id du menu dans les objets
         menuToSuggest: ['7/03 - 13/03 ']
       }
     },

@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { calendrier, recette } = require("../models");
+const { calendrier, recette, sequelize } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
 const Calendrier = db.calendrier;
@@ -103,14 +103,15 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
   Menu.findByPk(id_menu, {
       include: [
         {
-          model: db.calendrier,
+          model: db.calendrier,           
           include:[
             {
-              model: db.calendrier_recette,
-              include: 
-              [
+              model: db.calendrier_recette,              
+              include: [
               {
-                model: db.recette, required: false,
+                model: db.recette, 
+                required: false,
+                attributes:['nom'],
                 include:
                 {
                   model: db.tag, required: false, through: {attributes: []}
@@ -123,60 +124,14 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
             }
           ]
         }
-      ]
+      ],  
+      order: [
+        [db.calendrier, 'date', 'ASC'],
+        [db.calendrier, db.calendrier_recette, 'id_periode', 'ASC']
+      ]    
   })
   .then(response => {
-
-    //traitement des donnees avant de les envoyer
-    //sinon trop lent dans le fron
-      menu.push({
-        menu_id: response.id_menu,
-        dateDebut: response.periode_debut,
-        dateFin: response.periode_fin,
-        verrou: response.verrou,
-        plats:[]
-      })
-
-      let j = 0
-      //get les jours
-      response.calendriers.forEach(jourItem => {
-        
-        menu.plats.push({
-          id: jourItem.id_calendrier,
-          date: jourItem.date,
-          jour: getDay(jourItem.date),
-          tags: jourItem.tags
-        })
-
-        jourItem.calendrier_recettes.forEach(periodeItem =>{
-          let recette = ""
-          if(periodeItem.recette === null & periodeItem.is_recette){
-            recette = ""
-          }
-          else if(periodeItem.recette === null & !periodeItem.is_recette){
-            recette = "/"
-          }else{
-            recette = periodeItem.recette.nom
-          }
-
-          if(periodeItem.periode === 'matin'){
-            menus.plats[j].matin = recette
-            menus.plats[j].matinNbPers = jourItem.nb_personne
-          }
-          else if(periodeItem.periode === 'midi'){
-            menus.plats[j].midi = recette
-            menus.plats[j].midiNbPers = jourItem.nb_personne
-          }
-          else{
-            menus.plats[j].soir = recette
-            menus.plats[j].soirNbPers = jourItem.nb_personne
-          }
-        })
-
-        j++
-
-      })
-      res.send(menus);      
+      res.send(response);      
 }).catch(err => {
     res.status(500).send({
       message:

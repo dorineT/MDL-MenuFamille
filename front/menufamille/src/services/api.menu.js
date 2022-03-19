@@ -39,5 +39,17 @@ export default class MenuDao{
       })
     }
 
+
+    async getMenuById(idMenu){
+      let menu
+        
+      await api.get("/menu/GetAllInfo/"+idMenu)
+        .then((response) => {            
+          menu = response.data
+                      
+        });        
+      return menu
+    }
+
 }
 
