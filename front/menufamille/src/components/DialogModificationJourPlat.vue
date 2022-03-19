@@ -211,17 +211,19 @@
 				showModifMenu: false,
 				comboboxRecetteSelected: null,
 				itemRecettes: [],
+				itemRecettesAll: [],
 				suggestions: ["petite saucisse - pdt", "risotto"],
 				radioSelectionSuggestion: null,
 				newRecetteChoix: null,
 				tagsListe: [],
 				tagsChoix:[],
+				tagsListeAll: [],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 			};
 		},
 		created() {
-			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component
+			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component			
 		},
 		destroyed() {
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
@@ -248,7 +250,9 @@
 				let recetteObject = this.itemRecettesAll.find(el => el.nom = recette)	
 				console.log(recetteObject)		
 				recetteObject.tags.forEach(el => {
-					this.tagsChoix.push(el)
+					if(!this.tagsChoix.includes(el)){
+						this.tagsChoix.push(el)
+					}
 				});
 			}
 		},
@@ -265,12 +269,7 @@
 				this.jourSemaine = jourSemaine;
 				this.date = date;		
 
-				//charger tous les tags de la bd
-				this.tagsListeAll = await DAOTag.getAll()	
-				this.tagsListe = this.copyTab(this.tagsListeAll)		
-				//charger toutes les recettes et leur tags
-				this.itemRecettesAll = await DAORecette.getAll()
-				this.itemRecettes = this.copyTab(this.itemRecettesAll)	
+				this.tagsChoix = []
 
 				//si on a des tags déjà prédéfini dans l'item recu
 				if (itemReceived.tags != null) {
@@ -301,6 +300,13 @@
 
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;
+
+				//charger tous les tags de la bd
+				this.tagsListeAll = await DAOTag.getAll()	
+				this.tagsListe = this.copyTab(this.tagsListeAll)		
+				//charger toutes les recettes et leur tags
+				this.itemRecettesAll = await DAORecette.getAll()
+				this.itemRecettes = this.copyTab(this.itemRecettesAll)	
 			},
 			copyTab(source){
 				let cible = []
@@ -346,6 +352,7 @@
 				this.newRecetteChoix = this.radioSelectionSuggestion;
 			},
 			resetNewRecette() {
+				console.log('reset recette')
 				this.newRecetteChoix = null;
 				this.comboboxRecetteSelected = null;
 				this.radioSelectionSuggestion = null;
