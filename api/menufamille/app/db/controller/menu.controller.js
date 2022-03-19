@@ -95,20 +95,89 @@ exports.DeleteMenu = (req, res) => {
     });
   };
 
-///GetMenuAllInfo
+///GetMenuAllInfo  recupérer un menu avec son id avec jour, les périodes (mêmes celles qui ne sont pas liées à une recette), les recettes et leur tag + les tags qui sont liés aux périodes
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu,{ 
-                          include: [
-                            {model: Calendrier, through: {attributes: []}, 
-                                include: [{model: Recette, through: {attributes: ["periode"]}, attributes:['nom']}]
-                          }]
-                        })
-  .then(data => {
-    res.send(data);
+  let menu = [];
+  Menu.findByPk(id_menu, {
+      include: [
+        {
+          model: db.calendrier,
+          include:[
+            {
+              model: db.calendrier_recette,
+              include: 
+              [
+              {
+                model: db.recette, required: false,
+                include:
+                {
+                  model: db.tag, required: false, through: {attributes: []}
+                }
+              },
+              {
+                model: db.tag, required : false, through: {attributes: []}
+              }
+              ]
+            }
+          ]
+        }
+      ]
   })
-  .catch(err => {
+  .then(response => {
+
+    //traitement des donnees avant de les envoyer
+    //sinon trop lent dans le fron
+      menu.push({
+        menu_id: response.id_menu,
+        dateDebut: response.periode_debut,
+        dateFin: response.periode_fin,
+        verrou: response.verrou,
+        plats:[]
+      })
+
+      let j = 0
+      //get les jours
+      response.calendriers.forEach(jourItem => {
+        
+        menu.plats.push({
+          id: jourItem.id_calendrier,
+          date: jourItem.date,
+          jour: getDay(jourItem.date),
+          tags: jourItem.tags
+        })
+
+        jourItem.calendrier_recettes.forEach(periodeItem =>{
+          let recette = ""
+          if(periodeItem.recette === null & periodeItem.is_recette){
+            recette = ""
+          }
+          else if(periodeItem.recette === null & !periodeItem.is_recette){
+            recette = "/"
+          }else{
+            recette = periodeItem.recette.nom
+          }
+
+          if(periodeItem.periode === 'matin'){
+            menus.plats[j].matin = recette
+            menus.plats[j].matinNbPers = jourItem.nb_personne
+          }
+          else if(periodeItem.periode === 'midi'){
+            menus.plats[j].midi = recette
+            menus.plats[j].midiNbPers = jourItem.nb_personne
+          }
+          else{
+            menus.plats[j].soir = recette
+            menus.plats[j].soirNbPers = jourItem.nb_personne
+          }
+        })
+
+        j++
+
+      })
+      res.send(menus);      
+}).catch(err => {
     res.status(500).send({
       message:
         err.message || "Some error occurred while retrieving Menus."
@@ -215,7 +284,7 @@ function getDay(date){
 }
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte  /!\ ne pas tester, pas de Islocked dans la BDD..
+//// Envoyer les menus non-verrouilles + suggestion ouverte 
 
 exports.Get_Manual_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
