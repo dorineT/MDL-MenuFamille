@@ -85,3 +85,30 @@ exports.UpdateFamilly = (req, res) => {
     });
   };
   
+
+
+/// GetListFamilly
+
+exports.GetListFamilly = (req, res) =>{
+ const id_mem = req.params.id;
+  Famille.findAll({
+    where :{
+      '$membres.id_membre$': id_mem
+    },
+    include :[{
+      model: db.membres,
+      as: 'membres',
+      attributes : [],
+      through: {attributes: []}
+    }]
+  }
+  ).then(data => { 
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while inserting Familly"
+    });
+  });
+};

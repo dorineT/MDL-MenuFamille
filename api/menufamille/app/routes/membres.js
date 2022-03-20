@@ -17,3 +17,5 @@ router.post('/', membres.PutMember);
 router.put('/:id', membres.UpdateMember);
 
 router.delete('/:id', membres.DeleteMember);
+
+router.get("/GetListMembre/:id", membres.GetListMembre);
