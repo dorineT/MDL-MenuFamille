@@ -35,3 +35,4 @@ router.delete('/:id', famille.DeleteFamilly);
 //doit etre ajoute sur toutes les requetes
 router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard) 
 
+router.get("/GetListFamilly/:id", famille.GetListFamilly);

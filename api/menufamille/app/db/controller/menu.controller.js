@@ -99,7 +99,6 @@ exports.DeleteMenu = (req, res) => {
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  let menu = [];
   Menu.findByPk(id_menu, {
       include: [
         {
@@ -115,6 +114,17 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
                 include:
                 {
                   model: db.tag, required: false, through: {attributes: []}
+                }
+              },
+              {
+                model: db.suggestion, required: false,
+                include: 
+                {
+                  model: db.recette, required: false, attributes:['nom'],
+                  include:
+                  {
+                    model: db.tag, required: false, through: {attributes: []}
+                  }
                 }
               },
               {

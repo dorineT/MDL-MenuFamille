@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Retrieve all Members from the database.
 exports.findAll = (req, res) => {
-    Membres.findAll()
+    Membres.findAll( ['id_membre', "nom", "prenom", "email"] )
     .then(data => {
       res.send(data);
     })
@@ -83,3 +83,33 @@ exports.DeleteMember = (req, res) => {
       });
   });
 };
+
+
+
+/// GetListMembre
+
+exports.GetListMembre = (req, res) =>{
+  const id_fam = req.params.id;
+   Membres.findAll({
+     where :{
+       '$familles.id_famille$': id_fam
+     },
+     attributes: ['id_membre', "nom", "prenom", "email"],
+     include :[{
+       model: db.famille,
+       as: 'familles',
+       attributes : [],
+       through: {attributes: []}
+     }]
+   }
+   ).then(data => { 
+     res.send(data);
+   })
+   .catch(err => {
+     res.status(500).send({
+       message:
+         err.message || "Some error occurred while getting Membres"
+     });
+   });
+ };
+ 
