@@ -260,7 +260,7 @@
 		},
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async openModal(itemReceived, dateJour, nbPersonne) {
+			async openModal(itemReceived, dateJour) {
 				
 				console.log('Boite dialogue' + dateJour + itemReceived.id_periode)				
 				this.showModifMenu = false; //display les cartes de mofification de la recette
@@ -278,7 +278,7 @@
 					this.infoMenu.recette.nom = "Pas de recette prévue"
 					this.infoMenu.recette.tags = []
 				}				
-				this.infoMenu.nbPers = nbPersonne;			
+				this.infoMenu.nb_personne = itemReceived.nb_personne;			
 				this.date = dateJour;		
 				this.periode = itemReceived.periode;
 				this.infoMenu.tags = this.copyTab(itemReceived.tags)
@@ -306,7 +306,7 @@
 	
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
-				this.numberPersonneOld = this.infoMenu.nbPers;
+				this.numberPersonneOld = this.infoMenu.nb_personne;
 				this.recetteChoisie = this.infoMenu.recette !== null ? this.infoMenu.recette.nom : ""
 
 				//reset
@@ -343,7 +343,7 @@
 					if (this.numberPersonneNew <= 0) {
 						return false;
 					}
-					this.infoMenu.nbPers = this.numberPersonneNew;
+					this.infoMenu.nb_personne = this.numberPersonneNew;
 				}
 
 				this.dialog = false;
@@ -352,7 +352,7 @@
 				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
 
 				// envoi uniquement le menu jour modifie		
-				//eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
+				eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
 			},
 			userActionListeRecette(){
 				console.log('user action on recette')

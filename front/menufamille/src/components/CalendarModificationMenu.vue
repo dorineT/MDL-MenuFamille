@@ -183,7 +183,7 @@ export default {
           let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)      
 
           //open dialogue with even bus
-          eventBus.$emit('openDialog', periodeFind, menuFind.date, menuFind.nb_personne)
+          eventBus.$emit('openDialog', periodeFind, menuFind.date)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -215,7 +215,7 @@ export default {
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
-            nbPers: jourPlat.nb_personne,
+            nbPers: periode.nb_personne,
             tags: periode.tags
           })
 
@@ -224,7 +224,7 @@ export default {
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
-            nbPers: jourPlat.nb_personne,
+            nbPers: periode.nb_personne,
             tags: periode.tags
           })
 
@@ -233,7 +233,7 @@ export default {
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
-            nbPers: jourPlat.nb_personne,
+            nbPers: periode.nb_personne,
             tags: periode.tags
           })
 
