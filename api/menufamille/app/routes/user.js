@@ -1,5 +1,6 @@
 const Router = require('express-promise-router')
 const auth = require("../db/controller/auth.controller");
+const membres = require("../db/controller/membres.controller.js");
 const { verifySignUp, authJwt } = require("../middleware")
 const role = require("../db/controller/famille_membre.controller");
 
@@ -25,3 +26,4 @@ router.post("/signin", auth.signin);
 router.post("/refreshtoken", auth.refreshToken);
 
 router.get("/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard)
+router.delete('/:id',[authJwt.verifyToken],membres.DeleteMember);

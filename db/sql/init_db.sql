@@ -49,10 +49,11 @@ CREATE TABLE REFRESH_TOKEN (
                                PRIMARY KEY (id_refreshToken)
 );
 
+CREATE TYPE arbre AS ENUM ('parent','enfant');
 CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
-                                role VARCHAR NOT NULL,
+                                role arbre NOT NULL,
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
@@ -163,7 +164,7 @@ CREATE TABLE TAG_PERIODE (
 /*** Définition des clés étrangères ***/
 ALTER TABLE MENU ADD CONSTRAINT pk_MUfamille FOREIGN KEY (id_famille) REFERENCES FAMILLE(id_famille) ON DELETE CASCADE;
 
-ALTER TABLE REFRESH_TOKEN ADD CONSTRAINT pk_RNtoken FOREIGN KEY (id_membre) REFERENCES MEMBRES(id_membre) ON DELETE RESTRICT;
+ALTER TABLE REFRESH_TOKEN ADD CONSTRAINT pk_RNtoken FOREIGN KEY (id_membre) REFERENCES MEMBRES(id_membre) ON DELETE CASCADE;
 
 ALTER TABLE FAMILLE_MEMBRE ADD CONSTRAINT pk_FMfamille FOREIGN KEY (id_famille) REFERENCES FAMILLE(id_famille) ON DELETE CASCADE;
 
@@ -222,160 +223,31 @@ INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');
 
 
-/*** 2.on ne peux plus modifier le menu après validation ou periode debut ***/
-
-/*** Détecter par rapport à un BOOL (verrou) et non une date*/
-
-
-CREATE OR REPLACE FUNCTION menu_already_valid_FC()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    IF OLD.periode_debut <= NOW() THEN
-        RAISE EXCEPTION 'le menu n est plus modifiable';
-    END IF;
-    RETURN new;
-END;
-$$
-
-
-/*** pas utile je pense*/
-CREATE OR REPLACE FUNCTION menu_calendrier_already_valid_FC()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    IF OLD.menu.periode_debut <= NOW() THEN
-        RAISE EXCEPTION 'vous ne pouvez plus deplacer les jours';
-    END IF;
-    RETURN new;
-END;
-$$
-
-
-CREATE TRIGGER menu_already_valid
-    BEFORE UPDATE
-    ON menu
-    FOR EACH ROW
-EXECUTE PROCEDURE menu_already_valid_FC();
-
-
-CREATE TRIGGER menu_calendrier_already_valid
-    BEFORE UPDATE
-    ON menu_calendrier
-    FOR EACH ROW
-EXECUTE PROCEDURE menu_calendrier_already_valid_FC();
+/* Contraintes */
+create function delete_famille()
+returns trigger as $$
+declare
+    value record;
+begin
+    for value in (select f.id_famille, count(*) as nb from famille_membre f 
+        where f.id_famille in (select fm.id_famille from famille_membre fm 
+                                natural join membres m
+                                where m.email = old.email and fm."role" = 'parent') 
+        and f."role" = 'parent'
+        group by f.id_famille)
+        loop
+            if value.nb = 1 then 
+                raise exception 'unique parent de la famille' using ERRCODE = 23500;
+            end if;
+        end loop;
+        return old;
+    
+end; $$ language plpgsql;
 
 
 
-/*** la famille doit être suprimer si elle est vide => 
-
-
-===> fait par la contrainte on cascade delete
-bonus l'attribut nb_membre ce met a jour
- ***/
-
-/*
-CREATE OR REPLACE FUNCTION empty_familly_FC()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    IF (select id_membre from famille_membre where id_famille = old.id_famille) is NULL THEN
-        DELETE FROM famille where id_famille = old.id_famille;
-    ELSE
-        UPDATE Famille
-        SET nb_membre = (SELECT count(id_membre) from famille_membre where id_famille = old.id_famille);
-    END IF;
-    RETURN new;
-END;
-$$*/
-
-/*
-
-====>  contrainte cascade delete
-
-CREATE TRIGGER empty_familly
-    AFTER DELETE
-    ON famille_membre
-    FOR EACH ROW
-EXECUTE PROCEDURE empty_familly_FC();
-
-CREATE TRIGGER update_familly
-    AFTER update
-    ON famille_membre
-    FOR EACH ROW
-EXECUTE PROCEDURE empty_familly_FC();*/
-
-
-/*** Menu doit être suprmier si sa famille a été suprimer  ====> IDEM
-
-CREATE OR REPLACE FUNCTION menu_without_family()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    IF (select id_famille from menu where id_famille = new.id_famille) is NULL THEN
-        DELETE FROM menu where id_famille = old.id_famille;
-    END IF;
-    RETURN new;
-END;
-$$   
-
-CREATE TRIGGER menu_without_family
-    AFTER DELETE
-    ON famille
-    FOR EACH ROW
-EXECUTE PROCEDURE menu_without_family();*/
-
-
-
-/***Calendrier doit être suprimer si il n'a plus de lien avec Menu   ===
-
-==== > IDEM
-
-
-***/
-
-/*
-CREATE OR REPLACE FUNCTION daily_without_menu()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS
-$$
-BEGIN
-    IF (select id_menu from menu_calendrier where id_menu = new.id_menu) is NULL THEN
-        DELETE FROM calendrier where id_calendrier = old.id_menu;
-    END IF;
-    RETURN new;
-END;
-$$
-
-
-CREATE TRIGGER trg_daily_without_menu
-    AFTER DELETE
-    ON menu
-    FOR EACH ROW
-EXECUTE PROCEDURE menu_without_family(); */
-
-/***pas 2 fois le même plat  => NOM en unique 
-
-et la contrainte  plat identique sur la semaine gérée sur  le front (voir back)
-***/
-
-
-/** MANQUANT:
-
-* trigger qui met à jour la table calendrier_plat lorsque le menu passe en mode verrou, tout les plats du menu passe en mode verrou aussi
-bool dans les différentes tables
-
-* + d'autres mais pas en rapport avec des suppressions ou contraintes unique qui sont réalisés sans trigger
-*/
-
-
-
+create trigger delete_famille
+before delete
+on membres
+for each row 
+execute procedure delete_famille()
