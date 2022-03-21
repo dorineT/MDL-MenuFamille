@@ -35,6 +35,8 @@ router.delete('/:id', famille.DeleteFamilly);
 //doit etre ajoute sur toutes les requetes
 router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard) ;
 
-router.get("/GetListFamilly/:id", famille.GetListFamilly);
+router.get("/GetListFamilly/:id",[authJwt.verifyToken], famille.GetListFamilly);
 
-router.delete("/:id_fam/:id_mem", famille.DeleteMemberFamilly);
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken], famille.DeleteMemberFamilly);
+
+router.put('/Defrole/:id_fam/:id_rem',[authJwt.verifyToken], famille.DefineRole);

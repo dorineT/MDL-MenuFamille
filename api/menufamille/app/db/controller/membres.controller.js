@@ -112,3 +112,27 @@ exports.GetListMembre = (req, res) =>{
    });
  };
  
+
+ /// Rejoindre une famille
+
+ exports.JoinFamilly = (req, res) => {
+   const id_fam = req.params.id_fam;
+   const id_mem = req.params.id_mem;
+   const role_req = req.body.role;
+   if (role_req == "parent" || role_req == "enfant"){
+    db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: role})
+    .then(data => { 
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while joining a familly"
+      });
+    });
+   } else {
+    res.send({
+      message: "Bad request, role must be 'parent' or 'enfant'" 
+    });
+  }
+ }
