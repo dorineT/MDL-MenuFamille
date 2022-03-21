@@ -181,9 +181,12 @@ export default {
       //// Affichage calendrier ///
       goToRecette(item,periode){    
 
-          let menuFind = this.items.find(el => el.id === item.id)
+          console.log(items)
+          let menuFind = this.items.find(el => el.id_calendrier === item.id_calendrier)
+          console.log(menuFind)
+
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode, menuFind.jour, menuFind.date)
+          //eventBus.$emit('openDialog', item, periode, menuFind.jour, menuFind.date)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []

@@ -201,6 +201,7 @@
 			return {
 				dialog: false,
 				infoMenu: {},
+				menu: {},
 				jourSemaine: null,
 				date: null,
 				periode: "",
@@ -229,7 +230,7 @@
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
-			tagsChoix(){				
+			/*tagsChoix(){				
 				console.log('change tag => change recette')
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
@@ -254,7 +255,7 @@
 						this.tagsChoix.push(el)
 					}
 				});
-			}
+			}*/
 		},
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
