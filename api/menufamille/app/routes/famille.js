@@ -21,7 +21,7 @@ router.use(function(req, res, next) { //toujours en premier
 });
 
 
-    // Retrieve all Famille
+// Retrieve all Famille
 // note pour sean, comme les requetes sont différentes (post put get,... pas besoin de mettre des noms différents etant donne que ça fait la 
 // difference avec le type de requete donc un / ou /:id est ok
 router.get('/', famille.findAll);
@@ -33,6 +33,8 @@ router.put('/:id', famille.UpdateFamilly);
 router.delete('/:id', famille.DeleteFamilly);
 
 //doit etre ajoute sur toutes les requetes
-router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard) 
+router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard) ;
 
 router.get("/GetListFamilly/:id", famille.GetListFamilly);
+
+router.delete("/:id_fam/:id_mem", famille.DeleteMemberFamilly);

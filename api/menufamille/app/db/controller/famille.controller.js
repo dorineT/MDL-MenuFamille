@@ -112,3 +112,73 @@ exports.GetListFamilly = (req, res) =>{
     });
   });
 };
+
+
+/// DeleteMemberFamille
+
+exports.DeleteMemberFamilly = (req, res) => {
+  const id_mem = req.params.id_mem;
+  const id_fam = req.params.id_fam;
+  db.famille_membre.destroy({
+    where: 
+    { [Op.add]: 
+      {
+        id_famille: id_fam,
+        id_membre: id_mem
+      }
+    } 
+  }).then(num =>{
+    if (num == 1) {
+      res.send({
+        message: `the Familly member with the ID ${id_mem} was deleted from the familly with the ID ${id_fam}`
+      });
+    } else{
+      res.send({
+        message: `Cannot delete the member with the ID ${id_mem} from the familly with the ID ${id_fam}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while deleting Familly_Member with id_famille=${id_fam} && id_membre=${id_mem}`
+      });
+  });
+};
+
+// Définir rôle membres famille
+
+exports.DefineRole = (req, res) => {
+  const id_mem = req.params.id_mem;
+  const id_fam = req.params.id_fam;
+  const role_req = req.body.role;
+  if (role_req == "parent" || role_req == "enfant"){
+    db.famille_membre.update( {role: role_req}, {
+      where: { [Op.add]: 
+          {id_famille: id_fam,
+           id_membre: id_mem}
+      }
+    })
+    .then(num =>{
+      if (num == 1) {
+        res.send({
+          message: "Role was updated"
+        });
+      } else{
+        res.send({
+          message: `Cannot update role for member ${id_mem} form familly ${id_fam}`
+        })
+      }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+              err.message || `Some error occurred while updating the role of member ${id_mem} form familly ${id_fam}`
+        });
+    });
+  } else {
+    res.send({
+      message: "Bad request, role must be 'parent' or 'enfant'" 
+    });
+  }
+}

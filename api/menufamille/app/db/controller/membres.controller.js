@@ -99,7 +99,6 @@ exports.GetListMembre = (req, res) =>{
        model: db.famille,
        as: 'familles',
        attributes : [],
-       through: {attributes: []}
      }]
    }
    ).then(data => { 
