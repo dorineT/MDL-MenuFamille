@@ -58,7 +58,7 @@
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
-                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>
@@ -130,6 +130,7 @@
 <script>
 import {eventBus } from '../main'
 import checkContrainte from '../services/checkContrainteMenu'
+
 import MenuDAO from '../services/api.menu'
 import moment from 'moment'
 let DAOMenu = new MenuDAO()
@@ -263,73 +264,49 @@ export default {
 
       /// UPDATE CALENDRIER ////
 
-      updateMenuJour(menuJour, periode){  
-        console.log('update pass')      
-        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
+      updateMenuJour(item){  
+        console.log('update pass')  
+        console.log(item) // une periode
+            
+        let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
+        let menuPeriodeOld = menuJourOld.calendrier_recettes.find(elem => elem.id_periode === item.id_periode)
         this.errorMessage.message = ""
 
-        let menuJourSave = {
-          id: menuJourOld.id,
-          jour: menuJourOld.jour,
-          date: menuJourOld.date,
-          matin: menuJourOld.matin,
-          matinNbPers: menuJourOld.matinNbPers,
-          tagsMatin: menuJourOld.tagsMatin,
-          midi: menuJourOld.matin,
-          midiNbPers: menuJourOld.matinNbPers,
-          tagsMidi: menuJourOld.tagsMatin,
-          soir: menuJourOld.matin,
-          soirNbPers: menuJourOld.matinNbPers,
-          tagsSoir: menuJourOld.tagsMatin,
-        };
+        //copy all attribute from menuPeriodeOld to periodeSave
+        //let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
+        //or (new)
+        let periodeSave = structuredClone(menuPeriodeOld)  
+        console.log('menuJourOld')
+        console.log(menuJourOld)
 
-        let newTags = []
-        menuJour.tags.forEach(el => {
-          newTags.push(el)
-        });
-
-        if(periode === 'matin'){
-          menuJourOld.matin = menuJour.plat
-          menuJourOld.matinNbPers = menuJour.nbPers
-          menuJourOld.tagsMatin = newTags 
-
+        if(item.platsMatinperiode === 'matin'){
+          menuJourOld.calendrier_recettes[0] = structuredClone(item)
           if(this.menu.plat_identique_matin !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 'matin');
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 0);
           }
         }
-        else if(periode === 'midi'){
-          menuJourOld.midi = menuJour.plat
-          menuJourOld.midiNbPers = menuJour.nbPers
-          menuJourOld.tagsMidi = newTags 
-
+        else if(item.periode === 'midi'){
+          menuJourOld.calendrier_recettes[1] = structuredClone(item)
           if(this.menu.plat_identique_midi !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_midi, 'midi');
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_midi, 1);
           }
         }
-        else if(periode === 'soir'){
-          menuJourOld.soir = menuJour.plat
-          menuJourOld.soirNbPers = menuJour.nbPers
-          menuJourOld.tagsSoir = newTags
-          
+        else if(item.periode === 'soir'){
+          menuJourOld.calendrier_recettes[2] = structuredClone(item)
           if(this.menu.plat_identique_soir !== null){
-            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_soir, 'soir');
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_soir, 2);
           }
         }
+        console.log('menuJourOld new ')
+        console.log(menuJourOld)
 
-
-        if (this.errorMessage.message !== "") {      			
-          menuJourOld.matin = menuJourSave.matin
-          menuJourOld.midi = menuJourSave.midi
-          menuJourOld.soir = menuJourSave.soir
-          menuJourOld.matinNbPers = menuJourSave.matinNbPers
-          menuJourOld.midiNbPers = menuJourSave.midiNbPers
-          menuJourOld.soirNbPers = menuJourSave.soirNbPers
-          menuJourOld.tagsMatin = menuJourSave.tagsMatin
-          menuJourOld.tagsMidi = menuJourSave.tagsMidi
-          menuJourOld.tagsSoir = menuJourSave.tagsSoir
-
+        if (this.errorMessage.message !== "") {   
+          console.log('erreur')   			
           this.errorMessage.error = true
+          menuPeriodeOld = periodeSave     
+
         } else {
+          console.log('ok')   
           let iStart = (this.page-1) * 7
           let iEnd = this.page * 7              
           this.fillPlat(this.items,iStart,iEnd)
