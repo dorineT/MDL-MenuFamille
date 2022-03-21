@@ -19,8 +19,8 @@
 				</v-toolbar>
 
 				<v-list subheader>
-					<v-subheader
-						>Menu du : {{ jourSemaine }} {{ periode }} : {{ date }}
+					<v-subheader>
+						Menu du : {{ [ date, "DD/MM/YYYY" ] | moment("dddd")}} {{ periode }}, le {{date}}
 					</v-subheader>
 					<v-list-item>
 						<v-list-item-content>
@@ -96,9 +96,10 @@
 													label="Recette"
 													:items="itemRecettes"
 													item-text="nom"
-													item-value="nom"
+													item-value="id_recette"
+													return-object
 													v-model="comboboxRecetteSelected"
-													@change="resetSelectedSuggestion()"
+													@change="userActionListeRecette()"
 													no-data-text="Aucune recette correspondante"
 												></v-autocomplete>
 											</v-card-text>
@@ -146,7 +147,8 @@
 									multiple
 									:items="tagsListe"
 									item-text="nom"
-									item-value="nom"
+									item-value="id_tag"
+									return-object
 									v-model="tagsChoix"
 									color="orange lighten-2"
 									no-data-text="Aucun tag correspondant"
@@ -200,9 +202,7 @@
 		data() {
 			return {
 				dialog: false,
-				infoMenu: {},
-				menu: {},
-				jourSemaine: null,
+				infoMenu: {},						
 				date: null,
 				periode: "",
 				snackbar: false,
@@ -213,7 +213,7 @@
 				comboboxRecetteSelected: null,
 				itemRecettes: [],
 				itemRecettesAll: [],
-				suggestions: ["petite saucisse - pdt", "risotto"],
+				suggestions: [],
 				radioSelectionSuggestion: null,
 				newRecetteChoix: null,
 				tagsListe: [],
@@ -230,8 +230,8 @@
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
-			/*tagsChoix(){				
-				console.log('change tag => change recette')
+			tagsChoix(){		
+				console.log('filter recette en fonction des tags')						
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -241,11 +241,12 @@
 					});
 
 					if(tempTags.every(el => {
-						return tagReTemp.includes(el)
+						console.log(el.nom)
+						return tagReTemp.includes(el.nom)
 					}))return recette
-				})				
+				})
 			},
-			newRecetteChoix(){
+			/*newRecetteChoix(){
 				console.log('change tag en fonction de la recette en question')			
 				let recette = this.newRecetteChoix			
 				let recetteObject = this.itemRecettesAll.find(el => el.nom = recette)	
@@ -259,58 +260,67 @@
 		},
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async openModal(itemReceived, periode, jourSemaine, date) {
+			async openModal(itemReceived, dateJour, nbPersonne) {
 				
+				console.log('Boite dialogue' + dateJour + itemReceived.id_periode)				
 				this.showModifMenu = false; //display les cartes de mofification de la recette
 				this.dialog = true;
 
-				this.infoMenu.id = itemReceived.id;
-				this.infoMenu.plat = itemReceived.plat;
-				this.infoMenu.nbPers = itemReceived.nbPers;
-				this.jourSemaine = jourSemaine;
-				this.date = date;		
+				this.infoMenu.id_calendrier = itemReceived.id_calendrier
+				this.infoMenu.id_periode = itemReceived.id_periode
+				this.infoMenu.id_recette = itemReceived.id_recette
+				this.infoMenu.is_recette = itemReceived.is_recette
+				this.infoMenu.recette = {}				
+				if(itemReceived.recette !== null){						
+					this.infoMenu.recette.nom = itemReceived.recette.nom;
+					this.infoMenu.recette.tags = this.copyTab(itemReceived.recette.tags)
+				}else{
+					this.infoMenu.recette.nom = "Pas de recette prévue"
+					this.infoMenu.recette.tags = []
+				}				
+				this.infoMenu.nbPers = nbPersonne;			
+				this.date = dateJour;		
+				this.periode = itemReceived.periode;
+				this.infoMenu.tags = this.copyTab(itemReceived.tags)
+				this.suggestions = this.copyTab(itemReceived.suggestion)
 
 				this.tagsChoix = []
-
-				//si on a des tags déjà prédéfini dans l'item recu
-				if (itemReceived.tags != null) {
-					itemReceived.tags.forEach((el) => {						
-						if (el != null) {
-							// TODO
-							this.tagsChoix.push(el); //devra etre modifier quand le menu sera chargé a partir de l'api !!!!
-						}
-					});
-					//filtrer les recettes qu'on peut choisir => done avec le watch property		
-				}
-						
-				this.periode = periode;
-	
-				//menu prévu ?
-				this.selectedRadioMenuOuiNon = "oui";
-				this.numberPersonneOld = this.infoMenu.nbPers;
-				this.recetteChoisie = this.infoMenu.plat;
-				if (
-					(this.infoMenu.plat === "/") &
-					(this.tagsChoix.length === 0)
-				) {		
-					this.selectedRadioMenuOuiNon = "non";
-				}
-
-				//reset
-				this.resetNewRecette();
-
-				//set nb perso
-				this.numberPersonneNew = this.numberPersonneOld;
 
 				//charger tous les tags de la bd
 				this.tagsListeAll = await DAOTag.getAll()	
 				this.tagsListe = this.copyTab(this.tagsListeAll)		
 				//charger toutes les recettes et leur tags
 				this.itemRecettesAll = await DAORecette.getAll()
-				this.itemRecettes = this.copyTab(this.itemRecettesAll)	
+				this.itemRecettes = this.copyTab(this.itemRecettesAll)
+
+
+				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
+				if(this.infoMenu.recette !== null){
+					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				}
+				else if (this.infoMenu.tags.length > 0) {
+					this.tagsChoix = this.copyTab(this.infoMenu.tags)
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
+				}				
+				
+	
+				//menu prévu ?
+				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
+				this.numberPersonneOld = this.infoMenu.nbPers;
+				this.recetteChoisie = this.infoMenu.recette !== null ? this.infoMenu.recette.nom : ""
+
+				//reset
+				this.resetNewRecette();
+
+				//set nb perso
+				this.numberPersonneNew = this.numberPersonneOld;	
 			},
+			/**Copier un tableau - superficielle
+			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
 			copyTab(source){
 				let cible = []
+				if(source === null ) return []
+
 				source.forEach(elem => {
 					cible.push(elem)
 				})
@@ -342,13 +352,27 @@
 				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
 
 				// envoi uniquement le menu jour modifie		
-				eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
+				//eventBus.$emit(this.stringUpdateModal, this.infoMenu, this.periode);
+			},
+			userActionListeRecette(){
+				console.log('user action on recette')
+				console.log(this.comboboxRecetteSelected)
+				this.newRecetteChoix = this.comboboxRecetteSelected.nom;
+				this.resetSelectedSuggestion()	
+				
+				console.log('change tag en fonction de la recette en question')									
+				this.comboboxRecetteSelected.tags.forEach(el => {
+						if(!this.tagsChoix.some(tag => el.id_tag === tag.id_tag)){
+							this.tagsChoix.push(el)
+						}
+				});
 			},
 			resetSelectedSuggestion() {
-				this.radioSelectionSuggestion = null;
-				this.newRecetteChoix = this.comboboxRecetteSelected;
+				console.log('reset suggestion')
+				this.radioSelectionSuggestion = null;				
 			},
 			changeChoixPlat() {
+				console.log('reset dropdown')
 				this.comboboxRecetteSelected = null;
 				this.newRecetteChoix = this.radioSelectionSuggestion;
 			},

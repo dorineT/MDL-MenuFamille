@@ -28,7 +28,7 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                <v-btn text @click="goToRecette(item,'matin')">
+                <v-btn text @click="goToRecette(item)">
 
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
                     <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>
@@ -41,7 +41,7 @@
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                <v-btn text @click="goToRecette(item,'midi')">
+                <v-btn text @click="goToRecette(item)">
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
                   <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                <v-btn  text @click="goToRecette(item,'soir')">
+                <v-btn  text @click="goToRecette(item)">
                   <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                   <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>             
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -160,9 +160,8 @@ export default {
     },
     async created(){ 
       this.menu = await DAOMenu.getMenuById(1)  
-      this.nbPersonneFamille = 2 // doit etre pris dans le store ou dans la bd
+      this.nbPersonneFamille = 2 // doit etre pris dans le store ou dans la bd  
 
-      console.log(this.menu)
       this.items = this.menu.calendriers
       let indiceEnd = this.items.length < 7 ? this.items.length : 7       
       this.populateHeader(this.items,0,indiceEnd)
@@ -179,14 +178,12 @@ export default {
     },
     methods:{
       //// Affichage calendrier ///
-      goToRecette(item,periode){    
-
-          console.log(items)
-          let menuFind = this.items.find(el => el.id_calendrier === item.id_calendrier)
-          console.log(menuFind)
+      goToRecette(item){    
+          let menuFind = this.items.find(el => el.id_calendrier === item.id_jour)// le jour         
+          let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)      
 
           //open dialogue with even bus
-          //eventBus.$emit('openDialog', item, periode, menuFind.jour, menuFind.date)
+          eventBus.$emit('openDialog', periodeFind, menuFind.date, menuFind.nb_personne)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -211,8 +208,7 @@ export default {
         this.platsSoir = []
 
         while(iStart<iEnd & iStart<menu.length){
-          let jourPlat = menu[iStart]
-          console.log(jourPlat)
+          let jourPlat = menu[iStart]     
 
           let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
@@ -232,7 +228,7 @@ export default {
             tags: periode.tags
           })
 
-          periode = jourPlat.calendrier_recettes[1]
+          periode = jourPlat.calendrier_recettes[2]
           this.platsSoir.push({
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,

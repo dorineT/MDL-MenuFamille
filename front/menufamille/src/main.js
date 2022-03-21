@@ -17,6 +17,9 @@ import setupInterceptors from './services/setupInterceptors';
 
 Vue.use(require('vue-moment'));
 
+
+
+
 Vue.config.productionTip = false
 export const eventBus = new Vue();
 setupInterceptors(store)
