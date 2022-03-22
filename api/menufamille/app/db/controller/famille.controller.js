@@ -182,3 +182,23 @@ exports.DefineRole = (req, res) => {
     });
   }
 }
+
+
+/// Parent existe-il ?
+
+exports.PapaOuTes = (req,res) =>{
+  const id_fam = req.params.id_fam
+  db.famille_membre.findAndCountAll({
+    where: { [Op.add]: 
+      {id_famille: id_fam,
+       role: 'parent'}
+      }
+  })
+  .then(rep => {
+    if (rep >= 1){
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  })
+}

@@ -18,6 +18,8 @@ router.put('/:id', membres.UpdateMember);
 
 router.delete('/:id', membres.DeleteMember);
 
-router.get("/GetListMembre/:id", membres.GetListMembre);
+router.get("/GetListMembre/:id",[authJwt.verifyToken], membres.GetListMembre);
 
-router.post("/:id_fam/:id_mem", membres.JoinFamilly);
+router.post("/:id_fam/:id_mem",[authJwt.verifyToken], membres.JoinFamilly);
+
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken], membres.LeaveFamilly);

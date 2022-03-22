@@ -136,3 +136,35 @@ exports.GetListMembre = (req, res) =>{
     });
   }
  }
+
+/// Quitter une famille 
+
+exports.LeaveFamilly = (req, res) => {
+  const id_fam = req.params.id_fam;
+  const id_mem = req.params.id_mem;
+  db.famille_membre.destroy({
+    where: 
+    { [Op.add]: 
+      {
+        id_famille: id_fam,
+        id_membre: id_mem
+      }
+    } 
+  }).then(num =>{
+    if (num == 1) {
+      res.send({
+        message: `You left the familly with the ID ${id_fam}`
+      });
+    } else{
+      res.send({
+        message: `You cannot leave the familly with the ID ${id_fam}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while Leaving Familly_Member with id_famille=${id_fam}`
+      });
+  }); 
+}
