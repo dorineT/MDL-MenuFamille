@@ -1,22 +1,23 @@
 exports.verifContraintePlat = (items, nbPlat, periode) => {
     const count = {};
 
-    items.forEach((element) => {
-        if ((element[periode] !== "/") & (element[periode] != "")) {
-            if (count[element[periode]]) {
-                count[element[periode]] += 1;
+    items.forEach((jour) => {
+
+        let periodeDefinie = jour.calendrier_recettes[periode]
+
+        if ((periodeDefinie.recette !== null)) {
+            if (count[periodeDefinie.recette.nom]) {
+                count[periodeDefinie.recette.nom] += 1;
             } else {
-                count[element[periode]] = 1;
+                count[periodeDefinie.recette.nom] = 1;
             }
         }
     });
 
-    console.log(count)
-
     for (const item in count) {
         if (count[item] > nbPlat) {
-            if(periode === 'matin') return "Contrainte de plat identique non respectée pour le matin";
-            else if(periode === 'midi') return "Contrainte de plat identique non respectée pour le midi";
+            if(periode === 0) return "Contrainte de plat identique non respectée pour le matin";
+            else if(periode === 1) return "Contrainte de plat identique non respectée pour le midi";
             else return "Contrainte de plat identique non respectée pour le soir";
         }
     }

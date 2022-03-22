@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { calendrier, recette } = require("../models");
+const { calendrier, recette, sequelize } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
 const Op = db.Sequelize.Op;
@@ -97,14 +97,15 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
   Menu.findByPk(id_menu, {
       include: [
         {
-          model: db.calendrier,
+          model: db.calendrier,           
           include:[
             {
-              model: db.calendrier_recette,
-              include: 
-              [
+              model: db.calendrier_recette,              
+              include: [
               {
-                model: db.recette, required: false, attributes:['nom'],
+                model: db.recette, 
+                required: false,
+                attributes:['nom'],
                 include:
                 {
                   model: db.tag, required: false, through: {attributes: []}
@@ -128,15 +129,15 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
             }
           ]
         }
-      ],
-      order : [
+      ],  
+      order: [
         [db.calendrier, 'date', 'ASC'],
         [db.calendrier, db.calendrier_recette, 'id_periode', 'ASC']
-      ]
+      ]    
   })
-  .then(data => {
-    res.send(data);    
-  }).catch(err => {
+  .then(response => {
+      res.send(response);      
+}).catch(err => {
     res.status(500).send({
       message:
         err.message || "Some error occurred while retrieving Menus."
