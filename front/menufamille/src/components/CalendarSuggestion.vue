@@ -81,15 +81,19 @@
 </template>
 
 <script>
+import MenuSugg from '../services/api.menuSuggestion'
 import {eventBus } from '../main'
+
+let menuSuggest = new MenuSugg()
+
 export default {
     props:['periodeMenu'],
     data () {
       return {headers: [],
       menu: {          
-          menu_id: 2,
-          plats: [
-            {
+          menu_id: 3,
+           plats: [
+           {
               id:15,
               jour: 'Lundi',
               date: '7/03',
@@ -144,11 +148,11 @@ export default {
               soir: '',
               soirNbPers: null,
             }
-          ],
+          ], 
           dateDebut: '7/03/2022',
           dateFin: '11/03/2022',
-          verrou: true            
-        },
+          verrou: true           
+        }, 
         items: [],
         pageCount: 0,
         page: 1,
@@ -164,10 +168,17 @@ export default {
         let indiceEnd = this.items.length < 7 ? this.items.length : 7       
         this.populateHeader(this.items,0,indiceEnd)
         this.fillPlat(this.items,0,indiceEnd) 
-        // call api to get the menu ou pas besoin
+        // call api to get the menu 
     },
     created(){
+     // this.menu = await menuSuggest.getMenuSuggestionById(3) //menu num 3 ?!
+     // this.items = this.menu.calendriers et autre items
+
       eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)
+      eventBus.$on('saveSuggestion', this.saveSuggestionMenu)
+    },
+    destroy(){
+      eventBus.$off('saveSuggestion')
     },
     methods:{
       //// Affichage calendrier ///
@@ -245,9 +256,9 @@ export default {
       /// UPDATE CALENDRIER////
 
       updateMenuSuggestionJour(menuJour, periode){
-       
+        console.log('test update suggestion')
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
-
+        
         if(periode === 'matin'){
           menuJourOld.matin = menuJour.plat
           menuJourOld.matinNbPers = menuJour.nbPers
@@ -264,6 +275,9 @@ export default {
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
         this.fillPlat(this.items,iStart,iEnd)
+        },
+        saveSuggestionMenu(){
+          eventBus.$emit('postSuggestion', this.menu)
         }
 
     }
