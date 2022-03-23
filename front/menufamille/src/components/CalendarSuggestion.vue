@@ -28,31 +28,37 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                <v-btn text @click="goToRecette(item,'matin')">
-                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.plat !=='/'">{{ item.plat }} </p>
-                    <p v-else style="color: red">X</p>                      
-                  </v-btn>                     
+                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
+                <p v-else>
+                  <v-btn text @click="goToRecette(item,'matin')">
+                      <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                      <p v-else>{{ item.plat }} </p>                                 
+                      </v-btn>      
+                </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
+                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
+              <p v-else>
                 <v-btn text @click="goToRecette(item,'midi')">
                     <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
-                    <p v-else style="color: red">X</p>                                        
-                </v-btn>               
+                    <p v-else>{{ item.plat }} </p>                                       
+                </v-btn>       
+              </p>        
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
+                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
+              <p v-else>
                 <v-btn  text @click="goToRecette(item,'soir')">
                   <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else-if="item.plat!=='/'">{{ item.plat }} </p>
-                  <p v-else style="color: red">X</p>
+                  <p v-else>{{ item.plat }} </p>
                 </v-btn> 
+              </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
@@ -75,15 +81,19 @@
 </template>
 
 <script>
+import MenuSugg from '../services/api.menuSuggestion'
 import {eventBus } from '../main'
+
+let menuSuggest = new MenuSugg()
+
 export default {
     props:['periodeMenu'],
     data () {
       return {headers: [],
       menu: {          
-          menu_id: 2,
-          plats: [
-            {
+          menu_id: 3,
+           plats: [
+           {
               id:15,
               jour: 'Lundi',
               date: '7/03',
@@ -98,11 +108,11 @@ export default {
               id:16,
               jour: 'Mardi',
               date: '8/03',
-              matin: '',
+              matin: '/',
               matinNbPers: null,
-              midi: '',
+              midi: '/',
               midiNbPers: null,
-              soir: '',
+              soir: '/',
               soirNbPers: null,
             },
             {
@@ -138,11 +148,11 @@ export default {
               soir: '',
               soirNbPers: null,
             }
-          ],
+          ], 
           dateDebut: '7/03/2022',
           dateFin: '11/03/2022',
-          verrou: true            
-        },
+          verrou: true           
+        }, 
         items: [],
         pageCount: 0,
         page: 1,
@@ -158,10 +168,17 @@ export default {
         let indiceEnd = this.items.length < 7 ? this.items.length : 7       
         this.populateHeader(this.items,0,indiceEnd)
         this.fillPlat(this.items,0,indiceEnd) 
-        // call api to get the menu ou pas besoin
+        // call api to get the menu 
     },
     created(){
-      eventBus.$on('updateMenuJour', this.updateMenuJour)
+     // this.menu = await menuSuggest.getMenuSuggestionById(3) //menu num 3 ?!
+     // this.items = this.menu.calendriers et autre items
+
+      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)
+      eventBus.$on('saveSuggestion', this.saveSuggestionMenu)
+    },
+    destroy(){
+      eventBus.$off('saveSuggestion')
     },
     destroyed(){
       eventBus.$off('updateMenuJour')
@@ -170,7 +187,7 @@ export default {
       //// Affichage calendrier ///
       goToRecette(item,periode){      
           //open dialogue with even bus
-          eventBus.$emit('openDialog', item, periode, this.items)
+          eventBus.$emit('openDialogSuggestion', item, periode, this.items)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -241,10 +258,10 @@ export default {
 
       /// UPDATE CALENDRIER////
 
-      updateMenuJour(menuJour, periode){
-       
+      updateMenuSuggestionJour(menuJour, periode){
+        console.log('test update suggestion')
         let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
-
+        
         if(periode === 'matin'){
           menuJourOld.matin = menuJour.plat
           menuJourOld.matinNbPers = menuJour.nbPers
@@ -261,6 +278,9 @@ export default {
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
         this.fillPlat(this.items,iStart,iEnd)
+        },
+        saveSuggestionMenu(){
+          eventBus.$emit('postSuggestion', this.menu)
         }
 
     }
