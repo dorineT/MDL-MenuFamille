@@ -1,6 +1,6 @@
 const Router = require('express-promise-router')
 const membres = require("../db/controller/membres.controller.js");
-
+const { authJwt } = require("../middleware")
 
 // create a new express-promise-router
 // this has the same API as the normal express router except

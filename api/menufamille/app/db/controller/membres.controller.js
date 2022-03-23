@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Retrieve all Members from the database.
 exports.findAll = (req, res) => {
-    Membres.findAll( ['id_membre', "nom", "prenom", "email"] )
+    Membres.findAll( {attributes: ['id_membre', "nom", "prenom", "email"]})
     .then(data => {
       res.send(data);
     })
