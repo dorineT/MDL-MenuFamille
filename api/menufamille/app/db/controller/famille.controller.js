@@ -209,7 +209,7 @@ exports.PapaOuTes = (req,res) =>{
 
 exports.CreateFamilly = (req, res) => {
   const id_mem = req.params.id_mem;
-  Famille.create({ nom: req.body.nom, code_acces: req.body.code_acces, nb_membres: req.body.nb_membres})
+  Famille.create({ nom: req.body.nom, code_acces: req.body.code_acces, nb_membres: 1})
   .then(data => { 
 
     const id_fam = data.id_famille;
@@ -240,3 +240,57 @@ exports.CreateFamilly = (req, res) => {
     });
   });
 };
+
+
+//// Lower Member count
+
+exports.LowerMemberCount = (req, res) => {
+  const id = req.params.id;
+  const nv_membres = req.body.nb_membres - 1;
+  Famille.update({
+    nb_membres: nv_membres
+  },{
+    where: {id_famille: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send(nv_membres);
+    } else{
+      res.send({
+        message: `Cannot update familly with id=${id}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating familly id=${id}`
+      });
+  });
+}
+
+//// Add Member count
+exports.AddMemberCount = (req, res) => {
+  const id = req.params.id;
+  const nv_membres = req.body.nb_membres + 1;
+  Famille.update({
+    nb_membres: nv_membres
+  },{
+    where: {id_famille: id}
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send(nv_membres);
+    } else{
+      res.send({
+        message: `Cannot update familly with id=${id}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating familly id=${id}`
+      });
+  });
+}

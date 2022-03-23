@@ -44,3 +44,7 @@ router.put('/Defrole/:id_fam/:id_mem',[authJwt.verifyToken], famille.DefineRole)
 router.get('/IsThereParent/:id_fam', [authJwt.verifyToken], famille.PapaOuTes);
 
 router.post('/CreateFamilly/:id_mem',[authJwt.verifyToken], famille.CreateFamilly);
+
+router.put('/AjouterMembreNumber/:id', famille.AddMemberCount);
+
+router.put('/RetirerMembreNumber/:id', famille.LowerMemberCount);
