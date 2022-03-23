@@ -293,21 +293,24 @@
 				this.itemRecettesAll = await DAORecette.getAll()
 				this.itemRecettes = this.copyTab(this.itemRecettesAll)
 
-
-				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
-				if(this.infoMenu.recette !== null){
-					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
-				}
-				else if (this.infoMenu.tags.length > 0) {
-					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-					//filtrer les recettes qu'on peut choisir => done avec le watch property		
-				}				
-				
-	
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
 				this.numberPersonneOld = this.infoMenu.nb_personne
 				this.recetteChoisie =  this.infoMenu.recette.nom
+
+				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
+				console.log(this.infoMenu.recette)
+				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
+					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				}
+				else if (this.infoMenu.tags.length > 0) {
+					console.log('tag defini')
+					this.tagsChoix = this.copyTab(this.infoMenu.tags)
+					console.log(this.tagsChoix)
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
+				}				
+				
+
 
 				//reset
 				this.resetNewRecette();
@@ -344,10 +347,16 @@
 				this.radioSelectionSuggestion = null
 			},
 			/** Reset les tags à ceux de la recette prévue */
-			resetTag(){
+			resetTag(){				
 				this.tagsChoix = []
-				if(this.infoMenu.recette !== null){
+				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
 					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				}
+				else if (this.infoMenu.tags.length > 0) {
+					console.log('tag defini')
+					this.tagsChoix = this.copyTab(this.infoMenu.tags)
+					console.log(this.tagsChoix)
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}
 			},
 			/**verifie que le nombre de personnes entre dans le textfiel est positif */
