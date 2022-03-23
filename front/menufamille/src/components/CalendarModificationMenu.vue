@@ -36,7 +36,7 @@
                     <p v-else>{{ item.plat }} </p>                   
 
                   </v-btn>                     
-                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
@@ -47,7 +47,7 @@
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>                                    
                 </v-btn>               
-                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille">{{item.nbPers}} personnes</p> 
+                <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
@@ -58,7 +58,7 @@
                   <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                   <p v-else>{{ item.plat }} </p>
                 </v-btn> 
-                <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille">{{item.nbPers }} personnes </p>  
+                <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers }} personnes </p>  
               </td>
             </tr>
             </tbody>

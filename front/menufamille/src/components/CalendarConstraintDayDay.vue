@@ -168,8 +168,7 @@
 		methods: {
 			goToRecette(item, periode) {
 				let menuFind = this.items.find((el) => el.id === item.id);
-				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
-				console.log('jjj')
+				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);				
 			},
 			setUpData(form) {
 				if (form != null) {
