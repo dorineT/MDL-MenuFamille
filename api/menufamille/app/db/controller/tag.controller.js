@@ -106,7 +106,7 @@ exports.TagRecette = (req,res) => {
 
                 model: db.recette,
                 required: false,
-                through: {attributes: []},
+                attributes: ['nom','id_recette'],
 
             }
 
