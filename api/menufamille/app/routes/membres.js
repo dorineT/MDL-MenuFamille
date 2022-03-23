@@ -29,4 +29,4 @@ router.get("/GetListMembre/:id",[authJwt.verifyToken], membres.GetListMembre);
 
 router.post("/:id_fam/:id_mem",[authJwt.verifyToken], membres.JoinFamilly);
 
-router.delete("/:id_fam/:id_mem",[authJwt.verifyToken], membres.LeaveFamilly);
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);

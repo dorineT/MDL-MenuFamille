@@ -45,14 +45,16 @@ router.get("/GetListFamilly/:id",[authJwt.verifyToken], famille.GetListFamilly);
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
 
-router.delete("/:id_fam/:id_mem",[authJwt.verifyToken], famille.DeleteMemberFamilly);
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], famille.DeleteMemberFamilly);
 
-router.put('/Defrole/:id_fam/:id_mem',[authJwt.verifyToken], famille.DefineRole);
+router.put('/Defrole/:id_fam/:id_mem',[authJwt.verifyToken, authJwt.isParent], famille.DefineRole);
 
 router.get('/IsThereParent/:id_fam', [authJwt.verifyToken], famille.PapaOuTes);
 
 router.post('/CreateFamilly/:id_mem',[authJwt.verifyToken], famille.CreateFamilly);
 
-router.put('/AjouterMembreNumber/:id', famille.AddMemberCount);
+router.put('/AjouterMembreNumber/:id',[authJwt.verifyToken], famille.AddMemberCount);
 
-router.put('/RetirerMembreNumber/:id', famille.LowerMemberCount);
+router.put('/RetirerMembreNumber/:id',[authJwt.verifyToken], famille.LowerMemberCount);
+
+router.get('/CheckAccesCode/:acces_code', famille.CheckAccesCode);

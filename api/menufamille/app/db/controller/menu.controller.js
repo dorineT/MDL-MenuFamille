@@ -257,17 +257,6 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
         type: 'manuel'
       } 
     }
-  ,include: [ 
-    {
-      model: db.calendrier,
-      include: [
-        {
-          model: db.calendrier_recette,
-          include: {model: db.recette, required: false, attributes: ['nom']}
-        }
-      ]
-    }
-  ]
 })
 .then(response => {
 
@@ -283,43 +272,6 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
       plats:[]
     })
 
-    let j = 0
-    //get les jours
-    menuItem.calendriers.forEach(jourItem => {
-      menus[i].plats.push({
-        id: jourItem.id_calendrier,
-        date: jourItem.date,
-        jour: getDay(jourItem.date)
-      })
-
-      jourItem.calendrier_recettes.forEach(periodeItem =>{
-        let recette = ""
-        if(periodeItem.recette === null & periodeItem.is_recette){
-          recette = ""
-        }
-        else if(periodeItem.recette === null & !periodeItem.is_recette){
-          recette = "/"
-        }else{
-          recette = periodeItem.recette.nom
-        }
-
-        if(periodeItem.periode === 'matin'){
-          menus[i].plats[j].matin = recette
-          menus[i].plats[j].matinNbPers = jourItem.nb_personne
-        }
-        else if(periodeItem.periode === 'midi'){
-          menus[i].plats[j].midi = recette
-          menus[i].plats[j].midiNbPers = jourItem.nb_personne
-        }
-        else{
-          menus[i].plats[j].soir = recette
-          menus[i].plats[j].soirNbPers = jourItem.nb_personne
-        }
-      })
-
-      j++
-
-    })
     res.send(menus);      
 });
 })
@@ -344,17 +296,6 @@ exports.Get_Unlocked_Menu = (req, res) => {
         verrou: false,
       } 
     }
-    ,include: [ 
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: {model: db.recette, required: false, attributes: ['nom']}
-          }
-        ]
-      }
-    ]
   })
   .then(response => {
 
@@ -369,46 +310,8 @@ exports.Get_Unlocked_Menu = (req, res) => {
         verrou: menuItem.verrou,
         plats:[]
       })
-  
-      let j = 0
-      //get les jours
-      menuItem.calendriers.forEach(jourItem => {
-        menus[i].plats.push({
-          id: jourItem.id_calendrier,
-          date: jourItem.date,
-          jour: getDay(jourItem.date)
-        })
-  
-        jourItem.calendrier_recettes.forEach(periodeItem =>{
-          let recette = ""
-          if(periodeItem.recette === null & periodeItem.is_recette){
-            recette = ""
-          }
-          else if(periodeItem.recette === null & !periodeItem.is_recette){
-            recette = "/"
-          }else{
-            recette = periodeItem.recette.nom
-          }
-  
-          if(periodeItem.periode === 'matin'){
-            menus[i].plats[j].matin = recette
-            menus[i].plats[j].matinNbPers = jourItem.nb_personne
-          }
-          else if(periodeItem.periode === 'midi'){
-            menus[i].plats[j].midi = recette
-            menus[i].plats[j].midiNbPers = jourItem.nb_personne
-          }
-          else{
-            menus[i].plats[j].soir = recette
-            menus[i].plats[j].soirNbPers = jourItem.nb_personne
-          }
-        })
-  
-        j++
-  
-      })
-      res.send(menus);      
-  });
+    })
+      res.send(menus); 
   })
   .catch(err => {
     res.status(500).send({

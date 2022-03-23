@@ -294,3 +294,20 @@ exports.AddMemberCount = (req, res) => {
       });
   });
 }
+
+
+///// Check le code d'accès
+
+exports.CheckAccesCode = (req, res) => {
+  const acces_code = req.params.code_acces;
+  Famille.findAll({where: {code_acces: acces_code}})
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving famille."
+    });
+  });  
+}
