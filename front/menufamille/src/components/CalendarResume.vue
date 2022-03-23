@@ -6,6 +6,7 @@
       color="orange lighten-2"
       label="Choix du menu"
       class="combobox-class"
+      no-data-text="Aucun menu disponible"
       :items="itemPeriode"      
       v-model="comboboxMenuSelected"></v-select>
 
@@ -35,21 +36,30 @@
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                   <v-btn v-if="item.matin!=='/'" text @click="goToRecette(item.matin)">{{ item.matin }} </v-btn>
-                  <p v-else style="color: red">X</p>
+                  <p v-else style="color: red">
+
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
                   <p v-if="item.matinNbPers!==null">{{item.matinNbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn v-if="item.midi!=='/'" text @click="goToRecette(item.midi)">{{ item.midi }}</v-btn> 
-                <p v-else style="color: red">X</p>
+                <p v-else style="color: red">
+
+                  <v-icon color="red">mdi-close-thick</v-icon>
+                </p>
                 <p v-if="item.midiNbPers!==null">{{item.midiNbPers}} personnes</p>                  
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                   <v-btn v-if="item.soir!=='/'" text @click="goToRecette(item.soir)">{{ item.soir }} </v-btn> 
-                  <p v-else style="color: red">X</p>
+                  <p v-else style="color: red">
+
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
                   <p v-if="item.soirNbPers!==null">{{item.soirNbPers}} personnes</p> 
               </td>
             </tr>
@@ -64,6 +74,7 @@
         @next="nextPageMenu"
         @previous="previousPageMenu"
         @input="changePageEvent"
+        class="marginClass"
       ></v-pagination>
     </div>
 
@@ -254,7 +265,7 @@ let DAOMenu = new MenuDao()
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'      
 
-      this.menus = await DAOMenu.getMenuLock()
+      this.menus = await DAOMenu.getMenuLock(this.$store.state.auth.user.id_membre)
 
       this.menus.forEach(menu => {         
           let periodeNew = { 
@@ -407,4 +418,8 @@ let DAOMenu = new MenuDao()
   text-align: center
   padding: 5px
   color: grey
+
+.marginClass
+  margin-top: 20px
+  margin-bottom: 20px  
 </style>

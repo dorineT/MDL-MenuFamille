@@ -16,7 +16,7 @@
           tile
         >
           <v-list>
-            <v-subheader>Suggestion :</v-subheader>
+            <v-subheader>Menus disponible à la suggestion :</v-subheader>
             <v-list-item-group              
               color="primary"
             >
@@ -74,7 +74,7 @@
 
     data (){
       return{
-        menuToValide: ['21/02 - 27/02','28/02 - 6/03'],
+        menuToValide: ['21/02 - 27/02','28/02 - 6/03'], // il faudra passer l'id du menu dans les objets
         menuToSuggest: ['7/03 - 13/03 ']
       }
     },

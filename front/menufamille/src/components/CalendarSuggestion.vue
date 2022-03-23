@@ -180,6 +180,9 @@ export default {
     destroy(){
       eventBus.$off('saveSuggestion')
     },
+    destroyed(){
+      eventBus.$off('updateMenuJour')
+    },
     methods:{
       //// Affichage calendrier ///
       goToRecette(item,periode){      

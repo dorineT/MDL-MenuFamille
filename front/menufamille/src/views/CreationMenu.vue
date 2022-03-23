@@ -44,6 +44,7 @@ import Constraintscalendar from "../components/Constraintscalendar";
 import DialogueModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
 import {eventBus } from '../main'
+
 export default {
   name: "CreationMenu",
 
@@ -64,6 +65,9 @@ export default {
   created(){
     eventBus.$on('formValideOK', this.stepAvance)
   },
+  destroyed() {
+    eventBus.$off("formValideOK",); //listening event form CalendarModificationMenu component
+  },
   methods: {
     submit() {
       eventBus.$emit('validateFormContrainte')     
@@ -74,9 +78,7 @@ export default {
       eventBus.$emit('configurationDD', this.form)
     },
     stepComplete(){
-      //creation du menu terminee
-      console.log('fini + post bd')
-      //faire un post a la bd
+      //creation du menu terminee => send post api
       eventBus.$emit('creationMenuDone')
     },
     retourClick(){

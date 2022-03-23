@@ -149,7 +149,7 @@
 										type="number"
 										step="any"
 										min="0"
-										ref="input"
+										ref="input"										
 										:rules="form.matinCheck ? nbPlatRule : []"
 										v-model.number="form.nbPlatMatin"
 										required
@@ -252,26 +252,51 @@
 				</v-container>
 
 				<v-container class="px-0" fluid>
-					<h3>Type de menu :</h3>
-					<v-radio-group
-						v-model="form.choixTypeMenu"
-						row
-						@change="disabledChoixAutomatique"
-						required
-						:rules="ruleRadioButton"
-					>
-						<v-radio label="Manuel (mode suggestion)" value="manuel"></v-radio>
-						<v-radio label="Automatique" value="automatique"></v-radio>
-					</v-radio-group>
-					<br />
-					<v-radio-group
-						v-model="form.choixMenuAutomatique"
-						row
-						:disabled="disabledChoixMenuAutomatique"
-					>
-						<v-radio label="Favoris" value="favoris"></v-radio>
-						<v-radio label="Historique" value="historique"></v-radio>
-					</v-radio-group>
+					<v-row>
+						<v-col cols="12" sm="6" md="6" lg="6" xl="6">
+							<v-card>
+								<v-card-title>Type de menu :</v-card-title>
+								<v-card-text>									
+									<v-radio-group
+										v-model="form.choixTypeMenu"
+										row
+										@change="disabledChoixAutomatique"
+										required
+										:rules="ruleRadioButton"
+									>
+										<v-radio label="Manuel (mode suggestion)" value="manuel"></v-radio>
+										<v-radio label="Automatique" value="automatique"></v-radio>
+									</v-radio-group>
+									<br />
+									<v-radio-group
+										v-model="form.choixMenuAutomatique"
+										row
+										:disabled="disabledChoixMenuAutomatique"
+									>
+										<v-radio label="Favoris" value="favoris"></v-radio>
+										<v-radio label="Historique" value="historique"></v-radio>
+									</v-radio-group>
+								</v-card-text>
+							</v-card>
+						</v-col>
+						<v-col v-if="form.choixTypeMenu === 'manuel'">
+							<v-card>
+								<v-card-title >
+									Délais de clotûre des suggestions :
+								</v-card-title>
+								<v-card-text>
+									<v-text-field
+										type="number"
+										step="any"
+										min="1"										
+										:rules="form.choixTypeMenu === 'manuel' ? nbPlatRule : []"
+										v-model.number="form.daysUntilSuggestion"
+										required									
+									></v-text-field>
+								</v-card-text>
+							</v-card>
+						</v-col>
+					</v-row>
 				</v-container>
 			</v-form>
 		</v-card>
@@ -297,6 +322,7 @@
 					choixMenuAutomatique: null,
 					dateDebut: null,
 					dateFin: null,
+					daysUntilSuggestion: 2,
 					tagsMatin: [],
 					tagsMidi: [],
 					tagsSoir: [],
@@ -320,9 +346,10 @@
 				],			
 
 				nbPlatRule: [								
-					v => !!v || 'Champ requis',
-					v => (v && v > 0) || 'Chiffre supérieur à 0',
+					v => (!!v  || 'Champ requis'),
+					v => (v && v >= 0) || 'Chiffre supérieur positif ou 0',
 				],
+
 				ruleRadioButton: [
 					v => !!v || 'Champ requis'
 				],
@@ -334,6 +361,9 @@
 		},
 		created() {
 			eventBus.$on('validateFormContrainte', this.validateForm);
+		},
+		destroyed() {
+			eventBus.$off('validateFormContrainte');
 		},
 		watch: {
 			computedDateFormattedDebut() {
