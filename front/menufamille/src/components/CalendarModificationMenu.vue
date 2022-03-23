@@ -136,7 +136,7 @@ import moment from 'moment'
 let DAOMenu = new MenuDAO()
 
 export default {
-    props:['periodeMenu'],
+    props:['periodeMenu','idMenu'],
     data () {
       return {
         headers: [],
@@ -160,7 +160,9 @@ export default {
       }
     },
     async created(){ 
-      this.menu = await DAOMenu.getMenuById(1)  
+      console.log('created '+this.idMenu)
+      
+      this.menu = await DAOMenu.getMenuById(this.idMenu)  
       this.nbPersonneFamille = 2 // doit etre pris dans le store ou dans la bd  
 
       this.items = this.menu.calendriers

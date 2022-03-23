@@ -6,6 +6,7 @@
 
       <calendar-modification-menu
         :periodeMenu="periode"
+        :idMenu="idPeriode"
       ></calendar-modification-menu>
 
       <div >
@@ -43,12 +44,10 @@ export default {
       idPeriode: null
     }
   },
-  mounted(){  
-    this.idPeriode = this.$route.query.id
-    this.periode = this.$route.query.periode
-  },
   created(){
     eventBus.$on('postMenuModification', this.postMenu)
+    this.idPeriode = this.$route.query.menu.value
+    this.periode = this.$route.query.menu.text
   },
    destroyed() {
     eventBus.$off('postMenuModification');
