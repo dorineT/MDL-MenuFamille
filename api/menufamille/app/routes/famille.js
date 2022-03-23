@@ -57,4 +57,4 @@ router.put('/AjouterMembreNumber/:id',[authJwt.verifyToken], famille.AddMemberCo
 
 router.put('/RetirerMembreNumber/:id',[authJwt.verifyToken], famille.LowerMemberCount);
 
-router.get('/CheckAccesCode/:acces_code', famille.CheckAccesCode);
+router.get('/CheckAccesCode/:code', famille.CheckAccesCode);
