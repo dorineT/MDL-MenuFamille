@@ -86,7 +86,10 @@
 							<v-container fluid>
 								<v-row>
 									<v-col cols="12" sm="6" md="6" lg="6" xl="6">
-										<v-card>
+										<v-card   
+											elevation="7"
+											outlined
+											shaped>
 											<v-card-title>
 												Choix parmis la liste de recettes
 											</v-card-title>
@@ -113,20 +116,32 @@
 										xl="6"
 										v-if="stringUpdateModal !== 'updateMenuJourCreate'"
 									>
-										<v-card>
+										<v-card   
+											elevation="7"
+											outlined
+											shaped>
 											<v-card-title> Suggestion </v-card-title>
 											<v-card-text>
 												<v-radio-group
 													v-model="radioSelectionSuggestion"
 													@change="changeChoixPlat()"
 												>
-													<v-radio
-														v-for="(sugg, n) in suggestionsListe"
+												
+													<div v-for="(sug, n) in suggestionsListe"
 														:key="n"
-														:label="sugg"
-														:value="sugg"
-														color="orange lighten-2"
-													></v-radio>
+														class="d-flex flex-row">
+														<v-radio
+															:label="sug.recette.nom"
+															:value="sug"
+															return-object
+															color="orange lighten-2"
+														></v-radio>
+
+														<v-avatar style="margin:25px" color="light-green lighten-1" size="35">
+															<span class="white--text text-h5">{{sug.membre.prenom.substring(0, 1)}}</span>
+														</v-avatar>
+													</div>
+
 												</v-radio-group>
 											</v-card-text>
 										</v-card>
@@ -248,12 +263,22 @@
 				})
 			},
 			newRecetteChoix(){
-				if(this.newRecetteChoix === null) return 
-				this.comboboxRecetteSelected.tags.forEach(el => {
-						if(!this.tagsChoix.some(tag => el.id_tag === tag.id_tag)){
-							this.tagsChoix.push(el)
-						}
-				});
+				if(this.newRecetteChoix === null ) return 
+				
+				if(this.radioSelectionSuggestion !== null){	
+					this.tagsChoix = []			
+					this.radioSelectionSuggestion.recette.tags.forEach(el => {
+							if(!this.tagsChoix.some(tag => el.id_tag === tag.id_tag)){
+								this.tagsChoix.push(el)
+							}
+					});
+				}else{
+					this.comboboxRecetteSelected.tags.forEach(el => {
+							if(!this.tagsChoix.some(tag => el.id_tag === tag.id_tag)){
+								this.tagsChoix.push(el)
+							}
+					});
+				}
 			}
 		},
 		methods: {
@@ -285,12 +310,11 @@
 				this.date = dateJour;	
 				this.jourSemaine = moment(dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
 				this.periode = itemReceived.periode;
-				this.infoMenu.tags = this.copyTab(itemReceived.tags)
-				console.info(itemReceived.suggestions)
+				this.infoMenu.tags = this.copyTab(itemReceived.tags)				
+				this.infoMenu.suggestions = structuredClone(itemReceived.suggestions)
 				
-				
-				this.infoMenu.suggestions = this.copyTab(itemReceived.suggestions)
-
+				this.suggestionsListe = structuredClone(itemReceived.suggestions)
+				console.log(this.suggestionsListe)
 				this.tagsChoix = []
 
 				//charger tous les tags de la bd
@@ -343,21 +367,31 @@
 			resetSelectedSuggestion() {			
 				this.radioSelectionSuggestion = null
 			},
-			changeChoixPlat() {			
+			changeChoixPlat() {	
+				console.log('change choix plat')
+				console.log(this.radioSelectionSuggestion)		
 				this.comboboxRecetteSelected = null
-				this.newRecetteChoix = this.radioSelectionSuggestion
+				if(this.radioSelectionSuggestion !== undefined ){
+					this.newRecetteChoix = this.radioSelectionSuggestion.recette.nom
+				}
 			},
-			resetNewRecette() {	
-				this.resetTag()		
+			resetNewRecette() {					
 				this.newRecetteChoix = null				
 				this.comboboxRecetteSelected = null
 				this.radioSelectionSuggestion = null
+				this.resetTag()		
 			},
 			/** Reset les tags à ceux de la recette prévue */
 			resetTag(){				
 				this.tagsChoix = []
-				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
-					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){
+					console.log("passage ")				
+					console.log(this.radioSelectionSuggestion)
+					if(this.radioSelectionSuggestion !== null){						
+						this.tagsChoix = this.copyTab(this.radioSelectionSuggestion.recette.tags)						
+					}else{
+						this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+					}
 				}
 				else if (this.infoMenu.tags.length > 0) {
 					console.log('tag defini')
