@@ -32,8 +32,7 @@ export default class MenuDao{
      * Envoie le menu modifié
      * @param {*} newMenu le menu a modifier
      */
-    sendMenuUpdate(newMenu){
-      console.log('hello update')
+    sendMenuUpdate(newMenu){      
       api.put("/menu/",{
         menu: newMenu,
       })
@@ -54,6 +53,16 @@ export default class MenuDao{
                
 
       return menu
+    }
+
+
+    async getMenuUnlocked(idFamille){
+      let menus = []
+      await api.get("/menu/GetUnlockedMenu/"+idFamille).then((response) =>{
+        menus = response.data
+      })
+
+      return menus
     }
 
 }

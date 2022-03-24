@@ -272,13 +272,14 @@ db.tag_periode.belongsTo(db.tag,  {foreignKey: 'id_tag',targetKey: 'id_tag'})
 // Suggestion -> Recette (O:M)
 
 
-db.suggestion.hasOne(db.recette, {foreignKey: 'id_recette',targetKey: 'id_recette'})
-db.recette.belongsTo(db.suggestion,  {foreignKey: 'id_recette',targetKey: 'id_recette'})
+db.recette.hasOne(db.suggestion, {foreignKey: 'id_recette',targetKey: 'id_recette'})
+db.suggestion.belongsTo(db.recette,  {foreignKey: 'id_recette',targetKey: 'id_recette'})
+
 
 // Suggestion -> Membre (O:M)
 
-db.suggestion.hasOne(db.membres, {foreignKey: 'id_membre',targetKey: 'id_membre'})
-db.membres.belongsTo(db.suggestion,  {foreignKey: 'id_membre',targetKey: 'id_membre'})
+db.membres.hasOne(db.suggestion, {foreignKey: 'id_membre',targetKey: 'id_membre'})
+db.suggestion.belongsTo(db.membres,  {foreignKey: 'id_membre',targetKey: 'id_membre'})
 
 // Suggestion -> Menu  (O:M)
 
@@ -287,7 +288,7 @@ db.menu.belongsTo(db.suggestion,  {foreignKey: 'id_menu',targetKey: 'id_menu'})
 
 // Sugestion -> Calendrier_recette (O:M)
 
-db.suggestion.hasOne(db.calendrier_recette, {foreignKey: 'id_periode',targetKey: 'id_periode'})
-db.calendrier_recette.belongsTo(db.suggestion,  {foreignKey: 'id_periode',targetKey: 'id_periode'})
+db.calendrier_recette.hasMany(db.suggestion, {foreignKey: 'id_periode', targetKey:'id_periode'})
+db.suggestion.belongsTo(db.calendrier_recette , {foreignKey: 'id_periode', targetKey:'id_periode'})
 
 module.exports = db;

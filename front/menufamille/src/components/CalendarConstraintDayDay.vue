@@ -2,7 +2,7 @@
 	<v-card v-if="formData != null">
 		<div style="margin: 4px">
 			<div style="margin: 4px">
-				Menu : du {{ formData.dateDebut }} au {{ formData.dateFin }}
+				Menu : du {{ formData.periode_debut }} au {{ formData.periode_fin }}
 			</div>
 
 			<v-data-table
@@ -32,8 +32,7 @@
 								v-for="(item, i) in platsMatin"
 								:key="i + 'matin'"
 							>
-								<v-btn text @click="goToRecette(item, 'matin')">
-
+								<v-btn text @click="goToRecette(item)">
 									<p
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
@@ -48,10 +47,9 @@
 									</p>
 									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.nbPers !== formData.nbPersonnes">
+								<p v-if="item.nbPers !== formData.nb_personne">
 									{{ item.nbPers }} personnes
 								</p>
-
 							</td>
 						</tr>
 						<tr>
@@ -60,7 +58,7 @@
 								v-for="(item, i) in platsMidi"
 								:key="i + 'midi'"
 							>
-								<v-btn text @click="goToRecette(item, 'midi')">
+								<v-btn text @click="goToRecette(item)">
 									<p
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
@@ -75,7 +73,7 @@
 									</p>
 									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.nbPers !== formData.nbPersonnes">
+								<p v-if="item.nbPers !== formData.nb_personne">
 									{{ item.nbPers }} personnes
 								</p>
 							</td>
@@ -86,7 +84,7 @@
 								v-for="(item, i) in platsSoir"
 								:key="i + 'soir'"
 							>
-								<v-btn text @click="goToRecette(item, 'soir')">
+								<v-btn text @click="goToRecette(item)">
 									<p
 										v-if="(item.plat === '') & (item.tags.length > 0)"
 										style="color: green"
@@ -101,10 +99,9 @@
 									</p>
 									<p v-else>{{ item.plat }}</p>
 								</v-btn>
-								<p v-if="item.nbPers !== formData.nbPersonnes">
+								<p v-if="item.nbPers !== formData.nb_personne">
 									{{ item.nbPers }} personnes
 								</p>
-
 							</td>
 						</tr>
 					</tbody>
@@ -125,15 +122,14 @@
 			{{ errorMessage.message }}
 		</v-snackbar>
 	</v-card>
-
 </template>
 
 <script>
 	import { eventBus } from "../main";
-	import moment from 'moment'
-	import checkContrainte from './../services/checkContrainteMenu'
-	import MenuDao from './../services/api.menu'
-	let DAOMenu = new MenuDao()
+	import moment from "moment";
+	import checkContrainte from "./../services/checkContrainteMenu";
+	import MenuDao from "./../services/api.menu";
+	let DAOMenu = new MenuDao();
 
 	export default {
 		data() {
@@ -158,20 +154,23 @@
 		created() {
 			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
 			eventBus.$on("configurationDD", this.setUpData);
-			eventBus.$on('creationMenuDone', this.creationMenuDone)
+			eventBus.$on("creationMenuDone", this.creationMenuDone);
 		},
-		destroyed(){
-			eventBus.$off("updateMenuJourCreate")
-			eventBus.$off("configurationDD")
-			eventBus.$off('creationMenuDone')
+		destroyed() {
+			eventBus.$off("updateMenuJourCreate");
+			eventBus.$off("configurationDD");
+			eventBus.$off("creationMenuDone");
 		},
 		methods: {
-			goToRecette(item, periode) {
-				let menuFind = this.items.find((el) => el.id === item.id);
-				eventBus.$emit("openDialog", item, periode, menuFind.jour, menuFind.date);
-				console.log('jjj')
+			goToRecette(item) {
+				let menuFind = this.items.find(el => el.id_calendrier === item.id_jour)// le jour         
+				let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)      
+
+				//open dialogue with even bus
+				eventBus.$emit('openDialog', periodeFind, menuFind.date)
 			},
 			setUpData(form) {
+				console.log(form);
 				if (form != null) {
 					this.formData = form;
 					this.populateTabJours();
@@ -184,14 +183,14 @@
 			},
 			//rempli un tableau contenant des dates en fonction de la periode définie
 			populateTabJours() {
-				let fin = new Date(this.formData.dateFin);
-				let actuel = new Date(this.formData.dateDebut);
+				let fin = moment(this.formData.periode_fin);
+				let actuel = moment(this.formData.periode_debut);
 				this.jours = [];
 
-				while (actuel.getTime() <= fin.getTime()) {
-					let newDate = new Date(actuel.getTime());
+				while (actuel <= fin) {
+					let newDate = moment(actuel).format("DD/MM/YYYY");
 					this.jours.push(newDate);
-					actuel.setDate(actuel.getDate() + 1);
+					actuel = moment(actuel, "DD/MM/YYYY").add(1, "d");
 				}
 			},
 			populateHeader(iStart, iEnd) {
@@ -203,19 +202,9 @@
 					(iStart < this.jours.length) &
 					(iStart < iEnd)
 				) {
-					let newDate = this.jours[iStart];
-
-					let month =
-						newDate.getMonth() < 10
-							? "0" + (newDate.getMonth() + 1)
-							: newDate.getMonth() + 1;
-					let day =
-						newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
-
-					let stringDate =
-						this.getNameOfDay(newDate.getDay()) + "\n" + day + "/" + month;
+					
 					this.headers.push({
-						text: stringDate,
+						text: moment(this.jours[iStart],"DD/MM/YYYY").locale('fr').format('dddd') + '\n'+ this.jours[iStart],
 						align: "center",
 						value: iStart,
 					});
@@ -223,42 +212,57 @@
 					this.nbJourMenu++;
 				}
 			},
-			getNameOfDay(day) {
-				if (day == 0) return "Dimanche";
-				else if (day == 1) return "Lundi";
-				else if (day == 2) return "Mardi";
-				else if (day == 3) return "Mercredi";
-				else if (day == 4) return "Jeudi";
-				else if (day == 5) return "Vendredi";
-				return "Samedi";
-			},
 			fillPlat(iStart, iEnd) {
 				this.platsMatin = [];
 				this.platsMidi = [];
 				this.platsSoir = [];
 
+				console.log('fill plat ' + iStart +' => '+ iEnd)
+
 				while ((iStart < iEnd) & (iStart < this.items.length)) {
+
 					let jourPlat = this.items[iStart];
-
+					console.log(jourPlat)
+					let periode = jourPlat.calendrier_recettes[0];
 					this.platsMatin.push({
-						id: jourPlat.id,
-						plat: jourPlat.matin,
-						nbPers: jourPlat.matinNbPers,
-						tags: jourPlat.tagsMatin,
+						id_jour: jourPlat.id_calendrier,
+						id_periode: periode.id_periode,
+						plat:
+							periode.recette !== null
+								? periode.recette.nom
+								: periode.is_recette
+								? ""
+								: "/", // can be null
+						nbPers: periode.nb_personne,
+						tags: periode.tags,
 					});
 
+					periode = jourPlat.calendrier_recettes[1];
 					this.platsMidi.push({
-						id: jourPlat.id,
-						plat: jourPlat.midi,
-						nbPers: jourPlat.midiNbPers,
-						tags: jourPlat.tagsMidi,
+						id_jour: jourPlat.id_calendrier,
+						id_periode: periode.id_periode,
+						plat:
+							periode.recette !== null
+								? periode.recette.nom
+								: periode.is_recette
+								? ""
+								: "/",
+						nbPers: periode.nb_personne,
+						tags: periode.tags,
 					});
 
+					periode = jourPlat.calendrier_recettes[2];
 					this.platsSoir.push({
-						id: jourPlat.id,
-						plat: jourPlat.soir,
-						nbPers: jourPlat.soirNbPers,
-						tags: jourPlat.tagsSoir,
+						id_jour: jourPlat.id_calendrier,
+						id_periode: periode.id_periode,
+						plat:
+							periode.recette !== null
+								? periode.recette.nom
+								: periode.is_recette
+								? ""
+								: "/",
+						nbPers: periode.nb_personne,
+						tags: periode.tags,
 					});
 
 					iStart++;
@@ -266,31 +270,52 @@
 			},
 			fillItems() {
 				this.items = [];
+				let id = 1;
 				for (let i = 0; i < this.jours.length; i++) {
-					let month =
-						this.jours[i].getMonth() < 10
-							? "0" + (this.jours[i].getMonth() + 1)
-							: this.jours[i].getMonth() + 1;
-					let day =
-						this.jours[i].getDate() < 10
-							? "0" + this.jours[i].getDate()
-							: this.jours[i].getDate();
+					let idPer = (id - 1) * 3;
+					let periode_recette = [
+						{
+							id_periode: idPer + 1, //to calcule 1,2,3, vont par paire de 3
+							id_calendrier: id,
+							is_recette: this.formData.matinCheck,
+							periode: "matin",
+							nb_personne: this.formData.nb_personne,
+							recette: null,
+							tags: this.formData.tagsMatin,
+							suggestion: null,
+						},
+						{
+							id_periode: idPer + 2,
+							id_calendrier: id,
+							is_recette: this.formData.midiCheck,
+							periode: "midi",
+							nb_personne: this.formData.nb_personne,
+							recette: null,
+							tags: this.formData.tagsMidi,
+							suggestion: null,
+						},
+						{
+							id_periode: idPer + 3,
+							id_calendrier: id,
+							is_recette: this.formData.soirCheck,
+							periode: "soir",
+							nb_personne: this.formData.nb_personne,
+							recette: null,
+							tags: this.formData.tagsSoir,
+							suggestion: null,
+						},
+					];
 
 					this.items.push({
-						id: i,
-						jour: this.getNameOfDay(this.jours[i].getDay()),
-						date: day + "/" + month+"/"+this.jours[i].getFullYear(),
-						matin: this.formData.matinCheck ? "" : "/",
-						matinNbPers: this.formData.nbPersonnes,
-						tagsMatin: this.formData.tagsMatin,
-						midi: this.formData.midiCheck ? "" : "/",
-						midiNbPers: this.formData.nbPersonnes,
-						tagsMidi: this.formData.tagsMidi,
-						soir: this.formData.soirCheck ? "" : "/",
-						soirNbPers: this.formData.nbPersonnes,
-						tagsSoir: this.formData.tagsSoir,
+						id_calendrier: id,
+						date: this.jours[i],
+						calendrier_recettes: periode_recette,
 					});
+
+					id += 1;
 				}
+
+				console.log(this.items)
 			},
 			//event quand on clique sur page suivante
 			nextPageMenu() {
@@ -315,99 +340,87 @@
 			},
 
 			/// UPDATE
-			updateMenuJourCreate(item, periode) {				
+			updateMenuJourCreate(item) {
+				console.log("update pass");
+				console.log(item); // une periode
 
-				let menuJourOld = this.items.find((elem) => elem.id === item.id);
-				this.errorMessage.message = ""				
+				let menuJourOld = this.items.find(
+					(elem) => elem.id_calendrier === item.id_calendrier
+				);
+				let menuPeriodeOld = menuJourOld.calendrier_recettes.find(
+					(elem) => elem.id_periode === item.id_periode
+				);
+				this.errorMessage.message = "";
 
-				let menuJourSave = {
-					id: menuJourOld.id,
-					jour: menuJourOld.jour,
-					date: menuJourOld.date,
-					matin: menuJourOld.matin,
-					matinNbPers: menuJourOld.matinNbPers,
-					tagsMatin: menuJourOld.tagsMatin,
-					midi: menuJourOld.matin,
-					midiNbPers: menuJourOld.matinNbPers,
-					tagsMidi: menuJourOld.tagsMatin,
-					soir: menuJourOld.matin,
-					soirNbPers: menuJourOld.matinNbPers,
-					tagsSoir: menuJourOld.tagsMatin,
-				};	
+				//copy all attribute from menuPeriodeOld to periodeSave
+				//let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
+				//or (new)
+				let periodeSave = structuredClone(menuPeriodeOld);
+				console.log("menuJourOld");
+				console.log(menuJourOld);
 
-				let newTags = [];
-				item.tags.forEach((el) => {
-					newTags.push(el);
-				});
-
-				if (periode === "matin") {
-					menuJourOld.matin = item.plat;
-					menuJourOld.matinNbPers = item.nbPers;
-					menuJourOld.tagsMatin = newTags;
-
-					if(this.formData.nbPlatMatin !== null){
-						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMatin, 'matin');
+				if (item.periode === "matin") {
+					menuJourOld.calendrier_recettes[0] = structuredClone(item);
+					if (this.formData.nbPlatMatin !== null) {
+						this.errorMessage.message = checkContrainte.verifContraintePlat(
+							this.items,
+							this.formData.nbPlatMatin,
+							0
+						);
 					}
-
-				} else if (periode === "midi") {
-					menuJourOld.midi = item.plat;
-					menuJourOld.midiNbPers = item.nbPers;
-					menuJourOld.tagsMidi = newTags;
-
-					if(this.formData.nbPlatMidi !== null){
-						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatMidi, 'midi');
+				} else if (item.periode === "midi") {
+					menuJourOld.calendrier_recettes[1] = structuredClone(item);
+					if (this.formData.nbPlatMidi !== null) {
+						this.errorMessage.message = checkContrainte.verifContraintePlat(
+							this.items,
+							this.formData.nbPlatMidi,
+							1
+						);
 					}
-				} else if (periode === "soir") {
-					menuJourOld.soir = item.plat
-					menuJourOld.soirNbPers = item.nbPers
-					menuJourOld.tagsSoir = newTags
-
-					if(this.formData.nbPlatSoir !== null){
-						this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.formData.nbPlatSoir, 'soir');
+				} else if (item.periode === "soir") {
+					menuJourOld.calendrier_recettes[2] = structuredClone(item);
+					if (this.formData.nbPlatSoir !== null) {
+						this.errorMessage.message = checkContrainte.verifContraintePlat(
+							this.items,
+							this.formData.nbPlatSoir,
+							2
+						);
 					}
 				}
+				console.log("menuJourOld new ");
+				console.log(menuJourOld);
 
 				if (this.errorMessage.message !== "") {
-					console.log('reset menu')				
-					menuJourOld.matin = menuJourSave.matin
-					menuJourOld.midi = menuJourSave.midi
-					menuJourOld.soir = menuJourSave.soir
-					menuJourOld.matinNbPers = menuJourSave.matinNbPers
-					menuJourOld.midiNbPers = menuJourSave.midiNbPers
-					menuJourOld.soirNbPers = menuJourSave.soirNbPers
-					menuJourOld.tagsMatin = menuJourSave.tagsMatin
-					menuJourOld.tagsMidi = menuJourSave.tagsMidi
-					menuJourOld.tagsSoir = menuJourSave.tagsSoir
-
-					this.errorMessage.error = true
+					console.log("erreur");
+					this.errorMessage.error = true;
+					menuPeriodeOld = periodeSave;
 				} else {
-					console.log('ok menu')
-					let iStart = (this.page - 1) * 7
-					let iEnd = this.page * 7
-					this.fillPlat(iStart, iEnd)		
-					this.errorMessage.error = false			
+					console.log("ok");
+					let iStart = (this.page - 1) * 7;
+					let iEnd = this.page * 7;
+					this.fillPlat(iStart, iEnd);
+					this.errorMessage.error = false;
 				}
 			},
-			
 
-			creationMenuDone(){
+			creationMenuDone() {
 				let menuNew = {
-					menu_id: null,
-					idFamile: this.$store.state.auth.user.id_membre,
-					dateDebut: moment(this.formData.dateDebut).format("DD/MM/YYYY"),
-					dateFin: moment(this.formData.dateFin).format("DD/MM/YYYY"),
-					nbPlatMatin: this.formData.nbPlatMatin,
-					nbPlatMidi: this.formData.nbPlatMidi,
-					nbPlatSoir: this.formData.nbPlatSoir,
+					id_menu: null,
+					id_famille: this.$store.state.auth.user.id_membre,
+					periode_debut: moment(this.formData.periode_debut).format("DD/MM/YYYY"),
+					periode_fin: moment(this.formData.periode_fin).format("DD/MM/YYYY"),
+					plat_identique_matin: this.formData.nbPlatMatin,
+					plat_identique_midi: this.formData.nbPlatMidi,
+					plat_identique_soir: this.formData.nbPlatSoir,
 					type: this.formData.choixTypeMenu,
 					verrou: false,
-					daysUntilSuggestion: this.formData.daysUntilSuggestion,
-					plats: this.items,					
-				}
-				console.log(menuNew)
-				DAOMenu.sendMenuCreate(menuNew)
-				this.$router.push('/');
-			}
+					days_until_suggestion: this.formData.daysUntilSuggestion,
+					calendriers: structuredClone(this.items),
+				};
+				console.log(menuNew);
+				DAOMenu.sendMenuCreate(menuNew);
+				this.$router.push("/");
+			},
 		},
 	};
 </script>
@@ -421,5 +434,5 @@
 
 .marginClass
   margin-top: 20px
-  margin-bottom: 20px  
+  margin-bottom: 20px
 </style>

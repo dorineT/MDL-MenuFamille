@@ -34,7 +34,11 @@ module.exports = (sequelize, Sequelize) => {
     plat_identique_soir: {
       type: Sequelize.INTEGER,
       defaultValue: -1    
-  },
+    },
+    days_until_suggestion:{
+      type: Sequelize.INTEGER,
+      defaultValue: 2
+    },
       type: {
           type: Sequelize.ENUM('manuel','auto','sugestion')
       },
