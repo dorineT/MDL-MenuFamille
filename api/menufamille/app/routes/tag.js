@@ -17,3 +17,5 @@ router.post('/', tag.PutTag);
 router.post('/:id', tag.UpdateTag);
 
 router.delete('/:id', tag.Deletetag);
+
+router.get('/recette/:id',tag.TagRecette)

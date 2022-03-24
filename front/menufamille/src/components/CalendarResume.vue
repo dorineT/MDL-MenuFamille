@@ -6,6 +6,7 @@
       color="orange lighten-2"
       label="Choix du menu"
       class="combobox-class"
+      no-data-text="Aucun menu disponible"
       :items="itemPeriode"      
       v-model="comboboxMenuSelected"></v-select>
 
@@ -34,23 +35,32 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                  <v-btn v-if="item.matin!=='/'" text @click="goToRecette(item.matin)">{{ item.matin }} </v-btn>
-                  <p v-else style="color: red">X</p>
-                  <p v-if="item.matinNbPers!==null">{{item.matinNbPers}} personnes</p> 
+                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn>
+                  <p v-else style="color: red">
+
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
+                  <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                <v-btn v-if="item.midi!=='/'" text @click="goToRecette(item.midi)">{{ item.midi }}</v-btn> 
-                <p v-else style="color: red">X</p>
-                <p v-if="item.midiNbPers!==null">{{item.midiNbPers}} personnes</p>                  
+                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }}</v-btn> 
+                <p v-else style="color: red">
+
+                  <v-icon color="red">mdi-close-thick</v-icon>
+                </p>
+                <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p>                  
               </td>
             </tr>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                  <v-btn v-if="item.soir!=='/'" text @click="goToRecette(item.soir)">{{ item.soir }} </v-btn> 
-                  <p v-else style="color: red">X</p>
-                  <p v-if="item.soirNbPers!==null">{{item.soirNbPers}} personnes</p> 
+                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn> 
+                  <p v-else style="color: red">
+
+                    <v-icon color="red">mdi-close-thick</v-icon>
+                  </p>
+                  <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
             </tbody>
@@ -64,6 +74,7 @@
         @next="nextPageMenu"
         @previous="previousPageMenu"
         @input="changePageEvent"
+        class="marginClass"
       ></v-pagination>
     </div>
 
@@ -71,173 +82,13 @@
 
 <script>
 import MenuDao from './../services/api.menu'
+import moment from 'moment'
 let DAOMenu = new MenuDao()
   export default {
     data () {
       return {
         headers: [],
-        items:[],
-        /*menus: [
-          {
-            menu_id:0,
-            plats: [
-              {
-                id:0,
-                jour: 'Lundi',
-                date: '14/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'pain',
-                soirNbPers: null
-              },
-              {
-                id:1,
-                jour: 'Mardi',
-                date: '15/02',
-                matin: 'crepe',
-                matinNbPers: null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'lasagne',
-                soirNbPers: null,
-              },
-              {
-                id:2,
-                jour: 'Mercredi',
-                date: '16/02',
-                matin: '/',
-                matinNbPers:null,
-                midi: 'pain',
-                midiNbPers: null,
-                soir: 'canard',
-                soirNbPers: null,
-              },
-              {
-                id:3,
-                jour: 'Jeudi',
-                date: '17/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'pain',            
-                soirNbPers: null,
-              },
-              {
-                id:4,
-                jour: 'Vendredi',
-                date: '18/02',
-                matin: 'flocon d\'avoine',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'frites',
-                soirNbPers: null,
-              },
-              {
-                id:5,
-                jour: 'Samedi',
-                date: '19/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'spaghetti',
-                midiNbPers: null,
-                soir: 'crepe',
-                soirNbPers: null,
-              },
-              {
-                id:6,
-                jour: 'Dimanche',
-                date: '20/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'rotî sauce moutarde',
-                midiNbPers:'18',
-                soir: '/',
-                soirNbPers: null,
-              },
-              {
-                id:7,
-                jour: 'Lundi',
-                date: '21/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'rotî sauce moutarde',
-                midiNbPers: '18',
-                soir: '/',
-                soirNbPers: null,
-              }
-            ],
-            dateDebut: '14/02/2022',
-            dateFin: '20/02/2022',
-            verrou: true
-          },
-          {
-            menu_id: 1,
-            plats: [
-              {
-                id:10,
-                jour: 'Lundi',
-                date: '21/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'pain',
-                soirNbPers: null
-              },
-              {
-                id:11,
-                jour: 'Mardi',
-                date: '22/02',
-                matin: 'crepe',
-                matinNbPers: null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'lasagne',
-                soirNbPers: null,
-              },
-              {
-                id:12,
-                jour: 'Mercredi',
-                date: '23/02',
-                matin: '/',
-                matinNbPers:null,
-                midi: 'pain',
-                midiNbPers: null,
-                soir: 'canard',
-                soirNbPers: null,
-              },
-              {
-                id:13,
-                jour: 'Jeudi',
-                date: '24/02',
-                matin: 'céréale',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'pain',            
-                soirNbPers: null,
-              },
-              {
-                id:14,
-                jour: 'Vendredi',
-                date: '25/02',
-                matin: 'flocon d\'avoine',
-                matinNbPers:null,
-                midi: 'croque-monsieur',
-                midiNbPers: null,
-                soir: 'frites',
-                soirNbPers: null,
-              }
-            ],
-            dateDebut: '21/02/2022',
-            dateFin: '25/02/2022',
-            verrou: true
-          }
-        ],*/
+        items:[],        
         menus: null,
         itemPeriode: [],
         comboboxMenuSelected: null,
@@ -246,7 +97,8 @@ let DAOMenu = new MenuDao()
         nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
-        platsSoir: [] 
+        platsSoir: [],
+        nbPersonneFamille: 1
       }
     },
 
@@ -254,23 +106,23 @@ let DAOMenu = new MenuDao()
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'      
 
-      this.menus = await DAOMenu.getMenuLock()
+      this.menus = await DAOMenu.getMenuLock(this.$store.state.auth.user.id_membre)
 
       this.menus.forEach(menu => {         
           let periodeNew = { 
-              text: menu.dateDebut + ' - ' +menu.dateFin,
-              value: menu.menu_id
+              text: menu.periode_debut + ' - ' +menu.periode_fin,
+              value: menu.id_menu
             }     
           this.itemPeriode.push(periodeNew)        
       });
 
     },
     watch:{
-        comboboxMenuSelected(slot){    
+        comboboxMenuSelected(slot){           
         if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }
-        else{ //check période des menus => Call API
+        else{ //check période des menus
            
           //get id du menu
           this.headers = []
@@ -278,9 +130,10 @@ let DAOMenu = new MenuDao()
           this.platsMidi  = []
           this.platsSoir = []
           this.nbJourMenu = 0    
-          let menuSelected = this.menus.find(menu => menu.menu_id === slot)  
+          let menuSelected = this.menus.find(menu => menu.id_menu === slot)  
           
-          this.items = menuSelected.plats
+          this.items = menuSelected.calendriers
+          console.log(this.items)
 
           let indiceEnd = this.items.length < 7 ? this.items.length : 7       
           this.populateHeader(this.items,0,indiceEnd)
@@ -299,14 +152,14 @@ let DAOMenu = new MenuDao()
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
-        this.nbJourMenu = 0      
+        this.nbJourMenu = 0       
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
           this.headers.push({
-              text: jourPlat.jour + '\n' + jourPlat.date, 
+              text: moment(jourPlat.date, 'DD-MM-YYYY').locale('fr').format('dddd') + '\n' + jourPlat.date, 
               align: 'center',
-              value: jourPlat.id
+              value: jourPlat.id_calendrier
           })
           iStart++
           this.nbJourMenu++
@@ -320,28 +173,37 @@ let DAOMenu = new MenuDao()
         this.platsSoir = []
 
         while(iStart<iEnd & iStart<menu.length){
-          let jourPlat = menu[iStart]
-
+          let jourPlat = menu[iStart]     
+          console.log(jourPlat)
+          let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
-            id: jourPlat.id,
-            matin: jourPlat.matin,
-            matinNbPers: jourPlat.matinNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[1]
           this.platsMidi.push({
-            id: jourPlat.id,
-            midi: jourPlat.midi,
-            midiNbPers: jourPlat.midiNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[2]
           this.platsSoir.push({
-            id: jourPlat.id,
-            soir: jourPlat.soir,
-            soirNbPers: jourPlat.soirNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
           iStart++
-        }      
+        }
       },
       //event quand on clique sur page suivante
       nextPageMenu(){
@@ -368,18 +230,6 @@ let DAOMenu = new MenuDao()
 </script>
 
 
-<style>
-/*table tr {
-     display:flex;
-     flex-direction: column;
-     float: left;
-  }
-
-  thead,tbody {
-    float: left;
-  }*/
-</style>
-
 <style lang="sass">
 
 .v-data-table
@@ -396,8 +246,6 @@ let DAOMenu = new MenuDao()
 
 .tdplat
   text-align: center
-  /*border: 1px solid*/
-  /*border-color: green*/
 
 .v-application .primary--text 
   color: #FFB74D !important
@@ -407,4 +255,8 @@ let DAOMenu = new MenuDao()
   text-align: center
   padding: 5px
   color: grey
+
+.marginClass
+  margin-top: 20px
+  margin-bottom: 20px  
 </style>
