@@ -90,3 +90,33 @@ exports.Deletetag = (req, res) => {
       });
   });
 };
+
+/**
+ * @overview : renvoie la liste des plats contenant ce tag
+ * @param req
+ * @param res
+ * @constructor
+ * @return : {tag [liste recette]}
+ */
+exports.TagRecette = (req,res) => {
+    const id_tag = req.params.id;
+    Tag.findByPk(id_tag,{
+        include :[
+            {
+
+                model: db.recette,
+                required: false,
+                attributes: ['nom','id_recette'],
+
+            }
+
+        ]
+    }).then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Menus."
+        });
+    });
+};

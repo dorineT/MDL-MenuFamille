@@ -121,7 +121,7 @@
 													@change="changeChoixPlat()"
 												>
 													<v-radio
-														v-for="(sugg, n) in infoMenu.suggestion"
+														v-for="(sugg, n) in suggestionsListe"
 														:key="n"
 														:label="sugg"
 														:value="sugg"
@@ -219,6 +219,7 @@
 				tagsListe: [],
 				tagsChoix:[],
 				tagsListeAll: [],
+				suggestionsListe:[],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 				jourSemaine: null,
@@ -231,7 +232,8 @@
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
-			tagsChoix(){								
+			tagsChoix(){
+												
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -258,6 +260,8 @@
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
 			async openModal(itemReceived, dateJour) {
 				console.log(itemReceived)
+				
+				this.suggestionsListe = []
 				this.showModifMenu = false; //display les cartes de mofification de la recette
 				this.dialog = true;
 
@@ -282,7 +286,10 @@
 				this.jourSemaine = moment(dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
 				this.periode = itemReceived.periode;
 				this.infoMenu.tags = this.copyTab(itemReceived.tags)
-				this.infoMenu.suggestion = this.copyTab(itemReceived.suggestion)
+				console.info(itemReceived.suggestions)
+				
+				
+				this.infoMenu.suggestions = this.copyTab(itemReceived.suggestions)
 
 				this.tagsChoix = []
 
@@ -293,21 +300,24 @@
 				this.itemRecettesAll = await DAORecette.getAll()
 				this.itemRecettes = this.copyTab(this.itemRecettesAll)
 
-
-				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
-				if(this.infoMenu.recette !== null){
-					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
-				}
-				else if (this.infoMenu.tags.length > 0) {
-					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-					//filtrer les recettes qu'on peut choisir => done avec le watch property		
-				}				
-				
-	
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
 				this.numberPersonneOld = this.infoMenu.nb_personne
 				this.recetteChoisie =  this.infoMenu.recette.nom
+
+				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
+				console.log(this.infoMenu.recette)
+				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
+					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				}
+				else if (this.infoMenu.tags.length > 0) {
+					console.log('tag defini')
+					this.tagsChoix = this.copyTab(this.infoMenu.tags)
+					console.log(this.tagsChoix)
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
+				}				
+				
+
 
 				//reset
 				this.resetNewRecette();
@@ -344,10 +354,16 @@
 				this.radioSelectionSuggestion = null
 			},
 			/** Reset les tags à ceux de la recette prévue */
-			resetTag(){
+			resetTag(){				
 				this.tagsChoix = []
-				if(this.infoMenu.recette !== null){
+				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
 					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+				}
+				else if (this.infoMenu.tags.length > 0) {
+					console.log('tag defini')
+					this.tagsChoix = this.copyTab(this.infoMenu.tags)
+					console.log(this.tagsChoix)
+					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}
 			},
 			/**verifie que le nombre de personnes entre dans le textfiel est positif */

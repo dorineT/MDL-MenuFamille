@@ -45,13 +45,16 @@
               color="primary"
             >
               <v-list-item
-                v-for="(item, i) in menuToValide"
-                :key="i"
+                v-for="(item) in menuToValide"
+                :key="item.value"
 
-                @click="goToModificationMenu(i, item)"
-              >       
+                @click="goToModificationMenu(item)"
+              >  
+              <v-list-item-icon>
+                <v-icon>mdi-arrow-right-thick</v-icon>
+                </v-list-item-icon>     
                 <v-list-item-content >
-                  <v-list-item-title  v-text="item"></v-list-item-title>
+                  <v-list-item-title  v-text="item.text" :value="item.value"></v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -65,7 +68,8 @@
 
 <script>
   import CalendarResume from '../components/CalendarResume'
-
+  import MenuDao from '../services/api.menu'
+  let DAOMenu = new MenuDao()
   export default {
 
     components: {
@@ -74,14 +78,23 @@
 
     data (){
       return{
-        menuToValide: ['21/02 - 27/02','28/02 - 6/03'], // il faudra passer l'id du menu dans les objets
+        menuToValide: [],
         menuToSuggest: ['7/03 - 13/03 ']
       }
     },
-
+    async created(){
+      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)     
+      menus.forEach(menu => {         
+          let periodeNew = { 
+              text: menu.periode_debut + ' - ' +menu.periode_fin,
+              value: menu.id_menu
+            }     
+          this.menuToValide.push(periodeNew)        
+      });
+    },
     methods:{
-      goToModificationMenu(key , item){        
-        this.$router.push({name:'MenuModification', query: {id: key, periode: item}});    
+      goToModificationMenu(item){             
+        this.$router.push({name:'MenuModification', query: {menu: item}});    
       },
       goToSuggestionMenu(key, item){
         this.$router.push({name:'MenuSuggestion', query: {id: key, periode: item}});

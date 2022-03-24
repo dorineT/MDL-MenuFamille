@@ -57,7 +57,7 @@
 								></v-text-field>
 							</template>
 							<v-date-picker
-								v-model="form.dateDebut"
+								v-model="form.periode_debut"
 								no-title
 								scrollable
 								locale="fr"
@@ -68,7 +68,7 @@
 								<v-btn text color="green" @click="menu = false">
 									Annuler
 								</v-btn>
-								<v-btn text color="green" @click="$refs.menu.save(form.dateDebut)">
+								<v-btn text color="green" @click="$refs.menu.save(form.periode_debut)">
 									OK
 								</v-btn>
 							</v-date-picker>
@@ -98,7 +98,7 @@
 								></v-text-field>
 							</template>
 							<v-date-picker
-								v-model="form.dateFin"
+								v-model="form.periode_fin"
 								no-title
 								scrollabe
 								locale="fr"
@@ -109,7 +109,7 @@
 								<v-btn text color="green" @click="menu2 = false">
 									Annuler
 								</v-btn>
-								<v-btn text color="green" @click="$refs.menu2.save(form.dateFin)">
+								<v-btn text color="green" @click="$refs.menu2.save(form.periode_fin)">
 									OK
 								</v-btn>
 							</v-date-picker>
@@ -128,7 +128,7 @@
 								min="0"
 								ref="input"
 								:rules="nbPlatRule"
-								v-model.number="form.nbPersonnes"
+								v-model.number="form.nb_personne"
 								required
 							></v-text-field>
 						</v-col>
@@ -165,6 +165,9 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
+										item-text="nom"
+										item-value="id_tag"
+										return-object
 										v-model="form.tagsMatin"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
@@ -202,6 +205,9 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
+										item-text="nom"
+										item-value="id_tag"
+										return-object
 										v-model="form.tagsMidi"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
@@ -240,6 +246,9 @@
 										deletable-chips
 										multiple
 										:items="tagsListe"
+										item-text="nom"
+										item-value="id_tag"
+										return-object
 										v-model="form.tagsSoir"
 										color="orange lighten-2"
 										no-data-text="Aucun tag correspondant"
@@ -280,7 +289,7 @@
 							</v-card>
 						</v-col>
 						<v-col v-if="form.choixTypeMenu === 'manuel'">
-							<v-card>
+							<v-card >
 								<v-card-title >
 									Délais de clotûre des suggestions :
 								</v-card-title>
@@ -305,6 +314,9 @@
 
 <script>
 	import { eventBus } from "../main";
+	import TagDao from "../services/api.tag"
+	import moment from 'moment'
+	let DAOTag = new TagDao()
 	export default {
 		name: "ConstraintCalendar",
 		data() {
@@ -313,15 +325,15 @@
 					matinCheck: false,
 					midiCheck: false,
 					soirCheck: false,		
-					nbPersonnes: null,
+					nb_personne: null,
 					nbPlatMatin: null,
 					nbPlatMidi: null,
 					nbPlatSoir: null,
 					choixPeriode: null,
 					choixTypeMenu: "manuel",
 					choixMenuAutomatique: null,
-					dateDebut: null,
-					dateFin: null,
+					periode_debut: null,
+					periode_fin: null,
 					daysUntilSuggestion: 2,
 					tagsMatin: [],
 					tagsMidi: [],
@@ -334,16 +346,7 @@
 				menu: false,
 				menu2: false,
 				disabledChoixMenuAutomatique: true,
-				tagsListe: [
-					"soupe",
-					"lunch-box",
-					"light",
-					"épicé",
-					"gaterie",
-					"sucre",
-					"sel",
-					"calorie hight"
-				],			
+				tagsListe: [],			
 
 				nbPlatRule: [								
 					v => (!!v  || 'Champ requis'),
@@ -356,35 +359,23 @@
 
 			};
 		},
-		mounted() {
-			//
-		},
-		created() {
-			eventBus.$on('validateFormContrainte', this.validateForm);
+		async created() {
+			this.tagsListe =  await DAOTag.getAll()
+			eventBus.$on('validateFormContrainte', this.validateForm);			
 		},
 		destroyed() {
 			eventBus.$off('validateFormContrainte');
 		},
 		watch: {
 			computedDateFormattedDebut() {
-				if ((this.form.choixPeriode === "semaine") & (this.form.dateDebut != null)) {
-					let date = new Date(this.form.dateDebut);
-					// add 7 days
-					let newDate = new Date();
-					newDate = this.addDays(date, 6);
-
-					let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
-					let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
-					let year = newDate.getFullYear();
-					this.form.dateFin = year + "-" + month + "-" + day;
+				if ((this.form.choixPeriode === "semaine") & (this.form.periode_debut != null)) {
+					this.form.periode_fin = moment(this.form.periode_debut).add(6,'d').format("YYYY-MM-DD")
 				}
 			},
 		},
 		methods: {
 			formatDate(date) {
-				if (!date) return null;
-				const [year, month, day] = date.split("-");
-				return `${day}/${month}/${year}`;
+				return date ? moment(date).format("DD/MM/YYYY") : null
 			},
 			disabledChoixAutomatique() {
 				if (!this.disabledChoixMenuAutomatique) {
@@ -392,42 +383,29 @@
 				}
 				this.disabledChoixMenuAutomatique = !this.disabledChoixMenuAutomatique;
 			},
-			addDays(date, days) {
-				var result = new Date(date);
-				result.setDate(result.getDate() + days);
-				return result;
-			},
 			checkDateDebut(){
-				if(this.form.dateDebut === null) return 'Champs requis'
+				if(this.form.periode_debut === null) return 'Champs requis'
 				return this.checkDate()
 			},
 			checkDateFin(){
-				if(this.form.dateFin === null) return 'Champs requis'
+				if(this.form.periode_fin === null) return 'Champs requis'
 				return this.checkDate()
 			},
 			checkDate() {						
 				if (
-					(this.form.dateDebut != null & this.form.dateFin != null &
+					(this.form.periode_debut != null & this.form.periode_fin != null &
 					this.form.choixPeriode === "personalise")
 				) {				
-					let debut = new Date(this.form.dateDebut);
-					let fin = new Date(this.form.dateFin);
+					let debut = new Date(this.form.periode_debut);
+					let fin = new Date(this.form.periode_fin);
 					if(debut > fin) return 'Date de fin inférieure à la date de début'
 					if(debut.getTime() === fin.getTime()) return 'Veuillez entrez une période de plus d\'un jour'
 				}
 				return true
 			},
 			changeValueSemaine(){			
-				if(this.form.dateDebut != null){
-					let date = new Date(this.form.dateDebut);
-					// add 7 days
-					let newDate = new Date();
-					newDate = this.addDays(date, 6);
-
-					let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
-					let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
-					let year = newDate.getFullYear();
-					this.form.dateFin = year + "-" + month + "-" + day;
+				if(this.form.periode_debut != null){
+					this.form.periode_fin = moment(this.form.periode_debut).add(6,'d').format("YYYY-MM-DD")
 				}
 
 				this.textFieldFinDisabled = true
@@ -441,17 +419,13 @@
 		},
 		computed: {
 			computedDateFormattedDebut() {
-				return this.formatDate(this.form.dateDebut);
+				return this.formatDate(this.form.periode_debut);
 			},
 			computedDateFormattedFin() {
-				return this.formatDate(this.form.dateFin);
+				return this.formatDate(this.form.periode_fin);
 			},
 			minDateToday(){
-				let newDate = new Date();			
-				let month = newDate.getMonth() < 10 ? '0'+(newDate.getMonth()+ 1):(newDate.getMonth()+ 1)
-				let day = newDate.getDate() < 10 ? '0'+newDate.getDate() : newDate.getDate()
-				let year = newDate.getFullYear();		
-				return year + "-" + month + "-" + day;
+				return moment().format("YYYY-MM-DD")
 			}
 		},
 	};

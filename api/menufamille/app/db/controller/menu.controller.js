@@ -112,15 +112,20 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
                 }
               },
               {
-                model: db.suggestion, required: false,
-                include: 
-                {
-                  model: db.recette, required: false, attributes:['nom'],
-                  include:
+                model: db.suggestion, 
+                required: false,               
+                include: [
                   {
-                    model: db.tag, required: false, through: {attributes: []}
+                    model: db.membres
+                  },
+                  {                    
+                    model: db.recette, required: false, attributes:['nom'],
+                    include:
+                    {
+                      model: db.tag, required: false, through: {attributes: []}
+                    }
                   }
-                }
+                ]
               },
               {
                 model: db.tag, required : false, through: {attributes: []}
@@ -175,57 +180,7 @@ exports.Get_Current_Locked_Menu = (req, res) => {
   })
   .then(response => {
 
-    //traitement des donnees avant de les envoyer
-    //sinon trop lent dans le front
-    response.forEach(menuItem => {
-      let i = 0
-      menus.push({
-        menu_id: menuItem.id_menu,
-        dateDebut: menuItem.periode_debut,
-        dateFin: menuItem.periode_fin,
-        verrou: menuItem.verrou,
-        plats:[]
-      })
-
-      let j = 0
-      //get les jours
-      menuItem.calendriers.forEach(jourItem => {
-        menus[i].plats.push({
-          id: jourItem.id_calendrier,
-          date: jourItem.date,
-          jour: getDay(jourItem.date)
-        })
-
-        jourItem.calendrier_recettes.forEach(periodeItem =>{
-          let recette = ""
-          if(periodeItem.recette === null & periodeItem.is_recette){
-            recette = ""
-          }
-          else if(periodeItem.recette === null & !periodeItem.is_recette){
-            recette = "/"
-          }else{
-            recette = periodeItem.recette.nom
-          }
-
-          if(periodeItem.periode === 'matin'){
-            menus[i].plats[j].matin = recette
-            menus[i].plats[j].matinNbPers = jourItem.nb_personne
-          }
-          else if(periodeItem.periode === 'midi'){
-            menus[i].plats[j].midi = recette
-            menus[i].plats[j].midiNbPers = jourItem.nb_personne
-          }
-          else{
-            menus[i].plats[j].soir = recette
-            menus[i].plats[j].soirNbPers = jourItem.nb_personne
-          }
-        })
-
-        j++
-
-      })
-      res.send(menus);      
-  });
+      res.send(response)
   })
   .catch(err => {
     res.status(500).send({
@@ -234,14 +189,6 @@ exports.Get_Current_Locked_Menu = (req, res) => {
     });
   });  
 };
-
-/**
- * Obtenir le jour de la semaine en fonction d'un date donnee
- */
-function getDay(date){
-  let dateJour = moment(date, "DD-MM-YYYY");
-  return dateJour.locale('fr').format('dddd')
-}
 
 
 //// Envoyer les menus non-verrouilles + suggestion ouverte 
@@ -257,71 +204,9 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
         type: 'manuel'
       } 
     }
-  ,include: [ 
-    {
-      model: db.calendrier,
-      include: [
-        {
-          model: db.calendrier_recette,
-          include: {model: db.recette, required: false, attributes: ['nom']}
-        }
-      ]
-    }
-  ]
 })
 .then(response => {
-
-  //traitement des donnees avant de les envoyer
-  //sinon trop lent dans le front
-  response.forEach(menuItem => {
-    let i = 0
-    menus.push({
-      menu_id: menuItem.id_menu,
-      dateDebut: menuItem.periode_debut,
-      dateFin: menuItem.periode_fin,
-      verrou: menuItem.verrou,
-      plats:[]
-    })
-
-    let j = 0
-    //get les jours
-    menuItem.calendriers.forEach(jourItem => {
-      menus[i].plats.push({
-        id: jourItem.id_calendrier,
-        date: jourItem.date,
-        jour: getDay(jourItem.date)
-      })
-
-      jourItem.calendrier_recettes.forEach(periodeItem =>{
-        let recette = ""
-        if(periodeItem.recette === null & periodeItem.is_recette){
-          recette = ""
-        }
-        else if(periodeItem.recette === null & !periodeItem.is_recette){
-          recette = "/"
-        }else{
-          recette = periodeItem.recette.nom
-        }
-
-        if(periodeItem.periode === 'matin'){
-          menus[i].plats[j].matin = recette
-          menus[i].plats[j].matinNbPers = jourItem.nb_personne
-        }
-        else if(periodeItem.periode === 'midi'){
-          menus[i].plats[j].midi = recette
-          menus[i].plats[j].midiNbPers = jourItem.nb_personne
-        }
-        else{
-          menus[i].plats[j].soir = recette
-          menus[i].plats[j].soirNbPers = jourItem.nb_personne
-        }
-      })
-
-      j++
-
-    })
-    res.send(menus);      
-});
+    res.send(response);     
 })
   .catch(err => {
     res.status(500).send({
@@ -344,71 +229,9 @@ exports.Get_Unlocked_Menu = (req, res) => {
         verrou: false,
       } 
     }
-    ,include: [ 
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: {model: db.recette, required: false, attributes: ['nom']}
-          }
-        ]
-      }
-    ]
   })
   .then(response => {
-
-    //traitement des donnees avant de les envoyer
-    //sinon trop lent dans le front
-    response.forEach(menuItem => {
-      let i = 0
-      menus.push({
-        menu_id: menuItem.id_menu,
-        dateDebut: menuItem.periode_debut,
-        dateFin: menuItem.periode_fin,
-        verrou: menuItem.verrou,
-        plats:[]
-      })
-  
-      let j = 0
-      //get les jours
-      menuItem.calendriers.forEach(jourItem => {
-        menus[i].plats.push({
-          id: jourItem.id_calendrier,
-          date: jourItem.date,
-          jour: getDay(jourItem.date)
-        })
-  
-        jourItem.calendrier_recettes.forEach(periodeItem =>{
-          let recette = ""
-          if(periodeItem.recette === null & periodeItem.is_recette){
-            recette = ""
-          }
-          else if(periodeItem.recette === null & !periodeItem.is_recette){
-            recette = "/"
-          }else{
-            recette = periodeItem.recette.nom
-          }
-  
-          if(periodeItem.periode === 'matin'){
-            menus[i].plats[j].matin = recette
-            menus[i].plats[j].matinNbPers = jourItem.nb_personne
-          }
-          else if(periodeItem.periode === 'midi'){
-            menus[i].plats[j].midi = recette
-            menus[i].plats[j].midiNbPers = jourItem.nb_personne
-          }
-          else{
-            menus[i].plats[j].soir = recette
-            menus[i].plats[j].soirNbPers = jourItem.nb_personne
-          }
-        })
-  
-        j++
-  
-      })
-      res.send(menus);      
-  });
+    res.send(response)
   })
   .catch(err => {
     res.status(500).send({
