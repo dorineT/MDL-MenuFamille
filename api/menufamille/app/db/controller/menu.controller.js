@@ -112,11 +112,11 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
                 }
               },
               {
-                model: db.suggestion, required: false,
+                model: db.suggestion, 
+                required: false,               
                 include: [
                   {
-                    model: db.membres, //return null comme ça
-                    //as: 'membres',
+                    model: db.membres
                   },
                   {                    
                     model: db.recette, required: false, attributes:['nom'],
@@ -190,14 +190,6 @@ exports.Get_Current_Locked_Menu = (req, res) => {
   });  
 };
 
-/**
- * Obtenir le jour de la semaine en fonction d'un date donnee
- */
-function getDay(date){
-  let dateJour = moment(date, "DD-MM-YYYY");
-  return dateJour.locale('fr').format('dddd')
-}
-
 
 //// Envoyer les menus non-verrouilles + suggestion ouverte 
 
@@ -214,21 +206,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
     }
 })
 .then(response => {
-
-  //traitement des donnees avant de les envoyer
-  //sinon trop lent dans le front
-  response.forEach(menuItem => {
-    let i = 0
-    menus.push({
-      menu_id: menuItem.id_menu,
-      dateDebut: menuItem.periode_debut,
-      dateFin: menuItem.periode_fin,
-      verrou: menuItem.verrou,
-      plats:[]
-    })
-
-    res.send(menus);      
-});
+    res.send(response);     
 })
   .catch(err => {
     res.status(500).send({
@@ -253,20 +231,7 @@ exports.Get_Unlocked_Menu = (req, res) => {
     }
   })
   .then(response => {
-
-    //traitement des donnees avant de les envoyer
-    //sinon trop lent dans le front
-    response.forEach(menuItem => {
-      let i = 0
-      menus.push({
-        menu_id: menuItem.id_menu,
-        dateDebut: menuItem.periode_debut,
-        dateFin: menuItem.periode_fin,
-        verrou: menuItem.verrou,
-        plats:[]
-      })
-    })
-      res.send(menus); 
+    res.send(response)
   })
   .catch(err => {
     res.status(500).send({

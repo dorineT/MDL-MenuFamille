@@ -121,7 +121,7 @@
 													@change="changeChoixPlat()"
 												>
 													<v-radio
-														v-for="(sugg, n) in infoMenu.suggestion"
+														v-for="(sugg, n) in suggestionsListe"
 														:key="n"
 														:label="sugg"
 														:value="sugg"
@@ -219,6 +219,7 @@
 				tagsListe: [],
 				tagsChoix:[],
 				tagsListeAll: [],
+				suggestionsListe:[],
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 				jourSemaine: null,
@@ -231,7 +232,8 @@
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
-			tagsChoix(){								
+			tagsChoix(){
+												
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -258,6 +260,8 @@
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
 			async openModal(itemReceived, dateJour) {
 				console.log(itemReceived)
+				
+				this.suggestionsListe = []
 				this.showModifMenu = false; //display les cartes de mofification de la recette
 				this.dialog = true;
 
@@ -282,7 +286,10 @@
 				this.jourSemaine = moment(dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
 				this.periode = itemReceived.periode;
 				this.infoMenu.tags = this.copyTab(itemReceived.tags)
-				this.infoMenu.suggestion = this.copyTab(itemReceived.suggestion)
+				console.info(itemReceived.suggestions)
+				
+				
+				this.infoMenu.suggestions = this.copyTab(itemReceived.suggestions)
 
 				this.tagsChoix = []
 

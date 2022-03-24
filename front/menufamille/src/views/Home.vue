@@ -78,13 +78,12 @@
 
     data (){
       return{
-        menuToValide: [], // il faudra passer l'id du menu dans les objets
+        menuToValide: [],
         menuToSuggest: ['7/03 - 13/03 ']
       }
     },
     async created(){
-      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)
-
+      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)     
       menus.forEach(menu => {         
           let periodeNew = { 
               text: menu.periode_debut + ' - ' +menu.periode_fin,
