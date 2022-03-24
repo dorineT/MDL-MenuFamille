@@ -113,14 +113,19 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
               },
               {
                 model: db.suggestion, required: false,
-                include: 
-                {
-                  model: db.recette, required: false, attributes:['nom'],
-                  include:
+                include: [
                   {
-                    model: db.tag, required: false, through: {attributes: []}
+                    model: db.membres, //return null comme ça
+                    //as: 'membres',
+                  },
+                  {                    
+                    model: db.recette, required: false, attributes:['nom'],
+                    include:
+                    {
+                      model: db.tag, required: false, through: {attributes: []}
+                    }
                   }
-                }
+                ]
               },
               {
                 model: db.tag, required : false, through: {attributes: []}
