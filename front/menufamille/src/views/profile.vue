@@ -1,7 +1,9 @@
 <template>
   <v-row justify="center">
+    <dialog-modify-profil v-bind:dialog="dialogPw" @closePass="changePassword"/>
     <v-dialog
-      v-model="dialog"
+    
+      v-model="dialogSup"
       persistent
       max-width="400"
     >
@@ -91,7 +93,7 @@
             tile
             elevation="0"
             style="color:white"
-            @click="modification"
+            @click="changePassword"
           >
             Changer mot de passe
           </v-btn>
@@ -109,7 +111,7 @@
           <v-btn
             color="green darken-1"
             text
-            @click="dialog = false"
+            @click="dialogSup = false"
           >
             Annuler
           </v-btn>
@@ -128,13 +130,16 @@
 
 <script>
 import UserDao from '../services/api.user'
+import DialogModifyProfil from '../components/DialogModifyProfil.vue';
 let DAOUser = new UserDao();
 
 export default {
+  components: { DialogModifyProfil },
   name: 'Profile',
   data() {
     return {
-      dialog: false,
+      dialogPw: false,
+      dialogSup: false,
       message: "",
       update: false,
       isModified: false
@@ -151,6 +156,9 @@ export default {
     }
   },
   methods: {
+    changePassword() {
+      this.dialogPw = !this.dialogPw;
+    },
     modification() {
       if (this.isModified) {
         console.log("modifier")
@@ -160,8 +168,8 @@ export default {
       
     },
     suppresion() {
-      this.dialog = false;
-      DAOUser.gremoveUser(this.currentUser.id_membre).then(
+      this.dialogSup = false;
+      DAOUser.removeUser(this.currentUser.id_membre).then(
         () => {
               this.$store.dispatch("auth/logout");
               this.$router.push("/login");

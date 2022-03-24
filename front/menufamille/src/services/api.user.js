@@ -5,7 +5,7 @@ export default class UserDao{
      * remove member in database
      * @param idMembre
      */
-    gremoveUser(idMembre) {        
+    removeUser(idMembre) {        
         return api.delete("/user/"+ idMembre)
     }
 }
