@@ -2,11 +2,6 @@ const { response } = require("express");
 const { calendrier, recette, sequelize } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
-const Calendrier = db.calendrier;
-const Recette = db.recette;
-const Tag = db.tag;
-const Categorie = db.categorie;
-const Denree = db.denree;
 const Op = db.Sequelize.Op;
 
 const moment = require('moment')
@@ -203,6 +198,7 @@ function getDay(date){
 
 exports.Get_Manual_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
+  let menus = [];
   Menu.findAll({
     where : { [Op.and]: 
       {
@@ -211,10 +207,24 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
         type: 'manuel'
       } 
     }
-  }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
-  .then(data => {
-    res.send(data);
-  })
+})
+.then(response => {
+
+  //traitement des donnees avant de les envoyer
+  //sinon trop lent dans le front
+  response.forEach(menuItem => {
+    let i = 0
+    menus.push({
+      menu_id: menuItem.id_menu,
+      dateDebut: menuItem.periode_debut,
+      dateFin: menuItem.periode_fin,
+      verrou: menuItem.verrou,
+      plats:[]
+    })
+
+    res.send(menus);      
+});
+})
   .catch(err => {
     res.status(500).send({
       message:
@@ -228,6 +238,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
+  let menus = [];
   Menu.findAll({
     where : { [Op.and]: 
       {
@@ -235,9 +246,22 @@ exports.Get_Unlocked_Menu = (req, res) => {
         verrou: false,
       } 
     }
-  }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
-  .then(data => {
-    res.send(data);
+  })
+  .then(response => {
+
+    //traitement des donnees avant de les envoyer
+    //sinon trop lent dans le front
+    response.forEach(menuItem => {
+      let i = 0
+      menus.push({
+        menu_id: menuItem.id_menu,
+        dateDebut: menuItem.periode_debut,
+        dateFin: menuItem.periode_fin,
+        verrou: menuItem.verrou,
+        plats:[]
+      })
+    })
+      res.send(menus); 
   })
   .catch(err => {
     res.status(500).send({
