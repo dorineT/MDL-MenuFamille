@@ -25,6 +25,7 @@ CREATE TABLE MENU (
                       plat_identique_matin INTEGER NOT NULL DEFAULT -1,
                       plat_identique_midi INTEGER NOT NULL DEFAULT -1,
                       plat_identique_soir INTEGER NOT NULL DEFAULT -1,
+                      days_until_suggestion INTEGER NOT NULL DEFAULT 2,
                       type type_menu,
                       verrou BOOL NOT NULL DEFAULT false,
                       PRIMARY KEY (id_menu)
