@@ -1,12 +1,10 @@
-const { calendrier, recette } = require("../models");
+const { response } = require("express");
+const { calendrier, recette, sequelize } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
-const Calendrier = db.calendrier;
-const Recette = db.recette;
-const Tag = db.tag;
-const Categorie = db.categorie;
-const Denree = db.denree;
 const Op = db.Sequelize.Op;
+
+const moment = require('moment')
 
 // Retrieve all Menus from the database.
 exports.findAll = (req, res) => {
@@ -26,7 +24,8 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
   exports.PutMenu = (req, res) => {
-    Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
+    console.log(req.body)
+   /* Menu.create ({id_famille: req.body.id_famille, periode_debut: req.body.periode_debut, periode_fin: req.body.periode_fin, plat_identique: req.body.plat_identique, type: req.body.type})
     .then(data => { 
       res.send(data);
     })
@@ -35,7 +34,7 @@ exports.findAll = (req, res) => {
         message:
           err.message || "Some error occurred while insering in Menu"
       });
-    });
+    });*/
   };
 
 /// Update CRUD
@@ -91,20 +90,59 @@ exports.DeleteMenu = (req, res) => {
     });
   };
 
-///GetMenuAllInfo
+///GetMenuAllInfo  recupérer un menu avec son id avec jour, les périodes (mêmes celles qui ne sont pas liées à une recette), les recettes et leur tag + les tags qui sont liés aux périodes
 
 exports.Get_Menu_All_Info_PK = (req, res) =>{
   const id_menu = req.params.id;
-  Menu.findByPk(id_menu,{ 
-                          include: [
-                            {model: Calendrier, through: {attributes: []}, 
-                                include: [{model: Recette, through: {attributes: ["periode"]}, attributes:['nom']}]
-                          }]
-                        })
-  .then(data => {
-    res.send(data);
+  Menu.findByPk(id_menu, {
+      include: [
+        {
+          model: db.calendrier,           
+          include:[
+            {
+              model: db.calendrier_recette,              
+              include: [
+              {
+                model: db.recette, 
+                required: false,
+                attributes:['nom'],
+                include:
+                {
+                  model: db.tag, required: false, through: {attributes: []}
+                }
+              },
+              {
+                model: db.suggestion, 
+                required: false,               
+                include: [
+                  {
+                    model: db.membres
+                  },
+                  {                    
+                    model: db.recette, required: false, attributes:['nom'],
+                    include:
+                    {
+                      model: db.tag, required: false, through: {attributes: []}
+                    }
+                  }
+                ]
+              },
+              {
+                model: db.tag, required : false, through: {attributes: []}
+              }
+              ]
+            }
+          ]
+        }
+      ],  
+      order: [
+        [db.calendrier, 'date', 'ASC'],
+        [db.calendrier, db.calendrier_recette, 'id_periode', 'ASC']
+      ]    
   })
-  .catch(err => {
+  .then(response => {
+      res.send(response);      
+}).catch(err => {
     res.status(500).send({
       message:
         err.message || "Some error occurred while retrieving Menus."
@@ -120,6 +158,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
 exports.Get_Current_Locked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   const date = Date.now();
+  let menus = []
   db.menu.findAll({
     where : 
     {
@@ -139,8 +178,9 @@ exports.Get_Current_Locked_Menu = (req, res) => {
       }
     ]
   })
-  .then(menuGlobal => {
-    res.send(menuGlobal);
+  .then(response => {
+
+      res.send(response)
   })
   .catch(err => {
     res.status(500).send({
@@ -151,10 +191,11 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte  /!\ ne pas tester, pas de Islocked dans la BDD..
+//// Envoyer les menus non-verrouilles + suggestion ouverte 
 
 exports.Get_Manual_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
+  let menus = [];
   Menu.findAll({
     where : { [Op.and]: 
       {
@@ -163,10 +204,10 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
         type: 'manuel'
       } 
     }
-  }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
-  .then(data => {
-    res.send(data);
-  })
+})
+.then(response => {
+    res.send(response);     
+})
   .catch(err => {
     res.status(500).send({
       message:
@@ -180,6 +221,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
+  let menus = [];
   Menu.findAll({
     where : { [Op.and]: 
       {
@@ -187,9 +229,9 @@ exports.Get_Unlocked_Menu = (req, res) => {
         verrou: false,
       } 
     }
-  }, {include:{model: "calendrier"}}, {include:{ model: "recette", attributes: ['nom']}})
-  .then(data => {
-    res.send(data);
+  })
+  .then(response => {
+    res.send(response)
   })
   .catch(err => {
     res.status(500).send({

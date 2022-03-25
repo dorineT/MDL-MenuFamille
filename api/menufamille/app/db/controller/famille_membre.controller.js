@@ -19,7 +19,7 @@ exports.findAll = (req, res) => {
 
 // PUT CRUD
 exports.PutFamillyMember = (req, res) => {
-  FamilleMembre.create({id_famille: req.body.id_famille, id_membre: req.body.id_membre})
+  FamilleMembre.create({id_famille: req.body.id_famille, id_membre: req.body.id_membre, role: req.body.role})
   .then(data => { 
     res.send(data);
   })

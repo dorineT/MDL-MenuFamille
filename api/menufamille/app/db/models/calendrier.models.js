@@ -11,10 +11,6 @@ module.exports = (sequelize, Sequelize) => {
         get: function() {
           return this.getDataValue('date').toLocaleString('fr-BE', {timeZone: 'UTC'}).slice(0,10);
         }
-      },
-      nb_personne: {
-        type: Sequelize.INTEGER,
-        allowNull: true
       }
     },
     {

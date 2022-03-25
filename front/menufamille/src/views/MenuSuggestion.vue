@@ -24,11 +24,16 @@
       <calendar-suggestion
         :periodeMenu="periode"
       ></calendar-suggestion>
+      <div >
+        <v-btn class = "retourSugg" outlined color = "red" to = "/"> Retour </v-btn>
+        <v-btn class = "sauvegarderSugg" outlined color = "green" @click ="saveSuggestion"> Sauvegarder </v-btn>
+      </div>
     </v-card>
 </template>
 
 
 <script>
+import {eventBus} from '../main'
 import CalendarSuggestion from '../components/CalendarSuggestion.vue'
 import DialogSuggestion from '../components/DialogSuggestion.vue'
 export default {
@@ -52,6 +57,24 @@ export default {
     console.log(this.$route.query.id + ' ' + this.$route.query.periode )
     this.idPeriode = this.$route.query.id
     this.periode = this.$route.query.periode
+  },
+  created(){
+    eventBus.$on('postSuggestion', this.postSuggMenu)
+  },
+
+  destroyed() {
+    eventBus.$off('postSuggestion')
+  },
+
+  methods: {
+    saveSuggestion(){
+      eventBus.$emit('saveSuggestion')
+    },
+
+    postSuggMenu(postmenu){
+      console.log('test api' + postmenu)
+      this.$router.go(-1)
+    }
   }
 }
 </script>
@@ -61,6 +84,9 @@ export default {
   margin: 10px
   padding: 15px
   padding-top: 30px
+
+.sauvegarderSugg
+ float: right
 </style>
 
 
