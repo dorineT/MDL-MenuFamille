@@ -3,15 +3,15 @@ import api from './api'
 export default class MenuSugg{
     /**
      * récupère les menus suggérés en fonction de la famille sélectionner
-     * @param familleID
+     * @param familleID : ID de la famille
      */
 
    async getMenuSuggestion(familleID){  
        let menusSugg = []
 
-       await api.get("/menu/GetAllInfo/" + familleID)   
+       await api.get("/menu/GetAllInfo/"+ familleID)   
        .then((response)=> {
-           menusSugg = response.data
+           menusSugg = response.data.suggestions  //à vérifier
         });
 
        return menusSugg
@@ -21,20 +21,34 @@ export default class MenuSugg{
 
    /**
     * récupère le menu suggérés avec son ID
-    * @param menuId
+    * @param menuId : ID du menu suggéré
     */
    async getMenuSuggestionById(menuId){
        let menuSuggestion 
 
-       await api.get("/menu/GetAllInfo/" + menuId)
+       await api.get("/menu/GetAllInfo/"+ menuId)
        .then((response) => {
 
-       menuSuggestion = response.data       //!! plats identiques
+       menuSuggestion = response.data.suggestions   //à vérifier    
+                                        //!! plats identiques
 
    
    });
    return menuSuggestion
-}
+    }
+
+    /**
+     * envoie les nouvelles suggestions à l'API
+     * @param postSuggestionMenu : nouveau menu de suggestion
+     */
+     sendPostSuggestionMenu(postSuggestionMenu){
+         api.put("/menu/"),{  // à vérifier l'url
+             suggestions: postSuggestionMenu,
+         }
+
+
+     }
+
 
 
 }

@@ -131,6 +131,7 @@ export default {
               jour: 'Jeudi',
               date: '10/03',
               matin: 'pizza',
+              matin2: 'hot dog',
               matinNbPers:null,
               midi: '',
               midiNbPers: null,
