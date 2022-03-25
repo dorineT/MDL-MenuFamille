@@ -8,8 +8,8 @@ var bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
   // Save User to Database
   Membre.create({
-    nom: req.body.nom,
-    prenom: req.body.prenom,
+    nom: req.body.lastname,
+    prenom: req.body.firstname,
     email: req.body.email,
     secret: bcrypt.hashSync(req.body.password, 8)
   })
@@ -53,9 +53,9 @@ exports.signin = (req, res) => {
 
         res.status(200).send({
           id_membre: user.id_membre,
-          nom: user.nom,
+          lastname: user.nom,
           email: user.email,
-          prenom: user.prenom,
+          firstname: user.prenom,
           roles: authorities,
           accessToken: token,
           refreshToken: refreshToken,

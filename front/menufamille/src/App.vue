@@ -34,11 +34,11 @@
 						</v-list-item-icon>
 						<v-list-item-title>Famille</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/">
+					<v-list-item to="/profile">
 						<v-list-item-icon>
 							<v-icon>mdi-account</v-icon>
 						</v-list-item-icon>
-						<v-list-item-title>Compte</v-list-item-title>
+						<v-list-item-title>Profil Utilisateur</v-list-item-title>
 					</v-list-item>
 					<v-list-item @click="logOut">
 						<v-list-item-icon>
