@@ -216,15 +216,8 @@ exports.CreateFamilly = (req, res) => {
     console.log(id_fam);
 
     db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: "parent"})
-    .then(data2 =>{
-
-      console.log(data2.id_membre);
-
-      var retour = []
-
-      retour.push(data);
-      retour.push(data2);
-      res.send(retour);
+    .then(data2 => {
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({

@@ -23,6 +23,10 @@
     {
       "name": "menu",
       "description": "Operations about menu"
+    },
+    {
+      "name": "membre",
+      "description": "Operations about Membre"
     }
   ],
   "schemes": [
