@@ -81,16 +81,18 @@
 </template>
 
 <script>
-import MenuSugg from '../services/api.menuSuggestion'
+import MenuDao from '../services/api.menu'
 import {eventBus } from '../main'
 
-let menuSuggest = new MenuSugg()
+let menuSuggest = new MenuDao()
 
 export default {
-    props:['periodeMenu'],
+    props:['periodeMenu','menuId'],
     data () {
-      return {headers: [],
-      menu: {          
+      return {
+        
+      headers: [],
+      menu: { /*     
           menu_id: 3,
            plats: [
            {
@@ -153,7 +155,7 @@ export default {
           dateDebut: '7/03/2022',
           dateFin: '11/03/2022',
           verrou: true           
-        }, 
+        */}, 
         items: [],
         pageCount: 0,
         page: 1,
@@ -163,32 +165,44 @@ export default {
         platsSoir: []      
          }
     },
-    mounted(){  
+   /* mounted(){  
         this.items = this.menu.plats
 
         let indiceEnd = this.items.length < 7 ? this.items.length : 7       
         this.populateHeader(this.items,0,indiceEnd)
         this.fillPlat(this.items,0,indiceEnd) 
-        // call api to get the menu 
-    },
-    created(){
-     // this.menu = await menuSuggest.getMenuSuggestionById(3) //menu num 3 ?!
-     // this.items = this.menu.calendriers et autre items
+
+        
+    },*/  // call api to get the menu 
+    async created(){
+
+      console.log(this.menuId + 'menu suggestion crée')
+      console.log(this.menu)
+      this.menu = await menuSuggest.getSuggestionMenuById(this.menuId) 
+      console.log(this.menu)
+      this.items = this.menu.calendriers // ! il faut récuperer uniquement les suggestions?
+      console.log(this.items)
+
+     
+      let indiceEnd = this.items.length < 7 ? this.items.length : 7
+      this.populateHeader(this.items,0,indiceEnd)
+      this.fillPlat(this.items,0,indiceEnd)
 
       eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)
-      eventBus.$on('saveSuggestion', this.saveSuggestionMenu)
+     /* eventBus.$on('saveSuggestion', this.saveSuggestionMenu) */
     },
     destroy(){
-      eventBus.$off('saveSuggestion')
+     /* eventBus.$off('saveSuggestion') */
+      eventBus.$off('updateMenuSuggestionJour')
     },
-    destroyed(){
-      eventBus.$off('updateMenuJour')
-    },
+    
     methods:{
       //// Affichage calendrier ///
-      goToRecette(item,periode){      
+      goToRecette(item){      
+        let searchMenu = this.items.find(element => element.id_calendrier === item.id_jour) //! pas de id_jour dans BD
+        let searchPeriode = searchMenu.calendrier_recettes.find(element => element.id_periode === item.id_periode)
           //open dialogue with even bus
-          eventBus.$emit('openDialogSuggestion', item, periode, this.items)
+          eventBus.$emit('openDialogSuggestion', searchPeriode , searchMenu.date)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -197,9 +211,9 @@ export default {
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
           this.headers.push({
-              text: jourPlat.jour + '\n' + jourPlat.date, 
+              text: moment(jourPlat.date,'DD-MM-YYYY').locale('fr').format('dddd') + '\n' + jourPlat.date, 
               align: 'center',
-              value: jourPlat.id
+              value: jourPlat.id_calendrier
           })
           iStart++
           this.nbJourMenu++
@@ -214,23 +228,29 @@ export default {
 
         while(iStart<iEnd & iStart<menu.length){
           let jourPlat = menu[iStart]
+          let periodeId = jourPlat.calendrier_recettes[0]
 
           this.platsMatin.push({
-            id: jourPlat.id,
-            plat: jourPlat.matin,
-            nbPers: jourPlat.matinNbPers
+            id: jourPlat.id_calendrier,
+            id_periode: periodeId.id_periode,
+            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            nbPers: periodeId.nb_personne,
           })
 
+          periodeId = jourPlat.calendrier_recettes[1]
           this.platsMidi.push({
-            id: jourPlat.id,
-            plat: jourPlat.midi,
-            nbPers: jourPlat.midiNbPers
+            id: jourPlat.id_calendrier,
+            id_periode: periodeId.id_periode,
+            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            nbPers: periodeId.nb_personne,
           })
 
+          periodeId = jourPlat.calendrier_recettes[2]
           this.platsSoir.push({
-            id: jourPlat.id,
-            plat: jourPlat.soir,
-            nbPers: jourPlat.soirNbPers
+            id: jourPlat.id_calendrier,
+            id_periode: periodeId.id_periode,
+            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            nbPers: periodeId.nb_personne,
           })
 
           iStart++
@@ -259,27 +279,36 @@ export default {
 
       /// UPDATE CALENDRIER////
 
-      updateMenuSuggestionJour(menuJour, periode){
+      updateMenuSuggestionJour(item){
         console.log('test update suggestion')
-        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
+        let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
+        let menuPeriodeOld =  menuJourOld.calendrier_recettes.find(element => element.id_periode === item.id_periode)
         
-        if(periode === 'matin'){
-          menuJourOld.matin = menuJour.plat
-          menuJourOld.matinNbPers = menuJour.nbPers
+        let storePeriode = structuredClone(menuPeriodeOld)
+
+        console.log(menuJourOld)
+        console.log(menuPeriodeOld)
+
+        if(item.periode === 'matin'){
+          menuJourOld.calendrier_recettes[0] = structuredClone(item)   //! changer dans les suggestions
+          /*menuJourOld.matinNbPers = menuJour.nbPers*/
         }
         else if(periode === 'midi'){
-          menuJourOld.midi = menuJour.plat
-          menuJourOld.midiNbPers = menuJour.nbPers
+          menuJourOld.calendrier_recettes[1] = structuredClone(item)
+         // menuJourOld.midiNbPers = menuJour.nbPers
         }
         else if(periode === 'soir'){
-          menuJourOld.soir = menuJour.plat
-          menuJourOld.soirNbPers = menuJour.nbPers
+          menuJourOld.calendrier_recettes[2] = structuredClone(item)
+         // menuJourOld.soirNbPers = menuJour.nbPers
         }
+
+        console.log(menuJourOld + 'après mise à jour')
 
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
         this.fillPlat(this.items,iStart,iEnd)
         },
+
         saveSuggestionMenu(){
           eventBus.$emit('postSuggestion', this.menu)
         }

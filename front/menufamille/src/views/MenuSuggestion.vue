@@ -22,7 +22,8 @@
       <dialog-suggestion></dialog-suggestion>
 
       <calendar-suggestion
-        :periodeMenu="periode"
+        :periodeMenu ="periode"
+        :menuId ="idPeriode"                      
       ></calendar-suggestion>
       <div >
         <v-btn class = "retourSugg" outlined color = "red" to = "/"> Retour </v-btn>
@@ -57,13 +58,20 @@ export default {
         
     }
   },
-  mounted(){
+  /*mounted(){
     console.log(this.$route.query.id + ' ' + this.$route.query.periode )
     this.idPeriode = this.$route.query.id
     this.periode = this.$route.query.periode
   },
-  created(){
+  */
+  created(){ 
+         
     eventBus.$on('postSuggestion', this.postSuggMenu)
+    
+    this.idPeriode = this.$route.query.id
+    console.log(this.idPeriode)            //!
+    this.periode = this.$route.query.periode
+    console.log(this.periode) 
   },
 
   destroyed() {
@@ -71,13 +79,13 @@ export default {
   },
 
   methods: {
-    /*saveSuggestion(){
+    /*saveSuggestion(){                     //car pas besoin de btn save
       eventBus.$emit('saveSuggestion')
     },*/
 
     postSuggMenu(postmenu){
       menuSuggest.sendPostSuggestionMenu(postmenu,this.$store.state.auth.user.id_membre)
-      console.log('test api' + postmenu)
+      console.log('test postSuggMenu' + postmenu)
       this.$router.push('/')
     }
   }

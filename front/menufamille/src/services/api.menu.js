@@ -65,5 +65,19 @@ export default class MenuDao{
       return menus
     }
 
+    async getSuggestionMenuById(idMenu){
+      let suggestionMenu
+        
+      await api.get("/menu/GetAllInfo/"+idMenu)
+        .then((response) => {            
+          suggestionMenu = response.data  
+
+        });
+               
+
+      return suggestionMenu
+    }
+
+
 }
 

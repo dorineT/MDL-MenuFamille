@@ -42,9 +42,9 @@ export default class MenuSugg{
      * @param postSuggestionMenu : nouveau menu de suggestion
      */
      sendPostSuggestionMenu(postSuggestionMenu){
-         api.put("/menu/"),{  // à vérifier l'url
+         api.put("/menu/suggestions/",{  // à vérifier l'url
              suggestions: postSuggestionMenu,
-         }
+         })
 
 
      }
