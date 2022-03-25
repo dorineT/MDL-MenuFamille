@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
       return refreshToken.token;
     };
     Refresh_token.verifyExpiration = (token) => {
-      return token.date_expiration.getTime() < new Date().getTime();
+      return token.date_expiration < new Date().getTime();
     };
     return Refresh_token;
   };

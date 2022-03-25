@@ -1,4 +1,5 @@
 const db = require("../models");
+var bcrypt = require("bcryptjs");
 const Membres = db.membres;
 const Op = db.Sequelize.Op;
 
@@ -35,7 +36,13 @@ exports.PutMember = (req, res) => {
 
 exports.UpdateMember = (req, res) => {
   const id = req.params.id;
-  Membres.update(req.body, {
+  let data;
+  if(req.body.password) {
+    data = {secret: bcrypt.hashSync(req.body.newPassword, 8)};
+  } else {
+    data = {prenom: req.body.firstname, nom: req.body.lastname};
+  }
+  Membres.update(data, {
     where: {id_membre: id}
   })
   .then(num =>{
@@ -44,7 +51,7 @@ exports.UpdateMember = (req, res) => {
         message: "Members was Updated"
       });
     } else{
-      res.send({
+      res.status(401).send({
         message: `Cannot update Members with id=${id}`
       })
     }
