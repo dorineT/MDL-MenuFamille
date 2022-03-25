@@ -7,6 +7,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 
 import MenuModification from '../views/MenuModification.vue'
+import FamilyView from '../views/FamilyView.vue'
 
 
 Vue.use(VueRouter)
@@ -37,6 +38,11 @@ const routes = [
     name: 'MenuModification',
     component: MenuModification,
     props: true
+  },
+  {
+    path: '/family',
+    name: 'FamilyView',
+    component: FamilyView
   },
   {
     path: '/menuSuggestion',

@@ -28,7 +28,7 @@
 						</v-list-item-icon>
 						<v-list-item-title>Liste de courses</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/">
+					<v-list-item to="/family">
 						<v-list-item-icon>
 							<v-icon>mdi-account-group</v-icon>
 						</v-list-item-icon>
