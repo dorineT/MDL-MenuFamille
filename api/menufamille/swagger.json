@@ -582,7 +582,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "id of the familly",
+            "description": "id of the member",
             "required": true,
             "type": "integer"
           }
@@ -827,7 +827,130 @@
           }
         }
       }
-    } 
+    },
+    "/membre/GetListMembre/{id}": {
+      "get": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Return all the membre part of a familly",
+        "description": "Return all the member composing a familly without their roles",
+        "operationId": "GetListMembre",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Membre_full_without_pswd"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/membre/{id_fam}/{id_mem}": {
+      "post": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Add a member to a familly",
+        "description": "Add a member to a familly with a role",
+        "operationId": "JoinFamilly",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "role",
+            "description": "role in string, must be 'parent' or 'enfant'",
+            "required": true,
+            "schema": {
+              "type" : "object",
+              "properties": { "role": {"type": "string"}}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Famille_Membre"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/membre/{id_fam}/{id_mem} (delete)": {
+      "post": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Remove a member from a familly",
+        "description": "Remove a member from a familly",
+        "operationId": "LeaveFamilly",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "securityDefinitions": {
     "api_key": {
@@ -1024,6 +1147,15 @@
         "prenom" : {"type" : "string"},
         "email" : {"type" : "string"},
         "secret" : {"type" : "string"}
+      }
+    },
+    "Membre_full_without_pswd":{
+      "type": "object",
+      "properties": {
+        "id_membre" : {"type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"},
+        "prenom" : {"type" : "string"},
+        "email" : {"type" : "string"}
       }
     }
   }

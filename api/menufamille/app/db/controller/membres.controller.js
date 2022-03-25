@@ -131,7 +131,7 @@ exports.GetListMembre = (req, res) =>{
       });
     });
    } else {
-    res.send({
+    res.status(403).send({
       message: "Bad request, role must be 'parent' or 'enfant'" 
     });
   }
@@ -156,7 +156,7 @@ exports.LeaveFamilly = (req, res) => {
         message: `You left the familly with the ID ${id_fam}`
       });
     } else{
-      res.send({
+      res.status(403).send({
         message: `You cannot leave the familly with the ID ${id_fam}`
       })
     }
