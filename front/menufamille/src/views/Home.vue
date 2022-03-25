@@ -2,6 +2,17 @@
     <v-card       
         class="cardmargin"
     >
+      <v-select
+        v-model="selectedFamille"
+        :items="famille"
+        menu-props="auto"
+        label="Famille"
+        hide-details
+        prepend-icon="mdi-account-group"
+        single-line     
+        no-data-text="Aucune famille disponible"
+        @change="changeFamille()"
+      ></v-select>
       <calendarResume/>
 
       <v-card
@@ -37,13 +48,18 @@
           class="pa-2"
           outlined
           tile
-          
+          v-if="this.$store.state.info.roleActuel==='parent'"
         >
           <v-list>
             <v-subheader>Menu à valider :</v-subheader>
             <v-list-item-group              
               color="primary"
             >
+              <v-list-item v-if="menuToValide.length === 0">
+                <v-list-item-content >
+                  <v-list-item-title > Aucun menu à valider actuellement</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
               <v-list-item
                 v-for="(item) in menuToValide"
                 :key="item.value"
@@ -79,18 +95,18 @@
     data (){
       return{
         menuToValide: [],
-        menuToSuggest: ['7/03 - 13/03 ']
+        menuToSuggest: ['7/03 - 13/03 '],
+        selectedFamille: null,
+        famille: [],        
       }
     },
-    async created(){
-      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)     
-      menus.forEach(menu => {         
-          let periodeNew = { 
-              text: menu.periode_debut + ' - ' +menu.periode_fin,
-              value: menu.id_menu
-            }     
-          this.menuToValide.push(periodeNew)        
+    async created(){      
+      
+      this.$store.state.auth.user.roles.forEach(element => {        
+        this.famille.push(element[1])
       });
+      this.selectedFamille = this.famille.length > 0 ? this.famille[0] : null
+      this.changeFamille()    
     },
     methods:{
       goToModificationMenu(item){             
@@ -98,6 +114,27 @@
       },
       goToSuggestionMenu(key, item){
         this.$router.push({name:'MenuSuggestion', query: {id: key, periode: item}});
+      },
+      changeFamille(){
+        console.log('changement')
+        //select les menus correspondants
+        if(this.selectedFamille !== null){
+          let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)
+          // change store value
+          this.$store.dispatch("info/changeFamille", [famille[0], famille[2], famille[3]])             
+          this.getUnlockedMenu()
+        }
+      },
+      async getUnlockedMenu(){      
+        this.menuToValide = []
+        let menus = await DAOMenu.getMenuUnlocked(this.$store.state.info.idFamilleActuel)     
+        menus.forEach(menu => {         
+            let periodeNew = { 
+                text: menu.periode_debut + ' - ' +menu.periode_fin,
+                value: menu.id_menu
+              }     
+            this.menuToValide.push(periodeNew)        
+        });
       }
     }
   }

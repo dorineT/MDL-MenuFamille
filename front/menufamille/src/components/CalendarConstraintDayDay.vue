@@ -406,7 +406,7 @@
 			creationMenuDone() {
 				let menuNew = {
 					id_menu: null,
-					id_famille: this.$store.state.auth.user.id_membre,
+					id_famille: this.$store.state.info.idFamilleActuel,
 					periode_debut: moment(this.formData.periode_debut).format("DD/MM/YYYY"),
 					periode_fin: moment(this.formData.periode_fin).format("DD/MM/YYYY"),
 					plat_identique_matin: this.formData.nbPlatMatin,

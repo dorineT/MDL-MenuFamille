@@ -10,7 +10,7 @@
 						<v-list-item-title>Accueil</v-list-item-title>
 					</v-list-item>
 
-					<v-list-item to="/creationMenu">
+					<v-list-item to="/creationMenu" v-if="this.$store.state.info.roleActuel==='parent'">
 						<v-list-item-icon>
 							<v-icon>mdi-pencil</v-icon>
 						</v-list-item-icon>
