@@ -307,7 +307,7 @@
         }
       }
     },
-    "/CreateFamilly/{id_mem}": {
+    "/famille/CreateFamilly/{id_mem}": {
       "post": {
         "tags": [
           "family"
@@ -346,7 +346,7 @@
         }
       }
     },
-    "/CheckAccesCode/{code}": {
+    "/famille/CheckAccesCode/{code}": {
       "get": {
         "tags": [
           "family"
@@ -376,7 +376,7 @@
         }
       }
     },
-    "/RetirerMembreNumber/{id}": {
+    "/famille/RetirerMembreNumber/{id}": {
       "put": {
         "tags": [
           "family"
@@ -409,7 +409,7 @@
         }
       }
     },
-    "/AjouterMembreNumber/{id}": {
+    "/famille/AjouterMembreNumber/{id}": {
       "put": {
         "tags": [
           "family"
@@ -442,7 +442,7 @@
         }
       }
     },
-    "/IsThereParent/{id_fam}": {
+    "/famille/IsThereParent/{id_fam}": {
       "get": {
         "tags": [
           "family"
@@ -475,7 +475,7 @@
         }
       }
     },
-    "/Defrole/{id_fam}/{id_mem}": {
+    "/famille/Defrole/{id_fam}/{id_mem}": {
       "put": {
         "tags": [
           "family"
@@ -527,7 +527,7 @@
         }
       }
     },
-    "/{id_fam}/{id_mem}": {
+    "/famille/{id_fam}/{id_mem}": {
       "delete": {
         "tags": [
           "family"
@@ -567,7 +567,7 @@
         }
       }
     },
-    "/GetListFamilly/{id}": {
+    "/famille/GetListFamilly/{id}": {
       "get": {
         "tags": [
           "family"
@@ -600,7 +600,7 @@
         }
       }
     },
-    "/{id}": {
+    "famille/{id}": {
       "delete": {
         "tags": [
           "family"
@@ -632,7 +632,202 @@
           }
         }
       }
-    }
+    },
+    "menu/{id}": {
+      "delete": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "Delete a menu and return a message is it was ok",
+        "description": "Delete a menu and will delete the link all of their table linked",
+        "operationId": "DeleteMenu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/GetAllInfo/{id}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get All of the info of a Menu and all that is linked with",
+        "description": "get all of the info of a menu and all of their table linked",
+        "operationId": "Get_Menu_All_Info_PK",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Menu_full"
+            }
+          }
+        }
+      }
+    },
+    "menu/GetLockedMenu/{id_fam}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get basics info of a Menu locked",
+        "description": "get all of the info of a Menu locked",
+        "operationId": "Get_Current_Locked_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly who's the owner of menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+                "items" : {
+                  "$ref": "#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/GetManualUnlockedMenu/{id_fam}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get basics info of a Menu unlocked and manually fillable",
+        "description": "get all of the info of a Menu unlocked and manually fillable",
+        "operationId": "Get_Manual_Unlocked_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly who's the owner of menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+                "items" : {
+                  "$ref": "#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/GetUnlockedMenu/{id_fam}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get basics info of a Menu unlocked",
+        "description": "get all of the info of a Menu unlocked",
+        "operationId": "Get_Unlocked_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly who's the owner of menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+                "items" : {
+                  "$ref": "#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/GetMenuId/{id}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get basics of a Menu with the id of the menu",
+        "description": "get all of the info of a Menu unlocked",
+        "operationId": "Get_Menu_By_Id",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Menu",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+                "items" : {
+                  "$ref": "#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    } 
   },
   "securityDefinitions": {
     "api_key": {
@@ -733,6 +928,102 @@
       },
       "xml": {
         "name": "Famille_Membre"
+      }
+    },
+    "Menu":{
+      "type": "object",
+      "properties": {
+      "période_debut" : {"type" : "string", "format": "date"},
+      "période_fin"   : {"type" : "string", "format": "date"},
+      "id_menu" : {"type" : "integer", "format": "int64"},
+      "id_famille" : {"type" : "integer", "format" : "int64"},
+      "plat_identique_matin" : {"type": "integer", "format": "int64"},
+      "plat_identique_midi" : {"type": "integer", "format": "int64"},
+      "plat_identique_soir" : {"type": "integer", "format": "int64"},
+      "days_until_suggestion": {"type": "integer", "format": "int64"},
+      "type" : {"type" : "string" },
+      "verrou" : {"type": "boolean"}
+      }
+    },
+    "Menu_full":{
+      "type": "object",
+      "properties": {
+      "période_debut" : {"type" : "string", "format": "date"},
+      "période_fin"   : {"type" : "string", "format": "date"},
+      "id_menu" : {"type" : "integer", "format": "int64"},
+      "id_famille" : {"type" : "integer", "format" : "int64"},
+      "plat_identique_matin" : {"type": "integer", "format": "int64"},
+      "plat_identique_midi" : {"type": "integer", "format": "int64"},
+      "plat_identique_soir" : {"type": "integer", "format": "int64"},
+      "days_until_suggestion": {"type": "integer", "format": "int64"},
+      "type" : {"type" : "string" },
+      "verrou" : {"type": "boolean"},
+      "calendrier" : { "$ref": "#/definitions/Calendrier_full"}
+      }
+    },
+    "Calendrier_full":{
+      "type": "object",
+      "properties": {
+        "date" : {"type" : "string", "format": "date"},
+        "id_calendrier" : {"type" : "integer", "format": "int64"},
+        "menu_calendrier" : {"$ref": "#/definitions/Menu_Calendrier_full"},
+        "calendrier_rectte" : {"$ref": "#/definitions/Calendrier_Recette_full"} 
+      }
+    },
+    "Menu_Calendrier_full":{
+      "type": "object",
+      "properties": {
+        "id_menu" : {"type" : "integer", "format": "int64"},
+        "id_calendrier" : {"type" : "integer", "format": "int64"}
+      }
+    },
+    "Calendrier_Recette_full":{
+      "type": "object",
+      "properties": {
+        "id_periode" : {"type" : "integer", "format": "int64"},
+        "id_calendrier" : {"type" : "integer", "format": "int64"},
+        "id_recette" : {"type" : "integer", "format": "int64"},
+        "periode" : {"type" : "string"},
+        "is_recette" : {"type": "integer", "format": "int64"},
+        "nb_personne" : {"type" : "integer", "format": "int64"},
+        "recette" : { "$ref": "#/definitions/Recette_Semi"},
+        "suggestion" : { "$ref": "#/definitions/Suggestion_full"},
+        "tags": { "$ref":"#/definitions/Tags_full"}
+      }
+    },
+    "Recette_Semi" : {
+      "type": "object",
+      "properties": {
+        "nom" : {"type" : "string"},
+        "tags": { "$ref":"#/definitions/Tags_full"}
+      }
+    },
+    "Suggestion_full" : {
+      "type": "object",
+      "properties": {
+        "id_periode" : {"type" : "integer", "format": "int64"},
+        "id_recette" : {"type" : "integer", "format": "int64"},
+        "id_membre" : {"type" : "integer", "format": "int64"},
+        "id_menu" : {"type" : "integer", "format": "int64"},
+        "membre" : {"$ref" : "#/definitions/Membre_full"},
+        "recette" : {"$ref" : "#/definitions/Recette_Semi"}
+      }
+    },
+    "Tags_full":{
+      "type": "object",
+      "properties": {
+        "id_tag": { "type" : "integer", "format": "int64"},
+        "periode" : {"type" : "string"}
+      }
+    },
+    "Membre_full":{
+      "type": "object",
+      "properties": {
+        "id_membre" : {"type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"},
+        "prenom" : {"type" : "string"},
+        "email" : {"type" : "string"},
+        "secret" : {"type" : "string"}
       }
     }
   }

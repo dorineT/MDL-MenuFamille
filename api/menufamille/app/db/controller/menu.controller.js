@@ -160,25 +160,13 @@ exports.Get_Current_Locked_Menu = (req, res) => {
   const date = Date.now();
   let menus = []
   db.menu.findAll({
-    where : 
+    where : {[Op.and]: 
     {
       id_famille: id_fam,
       verrou: true,
       periode_fin: {[Op.gte]: date}
-    },  
-    include: [ 
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: {model: db.recette, required: false, attributes: ['nom']}
-          }
-        ]
-      }
-    ]
-  })
-  .then(response => {
+    }
+  }}).then(response => {
 
       res.send(response)
   })
