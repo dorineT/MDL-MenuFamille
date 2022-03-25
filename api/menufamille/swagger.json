@@ -316,7 +316,6 @@
         "description": "This can only be done by the logged in user.",
         "operationId": "CreateFamilly",
         "produces": [
-          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -341,7 +340,294 @@
           "default": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Famille_membre_and_famille"
+              "$ref": "#/definitions/Famille"
+            }
+          }
+        }
+      }
+    },
+    "/CheckAccesCode/{code}": {
+      "get": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Return the familly link to an acces code",
+        "description": "for the checking of a acces code link, it will return the familly to the front-end for easier add",
+        "operationId": "CheckAccesCode",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "code that the futur member need to have to join",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Famille"
+            }
+          }
+        }
+      }
+    },
+    "/RetirerMembreNumber/{id}": {
+      "put": {
+        "tags": [
+          "family"
+        ],
+        "summary": "lower a member to the member count of familly",
+        "description": "for easier back-end understandability, the add and lower member count by hand",
+        "operationId": "RetirerMembreNumber",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nb_member": {"type": "integer", "format": "int64"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/AjouterMembreNumber/{id}": {
+      "put": {
+        "tags": [
+          "family"
+        ],
+        "summary": "add a member to the member count of familly",
+        "description": "for easier back-end understandability, the add and lower member count by hand",
+        "operationId": "Ajouter MembreNumber",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nb_member": {"type": "integer", "format": "int64"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/IsThereParent/{id_fam}": {
+      "get": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Return true if a familly as a Parent",
+        "description": "return true if a familly as a Parent and return false if not",
+        "operationId": "PapaOuTes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_okay": {"type": "boolean", "value": "true"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Defrole/{id_fam}/{id_mem}": {
+      "put": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Define the role of a member",
+        "description": "Used to change the role of a member of a familly",
+        "operationId": "DefineRole",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fem",
+            "in": "path",
+            "description": "id of the familly that the member will change role for",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member that will change role",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created family object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "role": {"type": "string"}
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_okay": {"type": "boolean", "value": "true"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id_fam}/{id_mem}": {
+      "delete": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Delete a member from a familly",
+        "description": "Used to delete a member from a familly",
+        "operationId": "DeleteMemberFamilly",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fem",
+            "in": "path",
+            "description": "id of the familly that the member will leave",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member that will leave a familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/GetListFamilly/{id}": {
+      "get": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Return all the familly a member is part of",
+        "description": "Return all the familly a member is part of but not the role he has in all of those",
+        "operationId": "GetListFamilly",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Famille"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "delete": {
+        "tags": [
+          "family"
+        ],
+        "summary": "Delete a familly and return a message is it was ok",
+        "description": "Delete a familly and will delete the link between member and familly",
+        "operationId": "DeleteFamilly",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
             }
           }
         }
@@ -447,38 +733,6 @@
       },
       "xml": {
         "name": "Famille_Membre"
-      }
-    },
-    "Famille_membre_and_famille": {
-      "type" : "object",
-      "properties": {
-        "id_famille": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "nom": {
-          "type": "string"
-        },
-        "code_acces": {
-          "type": "string"
-        },
-        "nb_membres": {
-          "type": "string"
-        },
-        "id_famille": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "id_membre": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "role": {
-          "type": "string"
-        }
-      },
-      "xml": {
-        "name": "Famille_membre_and_famille"
       }
     }
   }
