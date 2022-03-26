@@ -79,11 +79,12 @@
     data (){
       return{
         menuToValide: [],
-        menuToSuggest: ['7/03 - 13/03 ']
+        menuToSuggest: ['07/03 - 13/03']  // à retirer
       }
     },
     async created(){
-      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)     
+      let menus = await DAOMenu.getMenuUnlocked(this.$store.state.auth.user.id_membre)  
+      //let suggestionMenus = await DAOMenu.getMenuSuggestionUnlocked(this)   
       menus.forEach(menu => {         
           let periodeNew = { 
               text: menu.periode_debut + ' - ' +menu.periode_fin,

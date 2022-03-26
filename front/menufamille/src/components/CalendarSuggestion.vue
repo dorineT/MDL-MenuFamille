@@ -32,7 +32,7 @@
                 <p v-else>
                   <v-btn text @click="goToRecette(item,'matin')">
                       <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                      <p v-else>{{ item.plat }} </p>                                 
+                      <p v-else>{{ item.plat }} + '' + <v-avatar color = "teal" size="56"></v-avatar> </p> <!-- à vérifier l'avatar quand il y aura des données -->                             
                       </v-btn>      
                 </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
@@ -180,7 +180,7 @@ export default {
       console.log(this.menu)
       this.menu = await menuSuggest.getSuggestionMenuById(this.menuId) 
       console.log(this.menu)
-      this.items = this.menu.calendriers // ! il faut récuperer uniquement les suggestions?
+      this.items = this.menu.calendriers // ! 
       console.log(this.items)
 
      
