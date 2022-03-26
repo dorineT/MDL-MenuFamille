@@ -5,11 +5,12 @@ const RefreshToken = db.refreshToken;
 const Role = db.famille_membre;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+
 exports.signup = (req, res) => {
   // Save User to Database
   Membre.create({
-    nom: req.body.nom,
-    prenom: req.body.prenom,
+    nom: req.body.lastname,
+    prenom: req.body.firstname,
     email: req.body.email,
     secret: bcrypt.hashSync(req.body.password, 8)
   })
@@ -46,16 +47,21 @@ exports.signin = (req, res) => {
       });
       let refreshToken = await RefreshToken.createToken(user);
       var authorities = [];
-      Role.findAll({where: {id_membre: user.id_membre}}).then(roles => {
+      Role.findAll({
+        where: {id_membre: user.id_membre},
+        include :[{
+          model: db.famille,
+        }]
+      }).then(roles => {      
         for (let i = 0; i < roles.length; i++) {
-          authorities.push([roles[i].id_famille, roles[i].role])
+          authorities.push([roles[i].id_famille,roles[i].famille.nom, roles[i].famille.nb_membres, roles[i].role])
         }
 
         res.status(200).send({
           id_membre: user.id_membre,
-          nom: user.nom,
+          lastname: user.nom,
           email: user.email,
-          prenom: user.prenom,
+          firstname: user.prenom,
           roles: authorities,
           accessToken: token,
           refreshToken: refreshToken,

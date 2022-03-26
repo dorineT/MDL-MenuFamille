@@ -104,9 +104,10 @@ let DAOMenu = new MenuDao()
 
     async created () {
       console.log(this.$vuetify.breakpoint.width)
-      this.comboboxMenuSelected='Aucun menu sélectionné'      
+      this.comboboxMenuSelected='Aucun menu sélectionné'   
+      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-      this.menus = await DAOMenu.getMenuLock(this.$store.state.auth.user.id_membre)
+      this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
 
       this.menus.forEach(menu => {         
           let periodeNew = { 

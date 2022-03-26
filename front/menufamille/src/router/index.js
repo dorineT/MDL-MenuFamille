@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Profile from '../views/profile.vue'
 
 import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 
 import MenuModification from '../views/MenuModification.vue'
+import FamilyView from '../views/FamilyView.vue'
 
 
 Vue.use(VueRouter)
@@ -21,10 +24,25 @@ const routes = [
     component: Login
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
+  },
+  {
     path: '/menuModification',
     name: 'MenuModification',
     component: MenuModification,
     props: true
+  },
+  {
+    path: '/family',
+    name: 'FamilyView',
+    component: FamilyView
   },
   {
     path: '/menuSuggestion',
