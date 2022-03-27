@@ -7,7 +7,7 @@
       <v-data-table
             :headers="headers"
             :items="items"                                  
-            class="suggTable"
+            class="elevation-8"
             disable-sort
             mobile-breakpoint="0"
             :footer-props="{             
@@ -28,14 +28,15 @@
             <tbody v-else>
             <tr>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
+ 
                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
                 <p v-else>
                   <v-btn text @click="goToRecette(item,'matin')">
-                      <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                      <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p> <!-- il faut utiliser des initials-->                             
+                      <p v-if="item.plat.length == 0" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                      <p v-else>{{ item.plat}} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p> <!-- il faut utiliser des initials-->                             
                       </v-btn>      
                 </p>
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
+               <!-- <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> --> 
               </td>
             </tr>
             <tr>
@@ -43,23 +44,23 @@
                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
               <p v-else>
                 <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>                                       
+                    <p v-if="item.plat.length == 0" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                    <p v-else>{{item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>                                       
                 </v-btn>       
               </p>        
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
+             <!--   <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> -->
               </td>
             </tr>
             <tr>
-              <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
+              <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'">          
                   <p v-if="item.plat ==='/'" style="color: red">X</p> 
               <p v-else>
                 <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>
+                  <p v-if="item.plat.length == 0" style="color: green"><v-icon>mdi-plus</v-icon></p>
+                  <p v-else>{{item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>
                 </v-btn> 
               </p>
-                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
+            <!--    <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  -->
               </td>
             </tr>
             </tbody>
@@ -92,70 +93,7 @@ export default {
       return {
         
       headers: [],
-      menu: { /*     
-          menu_id: 3,
-           plats: [
-           {
-              id:15,
-              jour: 'Lundi',
-              date: '7/03',
-              matin: '/',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',
-              soirNbPers: null
-            },
-            {
-              id:16,
-              jour: 'Mardi',
-              date: '8/03',
-              matin: '/',
-              matinNbPers: null,
-              midi: '/',
-              midiNbPers: null,
-              soir: '/',
-              soirNbPers: null,
-            },
-            {
-              id:17,
-              jour: 'Mercredi',
-              date: '9/03',
-              matin: '/',
-              matinNbPers:null,
-              midi: '/',
-              midiNbPers: null,
-              soir: '/',
-              soirNbPers: null,
-            },
-            {
-              id:18,
-              jour: 'Jeudi',
-              date: '10/03',
-              matin: 'pizza',
-              matin2: 'hot dog',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',            
-              soirNbPers: null,
-            },
-            {
-              id:19,
-              jour: 'Vendredi',
-              date: '11/03',
-              matin: '',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',
-              soirNbPers: null,
-            }
-          ], 
-          dateDebut: '7/03/2022',
-          dateFin: '11/03/2022',
-          verrou: true           
-        */}, 
+      menu: {}, 
         items: [],
         pageCount: 0,
         page: 1,
@@ -165,15 +103,7 @@ export default {
         platsSoir: []      
          }
     },
-   /* mounted(){  
-        this.items = this.menu.plats
-
-        let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-        this.populateHeader(this.items,0,indiceEnd)
-        this.fillPlat(this.items,0,indiceEnd) 
-
-        
-    },*/  // call api to get the menu 
+   // call api to get the menu 
     async created(){
 
       console.log(this.menuId + 'menu suggestion crée')
@@ -236,11 +166,12 @@ export default {
         while(iStart<iEnd & iStart<menu.length){
           let jourPlat = menu[iStart]
           let periodeId = jourPlat.calendrier_recettes[0]
+          
 
           this.platsMatin.push({
             idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
-            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            plat: periodeId.suggestions.length !== 0 ? periodeId.suggestions[0].recette.nom : periodeId.suggestions,
             nbPers: periodeId.nb_personne,
           })
 
@@ -248,7 +179,7 @@ export default {
           this.platsMidi.push({
             idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
-            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            plat: periodeId.suggestions.length !== 0 ? periodeId.suggestions[0].recette.nom : periodeId.suggestions,
             nbPers: periodeId.nb_personne,
           })
 
@@ -256,7 +187,7 @@ export default {
           this.platsSoir.push({
             idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
-            plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
+            plat: periodeId.suggestions.length !== 0 ? periodeId.suggestions[0].recette.nom : periodeId.suggestions,
             nbPers: periodeId.nb_personne,
           })
 
@@ -288,6 +219,7 @@ export default {
 
       updateMenuSuggestionJour(item){
         console.log('test update suggestion')
+        console.log(item)
         let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
         let menuPeriodeOld =  menuJourOld.calendrier_recettes.find(element => element.id_periode === item.id_periode)
         

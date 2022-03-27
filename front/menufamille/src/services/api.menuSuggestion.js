@@ -1,5 +1,5 @@
 import api from './api'
-
+// ! api.menuSuggestion.js doit être supprimé
 export default class MenuSugg{
     /**
      * récupère les menus suggérés en fonction de la famille sélectionner
