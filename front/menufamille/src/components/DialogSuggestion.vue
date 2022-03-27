@@ -125,6 +125,7 @@ import {eventBus } from '../main'
             //find menu dans le tab
             console.log(menuComplet)
             let menuFind = menuComplet.find(el => el.id === this.infoMenu.id)
+            console.log(menuFind)
             this.completeMenu = {
               jour: menuFind.jour,
               date: menuFind.date

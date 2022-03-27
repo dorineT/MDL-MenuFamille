@@ -78,6 +78,16 @@ export default class MenuDao{
       return suggestionMenu
     }
 
+    async getMenuSuggestionUnlocked(idFamille){
+      let suggestionMenus = []
+      await api.get("/menu/GetUnlockedMenu/"+idFamille).then((response) =>{
+        suggestionMenus = response.data
+       
+      })
+
+      return suggestionMenus
+    }
+
 
 }
 

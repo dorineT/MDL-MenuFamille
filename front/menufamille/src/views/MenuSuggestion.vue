@@ -65,12 +65,12 @@ export default {
   },
   */
   created(){ 
-         
+    console.log("je suiis la")      
     eventBus.$on('postSuggestion', this.postSuggMenu)
     
-    this.idPeriode = this.$route.query.id
-    console.log(this.idPeriode)            //!
-    this.periode = this.$route.query.periode
+    this.idPeriode = this.$route.query.menu.value
+    console.log(this.idPeriode)            //! c'est vraiment ID 0
+    this.periode = this.$route.query.menu.text
     console.log(this.periode) 
   },
 

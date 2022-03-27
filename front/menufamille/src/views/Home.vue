@@ -30,14 +30,18 @@
             <v-subheader>Menus disponible à la suggestion :</v-subheader>
             <v-list-item-group              
               color="primary"
-            >
-              <v-list-item
-                v-for="(item, i) in menuToSuggest"
-                :key="i"
-              >       
+            >  
+              <v-list-item v-if ="menuToSuggest.length ===0">
                 <v-list-item-content>
-                  <v-list-item-title  @click="goToSuggestionMenu(i, item)" v-text="item"></v-list-item-title>
-                </v-list-item-content>
+                  <v-list-item-title> Aucune suggestion actuellement </v-list-item-title>
+                </v-list-item-content> 
+              </v-list-item>
+                  <v-list-item 
+                  v-for="(item) in menuToSuggest"
+                  :key="item.value"  @click="goToSuggestionMenu(item)">
+                  <v-list-item-content>
+                    <v-list-item-title  v-text="item.text" :value="item.value"></v-list-item-title>
+                  </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -95,7 +99,7 @@
     data (){
       return{
         menuToValide: [],
-        menuToSuggest: ['7/03 - 13/03 '],
+        menuToSuggest: [],
         selectedFamille: null,
         famille: [],        
       }
@@ -112,8 +116,9 @@
       goToModificationMenu(item){             
         this.$router.push({name:'MenuModification', query: {menu: item}});    
       },
-      goToSuggestionMenu(key, item){
-        this.$router.push({name:'MenuSuggestion', query: {id: key, periode: item}});
+      goToSuggestionMenu(item){
+       
+        this.$router.push({name:'MenuSuggestion', query: {menu: item}});
       },
       changeFamille(){
         console.log('changement')
@@ -122,7 +127,8 @@
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)
           // change store value
           this.$store.dispatch("info/changeFamille", [famille[0], famille[2], famille[3]])             
-          this.getUnlockedMenu()
+          this.getUnlockedMenu()          
+          this.getUnlockedSuggestionMenu()  
         }
       },
       async getUnlockedMenu(){      
@@ -133,9 +139,26 @@
                 text: menu.periode_debut + ' - ' +menu.periode_fin,
                 value: menu.id_menu
               }     
+              console.log(periodeNew)
             this.menuToValide.push(periodeNew)        
         });
+      },
+      async getUnlockedSuggestionMenu(){
+        this.menuToSuggest = []
+        let menus = await DAOMenu.getMenuSuggestionUnlocked(this.$store.state.info.idFamilleActuel)
+        menus.forEach(menu => {
+           
+          let periodeSugg = {
+          text:menu.periode_debut+ ' - ' +menu.periode_fin,  //!
+          value:menu.id_menu,
+          
+        }
+        console.log(periodeSugg)
+        
+        this.menuToSuggest.push(periodeSugg)
+      })
       }
+
     }
   }
 </script>

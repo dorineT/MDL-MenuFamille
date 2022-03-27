@@ -32,7 +32,7 @@
                 <p v-else>
                   <v-btn text @click="goToRecette(item,'matin')">
                       <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                      <p v-else>{{ item.plat }} + '' + <v-avatar color = "teal" size="56"></v-avatar> </p> <!-- à vérifier l'avatar quand il y aura des données -->                             
+                      <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p> <!-- il faut utiliser des initials-->                             
                       </v-btn>      
                 </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
@@ -44,7 +44,7 @@
               <p v-else>
                 <v-btn text @click="goToRecette(item,'midi')">
                     <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else>{{ item.plat }} </p>                                       
+                    <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>                                       
                 </v-btn>       
               </p>        
                 <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
@@ -56,7 +56,7 @@
               <p v-else>
                 <v-btn  text @click="goToRecette(item,'soir')">
                   <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else>{{ item.plat }} </p>
+                  <p v-else>{{ item.plat }} &nbsp; <v-avatar color = "teal" size="22" ><span class="white--text ">{{currentUser.firstname.substr(0,1) + currentUser.lastname.substr(0,1)}}</span></v-avatar> </p>
                 </v-btn> 
               </p>
                 <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
@@ -83,7 +83,7 @@
 <script>
 import MenuDao from '../services/api.menu'
 import {eventBus } from '../main'
-
+import moment from 'moment'
 let menuSuggest = new MenuDao()
 
 export default {
@@ -182,6 +182,7 @@ export default {
       console.log(this.menu)
       this.items = this.menu.calendriers // ! 
       console.log(this.items)
+    
 
      
       let indiceEnd = this.items.length < 7 ? this.items.length : 7
@@ -196,10 +197,16 @@ export default {
       eventBus.$off('updateMenuSuggestionJour')
     },
     
+    computed: {
+      currentUser() {
+        return this.$store.state.auth.user;
+      }
+    },
     methods:{
       //// Affichage calendrier ///
       goToRecette(item){      
-        let searchMenu = this.items.find(element => element.id_calendrier === item.id_jour) //! pas de id_jour dans BD
+        let searchMenu = this.items.find(element => element.id_calendrier === item.idJour) //! pas de id_jour dans BD
+        console.log(searchMenu)
         let searchPeriode = searchMenu.calendrier_recettes.find(element => element.id_periode === item.id_periode)
           //open dialogue with even bus
           eventBus.$emit('openDialogSuggestion', searchPeriode , searchMenu.date)
@@ -231,7 +238,7 @@ export default {
           let periodeId = jourPlat.calendrier_recettes[0]
 
           this.platsMatin.push({
-            id: jourPlat.id_calendrier,
+            idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
             plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
             nbPers: periodeId.nb_personne,
@@ -239,7 +246,7 @@ export default {
 
           periodeId = jourPlat.calendrier_recettes[1]
           this.platsMidi.push({
-            id: jourPlat.id_calendrier,
+            idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
             plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
             nbPers: periodeId.nb_personne,
@@ -247,7 +254,7 @@ export default {
 
           periodeId = jourPlat.calendrier_recettes[2]
           this.platsSoir.push({
-            id: jourPlat.id_calendrier,
+            idJour: jourPlat.id_calendrier,
             id_periode: periodeId.id_periode,
             plat: periodeId.recette !== null ? periodeId.recette.nom : (periodeId.is_recette ? "" : "/"),
             nbPers: periodeId.nb_personne,
