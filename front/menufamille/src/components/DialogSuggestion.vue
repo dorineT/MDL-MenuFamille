@@ -30,7 +30,7 @@
           </v-toolbar-items>
         </v-toolbar>        
         
-          <h3 style="margin: 10px">Menu du : {{completeMenu.jour}} {{periode}}  : {{ completeMenu.date}} </h3>
+          <h3 style="margin: 10px">Menu du : {{jourSemaine}} {{periode}}  : {{date}} </h3>
        
           <v-divider ></v-divider>
           
@@ -45,6 +45,8 @@
                         color="orange lighten-2"
                         label="Recette"                      
                         :items="itemRecettes"      
+                        item-text="nom"
+                        return-object
                         v-model="comboboxRecetteSelected"
                         @change="resetSelectedSuggestion()"
                         no-data-text="Aucune recette correspondante"></v-autocomplete>
@@ -64,7 +66,7 @@
                     outlined
                     @click:close="resetNewRecette()"
                   >
-                    {{newRecetteChoix}}
+                    {{newRecetteChoix.nom}}
                   </v-chip>
                 </div>       
                   
@@ -89,6 +91,11 @@
 
 <script>
 import {eventBus } from '../main'
+import moment from 'moment'
+import RecetteDAO from '../services/api.recette'
+
+let DAORecette = new RecetteDAO()
+
   export default {
     data () {
       return {
@@ -100,48 +107,62 @@ import {eventBus } from '../main'
         timeout: 3000,
         recetteChoisie: '',
         comboboxRecetteSelected: null,
-        itemRecettes: [
-          'lasagne','pate carbo','flammekueche','petite saucisse -pdt','risotto','pizza','frite'
-        ],
-        
+        itemRecettes: [], 
         newRecetteChoix: null,
+        jourSemaine: null,
+        date: null,
+
       }
     },
     created (){
         eventBus.$on('openDialogSuggestion', this.openModal) //listening event form CalendarSuggestion.vue
     },
-    destroy (){
+    destroyed (){
         eventBus.$off('openDialogSuggestion') //listening event form CalendarSuggestion.vue
     },
+
+    
     methods: {
       /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-        openModal(itemReceived, periode, menuComplet){
+        async openModal(itemReceived, dateJournée){
             this.dialog = true
 
             this.infoMenu.id = itemReceived.id
             this.infoMenu.plat = itemReceived.plat
             this.infoMenu.nbPers = itemReceived.nbPers
 
+            // à completer
+            this.date = dateJournée;
+            this.jourSemaine = moment(dateJournée,'DD-MM-YYYY').locale('fr').format('dddd')
+            console.log(this.jourSemaine)
+            this.periode = itemReceived.periode;
+
+            // charge toutes les recettes avec leur tags
+            this.itemRecettesAll= await DAORecette .getAll()
+            console.log(this.itemRecettesAll)
+            this.itemRecettes = this.copyTab(this.itemRecettesAll)
+            console.log(this.itemRecettes)
+
             //find menu dans le tab
-            console.log(menuComplet)
-            let menuFind = menuComplet.find(el => el.id === this.infoMenu.id)
-            console.log(menuFind)
+            //console.log(menuComplet)
+           // let menuFind = menuComplet.find(el => el.id === this.infoMenu.id)
+           /* console.log(menuFind)
             this.completeMenu = {
               jour: menuFind.jour,
               date: menuFind.date
             }
 
-            this.periode = periode
+           
             console.log('Données recues par l\'event dans  le modal \n' + JSON.stringify(itemReceived) + ' \n pour ' + periode)
-
+*/
             //menu prévu ?
-            this.selectedRadioMenuOuiNon = 'oui'
+          /*  this.selectedRadioMenuOuiNon = 'oui'
          
             this.recetteChoisie = this.infoMenu.plat
             if(this.infoMenu.plat ==='/'){
               this.selectedRadioMenuOuiNon = 'non'
             }
-            
+           */ 
             
             //reset
             this.resetNewRecette()
@@ -154,10 +175,10 @@ import {eventBus } from '../main'
           //mise a jour calendrier
           console.log('update item ' + this.infoMenu.id)
 
-          
-          if(this.selectedRadioMenuOuiNon === 'non'){
+          /*
+          if(this.selectedRadioMenuOuiNon === 'non'){  
             this.newRecetteChoix = '/'
-          }
+          } */
          //recette
           if(this.newRecetteChoix !== null){
             this.infoMenu.plat = this.newRecetteChoix    
@@ -183,6 +204,17 @@ import {eventBus } from '../main'
         this.comboboxRecetteSelected = null
         this.radioSelectionSuggestion = null
       },
+      /**Copier un tableau - superficielle
+			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
+			copyTab(source){
+				let cible = []
+				if(source === null ) return []
+
+				source.forEach(elem => {
+					cible.push(elem)
+				})
+				return cible
+			},
       
     }
   }
