@@ -189,36 +189,38 @@ exports.find_Recipe_With_Tags= (req, res) => {
 /// envoyer les recettes (nom et id seulement, pas besoin de plus) qui matchent les tags globaux du menu ou les tags precis du calendrier jour) #40
 
 exports.find_Recipe_tags = (req, res) => {
-  const tags = req.body.tag;
-  let datas = null;
-  let tmp = [];
-  tags.forEach(tag => {
-    Tag.findAll({
-      where:  {
-        nom: tag
-      },attributes: {
-      exclude: 
-            ["nom", "id_tag"]
-      },include: 
-            {model: "recette", attributes: ["id_recette", "nom"]
-      },include: 
-            {model: "recette_tags", attributes: {
-                                                  exclude: ["id_recette", "id_tags"]
-                                                }
+  const tagsListe = req.query.tag;
+  console.log('coucou')
+  console.log(tagsListe)
+  let temp = []
+  Recipe.findAll({
+    include:{
+      model: Tag,
+      where:{
+        nom: {
+          [Op.in]: tagsListe
+        }
       }
-    }).then(data_big => {
-      if(datas == null){
-        datas = data_big;
-      }else {
-        datas.forEach(data => {
-          if (data_big.include(data)){
-            tmp.push(data);
-          }
-        });
-        datas = tmp;
-        tmp = [];
-      }
+    }
+  }).then( data =>{
+
+    //refaire un filtre 
+    temp = data.filter(function(recette){							
+      let tagReTemp = []
+      recette.tags.forEach(tagRecette => {      
+        tagReTemp.push(tagRecette.nom)
+      });
+
+      if(tagsListe.every(el => {					
+        return tagReTemp.includes(el)
+      }))return recette
     })
-  })
-  .then(res.send(datas));
+
+    res.send(temp)
+  }).catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving Recipes."
+    });
+  });  
 }

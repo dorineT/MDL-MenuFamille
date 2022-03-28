@@ -1,4 +1,5 @@
 import api from './api'
+var qs = require('qs');
 export default class RecetteDAO{
 
     /**
@@ -19,9 +20,21 @@ export default class RecetteDAO{
      */
      async getFromTags(tags){
         let data
-        await api.get("/recette/AllTags/")
+        let sendTags = []
+        tags.forEach(element => {
+          sendTags.push(element.nom)
+        });
+        console.log(sendTags)
+        await api.get("/recette/FindFromTags/",{
+          params: {
+            tag: sendTags
+          },
+          paramsSerializer: params => {
+            return qs.stringify(params)
+          }
+        })
           .then((response) => {            
-            data = response
+            data = response.data            
           }); 
         
         return data

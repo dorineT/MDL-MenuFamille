@@ -282,7 +282,7 @@ export default {
         console.log('menuJourOld')
         console.log(menuJourOld)
 
-        if(item.platsMatinperiode === 'matin'){
+        if(item.periode === 'matin'){
           menuJourOld.calendrier_recettes[0] = structuredClone(item)
           if(this.menu.plat_identique_matin !== null){
             this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 0);

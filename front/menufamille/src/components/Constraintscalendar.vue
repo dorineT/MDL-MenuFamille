@@ -273,7 +273,8 @@
 										required
 										:rules="ruleRadioButton"
 									>
-										<v-radio label="Manuel (mode suggestion)" value="manuel"></v-radio>
+										<v-radio label="Manuel" value="manuel"></v-radio>
+										<v-radio label="Suggestion" value="suggestion"></v-radio>
 										<v-radio label="Automatique" value="automatique"></v-radio>
 									</v-radio-group>
 									<br />
@@ -298,7 +299,7 @@
 										type="number"
 										step="any"
 										min="1"										
-										:rules="form.choixTypeMenu === 'manuel' ? nbPlatRule : []"
+										:rules="form.choixTypeMenu === 'suggestion' ? nbPlatRule : []"
 										v-model.number="form.daysUntilSuggestion"
 										required									
 									></v-text-field>

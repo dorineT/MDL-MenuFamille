@@ -16,7 +16,7 @@ CREATE TABLE FAMILLE (
                          PRIMARY KEY (id_famille)
 );
 
-CREATE TYPE type_menu AS ENUM ('manuel','auto','sugestion');
+CREATE TYPE type_menu AS ENUM ('manuel','auto','suggestion');
 CREATE TABLE MENU (
                       id_menu SERIAL NOT NULL ,
                       id_famille INTEGER NOT NULL,

@@ -38,7 +38,11 @@ export default class MenuDao{
       })
     }
 
-
+    /**
+     * Recupere un menu selon son id avec toutes ses informations (jour, periode, recette)
+     * @param {*} idMenu 
+     * @returns 
+     */
     async getMenuById(idMenu){
       let menu
         
@@ -55,7 +59,12 @@ export default class MenuDao{
       return menu
     }
 
-
+    /**
+     * recupere les menus selon une famille sans toute les infos (destinee a recuperer les periodes)
+     * uniquement pour les menus que le parent peut modifier (manuel ou auto)
+     * @param {*} idFamille 
+     * @returns 
+     */
     async getMenuUnlocked(idFamille){
       let menus = []
       await api.get("/menu/GetUnlockedMenu/"+idFamille).then((response) =>{
@@ -65,22 +74,15 @@ export default class MenuDao{
       return menus
     }
 
-    async getSuggestionMenuById(idMenu){
-      let suggestionMenu
-        
-      await api.get("/menu/GetAllInfo/"+idMenu)
-        .then((response) => {            
-          suggestionMenu = response.data  
-
-        });
-               
-
-      return suggestionMenu
-    }
-
+    /**
+     * recuperer les menus sans les infos (periode)
+     * uniquement les menu type manual pour les suggestions
+     * @param {*} idFamille 
+     * @returns 
+     */
     async getMenuSuggestionUnlocked(idFamille){
       let suggestionMenus = []
-      await api.get("/menu/GetUnlockedMenu/"+idFamille).then((response) =>{
+      await api.get("/menu/GetSuggestUnlockedMenu/"+idFamille).then((response) =>{
         suggestionMenus = response.data
        
       })

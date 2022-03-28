@@ -2,17 +2,23 @@
     <v-card       
         class="cardmargin"
     >
-      <v-select
-        v-model="selectedFamille"
-        :items="famille"
-        menu-props="auto"
-        label="Famille"
-        hide-details
-        prepend-icon="mdi-account-group"
-        single-line     
-        no-data-text="Aucune famille disponible"
-        @change="changeFamille()"
-      ></v-select>
+      <v-container fluid>
+        <v-row class="d-flex justify-end">
+          <v-col cols="12" sm="12" md="3" lg="3" xl="3" >
+            <v-select
+              v-model="selectedFamille"
+              :items="famille"
+              menu-props="auto"
+              label="Famille"
+              hide-details
+              prepend-icon="mdi-account-group"
+              single-line     
+              no-data-text="Aucune famille disponible"
+              @change="changeFamille()"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
       <calendarResume/>
 
       <v-card
@@ -39,6 +45,9 @@
                   <v-list-item 
                   v-for="(item) in menuToSuggest"
                   :key="item.value"  @click="goToSuggestionMenu(item)">
+                  <v-list-item-icon>
+                  <v-icon>mdi-arrow-right-thick</v-icon>
+                  </v-list-item-icon>   
                   <v-list-item-content>
                     <v-list-item-title  v-text="item.text" :value="item.value"></v-list-item-title>
                   </v-list-item-content>
@@ -138,8 +147,7 @@
             let periodeNew = { 
                 text: menu.periode_debut + ' - ' +menu.periode_fin,
                 value: menu.id_menu
-              }     
-              console.log(periodeNew)
+              }                   
             this.menuToValide.push(periodeNew)        
         });
       },
@@ -149,11 +157,10 @@
         menus.forEach(menu => {
            
           let periodeSugg = {
-          text:menu.periode_debut+ ' - ' +menu.periode_fin,  //!
+          text:menu.periode_debut+ ' - ' +menu.periode_fin,
           value:menu.id_menu,
           
-        }
-        console.log(periodeSugg)
+        }    
         
         this.menuToSuggest.push(periodeSugg)
       })

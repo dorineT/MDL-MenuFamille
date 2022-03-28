@@ -4,21 +4,6 @@
    
         class="cardSuggestion"
     >
-    <v-container fluid>
-    <v-row align="center">
-      <v-col
-        class="d-flex"
-        cols="12"
-        sm="6"
-      >     
-      <v-select
-          :items="nomFamille"
-          label="Famille"
-          outlined
-        ></v-select>
-      </v-col>
-    </v-row>
- </v-container>
       <dialog-suggestion></dialog-suggestion>
 
       <calendar-suggestion
@@ -37,9 +22,9 @@
 import {eventBus} from '../main'
 import CalendarSuggestion from '../components/CalendarSuggestion.vue'
 import DialogSuggestion from '../components/DialogSuggestion.vue'
-import MenuSugg from '../services/api.menuSuggestion'
+import MenuDao from '../services/api.menu'
 
-let menuSuggest = new MenuSugg()
+let menuSuggest = new MenuDao()
 
 export default {
  
@@ -53,17 +38,9 @@ export default {
   data (){
     return{
       periode: null,
-      idPeriode: null,
-      nomFamille:['BonneFamille', 'SuperFamille']
-        
+      idPeriode: null,             
     }
   },
-  /*mounted(){
-    console.log(this.$route.query.id + ' ' + this.$route.query.periode )
-    this.idPeriode = this.$route.query.id
-    this.periode = this.$route.query.periode
-  },
-  */
   created(){ 
     console.log("je suiis la")      
     eventBus.$on('postSuggestion', this.postSuggMenu)
@@ -79,12 +56,8 @@ export default {
   },
 
   methods: {
-    /*saveSuggestion(){                     //car pas besoin de btn save
-      eventBus.$emit('saveSuggestion')
-    },*/
-
     postSuggMenu(postmenu){
-      menuSuggest.sendPostSuggestionMenu(postmenu,this.$store.state.auth.user.id_membre)
+      menuSuggest.sendMenuUpdate(postmenu)
       console.log('test postSuggMenu' + postmenu)
       this.$router.push('/')
     }
