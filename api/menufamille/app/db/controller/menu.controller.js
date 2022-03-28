@@ -179,9 +179,8 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte 
-
-exports.Get_Manual_Unlocked_Menu = (req, res) => {
+//// Envoyer les menus non-verrouilles en mode suggestion
+exports.Get_Suggest_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   let menus = [];
   Menu.findAll({
@@ -189,7 +188,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
       {
         id_famille: id_fam,
         verrou: false,
-        type: 'manuel'
+        type: 'suggestion'
       } 
     }
 })

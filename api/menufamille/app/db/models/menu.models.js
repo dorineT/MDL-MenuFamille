@@ -40,7 +40,7 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: 2
     },
       type: {
-          type: Sequelize.ENUM('manuel','auto','sugestion')
+          type: Sequelize.ENUM('manuel','auto','suggestion')
       },
       verrou:{
         type: Sequelize.BOOLEAN,

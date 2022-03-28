@@ -144,6 +144,7 @@ export default {
         items: [],
         pageCount: 0,
         page: 1,
+        nbPersonneFamille: null,
         nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
@@ -163,7 +164,7 @@ export default {
       console.log('created '+this.idMenu)
       
       this.menu = await DAOMenu.getMenuById(this.idMenu)  
-      this.nbPersonneFamille = 2 // doit etre pris dans le store ou dans la bd  
+      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
       this.items = this.menu.calendriers
       let indiceEnd = this.items.length < 7 ? this.items.length : 7       
@@ -281,7 +282,7 @@ export default {
         console.log('menuJourOld')
         console.log(menuJourOld)
 
-        if(item.platsMatinperiode === 'matin'){
+        if(item.periode === 'matin'){
           menuJourOld.calendrier_recettes[0] = structuredClone(item)
           if(this.menu.plat_identique_matin !== null){
             this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 0);

@@ -23,7 +23,7 @@ router.get('/FindWithTags', recette.find_All_Tags); //KO, c'est quoi la différe
 
 router.get('/FindRecipe/:id', recette.find_Recipe);
 
-router.get('/FindFromTags', recette.find_Recipe_tags);
+router.get('/FindFromTags/', recette.find_Recipe_tags);
 
 // recettes et leurs tags
 router.get('/AllTags', recette.find_Recipe_With_Tags) 

@@ -5,66 +5,63 @@
       <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
       
       <v-data-table
-            :headers="headers"
-            :items="items"                                  
-            class="suggTable"
-            disable-sort
-            mobile-breakpoint="0"
-            :footer-props="{             
-              'disable-items-per-page':true,
-              itemsPerPage:7,      
-              'items-per-page-options': [7,14],
-              'items-per-page-text':'Lignes par page',
-            }"
-          hide-default-footer         
-          @page-count="pageCount = $event"
-          :page.sync="page"
-        > 
+          :headers="headers"
+          :items="items"                                  
+          class="elevation-8"
+          disable-sort
+          mobile-breakpoint="0"
+          :footer-props="{             
+            'disable-items-per-page':true,
+            itemsPerPage:7,      
+            'items-per-page-options': [7,14],
+            'items-per-page-text':'Lignes par page',
+          }"
+        hide-default-footer         
+        @page-count="pageCount = $event"
+        :page.sync="page"
+      > 
 
-          <template v-slot:body>
-            <tbody v-if="items.length === 0">
-              <td class="nodata" colspan="0">Auncun menu sélectionné</td>
-            </tbody>
-            <tbody v-else>
-            <tr>
-              <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
-                <p v-else>
-                  <v-btn text @click="goToRecette(item,'matin')">
-                      <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                      <p v-else>{{ item.plat }} </p>                                 
-                      </v-btn>      
-                </p>
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
-              </td>
-            </tr>
-            <tr>
-              <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                 <p v-if="item.plat ==='/'" style="color: red">X</p> 
-              <p v-else>
-                <v-btn text @click="goToRecette(item,'midi')">
-                    <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                    <p v-else>{{ item.plat }} </p>                                       
-                </v-btn>       
-              </p>        
-                <p v-if="item.nbPers!==null">{{item.nbPers}} personnes</p> 
-              </td>
-            </tr>
-            <tr>
-              <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                  <p v-if="item.plat ==='/'" style="color: red">X</p> 
-              <p v-else>
-                <v-btn  text @click="goToRecette(item,'soir')">
-                  <p v-if="item.plat === ''" style="color: green"><v-icon>mdi-plus</v-icon></p>
-                  <p v-else>{{ item.plat }} </p>
-                </v-btn> 
-              </p>
-                <p v-if="item.nbPers!==null">{{item.nbPers }} personnes </p>  
-              </td>
-            </tr>
-            </tbody>
-          </template>
-        </v-data-table>
+        <template v-slot:body>
+          <tbody v-if="items.length === 0">
+            <td class="nodata" colspan="0">Auncun menu sélectionné</td>
+          </tbody>
+          <tbody v-else>
+          <tr>
+            <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
+              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+              <v-btn v-else text @click="goToRecette(item)">
+                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
+                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
+              </v-btn>                 
+              <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
+            </td>
+          </tr>
+          <tr>
+            <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
+              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+              <v-btn v-else text @click="goToRecette(item)">
+                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
+                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
+              </v-btn>          
+              <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
+            </td>
+          </tr>
+          <tr>
+            <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
+              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+              <v-btn v-else text @click="goToRecette(item)">
+                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
+                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
+              </v-btn> 
+              <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers }} personnes </p>  
+            </td>
+          </tr>
+          </tbody>
+        </template>
+      </v-data-table>
 
       <v-pagination
         v-model="page"
@@ -76,118 +73,53 @@
       ></v-pagination>
     </div>
 
-
-
 </template>
 
 <script>
-import MenuSugg from '../services/api.menuSuggestion'
+import MenuDao from '../services/api.menu'
 import {eventBus } from '../main'
-
-let menuSuggest = new MenuSugg()
+import moment from 'moment'
+let menuSuggest = new MenuDao()
 
 export default {
-    props:['periodeMenu'],
+    props:['periodeMenu','menuId'],
     data () {
-      return {headers: [],
-      menu: {          
-          menu_id: 3,
-           plats: [
-           {
-              id:15,
-              jour: 'Lundi',
-              date: '7/03',
-              matin: '/',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',
-              soirNbPers: null
-            },
-            {
-              id:16,
-              jour: 'Mardi',
-              date: '8/03',
-              matin: '/',
-              matinNbPers: null,
-              midi: '/',
-              midiNbPers: null,
-              soir: '/',
-              soirNbPers: null,
-            },
-            {
-              id:17,
-              jour: 'Mercredi',
-              date: '9/03',
-              matin: '/',
-              matinNbPers:null,
-              midi: '/',
-              midiNbPers: null,
-              soir: '/',
-              soirNbPers: null,
-            },
-            {
-              id:18,
-              jour: 'Jeudi',
-              date: '10/03',
-              matin: 'pizza',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',            
-              soirNbPers: null,
-            },
-            {
-              id:19,
-              jour: 'Vendredi',
-              date: '11/03',
-              matin: '',
-              matinNbPers:null,
-              midi: '',
-              midiNbPers: null,
-              soir: '',
-              soirNbPers: null,
-            }
-          ], 
-          dateDebut: '7/03/2022',
-          dateFin: '11/03/2022',
-          verrou: true           
-        }, 
-        items: [],
-        pageCount: 0,
-        page: 1,
-        nbJourMenu: 0,
-        platsMatin:[],
-        platsMidi: [],
-        platsSoir: []      
-         }
+      return {
+        nbPersonneFamille: null,
+        headers: [],
+        menu: {}, 
+          items: [],
+          pageCount: 0,
+          page: 1,
+          nbJourMenu: 0,
+          platsMatin:[],
+          platsMidi: [],
+          platsSoir: []      
+      }
     },
-    mounted(){  
-        this.items = this.menu.plats
+   // call api to get the menu 
+    async created(){
+      this.menu = await menuSuggest.getMenuById(this.menuId) 
+      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-        let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-        this.populateHeader(this.items,0,indiceEnd)
-        this.fillPlat(this.items,0,indiceEnd) 
-        // call api to get the menu 
-    },
-    created(){
-     // this.menu = await menuSuggest.getMenuSuggestionById(3) //menu num 3 ?!
-     // this.items = this.menu.calendriers et autre items
+      this.items = this.menu.calendriers
+      let indiceEnd = this.items.length < 7 ? this.items.length : 7       
 
-      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)
-      eventBus.$on('saveSuggestion', this.saveSuggestionMenu)
+      this.populateHeader(this.items,0,indiceEnd)
+      this.fillPlat(this.items,0,indiceEnd)     
+      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
     },
     destroy(){
-      eventBus.$off('saveSuggestion')
-    },
-    destroyed(){
-      eventBus.$off('updateMenuJour')
+      //eventBus.$off('updateMenuSuggestionJour')
     },
     methods:{
       //// Affichage calendrier ///
-      goToRecette(item,periode){      
+      goToRecette(item){      
+          let menuFind = this.items.find(el => el.id_calendrier === item.id_jour)// le jour         
+          let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)  
+          console.log(periodeFind) 
           //open dialogue with even bus
-          eventBus.$emit('openDialogSuggestion', item, periode, this.items)
+          eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -196,9 +128,9 @@ export default {
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
           let jourPlat = menu[iStart]
           this.headers.push({
-              text: jourPlat.jour + '\n' + jourPlat.date, 
+              text: moment(jourPlat.date, 'DD-MM-YYYY').locale('fr').format('dddd') + '\n' + jourPlat.date, 
               align: 'center',
-              value: jourPlat.id
+              value: jourPlat.id_calendrier
           })
           iStart++
           this.nbJourMenu++
@@ -206,34 +138,42 @@ export default {
       },
       /* remplir les différents tableaux avec les repas par separation, matin - midi -soir*/
       fillPlat(menu,iStart, iEnd){    
-        
         this.platsMatin = []
         this.platsMidi = []
         this.platsSoir = []
 
         while(iStart<iEnd & iStart<menu.length){
-          let jourPlat = menu[iStart]
+          let jourPlat = menu[iStart]     
 
+          let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
-            id: jourPlat.id,
-            plat: jourPlat.matin,
-            nbPers: jourPlat.matinNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[1]
           this.platsMidi.push({
-            id: jourPlat.id,
-            plat: jourPlat.midi,
-            nbPers: jourPlat.midiNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
+          periode = jourPlat.calendrier_recettes[2]
           this.platsSoir.push({
-            id: jourPlat.id,
-            plat: jourPlat.soir,
-            nbPers: jourPlat.soirNbPers
+            id_jour: jourPlat.id_calendrier,
+            id_periode: periode.id_periode,
+            plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
+            nbPers: periode.nb_personne,
+            tags: periode.tags
           })
 
           iStart++
-        }      
+        }     
       },
       //event quand on clique sur page suivante
       nextPageMenu(){
@@ -258,31 +198,36 @@ export default {
 
       /// UPDATE CALENDRIER////
 
-      updateMenuSuggestionJour(menuJour, periode){
+      updateMenuSuggestionJour(item){
         console.log('test update suggestion')
-        let menuJourOld = this.menu.plats.find( elem => elem.id === menuJour.id)
+        console.log(item)
+        /*let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
+        let menuPeriodeOld =  menuJourOld.calendrier_recettes.find(element => element.id_periode === item.id_periode)
         
-        if(periode === 'matin'){
-          menuJourOld.matin = menuJour.plat
-          menuJourOld.matinNbPers = menuJour.nbPers
+        //let storePeriode = structuredClone(menuPeriodeOld)
+
+        console.log(menuJourOld)
+        console.log(menuPeriodeOld)
+
+        if(item.periode === 'matin'){
+          menuJourOld.calendrier_recettes[0] = structuredClone(item)   //! changer dans les suggestions
+          /*menuJourOld.matinNbPers = menuJour.nbPers
         }
-        else if(periode === 'midi'){
-          menuJourOld.midi = menuJour.plat
-          menuJourOld.midiNbPers = menuJour.nbPers
+        else if(item.periode === 'midi'){
+          menuJourOld.calendrier_recettes[1] = structuredClone(item)
+         // menuJourOld.midiNbPers = menuJour.nbPers
         }
-        else if(periode === 'soir'){
-          menuJourOld.soir = menuJour.plat
-          menuJourOld.soirNbPers = menuJour.nbPers
+        else if(item.periode === 'soir'){
+          menuJourOld.calendrier_recettes[2] = structuredClone(item)
+         // menuJourOld.soirNbPers = menuJour.nbPers
         }
+
+        console.log(menuJourOld + 'après mise à jour')
 
         let iStart = (this.page-1) * 7
         let iEnd = this.page * 7              
-        this.fillPlat(this.items,iStart,iEnd)
+        this.fillPlat(this.items,iStart,iEnd)*/
         },
-        saveSuggestionMenu(){
-          eventBus.$emit('postSuggestion', this.menu)
-        }
-
     }
 }
 </script>

@@ -60,7 +60,7 @@ export default {
       eventBus.$emit('saveModification')
     },
     postMenu(menu){
-      DAOMenu.sendMenuUpdate(menu, this.$store.state.auth.user.id_membre)
+      DAOMenu.sendMenuUpdate(menu, this.$store.state.info.idFamilleActuel)
       if(this.$router.path !== '/') this.$router.push('/');
     }
   }
