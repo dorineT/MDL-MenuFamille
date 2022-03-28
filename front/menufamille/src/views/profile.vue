@@ -8,6 +8,7 @@
       max-width="400"
     >
   <template v-slot:activator="{ on, attrs }">
+    <v-card>
     <v-container  :class="{
           'container pa-4 my-12': $vuetify.breakpoint.smAndDown,
           'container pa-10 my-12': $vuetify.breakpoint.mdAndUp,
@@ -100,7 +101,9 @@
         </v-col>
       </v-row>
     </v-container>
+    </v-card>
   </template>
+  
   <v-card>
         <v-card-title class="text-h5">
           Suppression du compte!

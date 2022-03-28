@@ -59,7 +59,7 @@
 		</v-app-bar>
 
 		<v-main :style="image" class="image">
-			<router-view />
+			<router-view style="opacity: 0.85" />
 		</v-main>
 		
 	</v-app>
