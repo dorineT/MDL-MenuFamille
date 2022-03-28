@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <div>
     <dialog-modify-profil v-bind:dialog="dialogPw" v-bind:id="currentUser.id_membre" @closePass="changePassword"/>
     <v-dialog
     
@@ -7,12 +7,14 @@
       persistent
       max-width="400"
     >
+  
   <template v-slot:activator="{ on, attrs }">
-    <v-card>
-    <v-container  :class="{
+    <v-container fluid  :class="{
           'container pa-4 my-12': $vuetify.breakpoint.smAndDown,
           'container pa-10 my-12': $vuetify.breakpoint.mdAndUp,
         }">
+      <v-card style="padding: 10px">
+
       <!-- alert -->
       <v-row>
         <v-alert text type="error" border="left" width="100%" dismissible v-if="update">
@@ -100,8 +102,9 @@
           </v-btn>
         </v-col>
       </v-row>
+      </v-card>
     </v-container>
-    </v-card>
+  
   </template>
   
   <v-card>
@@ -128,7 +131,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-row>
+  </div>
 </template>
 
 <script>
