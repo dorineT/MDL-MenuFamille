@@ -1,17 +1,20 @@
 <template>
-  <v-row justify="center">
-    <dialog-modify-profil v-bind:dialog="dialogPw" @closePass="changePassword"/>
+  <div>
+    <dialog-modify-profil v-bind:dialog="dialogPw" v-bind:id="currentUser.id_membre" @closePass="changePassword"/>
     <v-dialog
     
       v-model="dialogSup"
       persistent
       max-width="400"
     >
+  
   <template v-slot:activator="{ on, attrs }">
-    <v-container  :class="{
+    <v-container fluid  :class="{
           'container pa-4 my-12': $vuetify.breakpoint.smAndDown,
           'container pa-10 my-12': $vuetify.breakpoint.mdAndUp,
         }">
+      <v-card style="padding: 10px">
+
       <!-- alert -->
       <v-row>
         <v-alert text type="error" border="left" width="100%" dismissible v-if="update">
@@ -34,7 +37,7 @@
         shaped
         :readonly= !isModified
         prepend-inner-icon="mdi-account"
-        :value="currentUser.firstname"
+        v-model="user.firstname"
       ></v-text-field>
       <v-text-field
         label="Nom"
@@ -42,15 +45,15 @@
         shaped
         :readonly= !isModified
         prepend-inner-icon="mdi-account"
-        :value="currentUser.lastname"
+        v-model="user.lastname"
       ></v-text-field>
       <v-text-field
         label="Email"
         outlined
         shaped
-        :readonly= !isModified
+        readonly
         prepend-inner-icon="mdi-email"
-        :value="currentUser.email"
+        v-model="user.email"
       ></v-text-field>
       
       <v-row>
@@ -99,8 +102,11 @@
           </v-btn>
         </v-col>
       </v-row>
+      </v-card>
     </v-container>
+  
   </template>
+  
   <v-card>
         <v-card-title class="text-h5">
           Suppression du compte!
@@ -125,10 +131,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-row>
+  </div>
 </template>
 
 <script>
+import User from '../models/user';
 import UserDao from '../services/api.user'
 import DialogModifyProfil from '../components/DialogModifyProfil.vue';
 let DAOUser = new UserDao();
@@ -138,6 +145,8 @@ export default {
   name: 'Profile',
   data() {
     return {
+      user: new User('', '', ''),
+      
       dialogPw: false,
       dialogSup: false,
       message: "",
@@ -153,6 +162,11 @@ export default {
   mounted() {
     if (!this.currentUser) {
       this.$router.push('/login');
+    } else {
+      this.user.firstname = this.currentUser.firstname
+      this.user.lastname = this.currentUser.lastname
+      this.user.email = this.currentUser.email
+      this.user.id = this.currentUser.id_membre
     }
   },
   methods: {
@@ -161,7 +175,19 @@ export default {
     },
     modification() {
       if (this.isModified) {
-        console.log("modifier")
+        this.$store.dispatch("auth/update", this.user).then(
+          () => {
+            this.update = false;
+            this.isModified = false;
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+          }
+        )
       } else {
         this.isModified = true
       }

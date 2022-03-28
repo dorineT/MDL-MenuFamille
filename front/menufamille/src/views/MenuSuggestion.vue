@@ -4,29 +4,15 @@
    
         class="cardSuggestion"
     >
-    <v-container fluid>
-    <v-row align="center">
-      <v-col
-        class="d-flex"
-        cols="12"
-        sm="6"
-      >     
-      <v-select
-          :items="nomFamille"
-          label="Famille"
-          outlined
-        ></v-select>
-      </v-col>
-    </v-row>
- </v-container>
       <dialog-suggestion></dialog-suggestion>
 
       <calendar-suggestion
-        :periodeMenu="periode"
+        :periodeMenu ="periode"
+        :menuId ="idPeriode"                      
       ></calendar-suggestion>
       <div >
         <v-btn class = "retourSugg" outlined color = "red" to = "/"> Retour </v-btn>
-        <v-btn class = "sauvegarderSugg" outlined color = "green" @click ="saveSuggestion"> Sauvegarder </v-btn>
+       <!-- <v-btn class = "sauvegarderSugg" outlined color = "green" @click ="saveSuggestion"> Sauvegarder </v-btn> -->
       </div>
     </v-card>
 </template>
@@ -36,6 +22,10 @@
 import {eventBus} from '../main'
 import CalendarSuggestion from '../components/CalendarSuggestion.vue'
 import DialogSuggestion from '../components/DialogSuggestion.vue'
+import MenuDao from '../services/api.menu'
+
+let menuSuggest = new MenuDao()
+
 export default {
  
 
@@ -48,18 +38,17 @@ export default {
   data (){
     return{
       periode: null,
-      idPeriode: null,
-      nomFamille:['BonneFamille', 'SuperFamille']
-        
+      idPeriode: null,             
     }
   },
-  mounted(){
-    console.log(this.$route.query.id + ' ' + this.$route.query.periode )
-    this.idPeriode = this.$route.query.id
-    this.periode = this.$route.query.periode
-  },
-  created(){
+  created(){ 
+    console.log("je suiis la")      
     eventBus.$on('postSuggestion', this.postSuggMenu)
+    
+    this.idPeriode = this.$route.query.menu.value
+    console.log(this.idPeriode)            //! c'est vraiment ID 0
+    this.periode = this.$route.query.menu.text
+    console.log(this.periode) 
   },
 
   destroyed() {
@@ -67,13 +56,10 @@ export default {
   },
 
   methods: {
-    saveSuggestion(){
-      eventBus.$emit('saveSuggestion')
-    },
-
     postSuggMenu(postmenu){
-      console.log('test api' + postmenu)
-      this.$router.go(-1)
+      menuSuggest.sendMenuUpdate(postmenu)
+      console.log('test postSuggMenu' + postmenu)
+      this.$router.push('/')
     }
   }
 }

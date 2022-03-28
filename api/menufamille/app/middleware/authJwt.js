@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
 const config = require("../config/auth.config.js");
 const db = require("../db/models");
 const Role = db.famille_membre
+const Membre = db.membres;
 
 const { TokenExpiredError } = jwt;
 const catchError = (err, res) => {
@@ -55,9 +57,35 @@ isParent = (req, res, next) => {
     });
 };
 
+VerifyPwd = (req, res, next) => {
+  Membre.findOne({
+    where: {
+      id_membre: req.params.id
+    }
+  })
+    .then(async (user) => {
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.secret
+      );
+      if (!passwordIsValid) {
+        return res.status(401).send({
+          message: "Invalid Password!"
+        });
+      } else {
+        next();
+      }
+      return;
+    })
+}
+
 const authJwt = {
   verifyToken: verifyToken,
   isChild: isChild,
-  isParent: isParent
+  isParent: isParent,
+  VerifyPwd: VerifyPwd
 };
 module.exports = authJwt;

@@ -160,25 +160,13 @@ exports.Get_Current_Locked_Menu = (req, res) => {
   const date = Date.now();
   let menus = []
   db.menu.findAll({
-    where : 
+    where : {[Op.and]: 
     {
       id_famille: id_fam,
       verrou: true,
       periode_fin: {[Op.gte]: date}
-    },  
-    include: [ 
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: {model: db.recette, required: false, attributes: ['nom']}
-          }
-        ]
-      }
-    ]
-  })
-  .then(response => {
+    }
+  }}).then(response => {
 
       res.send(response)
   })
@@ -191,9 +179,8 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non-verrouilles + suggestion ouverte 
-
-exports.Get_Manual_Unlocked_Menu = (req, res) => {
+//// Envoyer les menus non-verrouilles en mode suggestion
+exports.Get_Suggest_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   let menus = [];
   Menu.findAll({
@@ -201,7 +188,7 @@ exports.Get_Manual_Unlocked_Menu = (req, res) => {
       {
         id_famille: id_fam,
         verrou: false,
-        type: 'manuel'
+        type: 'suggestion'
       } 
     }
 })

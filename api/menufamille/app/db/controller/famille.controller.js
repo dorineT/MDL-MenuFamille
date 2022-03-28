@@ -133,7 +133,7 @@ exports.DeleteMemberFamilly = (req, res) => {
         message: `the Familly member with the ID ${id_mem} was deleted from the familly with the ID ${id_fam}`
       });
     } else{
-      res.send({
+      res.status(403).send({
         message: `Cannot delete the member with the ID ${id_mem} from the familly with the ID ${id_fam}`
       })
     }
@@ -161,13 +161,9 @@ exports.DefineRole = (req, res) => {
     })
     .then(num =>{
       if (num == 1) {
-        res.send({
-          message: "Role was updated"
-        });
+        res.send(true);
       } else{
-        res.send({
-          message: `Cannot update role for member ${id_mem} form familly ${id_fam}`
-        })
+        res.send(false);
       }
     })
     .catch(err => {
@@ -216,15 +212,8 @@ exports.CreateFamilly = (req, res) => {
     console.log(id_fam);
 
     db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: "parent"})
-    .then(data2 =>{
-
-      console.log(data2.id_membre);
-
-      var retour = []
-
-      retour.push(data);
-      retour.push(data2);
-      res.send(retour);
+    .then(data2 => {
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({

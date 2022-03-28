@@ -1,5 +1,6 @@
 <template>
 	<v-app>
+		
 		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
@@ -57,9 +58,10 @@
 			</v-container>		
 		</v-app-bar>
 
-		<v-main>
-			<router-view />
+		<v-main :style="image" class="image">
+			<router-view style="opacity: 0.85" />
 		</v-main>
+		
 	</v-app>
 </template>
 
@@ -71,6 +73,7 @@ export default {
   name: "App",
   data: () => ({
     drawer: false,
+	image: {backgroundImage: "url(https://img.wallpapersafari.com/desktop/1680/1050/26/92/0KH5pV.jpg)"}
     //loggedIn: true,
   }),
   computed:{
@@ -101,6 +104,13 @@ export default {
   font-family: 'Mansalva', cursive !important
   .title // To pin point specific classes of some components
     font-family: 'Mansalva', cursive !important
+
+.image
+ background-repeat: no-repeat
+ -webkit-background-size: cover
+ -moz-background-size: cover
+ -o-background-size: cover
+ background-size: cover
 
 .divTitle
   color: black
