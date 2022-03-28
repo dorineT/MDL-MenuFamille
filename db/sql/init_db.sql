@@ -25,6 +25,7 @@ CREATE TABLE MENU (
                       plat_identique_matin INTEGER NOT NULL DEFAULT -1,
                       plat_identique_midi INTEGER NOT NULL DEFAULT -1,
                       plat_identique_soir INTEGER NOT NULL DEFAULT -1,
+                      days_until_suggestion INTEGER NOT NULL DEFAULT 2,
                       type type_menu,
                       verrou BOOL NOT NULL DEFAULT false,
                       PRIMARY KEY (id_menu)
@@ -133,8 +134,7 @@ CREATE TABLE DENREE_TYPE (
 
 CREATE TABLE CALENDRIER (
                             id_calendrier SERIAL NOT NULL,
-                            date TIMESTAMP NOT NULL,
-                            nb_personne INTEGER,
+                            date TIMESTAMP NOT NULL
                             PRIMARY KEY (id_calendrier)
 );
 
@@ -150,6 +150,7 @@ CREATE TABLE CALENDRIER_RECETTE (
                                     id_recette INTEGER NOT NULL,
                                     periode periode,
                                     is_recette Bool NOT NULL DEFAULT false,
+                                    nb_personne INTEGER
                                     UNIQUE (id_calendrier, id_recette, periode),
                                     PRIMARY KEY (id_periode)
 );

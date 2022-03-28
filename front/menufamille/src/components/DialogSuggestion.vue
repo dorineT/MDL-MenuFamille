@@ -108,10 +108,10 @@ import {eventBus } from '../main'
       }
     },
     created (){
-        eventBus.$on('openDialog', this.openModal) //listening event form CalendarModificationMenu component
+        eventBus.$on('openDialogSuggestion', this.openModal) //listening event form CalendarSuggestion.vue
     },
     destroy (){
-        eventBus.$off('openDialog') //listening event form CalendarModificationMenu component
+        eventBus.$off('openDialogSuggestion') //listening event form CalendarSuggestion.vue
     },
     methods: {
       /** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
@@ -170,7 +170,7 @@ import {eventBus } from '../main'
           this.snackbar = true
           
           // envoi uniquement le menu jour modifie 
-          eventBus.$emit('updateMenuJour', this.infoMenu, this.periode)
+          eventBus.$emit('updateMenuSuggestionJour', this.infoMenu, this.periode)
         },
         resetSelectedSuggestion(){
           this.radioSelectionSuggestion = null

@@ -15,6 +15,9 @@ import setupInterceptors from './services/setupInterceptors';
 // Optionally install the BootstrapVue icon components plugin
 //Vue.use(IconsPlugin)
 
+Vue.use(require('vue-moment'));
+
+
 
 
 Vue.config.productionTip = false
