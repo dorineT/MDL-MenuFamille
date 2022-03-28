@@ -3,16 +3,17 @@ export const info = {
     state() {
         return{
             idFamilleActuel: null,
+            nomFamille: null,
             nbMembreActuel: null,
             roleActuel: 'enfant'
         }
     },
     actions:{
-        changeFamille({commit}, [id, nbM, role]){
-            console.log(nbM)
+        changeFamille({commit}, [id, name, nbM, role]){
             commit('changeFamille', id)
             commit('changeNBM', nbM)
             commit('changeRole', role)
+            commit('changeName', name)
         }
     },
     mutations:{
@@ -24,6 +25,9 @@ export const info = {
         },
         changeRole(state, role){
             state.roleActuel = role
+        },
+        changeName(state, name) {
+            state.nomFamille = name
         }
-    },
+    }
 }
