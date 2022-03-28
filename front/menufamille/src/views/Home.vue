@@ -100,13 +100,16 @@
         famille: [],        
       }
     },
-    async created(){      
+    created(){      
       
       this.$store.state.auth.user.roles.forEach(element => {        
         this.famille.push(element[1])
       });
-      this.selectedFamille = this.famille.length > 0 ? this.famille[0] : null
-      this.changeFamille()    
+      if(this.$store.state.info.nomFamille !== null) {
+        this.selectedFamille = this.$store.state.info.nomFamille
+      } else {
+        this.selectedFamille = this.famille.length > 0 ? this.famille[0] : null
+      }  
     },
     methods:{
       goToModificationMenu(item){             
@@ -121,7 +124,7 @@
         if(this.selectedFamille !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)
           // change store value
-          this.$store.dispatch("info/changeFamille", [famille[0], famille[2], famille[3]])             
+          this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])             
           this.getUnlockedMenu()
         }
       },

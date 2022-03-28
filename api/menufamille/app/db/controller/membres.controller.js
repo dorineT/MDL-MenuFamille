@@ -1,5 +1,6 @@
 const db = require("../models");
 const Membres = db.membres;
+const Family = db.famille;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Members from the database.
@@ -90,16 +91,17 @@ exports.DeleteMember = (req, res) => {
 
 exports.GetListMembre = (req, res) =>{
   const id_fam = req.params.id;
-   Membres.findAll({
+   Family.findOne({
      where :{
-       '$familles.id_famille$': id_fam
+       'id_famille': id_fam
      },
-     attributes: ['id_membre', "nom", "prenom", "email"],
-     include :[{
-       model: db.famille,
-       as: 'familles',
-       attributes : [],
-     }]
+     attributes: [],
+     include: [
+     {
+      model: db.membres,
+      attributes: ["id_membre", "nom","prenom"],
+      through : {model: db.famille_membre, as: 'role', attributes: ["role"]}
+    }],
    }
    ).then(data => { 
      res.send(data);

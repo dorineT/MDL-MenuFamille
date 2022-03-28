@@ -6,16 +6,19 @@
               {{message.message}}
       </v-alert>
       
-      <v-card-title>Mes familles</v-card-title>
+      <v-card-title>Mes Familles
+      </v-card-title>
      
 
         <v-container fluid>
-           <v-row>
+           <v-col cols="3">
             <v-select
                 :items="select"
+                v-model="selected"
                 label="Liste familles"
+                @change="changeFamille()"
             ></v-select>  
-            </v-row>
+            </v-col>
           
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" >
@@ -31,7 +34,7 @@
                       <v-toolbar
                         flat
                       >
-                        <v-toolbar-title>{{currentFamily}}</v-toolbar-title>
+                        <v-toolbar-title>{{selected}}</v-toolbar-title>
                         <v-divider
                           class="mx-4"
                           inset
@@ -51,7 +54,7 @@
                         </v-dialog>
                       </v-toolbar>
                     </template>
-                    <template v-slot:item.actions="{ item }">
+                    <template v-slot:item.actions = "{ item }">
                       
                       <v-icon
                         small
@@ -89,7 +92,7 @@
                 info de la famille
                
                       </v-col>
-                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center">
+                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center" v-if="isCode">
                          <qr-code :size="150" text="Hello World!"></qr-code>
                       </v-col>
                     </v-row>
@@ -117,11 +120,15 @@
 </template>
 
 <script>
+import FamilyDao from '../services/api.famille';
+let DAOfamily = new FamilyDao;
   export default {    
+    name: 'family',
     data (){
       return{
         select: [],
-        currentFamily: "",
+        selected: "",
+        isCode: false,
         dialogDelete: false,
         message: "",
         update: false,
@@ -145,19 +152,56 @@
             value:'actions'
           },
         ],
-        membresFamily:[
-          {
-            membre:'jean',
-            role: 'parent',
-            action: ''
-          },
-          {
-            membre:'jinette',
-            role: 'enfant',
-            action: ''
-          }
-        ],
+        membresFamily:[],
         joinFamillyInput: null
+      }
+    },
+    computed: {
+      currentFamily() {
+        return this.$store.state.info
+      }
+    },
+    created() {
+        this.$store.state.auth.user.roles.forEach(element => {        
+        this.select.push(element[1])
+        })
+        if(this.currentFamily.nomFamille !== null) {
+          this.selected = this.currentFamily.nomFamille
+        } else {
+          this.selected = this.select.length > 0 ? this.select[0] : null
+        }
+        this.updateMember();
+    },
+    methods : {
+      changeFamille(){
+        if(this.selected !== null){
+          let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
+          this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
+          this.updateMember();      
+        }
+      },
+      updateMember() {
+        this.membresFamily = []
+        DAOfamily.getMembers(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            response.data.membres.forEach(membre => {
+              let value = {
+                id: membre.id_membre,
+                membre: membre.nom + " " +membre.prenom,
+                role: membre.role.role,
+                action: ''
+              }
+              this.membresFamily.push(value)
+            })
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       }
     }
 }
