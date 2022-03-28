@@ -12,10 +12,16 @@
         <v-card-text>
           <v-container>
             <v-row>
+              <v-alert text type="error" border="left" width="100%" dismissible v-if="update">
+                {{message.message}}
+              </v-alert>
+            </v-row>
+            <v-row>
               <v-col cols="12">
                 <v-text-field
                   label="Ancien mot de passe"
                   type="password"
+                  v-model="password"
                   required
                 ></v-text-field>
               </v-col>
@@ -23,6 +29,7 @@
                 <v-text-field
                   label="Nouveau mot de passe"
                   type="password"
+                  v-model="newPassword[0]"
                   required
                 ></v-text-field>
               </v-col>
@@ -30,6 +37,7 @@
                 <v-text-field
                   label="Répéter nouveau mot de passe"
                   type="password"
+                  v-model="newPassword[1]"
                   required
                 ></v-text-field>
               </v-col>
@@ -48,7 +56,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="$emit('closePass')"
+            @click="modifier"
           >
             Sauvegarder
           </v-btn>
@@ -59,11 +67,44 @@
 </template>
 
 <script>
+import UserDao from '../services/api.user'
+let DAOUser = new UserDao();
 export default {
-  props: ['dialog'],
+  props: ['dialog', 'id'],
   data() {
     return {
-      dialogPw: this.dialogProc
+      dialogPw: this.dialogProc,
+      update: false,
+      message: "",
+      password: "",
+      newPassword: []
+    }
+  },
+  mounted() {
+    this.newPassword = [],
+    this.password = "";
+    this.message = ""
+  },
+  methods: {
+    modifier() {
+      if (!(this.newPassword[0] == this.newPassword[1])) {
+        this.update = true
+        this.message.message = "les nouveaux mot de passes ne sont pas identiques!"
+        return;
+      }
+      DAOUser.updateUserPwd(this.id, {password: this.password, newPassword: this.newPassword[0]}).then(
+        () => {
+              this.update = false;
+              this.$emit('closePass');
+            },
+            (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+      )
     }
   },
   watch: {

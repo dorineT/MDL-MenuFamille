@@ -1,4 +1,6 @@
 import AuthService from '../services/auth.service';
+import UserDao from '../services/api.user';
+let DAOUser = new UserDao();
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
   ? { status: { loggedIn: true }, user }
@@ -7,6 +9,17 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
+    update( {commit} , user) {
+      return DAOUser.updateUser(user).then(
+        (response) => {
+          console.log(response)
+          commit('update', user)  
+        },
+        error => {
+          return Promise.reject(error);
+        }
+      )
+    },
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {
@@ -15,6 +28,7 @@ export const auth = {
         },
         error => {
           commit('loginFailure');
+          console.log(error)
           return Promise.reject(error);
         }
       );
@@ -40,6 +54,10 @@ export const auth = {
     }
   },
   mutations: {
+    update(state, user) {
+      state.status.loggedIn = true;
+      state.user = { ...state.user, firstname: user.firstname, lastname: user.lastname};
+    },
     refreshToken(state, accessToken) {
       state.status.loggedIn = true;
       state.user = { ...state.user, accessToken: accessToken };
