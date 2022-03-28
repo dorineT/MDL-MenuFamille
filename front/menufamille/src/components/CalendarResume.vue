@@ -107,24 +107,30 @@ let DAOMenu = new MenuDao()
       this.comboboxMenuSelected='Aucun menu sélectionné'   
       this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-      this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
+      if(this.$store.state.info.idFamilleActuel !== null){
+        this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
 
-      this.menus.forEach(menu => {         
-          let periodeNew = { 
-              text: menu.periode_debut + ' - ' +menu.periode_fin,
-              value: menu.id_menu
-            }     
-          this.itemPeriode.push(periodeNew)        
-      });
+        this.menus.forEach(menu => {         
+            let periodeNew = { 
+                text: menu.periode_debut + ' - ' +menu.periode_fin,
+                value: menu.id_menu
+              }     
+            this.itemPeriode.push(periodeNew)        
+        });
+      }
 
     },
     watch:{
-        comboboxMenuSelected(slot){           
+        async comboboxMenuSelected(slot){           
         if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }
         else{ //check période des menus
            
+           if(this.menus === null){
+            this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
+           }
+           console.log(this.menus)
           //get id du menu
           this.headers = []
           this.platsMatin  = []
