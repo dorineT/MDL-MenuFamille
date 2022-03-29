@@ -30,7 +30,18 @@
             <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
-              <v-btn v-else text @click="goToRecette(item)">
+                <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
+                  <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
+                    <p>{{ sugg.recette.nom }} </p>
+                    <v-avatar
+                      color="indigo"
+                      size="30"
+                    >
+                    {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                    </v-avatar>
+                  </div>                
+                </div>
+                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">   
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn>                 
@@ -41,7 +52,18 @@
             <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
-              <v-btn v-else text @click="goToRecette(item)">
+              <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
+                <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
+                  <p>{{ sugg.recette.nom }} </p>
+                  <v-avatar
+                    color="indigo"
+                    size="30"
+                  >
+                  {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                  </v-avatar>
+                </div>                
+              </div>
+              <v-btn   v-if="item.plat!=='/'" text @click="goToRecette(item)">           
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn>          
@@ -52,7 +74,18 @@
             <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
-              <v-btn v-else text @click="goToRecette(item)">
+                <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
+                  <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
+                    <p>{{ sugg.recette.nom }} </p>
+                    <v-avatar
+                      color="indigo"
+                      size="30"
+                    >
+                    {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                    </v-avatar>
+                  </div>                
+                </div>
+              <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn> 
@@ -71,6 +104,10 @@
         @previous="previousPageMenu"
         @input="changePageEvent"
       ></v-pagination>
+
+      <v-snackbar v-model="errorMessage.error" text color="red">
+        {{ errorMessage.message }}
+      </v-snackbar>
     </div>
 
 </template>
@@ -78,6 +115,7 @@
 <script>
 import MenuDao from '../services/api.menu'
 import {eventBus } from '../main'
+import checkContrainte from '../services/checkContrainteMenu'
 import moment from 'moment'
 let menuSuggest = new MenuDao()
 
@@ -94,7 +132,11 @@ export default {
           nbJourMenu: 0,
           platsMatin:[],
           platsMidi: [],
-          platsSoir: []      
+          platsSoir: [],
+          errorMessage: {
+            message: "",
+            error: false,
+          },    
       }
     },
    // call api to get the menu 
@@ -110,7 +152,7 @@ export default {
       eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
     },
     destroy(){
-      //eventBus.$off('updateMenuSuggestionJour')
+      eventBus.$off('updateMenuSuggestionJour')
     },
     methods:{
       //// Affichage calendrier ///
@@ -119,7 +161,7 @@ export default {
           let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)  
           console.log(periodeFind) 
           //open dialogue with even bus
-          eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date)
+          eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date, menuFind.menu_calendrier.id_menu)
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -151,7 +193,8 @@ export default {
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
             nbPers: periode.nb_personne,
-            tags: periode.tags
+            tags: periode.tags,
+            suggestions: periode.suggestions
           })
 
           periode = jourPlat.calendrier_recettes[1]
@@ -160,7 +203,8 @@ export default {
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
             nbPers: periode.nb_personne,
-            tags: periode.tags
+            tags: periode.tags,
+            suggestions: periode.suggestions
           })
 
           periode = jourPlat.calendrier_recettes[2]
@@ -169,7 +213,8 @@ export default {
             id_periode: periode.id_periode,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
             nbPers: periode.nb_personne,
-            tags: periode.tags
+            tags: periode.tags,
+            suggestions: periode.suggestions
           })
 
           iStart++
@@ -199,35 +244,51 @@ export default {
       /// UPDATE CALENDRIER////
 
       updateMenuSuggestionJour(item){
-        console.log('test update suggestion')
-        console.log(item)
-        /*let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
-        let menuPeriodeOld =  menuJourOld.calendrier_recettes.find(element => element.id_periode === item.id_periode)
-        
-        //let storePeriode = structuredClone(menuPeriodeOld)
 
-        console.log(menuJourOld)
-        console.log(menuPeriodeOld)
+        let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
+        let menuPeriodeOld = menuJourOld.calendrier_recettes.find(elem => elem.id_periode === item.id_periode)
+        this.errorMessage.message = ""
+
+        //copy all attribute from menuPeriodeOld to periodeSave
+        //let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
+        //or (new)
+        let periodeSave = structuredClone(menuPeriodeOld)  
 
         if(item.periode === 'matin'){
-          menuJourOld.calendrier_recettes[0] = structuredClone(item)   //! changer dans les suggestions
-          /*menuJourOld.matinNbPers = menuJour.nbPers
+          menuJourOld.calendrier_recettes[0] = structuredClone(item)
+          if(this.menu.plat_identique_matin !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_matin, 0);
+          }
         }
         else if(item.periode === 'midi'){
           menuJourOld.calendrier_recettes[1] = structuredClone(item)
-         // menuJourOld.midiNbPers = menuJour.nbPers
+          if(this.menu.plat_identique_midi !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_midi, 1);
+          }
         }
         else if(item.periode === 'soir'){
           menuJourOld.calendrier_recettes[2] = structuredClone(item)
-         // menuJourOld.soirNbPers = menuJour.nbPers
+          if(this.menu.plat_identique_soir !== null){
+            this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_soir, 2);
+          }
         }
 
-        console.log(menuJourOld + 'après mise à jour')
+        if (this.errorMessage.message !== "") {   
+          console.log('erreur')   			
+          this.errorMessage.error = true
+          menuPeriodeOld = periodeSave     
 
-        let iStart = (this.page-1) * 7
-        let iEnd = this.page * 7              
-        this.fillPlat(this.items,iStart,iEnd)*/
-        },
+        } else {
+          console.log('ok')   
+          let iStart = (this.page-1) * 7
+          let iEnd = this.page * 7              
+          this.fillPlat(this.items,iStart,iEnd)
+          this.errorMessage.error = false	
+          
+          //call api
+          menuSuggest.sendMenuUpdate(this.menu)
+        }
+      },
     }
 }
 </script>

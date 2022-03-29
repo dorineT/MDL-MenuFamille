@@ -123,6 +123,8 @@
       } else {
         this.selectedFamille = this.famille.length > 0 ? this.famille[0] : null
       }  
+      this.getUnlockedMenu()
+      this.getUnlockedSuggestionMenu() 
     },
     methods:{
       goToModificationMenu(item){             
