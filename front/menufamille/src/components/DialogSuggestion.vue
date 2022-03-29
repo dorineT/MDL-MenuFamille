@@ -30,8 +30,7 @@
 							:items="itemRecettes"
 							item-text="nom"
 							return-object
-							v-model="comboboxRecetteSelected"
-							@change="resetSelectedSuggestion()"
+							v-model="newRecetteChoix"							
 							no-data-text="Aucune recette correspondante"
 						></v-autocomplete>
 					</v-card-text>
@@ -81,13 +80,13 @@
 				dialog: false,
 				infoMenu: {},
 				snackbar: false,
-				timeout: 3000,
-				comboboxRecetteSelected: null,
+				timeout: 3000,			
 				itemRecettes: [],
 				itemRecettesAll: [],
 				newRecetteChoix: null,
 				jourSemaine: null,
 				date: null,
+				id_menu: null,
 			};
 		},
 		created() {
@@ -96,12 +95,17 @@
 		destroyed() {
 			eventBus.$off("openDialogSuggestion"); //listening event form CalendarSuggestion.vue
 		},
-
+		computed:{
+			currentUser() {
+			  return this.$store.state.auth.user;
+			},
+		},
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async openModal(itemReceived, dateJournee) {
+			async openModal(itemReceived, dateJournee, idMenu) {
 				this.dialog = true;
 
+				this.id_menu = idMenu
 				this.infoMenu = structuredClone(itemReceived);
 				this.date = dateJournee;
 				this.jourSemaine = moment(dateJournee, "DD-MM-YYYY")
@@ -111,7 +115,7 @@
 				//get recette si tag defini
 				if (this.infoMenu.tags.length > 0) {
 					console.log("get recette en fonction des tags");
-          this.itemRecettes =  await DAORecette.getFromTags(this.infoMenu.tags)      
+          			this.itemRecettes =  await DAORecette.getFromTags(this.infoMenu.tags)      
 				} else {
 					this.itemRecettesAll = await DAORecette.getAll();
 					this.itemRecettes = structuredClone(this.itemRecettesAll);
@@ -126,20 +130,35 @@
 			},
 			sauvegardeMenuJour() {
 				//mise a jour calendrier
-				console.log("update item " + this.infoMenu.id);
-
+				console.log('sauvegarde')
 				console.log(this.infoMenu);
+				console.log(this.newRecetteChoix)
+
+				console.log(this.currentUser)
+
+				this.infoMenu.suggestions.push({
+					id_periode: this.infoMenu.id_periode,
+					id_menu: this.id_menu,
+					id_recette: this.newRecetteChoix.id_recette,
+					id_membre: this.currentUser.id_membre,
+					membre: {
+						prenom: this.currentUser.firstname,
+						nom: this.currentUser.lastname,
+						id_membre: this.currentUser.id_membre
+					},
+					recette: structuredClone(this.newRecetteChoix)
+
+				})
 
 				this.dialog = false;
 				this.snackbar = true;
 
 				// envoi uniquement le menu jour modifie
-				eventBus.$emit("updateMenuSuggestionJour", this.infoMenu);
+				eventBus.$emit("updateMenuSuggestionJour", structuredClone(this.infoMenu));
 			},
 
 			resetNewRecette() {
-				this.newRecetteChoix = null;
-				this.comboboxRecetteSelected = null;
+				this.newRecetteChoix = null;			
 			},
 			/**Copier un tableau - superficielle
 			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
