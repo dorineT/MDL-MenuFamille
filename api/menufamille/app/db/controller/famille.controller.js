@@ -117,11 +117,11 @@ exports.GetListFamilly = (req, res) =>{
 /// DeleteMemberFamille
 
 exports.DeleteMemberFamilly = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_fam = req.params.id_fam;
+  const id_mem = req.params.id_membre;
+  const id_fam = req.params.id_famille;
   db.famille_membre.destroy({
     where: 
-    { [Op.add]: 
+    { [Op.and]: 
       {
         id_famille: id_fam,
         id_membre: id_mem

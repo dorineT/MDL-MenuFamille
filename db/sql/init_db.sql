@@ -268,3 +268,28 @@ before delete
 on membres
 for each row 
 execute procedure delete_famille()
+
+
+create function delete_update_membre()
+returns trigger as $$
+declare
+	nb integer;
+begin
+	select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f.id_membre = old.id_membre  and f."role" = 'parent' group by f.id_famille;
+    if nb > 0 and nb = 1 then 
+       raise exception 'unique parent de la famille' using ERRCODE = 23500;
+    end if;
+    return old;  
+end; $$ language plpgsql;
+
+create trigger delete_membre
+before delete
+on famille_membre
+for each row 
+execute procedure delete_update_membre();
+
+create trigger update_membre
+before update
+on famille_membre
+for each row 
+execute procedure delete_update_membre();

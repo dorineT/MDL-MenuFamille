@@ -43,11 +43,11 @@
                         <v-spacer></v-spacer>
                         <v-dialog v-model="dialogDelete" max-width="500px">
                           <v-card>
-                            <v-card-title class="text-h5">Voulez-vous vraiment retirer ce membre?</v-card-title>
+                            <v-card-title class="text-h5">Voulez-vous vraiment retirer ce membre de la famille?</v-card-title>
                             <v-card-actions>
                               <v-spacer></v-spacer>
-                              <v-btn color="blue darken-1" text>Annuler</v-btn>
-                              <v-btn color="blue darken-1" text>Confirmer</v-btn>
+                              <v-btn color="blue darken-1" text @click="closeDelete">Annuler</v-btn>
+                              <v-btn color="blue darken-1" text @click="deleteMemberConfirm">Confirmer</v-btn>
                               <v-spacer></v-spacer>
                             </v-card-actions>
                           </v-card>
@@ -66,6 +66,7 @@
                       <v-icon
                         small
                         class="mr-2"
+                        @click="deleteMember(item)"
                       >
                         mdi-account-multiple-minus
                       </v-icon>
@@ -124,6 +125,7 @@ import FamilyDao from '../services/api.famille';
 let DAOfamily = new FamilyDao;
   export default {    
     name: 'family',
+    editedIndex: -1,
     data (){
       return{
         select: [],
@@ -132,6 +134,12 @@ let DAOfamily = new FamilyDao;
         dialogDelete: false,
         message: "",
         update: false,
+        editedItem: {
+          id: '',
+          membre: '',
+          role: '',
+          actions: ''
+        },
         headers:[
           {
             text: 'Membre',
@@ -192,6 +200,7 @@ let DAOfamily = new FamilyDao;
                 action: ''
               }
               this.membresFamily.push(value)
+              this.update = false;
             })
           },
           (error) => {
@@ -202,6 +211,36 @@ let DAOfamily = new FamilyDao;
                 error.toString();
             }
         )
+      },
+      deleteMember(item) {
+        this.editedIndex = this.membresFamily.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+      },
+      deleteMemberConfirm () {
+        DAOfamily.removeMember(this.currentFamily.idFamilleActuel, this.editedItem.id).then(
+          (response) => {
+            this.membresFamily.splice(this.editedIndex, 1)
+            this.update = false;
+            this.closeDelete()
+          },
+          (error) => {
+              this.update = true;
+              this.closeDelete()
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+        
+      },
+      closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
       }
     }
 }

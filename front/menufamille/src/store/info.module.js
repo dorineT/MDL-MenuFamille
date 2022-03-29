@@ -14,6 +14,9 @@ export const info = {
             commit('changeNBM', nbM)
             commit('changeRole', role)
             commit('changeName', name)
+        },
+        reset({commit}) {
+            commit("reset")
         }
     },
     mutations:{
@@ -28,6 +31,12 @@ export const info = {
         },
         changeName(state, name) {
             state.nomFamille = name
+        },
+        reset(state) {
+            state.idFamilleActuel = null
+            state.nbMembreActuel = null
+            state.roleActuel = 'enfant'
+            state.nomFamille = null
         }
     }
 }

@@ -45,7 +45,7 @@ router.get("/GetListFamilly/:id",[authJwt.verifyToken], famille.GetListFamilly);
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
 
-router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], famille.DeleteMemberFamilly);
+router.delete("/:id_famille/:id_membre",[authJwt.verifyToken, authJwt.isMember , authJwt.isParent], famille.DeleteMemberFamilly);
 
 router.put('/Defrole/:id_fam/:id_mem',[authJwt.verifyToken, authJwt.isParent], famille.DefineRole);
 

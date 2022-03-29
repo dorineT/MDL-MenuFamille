@@ -16,6 +16,7 @@ class AuthService {
   }
   logout() {
     TokenService.removeUser();
+    this.$store.dispatch("reset")
   }
   register({ firstname, lastname, email, password }) {
     return api.post("/user/signup", {

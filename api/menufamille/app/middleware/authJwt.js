@@ -45,7 +45,7 @@ isChild = (req, res, next) => {
 };
 
 isParent = (req, res, next) => {
-  Role.findOne({where: {id_membre: req.id_membre, id_famille:  parseInt(req.params.id)}}).then(role => {
+  Role.findOne({where: {id_membre: req.id_membre, id_famille:  parseInt(req.params.id_famille)}}).then(role => {
     if (role.role === "parent") {
       next();
       return;
@@ -55,6 +55,19 @@ isParent = (req, res, next) => {
     });
       return;
     });
+};
+
+isMember = (req, res, next) => {
+  Role.findOne({where: {id_membre: req.params.id_membre, id_famille:  req.params.id_famille}}).then(
+    async (role) => {
+      if(!role) {
+        return res.status(404).send({ message: "Not member of family!" });
+      } else {
+        next();
+      }
+      return;
+    });
+    
 };
 
 VerifyPwd = (req, res, next) => {
@@ -86,6 +99,7 @@ const authJwt = {
   verifyToken: verifyToken,
   isChild: isChild,
   isParent: isParent,
-  VerifyPwd: VerifyPwd
+  VerifyPwd: VerifyPwd,
+  isMember: isMember
 };
 module.exports = authJwt;
