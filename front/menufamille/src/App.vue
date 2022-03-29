@@ -84,6 +84,7 @@ export default {
   methods: {
     logOut() {
       this.$store.dispatch("auth/logout");
+	  this.$store.dispatch("info/reset")
       this.$router.push("/login");
     },
   },

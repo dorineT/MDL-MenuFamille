@@ -120,11 +120,13 @@
       });
       if(this.$store.state.info.nomFamille !== null) {
         this.selectedFamille = this.$store.state.info.nomFamille
+        this.getUnlockedMenu()
+        this.getUnlockedSuggestionMenu() 
       } else {
         this.selectedFamille = this.famille.length > 0 ? this.famille[0] : null
+        this.changeFamille();
       }  
-      this.getUnlockedMenu()
-      this.getUnlockedSuggestionMenu() 
+      
     },
     methods:{
       goToModificationMenu(item){             
