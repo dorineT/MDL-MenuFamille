@@ -1,4 +1,5 @@
 const db = require("../models");
+const ShortUniqueId = require('short-unique-id');
 const Famille = db.famille;
 const Op = db.Sequelize.Op;
 
@@ -289,16 +290,56 @@ exports.AddMemberCount = (req, res) => {
 
 exports.CheckAccesCode = (req, res) => {
   const acces_code = req.params.code;
-  Famille.findAll(
-    {where: {code_acces: acces_code}
+  let id_famille = null;
+  if(req.params.id_famille) {
+    id_famille = req.params.id_famille
+  }
+  Famille.findOne(
+    {where: 
+      (id_famille != null? {id_famille: id_famille}:{code_acces: acces_code})
   })
   .then(data => {
-    res.send(data);
-  })
-  .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Some error occurred while retrieving famille."
-    });
-  });  
+    if (data == null) {
+      res.status(403).send({
+        message: `code d'accès non valide!`
+      })
+    }
+    else if(data != null && id_famille != null) {
+      if(data.code_acces == null) {
+        const uid = new ShortUniqueId({ dictionary: 'hex' });
+        const code = uid.randomUUID(6);
+        Famille.update({code_acces: code}, {
+          where: {id_famille: id_famille}
+        })
+        .then(num =>{
+          if (num == 1) {
+            res.send({
+              id_famille: id_famille,
+              code: code
+            });
+          } else{
+            res.send({
+              message: `Cannot update familly with code=${code}`
+            })
+          }
+        });
+      }
+      else {
+        res.send({
+          id_famille: data.id_famille,
+          code: data.code_acces
+        });
+      }
+    } else if (data != null) {
+      res.send({
+        id_famille: data.id_famille,
+        code: data.code_acces
+      });
+    } else {
+      res.status(500).send({
+        message:
+          err.message || `Some error occurred while search code access`
+      });
+    }
+  })  
 }
