@@ -88,13 +88,17 @@
                                   <v-container fluid>
                     <v-row>
                       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
-                famille actuelle
-                + action qu'on peut faire + 
-                info de la famille
-               
+                        <v-text-field
+                          label="Code d'accès:"
+                          outlined
+                          shaped
+                          :value="code"
+                          readonly
+                          prepend-inner-icon="mdi-qrcode-scan"
+                        ></v-text-field>
                       </v-col>
-                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center" v-if="isCode">
-                         <qr-code :size="150" text="Hello World!"></qr-code>
+                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center">
+                         <qr-code :size="150" :text="accessCode" error-level="L"></qr-code>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -130,7 +134,7 @@ let DAOfamily = new FamilyDao;
       return{
         select: [],
         selected: "",
-        isCode: false,
+        code: "",
         dialogDelete: false,
         message: "",
         update: false,
@@ -166,7 +170,10 @@ let DAOfamily = new FamilyDao;
     },
     computed: {
       currentFamily() {
-        return this.$store.state.info
+        return this.$store.state.info;
+      },
+      accessCode() {
+        return "https://localhost:8080/request?code="+this.code;
       }
     },
     created() {
@@ -179,13 +186,15 @@ let DAOfamily = new FamilyDao;
           this.selected = this.select.length > 0 ? this.select[0] : null
         }
         this.updateMember();
+        this.generateCode();
     },
     methods : {
       changeFamille(){
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
-          this.updateMember();      
+          this.updateMember();
+          this.generateCode();     
         }
       },
       updateMember() {
@@ -241,6 +250,22 @@ let DAOfamily = new FamilyDao;
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+      },
+      generateCode() {
+        DAOfamily.getCodeFamily(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            this.code = response.data.code;
+            this.update = false;
+          },
+          (error) => {
+              this.update = true;
+              this.closeDelete()
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       }
     }
 }

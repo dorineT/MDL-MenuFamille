@@ -9,4 +9,8 @@ export default class FamilyDao{
     removeMember(id_family, id_member) {
         return api.delete("/famille/"+ id_family+"/"+id_member);
     }
+
+    getCodeFamily(id_famille) {
+        return api.get("/famille/CheckAccesCode/0/"+id_famille);
+    }
 }
