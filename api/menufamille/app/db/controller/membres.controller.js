@@ -153,7 +153,7 @@ exports.LeaveFamilly = (req, res) => {
   const id_mem = req.params.id_mem;
   db.famille_membre.destroy({
     where: 
-    { [Op.add]: 
+    { [Op.and]: 
       {
         id_famille: id_fam,
         id_membre: id_mem
@@ -176,4 +176,82 @@ exports.LeaveFamilly = (req, res) => {
             err.message || `Some error occurred while Leaving Familly_Member with id_famille=${id_fam}`
       });
   }); 
+}
+
+
+/// Ajouter un favoris
+
+exports.AddFavorites = (req, res) => {
+  const id_mem = req.params.id_mem;
+  const id_rec = req.params.id_rec;
+  db.favoris.create({id_membre: id_mem, id_recette: id_rec})
+  .then(data => { 
+    res.send(data);
+  })
+  .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while adding into favorites"
+      });
+  });
+}
+
+
+/// Retirer un favoris
+
+exports.RemoveFavorites = (req, res) => {
+  const id_mem = req.params.id_mem;
+  const id_rec = req.params.id_rec;
+  db.favoris.destroy({
+    where: 
+    { [Op.and]: 
+      {
+        id_membre: id_mem,
+        id_recette: id_rec
+      }
+    } 
+  }).then(num =>{
+    if (num == 1) {
+      res.send({
+        message: `You removed the recipe with ID ${id_rec} from your favorites`
+      });
+    } else{
+      res.status(403).send({
+        message: `You tried to remove the recipe with ID ${id_rec} from your favorites`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while removing the recipe=${id_rec} from the favorites`
+      });
+  }); 
+}
+
+/// Lister les favoris
+
+exports.ListFavorites = (req, res) =>{
+  const id_mem = req.params.id_mem;
+
+  Membres.findOne({
+    where :{
+      id_membre: id_mem
+    },
+    attributes: [],
+    include: [
+    {
+     model: db.recette,
+     attributes: ["id_recette","nom"],
+     through : {model: db.favoris, attributes: []}
+   }],
+  }).then(data => { 
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while getting Membres"
+    });
+  });
 }
