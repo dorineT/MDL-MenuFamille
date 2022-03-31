@@ -174,7 +174,18 @@ exports.find_Recipe = (req, res) => {
 /// Chercher recette avec toutes les infos #40
 
 exports.find_Recipe_With_Tags= (req, res) => {
-  Recipe.findAll({include: {model: Tag, through: {attributes: []}}})
+  Recipe.findAll(
+    {
+      include:[
+        {
+          model: Tag, through: {attributes: []}
+        },
+        {
+          model: db.categorie
+        }
+      ]
+    }
+  )
   .then(data => {
       res.send(data)
   })
