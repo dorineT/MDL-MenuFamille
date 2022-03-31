@@ -3,8 +3,8 @@
         class="cardmargin"
     >
       <v-container fluid>
-        <v-row class="d-flex justify-end">
-          <v-col cols="12" sm="12" md="3" lg="3" xl="3" >
+        <v-row class="d-flex justify-end ">
+          <v-col cols="12" sm="12" md="3" lg="3" xl="3" >          
             <v-select
               v-model="selectedFamille"
               :items="famille"

@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		
-		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
+		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn" style="opacity: 0.85">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
 					<v-list-item to="/">
@@ -17,7 +17,7 @@
 						</v-list-item-icon>
 						<v-list-item-title>Création Menu</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/">
+					<v-list-item to="/recipe">
 						<v-list-item-icon>
 							<v-icon>mdi-food-turkey</v-icon>
 						</v-list-item-icon>
