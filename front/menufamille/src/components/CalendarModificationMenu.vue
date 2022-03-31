@@ -313,7 +313,10 @@ export default {
           let iStart = (this.page-1) * 7
           let iEnd = this.page * 7              
           this.fillPlat(this.items,iStart,iEnd)
-          this.errorMessage.error = false			
+          this.errorMessage.error = false		
+          
+          // sendPeriodeUpdate
+          DAOMenu.sendPeriodeUpdate(menuPeriodeOld)
         }
 
       },

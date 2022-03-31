@@ -39,6 +39,30 @@ export default class MenuDao{
     }
 
     /**
+     * Envoie une periode avec une nouvelle suggestion
+     * @param {*} periode 
+     */
+    sendPeriodeUpdateSuggestion(periode){    
+      // adapt to api   
+      /*api.put("/suggestion/",{
+        periode: periode,
+      })*/
+    }
+
+
+
+    /**
+     * Envoie une periode modifiée
+     * @param {*} periode 
+     */
+     sendPeriodeUpdate(periode){    
+      // adapt to api   
+      /*api.put("/calendrier_recette/",{
+        periode: periode,
+      })*/
+    }
+
+    /**
      * Recupere un menu selon son id avec toutes ses informations (jour, periode, recette)
      * @param {*} idMenu 
      * @returns 
