@@ -301,4 +301,8 @@ export default {
 
 .tdplat
   text-align: center
+
+.v-btn.v-size--default
+  vertical-align: bottom
+
 </style>
