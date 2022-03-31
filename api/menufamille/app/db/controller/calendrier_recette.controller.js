@@ -35,8 +35,8 @@ exports.findAll = (req, res) => {
 
   //// Update CRUD
 exports.UpdateCalender_Recipe = (req, res) => {
-  const id_calendrier = req.params.id_calendrier;
-  const id_recette = req.params.id_recette;
+  const id_periode = req.params.id_periode;
+
   CalendrierRecette.update(req.body, {
     where: { [Op.add]: 
         {id_calendrier: id_calendrier,
@@ -92,3 +92,4 @@ exports.DeletCalender_Recipe = (req, res) => {
       });
   });
 };
+
