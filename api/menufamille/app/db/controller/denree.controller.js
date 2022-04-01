@@ -72,7 +72,7 @@ exports.PutDenree = (req, res) => {
             message: "Denree was deleted"
           });
         } else{
-          res.send({
+          res.status(403).send({
             message: `Cannot delete denree with id=${id}`
           })
         }
@@ -85,3 +85,20 @@ exports.PutDenree = (req, res) => {
       });
     };
   
+
+  //// Find with like recipe
+
+  exports.FindWithLike = (req, res) => {
+    const lettres = "%" +  req.body.nom + "%";
+    Denree.findAll({
+      where: { nom : {[Op.iLike]: lettres}}
+    }).then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving denree."
+      });
+    }); 
+  }
