@@ -15,3 +15,16 @@ exports.findAll = (req, res) => {
             });
         });
 };
+
+exports.PutTag_periode = (req, res) => {
+    tag_periodeController.create({id_tag: req.body.id_tag,id_periode : req.body.id_periode})
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while inserting tag"
+            });
+        });
+};
