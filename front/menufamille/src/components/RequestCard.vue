@@ -3,37 +3,39 @@
             color="#faa62a"
             dark
           >
-            <div class="d-flex flex-no-wrap justify-space-between">
-              <div>
-                <v-card-title
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                 <v-card-title
                   class="text-h5"
                   v-text="name"
                 ></v-card-title>
 
                 <v-card-subtitle>{{name}} veut rejoindre votre famille!</v-card-subtitle>
 
+
+              </v-col>
+              <v-col class="align-self-center ">
                  <v-btn
-                    class="ml-2 mt-5"
-                    outlined
-                    rounded
-                    small
-                  >
-                    Refuser
-                  </v-btn>
+                  class="ml-3 mr-3"
+                  outlined
+                  rounded
+                  small
+                >
+                  Refuser
+                </v-btn>
 
-                  <v-btn
-                    class="ml-2 mt-5"
-                    outlined
-                    rounded
-                    small
-                  >
-                    Accepter
-                  </v-btn>
-
-            
-                
-             </div>
-            </div>
+                <v-btn
+                  class="ml-3 mr-3"
+                  outlined
+                  rounded
+                  small
+                >
+                  Accepter
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
           </v-card>
 </template>
 
