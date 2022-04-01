@@ -15,6 +15,20 @@ export default class RecetteDAO{
         return data
     }
 
+
+    /**
+     * Get une recette et ses infos par id
+     */
+     async getById(id_recette){
+      let data
+      await api.get("/recette/FindRecipe/"+id_recette)
+        .then((response) => {            
+          data = response.data
+        }); 
+      
+      return data
+  }
+
     /**
      * Get les recettes en fonction de Tag donnés
      */

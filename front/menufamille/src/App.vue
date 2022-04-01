@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		
-		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn" style="opacity: 0.85">
+		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
 					<v-list-item to="/">
@@ -59,7 +59,7 @@
 		</v-app-bar>
 
 		<v-main :style="image" class="image">
-			<router-view style="opacity: 0.85" />
+			<router-view class="opacity-define" />
 		</v-main>
 		
 	</v-app>
@@ -101,6 +101,8 @@ export default {
 </script>
 
 <style lang="sass">
+@import "./style/globalStyle"
+
 .v-application
   font-family: 'Mansalva', cursive !important
   .title // To pin point specific classes of some components
