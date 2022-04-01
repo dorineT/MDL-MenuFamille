@@ -1,6 +1,5 @@
 <template>
-    <div class="cardmargin opacity-define">
-
+    <div class="cardmargin ">
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
@@ -29,8 +28,9 @@
                     <v-card v-else :max-height="ContainerHeight">
                         <v-card-text  align="center">
                                <v-img                                                  
-                            max-height="250"
-                              max-width="250"
+                              :aspect-ratio="16/9"                  
+                              contain
+                              max-width="500"
                               src="../assets/tiny_loader.gif"                         
                             ></v-img>
                             <p style="font-size: 20px; margin-top:40px">Chargement en cours ...</p>

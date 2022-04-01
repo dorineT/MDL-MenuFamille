@@ -1,5 +1,8 @@
 <template>
-      <v-card class="card-recipe">
+      <v-hover
+        close-delay="227"
+      >
+      <v-card @click="showInfo" class="card-recipe" >
         <v-card-title primary-title>                                        
             <h3 class="headline mb-0">{{recipe.nom}}</h3>                                                                                    
         </v-card-title>
@@ -55,12 +58,12 @@
                       {{ categorie.periode }}
                     </v-chip>
                   </v-chip-group>
-            </v-col>                                           
-             <v-icon @click="showInfo" size="28">mdi-eye</v-icon>
+            </v-col>                                                   
            </v-row>
         </v-card-actions>
         <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"></recipe-info>
     </v-card>  
+  </v-hover>
 </template>
 
 <script>
@@ -91,5 +94,12 @@ export default {
 </script>
 
 <style lang="sass">
-    
+  
+.card-recipe 
+  margin: 20px !important
+  margin-right: 5px !important
+  margin-left: 5px !important
+
+  &:hover
+    box-shadow: 0 5px 20px 0 #9CCC65, 0 6px 20px 0 #9CCC65 !important
 </style>
