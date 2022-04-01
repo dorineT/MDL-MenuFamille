@@ -11,7 +11,7 @@ SET TIMEZONE TO 'UTC+1';
 CREATE TABLE FAMILLE (
                          id_famille SERIAL NOT NULL ,
                          nom VARCHAR NOT NULL ,
-                         code_acces VARCHAR UNIQUE NOT NULL,
+                         code_acces VARCHAR UNIQUE,
                          nb_membres INTEGER NOT NULL,
                          PRIMARY KEY (id_famille)
 );
@@ -55,6 +55,7 @@ CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
                                 role arbre NOT NULL,
+                                valid BOOL NOT NULL DEFAULT false,
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
@@ -290,6 +291,7 @@ execute procedure delete_update_membre();
 
 create trigger update_membre
 before update
+of role
 on famille_membre
 for each row 
 execute procedure delete_update_membre();

@@ -96,18 +96,18 @@ exports.DeleteMember = (req, res) => {
 
 /// GetListMembre
 
-exports.GetListMembre = (req, res) =>{
-  const id_fam = req.params.id;
+exports.GetListMembre = (req, res, next) =>{
+  const id_fam = req.params.id_famille;
    Family.findOne({
      where :{
-       'id_famille': id_fam
+       'id_famille': id_fam,   
      },
      attributes: [],
      include: [
      {
       model: db.membres,
       attributes: ["id_membre", "nom","prenom"],
-      through : {model: db.famille_membre, as: 'role', attributes: ["role"]}
+      through : {model: db.famille_membre, as: 'role', attributes: ["role"], where: {'valid': req.valid}}
     }],
    }
    ).then(data => { 

@@ -289,22 +289,18 @@ exports.AddMemberCount = (req, res) => {
 ///// Check le code d'accès
 
 exports.CheckAccesCode = (req, res) => {
-  const acces_code = req.params.code;
-  let id_famille = null;
-  if(req.params.id_famille) {
-    id_famille = req.params.id_famille
-  }
+  const id_famille = req.params.id_famille;
   Famille.findOne(
     {where: 
-      (id_famille != null? {id_famille: id_famille}:{code_acces: acces_code})
+      {id_famille: id_famille}
   })
   .then(data => {
     if (data == null) {
       res.status(403).send({
-        message: `code d'accès non valide!`
+        message: `Famille introuvable!`
       })
     }
-    else if(data != null && id_famille != null) {
+    else if(data != null) {
       if(data.code_acces == null) {
         const uid = new ShortUniqueId({ dictionary: 'hex' });
         const code = uid.randomUUID(6);
@@ -330,11 +326,6 @@ exports.CheckAccesCode = (req, res) => {
           code: data.code_acces
         });
       }
-    } else if (data != null) {
-      res.send({
-        id_famille: data.id_famille,
-        code: data.code_acces
-      });
     } else {
       res.status(500).send({
         message:

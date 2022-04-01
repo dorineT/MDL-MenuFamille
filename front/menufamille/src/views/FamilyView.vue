@@ -77,8 +77,18 @@
               
             </v-col>
             <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6">
-              <v-card>
-                 demande adhésion // idem data table
+              <v-card height="200px">
+                <v-toolbar flat>
+                  <v-toolbar-title>Demandes en attente</v-toolbar-title>
+                </v-toolbar>
+                <v-divider></v-divider>
+
+                <v-list>
+                  <v-col v-for="membre in requestFamily" :key="membre.id" cols="12">
+                    <requestcard :name="membre.membre" :id="membre.id" />
+                  </v-col>
+                </v-list>
+
               </v-card>
              
             </v-col>
@@ -126,8 +136,10 @@
 
 <script>
 import FamilyDao from '../services/api.famille';
+import Requestcard from '../components/RequestCard.vue'
 let DAOfamily = new FamilyDao;
-  export default {    
+  export default {
+    components: { Requestcard },    
     name: 'family',
     editedIndex: -1,
     data (){
@@ -165,6 +177,7 @@ let DAOfamily = new FamilyDao;
           },
         ],
         membresFamily:[],
+        requestFamily:[],
         joinFamillyInput: null
       }
     },
@@ -173,7 +186,8 @@ let DAOfamily = new FamilyDao;
         return this.$store.state.info;
       },
       accessCode() {
-        return "https://localhost:8080/request?code="+this.code;
+        const host = window.location.protocol + "//" + window.location.host;
+        return host+"/request?code="+this.code;
       }
     },
     created() {
@@ -187,6 +201,7 @@ let DAOfamily = new FamilyDao;
         }
         this.updateMember();
         this.generateCode();
+        this.updateRequest();
     },
     methods : {
       changeFamille(){
@@ -194,8 +209,32 @@ let DAOfamily = new FamilyDao;
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
           this.updateMember();
-          this.generateCode();     
+          this.generateCode();
+          this.updateRequest();
         }
+      },
+      updateRequest() {
+        this.requestFamily = []
+        DAOfamily.getRequest(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            response.data.membres.forEach(membre => {
+              let value = {
+                id: membre.id_membre,
+                membre: membre.nom + " " +membre.prenom,
+              }
+              this.requestFamily.push(value)
+              this.update = false;
+            })
+            console.log(this.requestFamily)
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       },
       updateMember() {
         this.membresFamily = []

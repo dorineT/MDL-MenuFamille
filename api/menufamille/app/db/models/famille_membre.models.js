@@ -11,6 +11,11 @@ module.exports = (sequelize, Sequelize) => {
       role: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      valid: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
       }
     },
     {
