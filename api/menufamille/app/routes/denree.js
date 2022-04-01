@@ -19,6 +19,6 @@ router.put('/:id', denree.UpdateDenree);
 
 router.delete('/:id', denree.DeleteDenree);
 
-router.get('/Like',[authJwt.verifyToken], denree.FindWithLike);
+router.get('/Like/:nom', [authJwt.verifyToken], denree.FindWithLike);
 
-router.get('/FindOrCreate/:nom', denree.FindOrCreate);
+router.get('/FindOrCreate/:nom',[authJwt.verifyToken], denree.FindOrCreate);
