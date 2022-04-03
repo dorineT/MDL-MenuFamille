@@ -250,9 +250,10 @@ exports.Create_Recipe_All_Infos = (req, res) => {
     req.body.denrees.forEach(denree => {
       db.recette_denree.create({ id_recette: id_new_recette, id_denree : denree.id_denree, quantite : denree.recette_denree.quantite});
     });
-      res.send(data);
+    
+    res.send(data);
+    
     })
-
   .catch(err => {
       res.status(500).send({
           message:

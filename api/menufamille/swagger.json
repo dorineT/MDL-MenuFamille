@@ -27,6 +27,14 @@
     {
       "name": "membre",
       "description": "Operations about Membre"
+    },
+    {
+      "name": "recipe",
+      "description": "Operations on Recipe"
+    },
+    {
+      "name": "denree",
+      "description": "Operations on Denree"
     }
   ],
   "schemes": [
@@ -1071,6 +1079,47 @@
           }
         }
       }
+    },
+    "/recette/CreateRecipeAllInfo": {
+      "post": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Create a recipe",
+        "description": "Create a recipe and link it with it's denree, categories and tags",
+        "operationId": "Create_Recipe_All_Infos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "$ref": "#/definitions/Recette_all_info"
+              }
+            } 
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "recettes": { "type" : "array", "items" :
+                  {"type": "object", "properties": 
+                    {
+                      "id_recette": {"type": "integer","format": "int64"},
+                      "nom": {"type":"string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -1257,7 +1306,14 @@
       "type": "object",
       "properties": {
         "id_tag": { "type" : "integer", "format": "int64"},
-        "periode" : {"type" : "string"}
+        "nom" : {"type" : "string"}
+      }
+    },
+    "Categorie_full":{
+      "type": "object",
+      "properties": {
+        "id_categorie": { "type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"}
       }
     },
     "Membre_full":{
@@ -1277,6 +1333,31 @@
         "nom" : {"type" : "string"},
         "prenom" : {"type" : "string"},
         "email" : {"type" : "string"}
+      }
+    },
+    "Denree_full" :{
+      "type": "object",
+      "propeties": {
+        "id_denree" : {"type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"},
+        "nutriscore" : {"type" : "string"},
+        "recette_denree" : {"type": "object", "propeties": {"quantite" : {"type" : "integer", "format": "int64"}}}
+      }
+    },
+    "Recette_all_info":{
+      "type": "object",
+      "properties": {
+        "nom" : {"type" : "string"},
+        "difficulte" : {"type" : "integer", "format": "int64"},
+        "calorie" : {"type" : "integer", "format": "int64"},
+        "temps_cuisson" : {"type" : "integer", "format": "int64"},
+        "temps_preparation" : {"type" : "integer", "format": "int64"},
+        "nb_personne" : {"type" : "integer", "format": "int64"},
+        "nutriscore" : {"type" : "string"},
+        "preparation" : {"type" : "string"},
+        "tags": { "$ref":"#/definitions/Tags_full"},
+        "categorie": { "$ref": "#/definitions/Categorie_full"},
+        "denree" : { "$ref": "#/definitions/Denree_full"}
       }
     }
   }
