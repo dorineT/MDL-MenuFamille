@@ -60,23 +60,12 @@ export default{
             error: false,
         }
     },
-    async created(){
-        this.loadingRecipe = true
-        DAORecette.getAll().then(
-          (response) => {
-            console.log(response)
-            this.recipe = response
-            this.loadingRecipe = false
-            this.error = false
-          },
-          (error) => {
-            this.error = true;
-            this.message =
-              (error.response && error.response.data) ||
-              error.message ||
-              error.toString();
-          }
-        )
+    created(){
+      this.loadingRecipe = true
+    },
+    mounted(){
+        
+      this.fetchRecipe()
         
     },
     computed: {
@@ -94,11 +83,31 @@ export default{
     },
     methods:{
       receivedError(message){
-        this.error = true;
-        this.message =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
+        console.log('received error recette')
+        
+        this.message = message
+        this.error = true
+        this.recipe=[]
+        this.loadingRecipe = true
+        this.fetchRecipe()
+      },
+      fetchRecipe(){
+        DAORecette.getAll().then(
+          (response) => {
+            console.log(response)
+            this.recipe = response.data
+            this.loadingRecipe = false
+            this.error = false
+            console.log(this.error)
+          },
+          (error) => {
+            this.error = true;
+            this.message =
+              (error.response && error.response.data) ||
+              error.message ||
+              error.toString();
+          }
+        )
       }
     }
 }
