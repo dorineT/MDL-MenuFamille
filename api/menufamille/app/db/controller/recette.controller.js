@@ -224,3 +224,39 @@ exports.find_Recipe_tags = (req, res) => {
     });
   });  
 }
+
+
+// Créer une recette avec absolument tout (recette + tags + catégories + denrées ) --> impossible à faire avec des includes, on va tout cascader
+
+exports.Create_Recipe_All_Infos = (req, res) => {
+  
+  Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, 
+                  temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, 
+                  preparation: req.body.preparation, url_image: req.body.url_image})
+  .then(data => { 
+    const id_new_recette = data.id_recette;;
+
+    /// On tacle d'abords les Tags  
+    req.body.tags.forEach(tag => {
+      db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag});
+    });
+
+    /// Au tour des Catégories
+    req.body.categories.forEach(categorie => {
+      db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie});
+    });
+
+    /// Enfin les Denrées
+    req.body.denrees.forEach(denree => {
+      db.recette_denree.create({ id_recette: id_new_recette, id_denree : denree.id_denree, quantite : denree.recette_denree.quantite});
+    });
+      res.send(data);
+    })
+
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err || "Some error occurred while inserting Recipes"
+      });
+  });
+}

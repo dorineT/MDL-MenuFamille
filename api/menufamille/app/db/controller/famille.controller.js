@@ -209,7 +209,6 @@ exports.CreateFamilly = (req, res) => {
   .then(data => { 
 
     const id_fam = data.id_famille;
-    console.log(id_fam);
 
     db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: "parent"})
     .then(data2 => {
