@@ -60,8 +60,10 @@
                   </v-chip-group>
             </v-col>                                                   
            </v-row>
-        </v-card-actions>
-        <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"></recipe-info>
+        </v-card-actions>   
+   
+          <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"></recipe-info>
+  
     </v-card>  
   </v-hover>
 </template>
@@ -77,6 +79,9 @@ export default {
         return{
             showDialogueInfoRecipe: false
         }
+    },
+    created(){
+      console.log('created recipe card')
     },
     methods:{
         showInfo(){

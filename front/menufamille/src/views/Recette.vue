@@ -13,29 +13,29 @@
 
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
-                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :max-height="ContainerHeight">
+                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
                         <v-row >
+
                             <v-col v-for="(item,i) in recipe" :key="i" 
                                 cols="12" sm="6" md="4" lg="3" xl="3"
                                 >
                                 <!-- nom de recette -->
-                                <recipe-card  :recipe="item" @transmitError="receivedError"></recipe-card>
-                            </v-col>    
+                                  <v-lazy
+                                  :options="{
+                                      threshold: 0.25
+                                  }"
+                                  height="350px"
+                                  transition="fade-transition">
+                                  <recipe-card  :recipe="item" @transmitError="receivedError"></recipe-card>
+                               </v-lazy>  
+                                
+                            </v-col> 
+                      
                         </v-row>    
                         
                     </v-card> 
 
-                    <v-card v-else :max-height="ContainerHeight">
-                        <v-card-text  align="center">
-                               <v-img                                                  
-                              :aspect-ratio="16/9"                  
-                              contain
-                              max-width="500"
-                              src="../assets/tiny_loader.gif"                         
-                            ></v-img>
-                            <p style="font-size: 20px; margin-top:40px">Chargement en cours ...</p>
-                        </v-card-text>
-                    </v-card>                    
+                    <loading-avocado v-else></loading-avocado>                   
                    
                 </v-col>
             </v-row>
@@ -46,11 +46,12 @@
 <script>
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
+import loadingAvocado from '../components/loadingAvocado.vue'
 let DAORecette = new RecetteDAO()
 
 export default{
     components: {
-      RecipeCard
+      RecipeCard, loadingAvocado
     },
     data(){
         return{

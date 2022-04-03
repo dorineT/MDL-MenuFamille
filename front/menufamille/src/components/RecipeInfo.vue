@@ -1,10 +1,10 @@
 <template>
-<v-lazy>
+
 	<v-row>
 		<v-dialog
 			v-model="dialogInfoRecipe"
-			scrollable
-			persistent
+			scrollable	
+            @click:outside="closeDialogueEvent"		            
 			:overlay="false"
 			:max-width="width"
 			transition="dialog-transition"
@@ -65,6 +65,14 @@
                                 </v-col>
                                 <v-col>
                                     nutriscore + kal + preparation time
+                                    <v-img
+                                      v-if="recipe.nutriscore !== undefined"
+                                      :aspect-ratio="16/9"                  
+                                      contain
+                                      max-width="500"                                   
+                                      :src="require('../assets/'+recipe.nutriscore+'.jpg')"  ></v-img>
+                                    
+
 
                                     <v-chip-group >
                                         <v-chip
@@ -94,7 +102,7 @@
 			</v-card>
 		</v-dialog>
 	</v-row>
-    </v-lazy>
+ 
 </template>
 
 <script>
@@ -110,7 +118,8 @@
 				recipe: {},
 			};
 		},
-		mounted() {
+		created() {
+            console.log('created')
 			//get recette info
 			DAORecette.getById(this.id_recette).then(
 				(response) => {
@@ -127,6 +136,12 @@
 				}
 			);
 		},
+        methods:{
+            closeDialogueEvent(){
+                console.log('destroyed')
+                this.$emit("closeDialog", false, this.message);
+            }
+        },
 		computed: {
 			width() {
 				let x = 100;
