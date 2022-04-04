@@ -33,3 +33,6 @@ router.post('/CreateRecipeAllInfo',[authJwt.verifyToken, authJwt.isParent], rece
 
 // Get all nutriscores and calories
 router.get('/GetAllNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetAllNutAndCal);
+
+// Get mean nutriscores and calories
+router.get('/GetMeanNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetMeanNutAndCal);

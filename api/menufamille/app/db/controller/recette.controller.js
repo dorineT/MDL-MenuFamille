@@ -263,12 +263,72 @@ exports.Create_Recipe_All_Infos = (req, res) => {
 }
 
 
-/// aray de chaque calorie et nutriscore des 
+/// array de chaque calorie et nutriscore des 
 exports.GetAllNutAndCal = (req, res) => {
 
   Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
   .then(data => {
       res.send(data.denrees)
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Recipes."
+        });
+      });  
+}
+
+/// get mean of nutriscore and calories for a recipe
+
+exports.GetMeanNutAndCal = (req, res) => {
+
+  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
+  .then(data => {
+    
+    let tmp_nut = 0;
+    let tmp_cal = 0;
+    let nb_iter_nut = 0;
+    let nb_iter_cal = 0;
+    let retour = new Object(); 
+
+    data.denrees.forEach(denree =>{
+        if (denree.calories != null){
+        tmp_cal = tmp_cal + denree.calories;
+        nb_iter_cal = nb_iter_cal + 1;
+        }
+        switch(denree.nutriscore) {
+          case 'A' : tmp_nut = tmp_nut + 1 
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'B' : tmp_nut = tmp_nut + 2
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'C' : tmp_nut = tmp_nut + 3
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'D' : tmp_nut = tmp_nut + 4
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'E' : tmp_nut = tmp_nut + 5
+                    nb_iter_nut = nb_iter_nut + 1;
+            break;
+        }
+      })
+    retour.calorie = tmp_cal /  nb_iter_cal;
+    tmp_nut = tmp_nut / nb_iter_nut;
+    if (1 <= tmp_nut <= 1.5 ){
+      retour.nutriscore = 'A';
+    } else if (1.5 < tmp_nut <= 2.5) {
+      retour.nutriscore = 'B';
+    } else if (2.5 < tmp_nut <= 3.5) {
+      retour.nutriscore = 'C';
+    } else if (3.5 < tmp_nut <= 4.5) {
+      retour.nutriscore = 'D';
+    } else {
+      retour.nutriscore = 'E';
+    }
+    
+    res.send(retour);
     })
     .catch(err => {
         res.status(500).send({
