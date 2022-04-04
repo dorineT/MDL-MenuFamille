@@ -6,11 +6,11 @@
     :max-width="width"
     transition="dialog-transition"
   >
-    <!--<v-toolbar dark color="#FFB74D">
+    <v-toolbar dark color="#FFB74D">
 					<v-btn icon dark @click="$emit('closeDialog', false, message)">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
-				</v-toolbar>-->
+	</v-toolbar>
      <v-card >
             <v-card-text>
             <v-container fluid>
