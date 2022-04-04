@@ -22,11 +22,37 @@
                     required
                   ></v-text-field>
                 </v-col>
-              </v-row>
-              <v-row>
+                <v-col cols="12" sm="6" md="6" lg="6" xl="12">
+                  <v-text-field
+                    v-model="nbPers"
+                    label="Nombre de personnes"
+                    required
+                  ></v-text-field>
+                </v-col>
+
                 <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
                   <v-autocomplete
+                  required
+                  label="Catégories"
+                    chips
+                    clearable
+                    deletable-chips
+                    multiple
+                    :items="tagsListe"
+                    item-text="nom"
+                    item-value="id_tag"
+                    return-object
+                    v-model="tagsChoix"
+                    color="orange lighten-2"
+                    no-data-text="Aucune catégorie correspondante"
+                  ></v-autocomplete>
+                  
+                </v-col>
+                <v-col cols="12" sm="6" md="6" lg="6" xl="12">
+                  
+                  <v-autocomplete
+                  label="Tags"
                     chips
                     clearable
                     deletable-chips
@@ -41,23 +67,192 @@
                   ></v-autocomplete>
                   
                 </v-col>
-                <v-col cols="12" sm="6" md="6" lg="6" xl="12">
-                  
-                  <v-autocomplete
-                    chips
+
+                <!--Ingredients-->
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                   <v-combobox
+                   label="Ingrédients"
+                    v-model="model"
+                    :filter="filter"
+                    :hide-no-data="!search"
+                    :items="items"
+                    :search-input.sync="search"
+                    hide-selected
                     clearable
-                    deletable-chips
                     multiple
-                    :items="tagsListe"
-                    item-text="nom"
-                    item-value="id_tag"
-                    return-object
-                    v-model="tagsChoix"
-                    color="orange lighten-2"
-                    no-data-text="Aucun tag correspondant"
-                  ></v-autocomplete>
-                  
+                    small-chips
+                    solo
+                  >
+                    <template v-slot:no-data>
+                      <v-list-item>
+                        <span class="subheading">Create</span>
+                        <v-chip
+                          :color="`${colors[nonce - 1]} lighten-3`"
+                          label
+                          small
+                        >
+                          {{ search }}
+                        </v-chip>
+                      </v-list-item>
+                    </template>
+                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                      <v-chip
+                        v-if="item === Object(item)"
+                        v-bind="attrs"
+                        :color="`${item.color} lighten-3`"
+                        :input-value="selected"
+                        label
+                        small
+                      >
+                        <span class="pr-2">
+                          {{ item.text }}
+                        </span>
+                        <v-icon
+                          small
+                          @click="parent.selectItem(item)"
+                        >
+                          $delete
+                        </v-icon>
+                      </v-chip>
+                    </template>
+                    <template v-slot:item="{ index, item }">
+                      <v-text-field
+                        v-if="editing === item"
+                        v-model="editing.text"
+                        autofocus
+                        flat
+                        background-color="transparent"
+                        hide-details
+                        solo
+                        @keyup.enter="edit(index, item)"
+                      ></v-text-field>
+                      <v-chip
+                        v-else
+                        :color="`${item.color} lighten-3`"
+                        dark
+                        label
+                        small
+                      >
+                        {{ item.text }}
+                      </v-chip>
+                      <v-spacer></v-spacer>
+                      <v-list-item-action @click.stop>
+                        <v-btn
+                          icon
+                          @click.stop.prevent="edit(index, item)"
+                        >
+                          <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </template>
+                  </v-combobox>
                 </v-col>
+
+                <!--quantite des ingredients-->
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-card>
+                    <v-card-title>
+                      Quantité
+                    </v-card-title>
+                    <v-card-text class="d-flex">
+                      <v-form>
+
+                        <div
+                          class="mb-2 ml-2 d-inline-block"
+                          v-for="(ingredient, index) in currentIngredients"
+                          :key="index"
+                        >
+                          {{ ingredient.name }}
+                          <v-text-field                                                        
+                            @input="updateQuantity(index, $event.target.value)"
+                            :value="ingredient.quantity"
+                            placeholder="200g, 20ml.."
+                            required
+                            width="10px"
+                            class=""
+                          ></v-text-field>
+                        </div>
+                      </v-form>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+
+
+                <!--durees etc-->
+
+                <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+                  <v-text-field                   
+                    label="Temps de préparation"
+                    required
+                  ></v-text-field>
+                </v-col>
+
+                 <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+                  <v-text-field                   
+                    label="Temps de cuisson"
+                    required
+                  ></v-text-field>
+                </v-col>
+                 <v-col cols="12" sm="4" md="4" lg="4" xl="4">
+                   Difficulté
+                  <v-rating
+                    
+                    color="red lighten-3"
+
+                    hover
+                    length="5"
+                    size="40"
+                    value="2.5"
+                  ></v-rating>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-text-field                   
+                    label="Url de l'image"
+                    
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-card>
+                    <v-card-title>Préparation</v-card-title>
+                    <v-card-text>
+                      <v-form>
+                        <div
+                          class="mb-2"
+                          v-for="(step, index) in currentSteps"
+                          :key="index"
+                        >
+                          <label class="mr-3">{{ step.step }}</label>
+                          <input
+                            type="text"
+                            class="form-control form-control-sm mr-3"
+                            @input="updateSteps(index, $event.target.value)"
+                            :value="step.description"
+                            placeholder="Mix the ingredients.."
+                            style="width: 80%"
+                            required
+                          />
+                          <button
+                            class="btn btn-sm custom-btn-secondary mr-2"
+                            @click="addStep(index, $event)"
+                            v-if="index != 0 && index == currentSteps.length - 1"
+                          >
+                            +
+                          </button>
+                          <button
+                            class="btn btn-sm custom-btn-primary"
+                            @click="removeStep(index, $event)"
+                            v-if="index != 0 && index != currentSteps.length"
+                          >
+                            -
+                          </button>
+                        </div>
+                      </v-form>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+
               </v-row>
 
 
@@ -90,6 +285,7 @@ export default {
           tagsChoix:[],
           recipe: {
             name: "",
+            nbPers: null,
             note: "",
             category: "",
             image:
@@ -116,6 +312,36 @@ export default {
             { name: "Plat", value: "plat" },
             { name: "Entrée", value: "entrée" },
           ],
+
+
+          //combobox
+          activator: null,
+          attach: null,
+          colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
+          editing: null,
+          editingIndex: -1,
+          items: [
+            { header: 'Select an option or create one' },
+            {
+              text: 'Foo',
+              color: 'blue',
+            },
+            {
+              text: 'Bar',
+              color: 'red',
+            },
+          ],
+          nonce: 1,
+          menu: false,
+          model: [
+            {
+              text: 'Foo',
+              color: 'blue',
+            },
+          ],
+          x: 0,
+          search: null,
+          y: 0,
         };
       },
     async created(){
@@ -178,6 +404,28 @@ export default {
         updateSteps($event, value) {
           this.$set(this.currentSteps[$event], "description", value);
         },
+        //combobox
+      edit (index, item) {
+        if (!this.editing) {
+          this.editing = item
+          this.editingIndex = index
+        } else {
+          this.editing = null
+          this.editingIndex = -1
+        }
+      },
+      filter (item, queryText, itemText) {
+        if (item.header) return false
+
+        const hasValue = val => val != null ? val : ''
+
+        const text = hasValue(itemText)
+        const query = hasValue(queryText)
+
+        return text.toString()
+          .toLowerCase()
+          .indexOf(query.toString().toLowerCase()) > -1
+      },
     },
     computed: {
         width() {
@@ -195,7 +443,28 @@ export default {
                     return this.$vuetify.breakpoint.width - x * 3;
             }
         }
-    }
+    },
+  watch: {
+    model (val, prev) {
+      if (val.length === prev.length) return
+
+      this.model = val.map(v => {
+        if (typeof v === 'string') {
+          v = {
+            text: v,
+            color: this.colors[this.nonce - 1],
+          }
+
+          this.items.push(v)
+
+          this.nonce++
+        }
+
+        return v
+      })
+    },
+  },
+
 }
 </script>
 
