@@ -1093,12 +1093,24 @@
         ],
         "parameters": [
           {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "$ref": "#/definitions/Recette_all_info"
-              }
-            } 
+            "name": "recipe",
+            "in": "body",
+            "description": "full information of a recipe",
+            "required": true,
+            "type": "object",
+            "properties": {
+              "nom" : {"type" : "string"},
+              "difficulte" : {"type" : "integer", "format": "int64"},
+              "calorie" : {"type" : "integer", "format": "int64"},
+              "temps_cuisson" : {"type" : "integer", "format": "int64"},
+              "temps_preparation" : {"type" : "integer", "format": "int64"},
+              "nb_personne" : {"type" : "integer", "format": "int64"},
+              "nutriscore" : {"type" : "string"},
+              "preparation" : {"type" : "string"},
+              "tags": { "$ref":"#/definitions/Tags_full"},
+              "categorie": { "$ref": "#/definitions/Categorie_full"},
+              "denree" : { "$ref": "#/definitions/Denree_full"}
+            }
           }
         ],
         "responses": {
@@ -1107,21 +1119,98 @@
             "schema": {
               "type": "object",
               "properties": {
-                "recettes": { "type" : "array", "items" :
-                  {"type": "object", "properties": 
-                    {
                       "id_recette": {"type": "integer","format": "int64"},
-                      "nom": {"type":"string"}
+                      "nom" : {"type" : "string"},
+                      "difficulte" : {"type" : "integer", "format": "int64"},
+                      "calorie" : {"type" : "integer", "format": "int64"},
+                      "temps_cuisson" : {"type" : "integer", "format": "int64"},
+                      "temps_preparation" : {"type" : "integer", "format": "int64"},
+                      "nb_personne" : {"type" : "integer", "format": "int64"},
+                      "nutriscore" : {"type" : "string"},
+                      "preparation" : {"type" : "string"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/denree/Like/{nom}": {
+          "get": {
+            "tags": [
+              "denree"
+            ],
+            "summary": "Get a list of denree with the name 'nom' or something close to that",
+            "description": "Get a list of denree with a name + an iLike (like an SQL 'Like' but case insensitive)",
+            "operationId": "FindWithLike",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "nom",
+                "in": "path",
+                "description": "name of the denree",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "denrees": { "type" : "array", "items" :
+                      {"type": "object", "properties": 
+                        {
+                          "id_denree": {"type": "integer","format": "int64"},
+                          "nom": {"type":"string"},
+                          "nutriscore": {"type": "string"}
+                        }
+                      }
                     }
                   }
                 }
               }
             }
           }
+        },
+        "/denree/FindOrCreate/{nom}": {
+          "get": {
+            "tags": [
+              "denree"
+            ],
+            "summary": "Find a denree from it's exact name (case sensitive) or create it without nutriscore",
+            "description": "Get a denree or create it",
+            "operationId": "FindWithLike",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "nom",
+                "in": "path",
+                "description": "exact name of the denree",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_denree": {"type": "integer","format": "int64"},
+                    "nom": {"type":"string"},
+                    "nutriscore": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
         }
-      }
-    }
-  },
+      },
   "securityDefinitions": {
     "api_key": {
       "type": "apiKey",
@@ -1337,11 +1426,11 @@
     },
     "Denree_full" :{
       "type": "object",
-      "propeties": {
+      "properties": {
         "id_denree" : {"type" : "integer", "format": "int64"},
         "nom" : {"type" : "string"},
         "nutriscore" : {"type" : "string"},
-        "recette_denree" : {"type": "object", "propeties": {"quantite" : {"type" : "integer", "format": "int64"}}}
+        "recette_denree" : {"type": "object", "properties": {"quantite" : {"type" : "integer", "format": "int64"}}}
       }
     },
     "Recette_all_info":{
