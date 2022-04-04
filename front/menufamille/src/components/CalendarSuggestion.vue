@@ -57,7 +57,7 @@
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
               <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                 <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
-                  <p>{{ sugg.recette.nom }} </p> <!-- à supprimer les éléments inutiles-->
+                  <p>{{ sugg.recette.nom }} </p> 
                   <v-avatar
                     color="indigo"
                     size="30"
@@ -136,7 +136,6 @@ export default {
     props:['periodeMenu','menuId'],
     data () {
       return {
-        find: false,  //à retirer
         nbPersonneFamille: null,
         headers: [],
         menu: {}, 
@@ -182,7 +181,7 @@ export default {
           console.log(periodeFind) 
           //open dialogue with even bus
           eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date, menuFind.menu_calendrier.id_menu)
-          this.find = true // à supprimer
+       
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -309,17 +308,7 @@ export default {
           //call api
           menuSuggest.sendMenuUpdate(this.menu)
         }
-      },/*
-      searchId_membre(suggesti){
-        for (const suggest of suggesti){
-        if (suggest.id_membre === currentUser.id_membre ){
-          find =  true
-        }
-        else {
-          find = find
-          }
-        }
-      }*/
+      },
     }
 }
 </script>
