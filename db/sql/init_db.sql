@@ -119,6 +119,7 @@ CREATE TABLE DENREE (
     id_denree SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE ,
     nutriscore VARCHAR,
+    calories INTEGER NOT NULL,
     PRIMARY KEY (id_denree)
 
 );

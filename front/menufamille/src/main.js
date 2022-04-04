@@ -5,6 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import setupInterceptors from './services/setupInterceptors';
 import VueQRCodeComponent from 'vue-qrcode-component'
+import VueMeta from 'vue-meta'
 
 //import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
@@ -17,6 +18,7 @@ import VueQRCodeComponent from 'vue-qrcode-component'
 //Vue.use(IconsPlugin)
 
 Vue.use(require('vue-moment'));
+Vue.use(VueMeta)
 Vue.component('qr-code', VueQRCodeComponent)
 
 

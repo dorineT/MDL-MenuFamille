@@ -71,6 +71,11 @@ import EventBus from "./common/EventBus";
 
 export default {
   name: "App",
+  metaInfo: {
+	  meta: [
+    	{'http-equiv':'refresh', content:'900'}
+  	]
+  },
   data: () => ({
     drawer: false,
 	image: {backgroundImage: "url(https://img.wallpapersafari.com/desktop/1680/1050/26/92/0KH5pV.jpg)"}
