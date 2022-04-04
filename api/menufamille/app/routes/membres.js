@@ -18,15 +18,6 @@ router.put('/:id', membres.UpdateMember);
 
 router.delete('/:id', membres.DeleteMember);
 
-router.get("/GetListMembre/:id_famille",[authJwt.verifyToken], (req, res)=> {
-    req.valid = true;
-    membres.GetListMembre(req,res)
-});
-
-router.get("/Request/:id_famille",[authJwt.verifyToken, authJwt.isMember, authJwt.isParent], (req, res)=> {
-    req.valid = false;
-    membres.GetListMembre(req,res)
-});
 
 /// Dés que vous utilisez un des join où leave familly, afin de facilité la lisibilité des requètes, 
 /// la fonction pour ajouter un membre au nbr de membre dans la table famille
@@ -34,7 +25,4 @@ router.get("/Request/:id_famille",[authJwt.verifyToken, authJwt.isMember, authJw
 /// famille/AjouterMembreNumber/:id 
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
-
-router.post("/:id_fam/:id_mem",[authJwt.verifyToken], membres.JoinFamilly);
-
 router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);

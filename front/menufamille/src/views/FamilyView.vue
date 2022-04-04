@@ -56,27 +56,38 @@
                     </template>
                     <template v-slot:item.actions = "{ item }">
                       
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
                       <v-icon
-                        small
                         class="mr-2"
+                        v-on="on"
+                        @click="switchRole(item)"
                       >
                         mdi-account-convert
                       </v-icon>
+                      </template>
+                      <span>Changer rôle</span>
+                      </v-tooltip>
                       
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
                       <v-icon
-                        small
                         class="mr-2"
+                        v-on="on"
                         @click="deleteMember(item)"
                       >
                         mdi-account-multiple-minus
                       </v-icon>
+                        </template>
+                      <span>Retirer membre</span>
+                      </v-tooltip>
                     </template>
                   </v-data-table>
                 </v-card-text>
               </v-card>
               
             </v-col>
-            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6">
+            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="this.isRequest">
               <v-card height="200px">
                 <v-toolbar flat>
                   <v-toolbar-title>Demandes en attente</v-toolbar-title>
@@ -85,7 +96,7 @@
 
                 <v-list>
                   <v-col v-for="membre in requestFamily" :key="membre.id" cols="12">
-                    <requestcard :name="membre.membre" :id="membre.id" />
+                    <requestcard :name="membre.membre" :id="membre.id" @requestStatut="requestStatut" />
                   </v-col>
                 </v-list>
 
@@ -119,12 +130,20 @@
               <v-card>
                 <v-card-title>Rejoindre une famille</v-card-title>
                 <v-card-text>
+                  <v-form
+                  ref="form"
+                  >
                         <v-text-field
-                          name="name"
+                          name="code"
+                          append-outer-icon='mdi-send'
                           label="Code d'accès"
                           v-model="joinFamillyInput"
+                          :rules="codeRules"
                           id="id"
+                          required
+                          @click:append-outer="() => {if (!$refs.form.validate()) return; joinFamily(joinFamillyInput)}"
                         ></v-text-field>
+                  </v-form>
                   </v-card-text>
               </v-card>
               
@@ -144,6 +163,10 @@ let DAOfamily = new FamilyDao;
     editedIndex: -1,
     data (){
       return{
+        codeRules: [
+        v => !!v || 'Veuillez entrer un code',
+        v => v !== null && v.length == 6 || 'Code invalide',
+        ],
         select: [],
         selected: "",
         code: "",
@@ -156,7 +179,14 @@ let DAOfamily = new FamilyDao;
           role: '',
           actions: ''
         },
-        headers:[
+        membresFamily:[],
+        requestFamily:[],
+        joinFamillyInput: null
+      }
+    },
+    computed: {
+      headers() {
+        return [
           {
             text: 'Membre',
             align: 'start',
@@ -169,25 +199,28 @@ let DAOfamily = new FamilyDao;
             sortable: false,  
             value: 'role'               
           },
-          {
+          (this.currentRole === 'parent'? {
             text: 'Actions',
             align: '',
             sortable: false,   // des boutons, faire un template slot de la colonne pour custom   
             value:'actions'
-          },
-        ],
-        membresFamily:[],
-        requestFamily:[],
-        joinFamillyInput: null
-      }
-    },
-    computed: {
+          }: ''
+          ) 
+        ];
+      },
+      isRequest() {
+        return this.requestFamily > 0;
+      },
       currentFamily() {
         return this.$store.state.info;
       },
+      currentRole() {
+        console.log(this.$store.state.info.roleActuel)
+        return this.$store.state.info.roleActuel;
+      },
       accessCode() {
         const host = window.location.protocol + "//" + window.location.host;
-        return host+"/request?code="+this.code;
+        return host+"/family?code="+this.code;
       }
     },
     created() {
@@ -202,6 +235,7 @@ let DAOfamily = new FamilyDao;
         this.updateMember();
         this.generateCode();
         this.updateRequest();
+        if(this.$route.query.code) this.joinFamily(this.$route.query.code);
     },
     methods : {
       changeFamille(){
@@ -241,12 +275,13 @@ let DAOfamily = new FamilyDao;
         DAOfamily.getMembers(this.currentFamily.idFamilleActuel).then(
           (response) => {
             response.data.membres.forEach(membre => {
+
               let value = {
                 id: membre.id_membre,
                 membre: membre.nom + " " +membre.prenom,
-                role: membre.role.role,
-                action: ''
+                role: membre.role.role
               }
+              if(this.currentRole === 'parent') value = Object.assign(value, {action: ''});
               this.membresFamily.push(value)
               this.update = false;
             })
@@ -282,6 +317,61 @@ let DAOfamily = new FamilyDao;
             }
         )
         
+      },
+      joinFamily(code) {
+        DAOfamily.joinFamily(code).then(
+          (response) => {
+            this.update = false;
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
+      switchRole(item) {
+         let newRole;
+         switch(item.role) {
+           case 'enfant':
+             newRole = 'parent';
+             break;
+           case 'parent':
+             newRole = 'enfant';
+         }
+         DAOfamily.switchRole(item.id, this.currentFamily.idFamilleActuel, newRole).then(
+          (response) => {
+            let index = this.membresFamily.indexOf(item)
+            this.membresFamily[index].role = newRole 
+            this.update = false;
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
+      requestStatut(type, id_membre) {
+        DAOfamily.updateRequest(type, this.currentFamily.idFamilleActuel, id_membre).then(
+          (response) => {
+            this.update = false;
+            const item = this.requestFamily.find(membre => membre.id == id_membre)
+            this.requestFamily.splice(this.requestFamily.indexOf(item), 1)
+            if(type === 'accepted') this.updateMember();
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       },
       closeDelete () {
         this.dialogDelete = false

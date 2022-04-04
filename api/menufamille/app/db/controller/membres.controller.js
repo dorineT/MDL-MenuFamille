@@ -91,60 +91,8 @@ exports.DeleteMember = (req, res) => {
       });
   });
 };
-
-
-
-/// GetListMembre
-
-exports.GetListMembre = (req, res, next) =>{
-  const id_fam = req.params.id_famille;
-   Family.findOne({
-     where :{
-       'id_famille': id_fam,   
-     },
-     attributes: [],
-     include: [
-     {
-      model: db.membres,
-      attributes: ["id_membre", "nom","prenom"],
-      through : {model: db.famille_membre, as: 'role', attributes: ["role"], where: {'valid': req.valid}}
-    }],
-   }
-   ).then(data => { 
-     res.send(data);
-   })
-   .catch(err => {
-     res.status(500).send({
-       message:
-         err.message || "Some error occurred while getting Membres"
-     });
-   });
- };
  
 
- /// Rejoindre une famille
-
- exports.JoinFamilly = (req, res) => {
-   const id_fam = req.params.id_fam;
-   const id_mem = req.params.id_mem;
-   const role_req = req.body.role;
-   if (role_req == "parent" || role_req == "enfant"){
-    db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: role})
-    .then(data => { 
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while joining a familly"
-      });
-    });
-   } else {
-    res.status(403).send({
-      message: "Bad request, role must be 'parent' or 'enfant'" 
-    });
-  }
- }
 
 /// Quitter une famille 
 
@@ -153,7 +101,7 @@ exports.LeaveFamilly = (req, res) => {
   const id_mem = req.params.id_mem;
   db.famille_membre.destroy({
     where: 
-    { [Op.add]: 
+    { [Op.and]: 
       {
         id_famille: id_fam,
         id_membre: id_mem

@@ -51,11 +51,12 @@ CREATE TABLE REFRESH_TOKEN (
 );
 
 CREATE TYPE arbre AS ENUM ('parent','enfant');
+CREATE TYPE statut AS ENUM ('accepter','refuser','attente');
 CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
                                 role arbre NOT NULL,
-                                valid BOOL NOT NULL DEFAULT false,
+                                valid statut NOT NULL DEFAULT 'attente',
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
@@ -271,17 +272,25 @@ for each row
 execute procedure delete_famille()
 
 
-create function delete_update_membre()
-returns trigger as $$
+CREATE OR REPLACE FUNCTION public.delete_update_membre()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
 declare
 	nb integer;
 begin
-	select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f.id_membre = old.id_membre  and f."role" = 'parent' group by f.id_famille;
-    if nb > 0 and nb = 1 then 
-       raise exception 'unique parent de la famille' using ERRCODE = 23500;
+	if old.role = 'parent' then
+		select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f."role" = 'parent' group by f.id_famille;
+    	if nb > 0 and nb = 1 then 
+       		raise exception 'unique parent de la famille' using ERRCODE = 23500;
+    	end if;
     end if;
-    return old;  
-end; $$ language plpgsql;
+   	if tg_op = 'UPDATE' then 
+    	return new;  
+    elsif tg_op = 'DELETE' then
+    	return old;
+    end if;
+end; $function$;
 
 create trigger delete_membre
 before delete

@@ -149,15 +149,15 @@ exports.DeleteMemberFamilly = (req, res) => {
 
 // Définir rôle membres famille
 
-exports.DefineRole = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_fam = req.params.id_fam;
+exports.SwitchRole = (req, res) => {
+  const id_membre = req.params.id_membre;
+  const id_famille = req.params.id_famille;
   const role_req = req.body.role;
   if (role_req == "parent" || role_req == "enfant"){
     db.famille_membre.update( {role: role_req}, {
-      where: { [Op.add]: 
-          {id_famille: id_fam,
-           id_membre: id_mem}
+      where: { [Op.and]: 
+          {id_famille: id_famille,
+           id_membre: id_membre}
       }
     })
     .then(num =>{
@@ -178,27 +178,8 @@ exports.DefineRole = (req, res) => {
       message: "Bad request, role must be 'parent' or 'enfant'" 
     });
   }
-}
+};
 
-
-/// Parent existe-il ?
-
-exports.PapaOuTes = (req,res) =>{
-  const id_fam = req.params.id_fam
-  db.famille_membre.findAndCountAll({
-    where: { [Op.add]: 
-      {id_famille: id_fam,
-       role: 'parent'}
-      }
-  })
-  .then(rep => {
-    if (rep >= 1){
-      res.send(true);
-    } else {
-      res.send(false);
-    }
-  })
-}
 
 
 
@@ -232,58 +213,7 @@ exports.CreateFamilly = (req, res) => {
 };
 
 
-//// Lower Member count
 
-exports.LowerMemberCount = (req, res) => {
-  const id = req.params.id;
-  const nv_membres = req.body.nb_membres - 1;
-  Famille.update({
-    nb_membres: nv_membres
-  },{
-    where: {id_famille: id}
-  })
-  .then(num =>{
-    if (num == 1) {
-      res.send(nv_membres);
-    } else{
-      res.send({
-        message: `Cannot update familly with id=${id}`
-      })
-    }
-  })
-  .catch(err => {
-      res.status(500).send({
-          message:
-            err.message || `Some error occurred while updating familly id=${id}`
-      });
-  });
-}
-
-//// Add Member count
-exports.AddMemberCount = (req, res) => {
-  const id = req.params.id;
-  const nv_membres = req.body.nb_membres + 1;
-  Famille.update({
-    nb_membres: nv_membres
-  },{
-    where: {id_famille: id}
-  })
-  .then(num =>{
-    if (num == 1) {
-      res.send(nv_membres);
-    } else{
-      res.send({
-        message: `Cannot update familly with id=${id}`
-      })
-    }
-  })
-  .catch(err => {
-      res.status(500).send({
-          message:
-            err.message || `Some error occurred while updating familly id=${id}`
-      });
-  });
-}
 
 
 ///// Check le code d'accès
@@ -333,4 +263,77 @@ exports.CheckAccesCode = (req, res) => {
       });
     }
   })  
-}
+};
+
+/// GetListMembre
+
+exports.GetListMembre = (req, res, next) =>{
+  const id_fam = req.params.id_famille;
+   Famille.findOne({
+     where :{
+       'id_famille': id_fam,   
+     },
+     attributes: [],
+     include: [
+     {
+      model: db.membres,
+      attributes: ["id_membre", "nom","prenom"],
+      through : {model: db.famille_membre, as: 'role', attributes: ["role"], where: {'statut': req.statut}}
+    }],
+   }
+   ).then(data => { 
+     res.send(data);
+   })
+   .catch(err => {
+     res.status(500).send({
+       message:
+         err.message || "Some error occurred while getting Membres"
+     });
+   });
+ };
+
+ exports.Update_Statut_Request  = (req, res) => {
+  const id_famille = req.params.id_famille;
+  const id_membre = req.params.id_membre;
+  const statut = req.statut;
+  db.famille_membre.update({statut: statut}, {
+    where: { [Op.and]: 
+        {id_famille: id_famille,
+         id_membre: id_membre}
+    }
+  })
+  .then(num =>{
+    if (num == 1) {
+      res.send({
+        message: "Familly_Member was updated"
+      });
+    } else{
+      res.send({
+        message: `Cannot update Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while updating Familly_Member with id_famille=${id_famille} && id_membre=${id_membre}`
+      });
+  });
+};
+
+ /// Rejoindre une famille
+
+exports.joinFamilly = (req, res) => {
+  const id_famille = req.id_famille;
+  const id_membre = req.id_membre;
+   db.famille_membre.create({id_famille: id_famille, id_membre: id_membre, role: 'enfant', statut: 'attente'})
+   .then(data => { 
+     res.send(data);
+   })
+   .catch(err => {
+     res.status(500).send({
+       message:
+         "Vous êtes déjà membre de cette famille!"
+     });
+   });
+};

@@ -6,10 +6,6 @@
           <v-container fluid>
             <v-row>
               <v-col>
-                 <v-card-title
-                  class="text-h5"
-                  v-text="name"
-                ></v-card-title>
 
                 <v-card-subtitle>{{name}} veut rejoindre votre famille!</v-card-subtitle>
 
@@ -18,18 +14,20 @@
               <v-col class="align-self-center ">
                  <v-btn
                   class="ml-3 mr-3"
-                  outlined
                   rounded
                   small
+                  color= 'red'
+                  @click="$emit('requestStatut', 'refused', id)"
                 >
                   Refuser
                 </v-btn>
 
                 <v-btn
                   class="ml-3 mr-3"
-                  outlined
                   rounded
                   small
+                  color= 'green'
+                  @click="$emit('requestStatut', 'accepted', id)"
                 >
                   Accepter
                 </v-btn>
