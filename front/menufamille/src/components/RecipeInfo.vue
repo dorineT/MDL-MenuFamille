@@ -1,30 +1,31 @@
 <template>
-	<v-dialog
-		v-model="dialogInfoRecipe"
-		@click:outside="closeDialogueEvent"
-		:max-width="width"                
-		transition="dialog-transition"
-        scrollable
-	>
-		<!--<v-toolbar dark color="#FFB74D">
+  <v-dialog
+    v-model="dialogInfoRecipe"
+    @click:outside="closeDialogueEvent"
+    @keydown.esc="closeDialogueEvent"
+    :max-width="width"
+    transition="dialog-transition"
+  >
+    <!--<v-toolbar dark color="#FFB74D">
 					<v-btn icon dark @click="$emit('closeDialog', false, message)">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
 				</v-toolbar>-->
-        <v-card>
+     <v-card >
             <v-card-text>
             <v-container fluid>
                 <v-row>
                     <!--
                         col image
                         -->
-                    <v-col cols="3" sm="4" md="5" lg="5" xl="5">
+                    <v-col cols="12" sm="4" md="5" lg="5" xl="5" style="position:fixed" class="media">
                         <v-img
                             v-if="recipe.url_image !== null"
                             style="border-radius: 60px"
                             :aspect-ratio="16 / 9"
                             contain
                             :max-height="height"
+                            :max-width="width-30"
                             :src="recipe.url_image"
                         ></v-img>
                         <v-img
@@ -32,13 +33,24 @@
                             :aspect-ratio="16 / 9"
                             contain
                             :max-height="height"
-                            max-width="500"
+                            :max-width="width-30"
                             src="../assets/platNone.jpg"
                         ></v-img>
                     </v-col>
+                    <v-col cols="12" sm="4" md="5" lg="5" xl="5" class="media">
+                        <v-img
+                            :aspect-ratio="16 / 9"
+                            contain
+                            :max-height="height"
+                            :max-width="width-30"
+                            src="../assets/platNone.jpg"
+                            style="visibility: hidden;"
+                        ></v-img>
+                    </v-col>
+                   
 
                     <!--texte-->
-                    <v-col cols="9" sm="8" md="7" lg="7" xl="7" style="overflow: auto">
+                    <v-col cols="12" sm="8" md="7" lg="7" xl="7" style="overflow: auto">
                         
                         <v-row>
                             <v-col>                             
@@ -156,7 +168,6 @@
                                 auto-grow
                                 :value="recipe.preparation"
                             ></v-textarea>
-                            e Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
                         </v-row>
                         
                     </v-col>
@@ -165,93 +176,117 @@
             </v-container>
             </v-card-text>
         </v-card>
-	</v-dialog>
+  </v-dialog>
 </template>
 
 <script>
-	import RecetteDAO from "../services/api.recette";
-	let DAORecette = new RecetteDAO();
-	import moment from "moment";
+import RecetteDAO from "../services/api.recette";
+let DAORecette = new RecetteDAO();
+import moment from "moment";
 
-	export default {
-		props: ["id_recette", "dialogInfoRecipe"],
-		data() {
-			return {
-				iconBullet: "mdi-circle-small",
-				message: "",
-				recipe: {},
-			};
-		},
-		created() {
-			//get recette info
-			DAORecette.getById(this.id_recette).then(
-				(response) => {
-					this.recipe = response.data;
-				},
-				(error) => {
-					this.message =
-						(error.response && error.response.data) ||
-						error.message ||
-						error.toString();
+export default {
+  props: ["id_recette", "dialogInfoRecipe"],
+  data() {
+    return {
+      cards: [
+        {
+          title: "Favorite road trips",
+          src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
+          flex: 6,
+        },
+        {
+          title: "Best airlines",
+          src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
+          flex: 6,
+        },
+      ],
+      iconBullet: "mdi-circle-small",
+      message: "",
+      recipe: {},
+    };
+  },
+  created() {
+    //get recette info
+    DAORecette.getById(this.id_recette).then(
+      (response) => {
+        this.recipe = response.data;
+      },
+      (error) => {
+        this.message =
+          (error.response && error.response.data) ||
+          error.message ||
+          error.toString();
 
-					this.$emit("closeDialog", true, this.message);
-				}
-			);
-		},
-		methods: {
-			closeDialogueEvent() {
-				console.log("destroyed");
-				this.$emit("closeDialog", false, this.message);
-			},
-			//transforme des minutes en format 00:00
-			transformTime(mins) {
-				if (mins >= 24 * 60 || mins < 0) {
-					throw new RangeError(
-						"Valid input should be greater than or equal to 0 and less than 1440."
-					);
-				}
-				var h = (mins / 60) | 0,
-					m = mins % 60 | 0;
-				return moment.utc().hours(h).minutes(m).format("hh:mm");
-			},
-		},
-		computed: {
-			width() {
-				let x = 100;
-				switch (this.$vuetify.breakpoint.name) {
-					case "xs":
-						return this.$vuetify.breakpoint.width - x;
-					case "sm":
-						return this.$vuetify.breakpoint.width - x;
-					case "md":
-						return this.$vuetify.breakpoint.width - x;
-					case "lg":
-						return this.$vuetify.breakpoint.width - x * 2;
-					case "xl":
-						return this.$vuetify.breakpoint.width - x * 3;
-				}
-			},
-			height() {
-				let x = 0;
-				switch (this.$vuetify.breakpoint.name) {
-					case "xs":
-						return this.$vuetify.breakpoint.height - x;
-					case "sm":
-						return this.$vuetify.breakpoint.height - x;
-					case "md":
-						return this.$vuetify.breakpoint.height - x;
-					case "lg":
-						return this.$vuetify.breakpoint.height - x;
-					case "xl":
-						return this.$vuetify.breakpoint.height - x;
-				}
-			},
-		},
-	};
+        this.$emit("closeDialog", true, this.message);
+      }
+    );
+  },
+  methods: {
+    closeDialogueEvent() {
+      console.log("destroyed");
+      this.$emit("closeDialog", false, this.message);
+    },
+    //transforme des minutes en format 00:00
+    transformTime(mins) {
+      if (mins >= 24 * 60 || mins < 0) {
+        throw new RangeError(
+          "Valid input should be greater than or equal to 0 and less than 1440."
+        );
+      }
+      var h = (mins / 60) | 0,
+        m = mins % 60 | 0;
+      return moment.utc().hours(h).minutes(m).format("hh:mm");
+    },
+  },
+  computed: {
+    width() {
+      let x = 100;
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return this.$vuetify.breakpoint.width - x;
+        case "sm":
+          return this.$vuetify.breakpoint.width - x;
+        case "md":
+          return this.$vuetify.breakpoint.width - x;
+        case "lg":
+          return this.$vuetify.breakpoint.width - x * 2;
+        case "xl":
+          return this.$vuetify.breakpoint.width - x * 3;
+      }
+    },
+    height() {
+      let x = 0;
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return this.$vuetify.breakpoint.height - x;
+        case "sm":
+          return this.$vuetify.breakpoint.height - x;
+        case "md":
+          return this.$vuetify.breakpoint.height - x;
+        case "lg":
+          return this.$vuetify.breakpoint.height - x;
+        case "xl":
+          return this.$vuetify.breakpoint.height - x;
+      }
+    },
+  },
+};
 </script>
 
 <style lang="sass">
 @import '../style/globalStyle'
+
+@media (min-width: 900px)
+  .media
+    margin-left: -5rem
+
+@media (max-width: 601px)
+  .media
+    display: none
+    
+
+html
+    overflow-y: auto
 
 $primary: $colorGreen
 $secondary: $colorOrange
@@ -294,5 +329,4 @@ $secondary: $colorOrange
         width: 6.4rem
         text-align: right
         margin-left: -2rem
-
 </style>
