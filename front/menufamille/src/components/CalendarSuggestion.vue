@@ -36,15 +36,18 @@
                     <v-avatar
                       color="indigo"
                       size="30"
-                    >
+                    > <span class="white--text">
                     {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                    </span>
                     </v-avatar>
                   </div>                
                 </div>
-                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">   
+            <p v-else>
+                <v-btn text @click="goToRecette(item)">   
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
-              </v-btn>                 
+                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                           
+              </v-btn>     
+            </p>
               <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
             </td>
           </tr>
@@ -54,19 +57,26 @@
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
               <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                 <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
-                  <p>{{ sugg.recette.nom }} </p>
+                  <p>{{ sugg.recette.nom }} </p> <!-- à supprimer les éléments inutiles-->
                   <v-avatar
                     color="indigo"
                     size="30"
-                  >
+                  ><span class="white--text">
                   {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                  </span>
+                 
                   </v-avatar>
                 </div>                
               </div>
-              <v-btn   v-if="item.plat!=='/'" text @click="goToRecette(item)">           
-                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
-              </v-btn>          
+          
+             <p v-else>
+
+              <v-btn text @click="goToRecette(item)">           
+                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>    
+                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
+              </v-btn>   
+             </p>
+         
               <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
             </td>
           </tr>
@@ -80,15 +90,18 @@
                     <v-avatar
                       color="indigo"
                       size="30"
-                    >
+                    ><span class="white--text">
                     {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                    </span>
                     </v-avatar>
                   </div>                
                 </div>
+            <p v-else>
               <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
+                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                              
               </v-btn> 
+            </p>
               <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers }} personnes </p>  
             </td>
           </tr>
@@ -123,6 +136,7 @@ export default {
     props:['periodeMenu','menuId'],
     data () {
       return {
+        find: false,  //à retirer
         nbPersonneFamille: null,
         headers: [],
         menu: {}, 
@@ -139,6 +153,11 @@ export default {
           },    
       }
     },
+    computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
    // call api to get the menu 
     async created(){
       this.menu = await menuSuggest.getMenuById(this.menuId) 
@@ -149,7 +168,8 @@ export default {
 
       this.populateHeader(this.items,0,indiceEnd)
       this.fillPlat(this.items,0,indiceEnd)     
-      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
+      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)  
+
     },
     destroy(){
       eventBus.$off('updateMenuSuggestionJour')
@@ -162,6 +182,7 @@ export default {
           console.log(periodeFind) 
           //open dialogue with even bus
           eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date, menuFind.menu_calendrier.id_menu)
+          this.find = true // à supprimer
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = []
@@ -288,7 +309,17 @@ export default {
           //call api
           menuSuggest.sendMenuUpdate(this.menu)
         }
-      },
+      },/*
+      searchId_membre(suggesti){
+        for (const suggest of suggesti){
+        if (suggest.id_membre === currentUser.id_membre ){
+          find =  true
+        }
+        else {
+          find = find
+          }
+        }
+      }*/
     }
 }
 </script>
