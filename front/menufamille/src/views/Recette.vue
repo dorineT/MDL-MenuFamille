@@ -1,5 +1,6 @@
 <template>
     <div class="cardmargin ">
+      <dialog-new-recipe :dialogNewRecipe="showDialogueNewRecipe" @closeDialogNewRecipe="closeDialogNewRecipe" />
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
@@ -7,7 +8,12 @@
                             {{message.message}}
                     </v-alert>
                     <v-card >
-                        <h2>Carnet de recette</h2>
+                        <v-card-title>
+                          Carnet de recettes
+                        </v-card-title>
+                        <v-card-actions  >
+                          <v-btn rounded small class="colorbtnGreen" @click="newRecipe">Nouvelle recette</v-btn>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
 
@@ -47,16 +53,18 @@
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
 import loadingAvocado from '../components/loadingAvocado.vue'
+import DialogNewRecipe from '../components/DialogNewRecipe.vue'
 let DAORecette = new RecetteDAO()
 
 export default{
     components: {
-      RecipeCard, loadingAvocado
+      RecipeCard, loadingAvocado, DialogNewRecipe
     },
     data(){
         return{
             recipe: [],
             loadingRecipe: false,
+            showDialogueNewRecipe: false,
             message: "",
             error: false,
         }
@@ -91,7 +99,7 @@ export default{
         this.recipe=[]
         this.loadingRecipe = true
         this.fetchRecipe()
-      },
+      },      
       fetchRecipe(){
         DAORecette.getAll().then(
           (response) => {
@@ -109,6 +117,13 @@ export default{
               error.toString();
           }
         )
+      },
+      newRecipe(){
+        //show modal      
+        this.showDialogueNewRecipe = true
+      },
+      closeDialogNewRecipe(){
+        this.showDialogueNewRecipe = false
       }
     }
 }
@@ -116,6 +131,7 @@ export default{
 
 <style lang="sass">
 @import "../style/globalStyle"
+
 </style>
 
 <style>
