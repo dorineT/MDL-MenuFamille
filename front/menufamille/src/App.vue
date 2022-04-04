@@ -4,38 +4,38 @@
 		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
-					<v-list-item to="/">
+					<v-list-item to="/" @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-home</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Accueil</v-list-item-title>
 					</v-list-item>
 
-					<v-list-item to="/creationMenu" v-if="this.$store.state.info.roleActuel==='parent'">
+					<v-list-item to="/creationMenu" v-if="this.$store.state.info.roleActuel==='parent'"  @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-pencil</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Création Menu</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/recipe">
+					<v-list-item to="/recipe"  @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-food-turkey</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Recettes</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/">
+					<v-list-item to="/"  @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-format-list-text</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Liste de courses</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/family">
+					<v-list-item to="/family"  @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-account-group</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Famille</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/profile">
+					<v-list-item to="/profile"  @click="drawer = ! drawer">
 						<v-list-item-icon>
 							<v-icon>mdi-account</v-icon>
 						</v-list-item-icon>

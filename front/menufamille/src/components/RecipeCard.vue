@@ -1,7 +1,4 @@
 <template>
-      <v-hover
-        close-delay="227"
-      >
       <v-card @click="showInfo" class="card-recipe" >
         <v-card-title primary-title>                                        
             <h3 class="headline mb-0">{{recipe.nom}}</h3>                                                                                    
@@ -60,12 +57,9 @@
                   </v-chip-group>
             </v-col>                                                   
            </v-row>
-        </v-card-actions>   
-   
-          <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"></recipe-info>
-  
-    </v-card>  
-  </v-hover>
+        </v-card-actions>
+      <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"/>
+    </v-card>
 </template>
 
 <script>
