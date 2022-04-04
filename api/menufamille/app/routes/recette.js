@@ -30,3 +30,6 @@ router.get('/AllTags',[authJwt.verifyToken], recette.find_Recipe_With_Tags);
 
 // Creer recette avec denree, tags et catégorie
 router.post('/CreateRecipeAllInfo',[authJwt.verifyToken, authJwt.isParent], recette.Create_Recipe_All_Infos);
+
+// Get all nutriscores and calories
+router.get('/GetAllNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetAllNutAndCal);

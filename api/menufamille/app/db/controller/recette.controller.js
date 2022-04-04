@@ -261,3 +261,19 @@ exports.Create_Recipe_All_Infos = (req, res) => {
       });
   });
 }
+
+
+/// aray de chaque calorie et nutriscore des 
+exports.GetAllNutAndCal = (req, res) => {
+
+  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
+  .then(data => {
+      res.send(data.denrees)
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Recipes."
+        });
+      });  
+}

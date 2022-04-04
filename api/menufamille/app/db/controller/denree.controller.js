@@ -119,3 +119,20 @@ exports.PutDenree = (req, res) => {
       });
     }); 
   }
+
+  //// Get nutriscore and calories
+
+  exports.Get_Nut_and_Cal = (req, res) => {
+    const id_denreeArg = req.params.id_denree
+    Denree.findAll({
+      where: {id_denree: id_denreeArg},
+      attributes: ['nutriscore', 'calories']
+    }).then(data => {
+      res.send(data);
+    }).catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving denree."
+      });
+    });
+  }

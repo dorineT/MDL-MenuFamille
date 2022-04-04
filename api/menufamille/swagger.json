@@ -1165,7 +1165,8 @@
                         {
                           "id_denree": {"type": "integer","format": "int64"},
                           "nom": {"type":"string"},
-                          "nutriscore": {"type": "string"}
+                          "nutriscore": {"type": "string"},
+                          "calories": {"type": "integer","format": "int64"}
                         }
                       }
                     }
@@ -1430,6 +1431,7 @@
         "id_denree" : {"type" : "integer", "format": "int64"},
         "nom" : {"type" : "string"},
         "nutriscore" : {"type" : "string"},
+        "calories": {"type": "integer","format": "int64"},
         "recette_denree" : {"type": "object", "properties": {"quantite" : {"type" : "integer", "format": "int64"}}}
       }
     },
