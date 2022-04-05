@@ -8,7 +8,7 @@
         scrollable
     >
         <v-card>
-          <v-toolbar dark color="#FFB74D">
+          <v-toolbar dark color="#9CCC65">
             <v-card-title>Nouvelle une recette</v-card-title>
           </v-toolbar>
 
@@ -85,7 +85,7 @@
                   >
                     <template v-slot:no-data>
                       <v-list-item>
-                        <span class="subheading">Create</span>
+                        <span class="subheading mr-2">Nouvel ingrédient</span>
                         <v-chip
                           :color="`${colors[nonce - 1]} lighten-3`"
                           label
@@ -134,16 +134,8 @@
                         small
                       >
                         {{ item.text }}
-                      </v-chip>
-                      <v-spacer></v-spacer>
-                      <v-list-item-action @click.stop>
-                        <v-btn
-                          icon
-                          @click.stop.prevent="edit(index, item)"
-                        >
-                          <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                        </v-btn>
-                      </v-list-item-action>
+                      </v-chip>                     
+
                     </template>
                   </v-combobox>
                 </v-col>
@@ -158,7 +150,7 @@
                       <v-form>
 
                         <div
-                          class="mb-2 ml-2 d-inline-block"
+                          class="ml-6 d-inline-block"
                           v-for="(ingredient, index) in currentIngredients"
                           :key="index"
                         >
@@ -167,9 +159,8 @@
                             @input="updateQuantity(index, $event.target.value)"
                             :value="ingredient.quantity"
                             placeholder="200g, 20ml.."
-                            required
-                            width="10px"
-                            class=""
+                            required                           
+                            class="text-field-witdth"
                           ></v-text-field>
                         </div>
                       </v-form>
@@ -195,14 +186,12 @@
                 </v-col>
                  <v-col cols="12" sm="4" md="4" lg="4" xl="4">
                    Difficulté
-                  <v-rating
-                    
-                    color="red lighten-3"
-
+                  <v-rating                
+                    color="green lighten-3"
                     hover
                     length="5"
                     size="40"
-                    value="2.5"
+                    value="2"
                   ></v-rating>
                 </v-col>
 
@@ -213,41 +202,60 @@
                   ></v-text-field>
                 </v-col>
 
+                <!--preparation de la recette -->
                 <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                   <v-card>
                     <v-card-title>Préparation</v-card-title>
                     <v-card-text>
                       <v-form>
-                        <div
-                          class="mb-2"
-                          v-for="(step, index) in currentSteps"
-                          :key="index"
-                        >
-                          <label class="mr-3">{{ step.step }}</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm mr-3"
-                            @input="updateSteps(index, $event.target.value)"
-                            :value="step.description"
-                            placeholder="Mix the ingredients.."
-                            style="width: 80%"
-                            required
-                          />
-                          <button
-                            class="btn btn-sm custom-btn-secondary mr-2"
-                            @click="addStep(index, $event)"
-                            v-if="index != 0 && index == currentSteps.length - 1"
+                        <v-container fluid>
+                          <v-row 
+                            v-for="(step,index) in currentSteps"
+                            :key="index"
                           >
-                            +
-                          </button>
-                          <button
-                            class="btn btn-sm custom-btn-primary"
-                            @click="removeStep(index, $event)"
-                            v-if="index != 0 && index != currentSteps.length"
-                          >
-                            -
-                          </button>
-                        </div>
+                             <v-col cols="9" sm="9" md="9" lg="9" xl="9">
+                              <v-text-field
+                                dense
+                                outlined
+                                rounded                        
+                                @input="updateSteps(index, $event.target.value)"
+                                v-model="step.description"
+                                :label="'Etape '+step.step"
+                                placeholder="Verser la farine dans un bol ..."                           
+                                required
+                              ></v-text-field>
+
+                            </v-col>
+                            <v-col cols="2" sm="2" md="2" lg="2" xl="2">
+                              <v-btn-toggle v-model="value">
+                                <v-btn 
+
+                                  small
+                                  dark
+                                  fab  
+                                  class="colorbtnGreen"
+                                  rounded                         
+                                  @click="addStep(index, $event)"
+                                  v-if="index != 0 && index == currentSteps.length - 1"
+                                >
+                                  <v-icon>mdi-plus-thick</v-icon>
+                                </v-btn>
+                                <v-btn
+                                small
+                                dark
+                                fab
+                                  class="colorbtnOrange"
+                                  rounded
+                                  @click="removeStep(index, $event)"
+                                  v-if="index != 0 && index != currentSteps.length"
+                                >
+                                  <v-icon>mdi-minus-thick</v-icon>                                  
+                                </v-btn>
+                                
+                              </v-btn-toggle>
+                            </v-col>
+                          </v-row>
+                        </v-container>
                       </v-form>
                     </v-card-text>
                   </v-card>
@@ -259,7 +267,7 @@
             </v-container>
           </v-card-text>
 
-          <v-card-actions>
+          <v-card-actions class="pa-3">
             <v-btn rounded color="grey">
               Annuler
             </v-btn>
@@ -284,15 +292,9 @@ export default {
           tagsListe: [],
           tagsChoix:[],
           recipe: {
-            name: "",
+            nom: null,
             nbPers: null,
-            note: "",
-            category: "",
-            image:
-              "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
-            units: "",
-            time: "",
-            likes: "",
+            image: null,
             ingredients: [],
             steps: [],
           },
@@ -304,14 +306,6 @@ export default {
             { step: 1, description: "Faire fondre le beurre." },
             { step: 2, description: "Mélanger avec la farine." },
           ],
-          selectedCategory: "sucré",
-          categories: [
-            { name: "Sucré", value: "sucré" },
-            { name: "Salé", value: "salé" },
-            { name: "Dessert", value: "dessert" },
-            { name: "Plat", value: "plat" },
-            { name: "Entrée", value: "entrée" },
-          ],
 
 
           //combobox
@@ -321,7 +315,7 @@ export default {
           editing: null,
           editingIndex: -1,
           items: [
-            { header: 'Select an option or create one' },
+            { header: 'Rechercher votre ingrédient' },
             {
               text: 'Foo',
               color: 'blue',
@@ -344,9 +338,13 @@ export default {
           y: 0,
         };
       },
+
+    
     async created(){
       this.tagsListe = await DAOTag.getAll()	
     },
+
+
     methods:{
         closeDialogueEvent(){
             this.$emit('closeDialogNewRecipe')
@@ -370,21 +368,6 @@ export default {
           if (event.target.value.length === 0) {
             this.removeTag(this.currentIngredients.length - 1);
           }
-        },
-        handleSubmitForm() {
-          let apiURL = "https://oishi-recipes.herokuapp.com/api/add";
-          this.recipe.ingredients = this.currentIngredients;
-          this.recipe.category = this.selectedCategory;
-          this.recipe.steps = this.currentSteps;
-          console.log(this.recipe);
-          axios
-            .post(apiURL, this.recipe)
-            .then(() => {
-              this.$router.push("/");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
         },
         updateQuantity(index, value) {
           this.$set(this.currentIngredients[index], "quantity", value);
@@ -444,27 +427,27 @@ export default {
             }
         }
     },
-  watch: {
-    model (val, prev) {
-      if (val.length === prev.length) return
+    watch: {
+      //select couleur pour badge ingredient
+      model (val, prev) {
+        if (val.length === prev.length) return
 
-      this.model = val.map(v => {
-        if (typeof v === 'string') {
-          v = {
-            text: v,
-            color: this.colors[this.nonce - 1],
+        this.model = val.map(v => {
+          if (typeof v === 'string') {
+            v = {
+              text: v,
+              color: this.colors[this.nonce - 1],
+            }
+
+            this.items.push(v)
+
+            this.nonce++
           }
 
-          this.items.push(v)
-
-          this.nonce++
-        }
-
-        return v
-      })
+          return v
+        })
+      },
     },
-  },
-
 }
 </script>
 
