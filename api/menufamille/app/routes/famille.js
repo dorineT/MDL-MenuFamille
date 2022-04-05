@@ -64,6 +64,8 @@ router.get("/Request/:id_famille",[authJwt.verifyToken, authJwt.isMember, authJw
   famille.GetListMembre(req,res)
 });
 
+router.get("/notif",[authJwt.verifyToken], famille.GetListNotif);
+
 router.put("/request/:id_membre/:id_famille/accepted", [authJwt.verifyToken, authJwt.isMember, authJwt.isParent], (req,res) => {
   req.statut = "accepter"
   famille.Update_Statut_Request(req,res);

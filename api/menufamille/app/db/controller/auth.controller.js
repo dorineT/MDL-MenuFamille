@@ -48,7 +48,7 @@ exports.signin = (req, res) => {
       let refreshToken = await RefreshToken.createToken(user);
       var authorities = [];
       Role.findAll({
-        where: {id_membre: user.id_membre},
+        where: {id_membre: user.id_membre, statut: 'accepter'},
         include :[{
           model: db.famille,
         }]

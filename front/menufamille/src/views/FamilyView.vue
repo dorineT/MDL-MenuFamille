@@ -62,6 +62,7 @@
                         class="mr-2"
                         v-on="on"
                         @click="switchRole(item)"
+                        color="blue"
                       >
                         mdi-account-convert
                       </v-icon>
@@ -75,6 +76,7 @@
                         class="mr-2"
                         v-on="on"
                         @click="deleteMember(item)"
+                        color="red"
                       >
                         mdi-account-multiple-minus
                       </v-icon>
@@ -215,7 +217,6 @@ let DAOfamily = new FamilyDao;
         return this.$store.state.info;
       },
       currentRole() {
-        console.log(this.$store.state.info.roleActuel)
         return this.$store.state.info.roleActuel;
       },
       accessCode() {
@@ -234,7 +235,7 @@ let DAOfamily = new FamilyDao;
         }
         this.updateMember();
         this.generateCode();
-        this.updateRequest();
+        if(this.currentRole === 'parent')  this.updateRequest();
         if(this.$route.query.code) this.joinFamily(this.$route.query.code);
     },
     methods : {
@@ -244,7 +245,7 @@ let DAOfamily = new FamilyDao;
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
           this.updateMember();
           this.generateCode();
-          this.updateRequest();
+          if(this.currentRole === 'parent')  this.updateRequest();
         }
       },
       updateRequest() {
@@ -340,6 +341,7 @@ let DAOfamily = new FamilyDao;
              break;
            case 'parent':
              newRole = 'enfant';
+             break;
          }
          DAOfamily.switchRole(item.id, this.currentFamily.idFamilleActuel, newRole).then(
           (response) => {

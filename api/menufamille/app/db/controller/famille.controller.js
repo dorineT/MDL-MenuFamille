@@ -292,6 +292,32 @@ exports.GetListMembre = (req, res, next) =>{
    });
  };
 
+ // Get list notif
+ exports.GetListNotif = (req, res, next) =>{
+  const id_membre = req.id_membre;
+   Famille.findAll({
+     attributes: ['nom', 'id_famille'],
+     include: [
+     {
+      model: db.membres,
+      where: {
+        id_membre: id_membre
+      },
+      attributes: [],
+      through : {model: db.famille_membre, as: 'role', attributes: [], where: {'statut': 'refuser'}}
+    }],
+   }
+   ).then(data => { 
+     res.send(data);
+   })
+   .catch(err => {
+     res.status(500).send({
+       message:
+         err.message || "Some error occurred while getting Membres"
+     });
+   });
+ };
+
  exports.Update_Statut_Request  = (req, res) => {
   const id_famille = req.params.id_famille;
   const id_membre = req.params.id_membre;
@@ -337,3 +363,4 @@ exports.joinFamilly = (req, res) => {
      });
    });
 };
+

@@ -59,7 +59,7 @@ isParent = (req, res, next) => {
 };
 
 isMember = (req, res, next) => {
-  Role.findOne({where: {id_membre: req.id_membre, id_famille:  req.params.id_famille}}).then(
+  Role.findOne({where: {id_membre: req.id_membre, id_famille:  req.params.id_famille, statut: 'accepter'}}).then(
     async (role) => {
       if(!role) {
         return res.status(404).send({ message: "Not member of family!" });

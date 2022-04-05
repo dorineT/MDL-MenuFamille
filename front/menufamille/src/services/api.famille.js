@@ -26,7 +26,11 @@ export default class FamilyDao{
         return api.post("/famille/join", {code: code});
     }
 
-    switchRole(id_famille, id_membre, role) {
+    switchRole(id_membre, id_famille, role) {
         return api.put("/famille/switch/"+id_famille+"/"+id_membre, {role:role});
+    }
+
+    getNotif() {
+        return api.get("/famille/notif");
     }
 }

@@ -26,3 +26,4 @@ router.delete('/:id', membres.DeleteMember);
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
 router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);
+

@@ -125,3 +125,35 @@ exports.LeaveFamilly = (req, res) => {
       });
   }); 
 }
+
+// remove notif
+exports.removeNotif = (req, res) => {
+  const id_fam = req.params.id_famille;
+  const id_mem = req.id_membre;
+  db.famille_membre.destroy({
+    where: 
+    { [Op.and]: 
+      {
+        id_famille: id_fam,
+        id_membre: id_mem,
+        statut: 'refuser'
+      }
+    } 
+  }).then(num =>{
+    if (num == 1) {
+      res.send({
+        message: `You left the familly with the ID ${id_fam}`
+      });
+    } else{
+      res.status(403).send({
+        message: `You cannot leave the familly with the ID ${id_fam}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while Leaving Familly_Member with id_famille=${id_fam}`
+      });
+  }); 
+}
