@@ -32,3 +32,5 @@ router.get('/GetMenuId/:id', menu.Get_Menu_By_Id);
 
 //get menu complet
 router.get('/GetAllInfo/:id', menu.Get_Menu_All_Info_PK);
+
+router.get('/Get_suggest_periode/:id_fam',menu.Get_suggest_periode)
