@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { calendrier, recette, sequelize } = require("../models");
+const { calendrier, recette, sequelize, famille } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
 const Op = db.Sequelize.Op;
@@ -258,3 +258,17 @@ exports.Get_Menu_By_Id = (req, res) => {
     });
   });  
 };
+
+
+/// Get Can Be Suggested Menu
+
+exports.Get_Menu_Can_Be_Suggested = (req,res) => {
+  const id = req.params.id_famille;
+  Menu.findAll ({
+    Where: {
+      id_famille : id
+    }
+  }).then(data => {
+      res.send(data[0]);
+  })
+}
