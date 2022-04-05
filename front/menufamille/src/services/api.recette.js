@@ -13,7 +13,7 @@ export default class RecetteDAO{
     /**
      * Get une recette et ses infos par id
      */
-     async getById(id_recette){      
+    getById(id_recette){      
       return api.get("/recette/FindRecipe/"+id_recette)
   }
 

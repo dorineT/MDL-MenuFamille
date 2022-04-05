@@ -17,14 +17,14 @@
               <v-row>
                 <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   <v-text-field
-                    v-model="name"
+                    v-model="recipe.nom"
                     label="Nom"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   <v-text-field
-                    v-model="nbPers"
+                    v-model="recipe.nbPers"
                     label="Nombre de personnes"
                     required
                   ></v-text-field>
@@ -73,18 +73,21 @@
                    <v-combobox
                    label="Ingrédients"
                     v-model="model"
+                    auto-select-first
                     :filter="filter"
                     :hide-no-data="!search"
                     :items="items"
                     :search-input.sync="search"
+                    item-text="nom"
+                    return-object
                     hide-selected
                     clearable
                     multiple
                     small-chips
-                    solo
+                    solo                    
                   >
                     <template v-slot:no-data>
-                      <v-list-item>
+                      <v-list-item v-if="search !== null && search.length > 2">
                         <span class="subheading mr-2">Nouvel ingrédient</span>
                         <v-chip
                           :color="`${colors[nonce - 1]} lighten-3`"
@@ -93,6 +96,9 @@
                         >
                           {{ search }}
                         </v-chip>
+                      </v-list-item>
+                     <v-list-item v-else>
+                        <span class="subheading mr-2">Veuillez entrer un ingrédient</span> 
                       </v-list-item>
                     </template>
                     <template v-slot:selection="{ attrs, item, parent, selected }">
@@ -105,7 +111,7 @@
                         small
                       >
                         <span class="pr-2">
-                          {{ item.text }}
+                          {{ item.nom }}
                         </span>
                         <v-icon
                           small
@@ -115,25 +121,15 @@
                         </v-icon>
                       </v-chip>
                     </template>
-                    <template v-slot:item="{ index, item }">
-                      <v-text-field
-                        v-if="editing === item"
-                        v-model="editing.text"
-                        autofocus
-                        flat
-                        background-color="transparent"
-                        hide-details
-                        solo
-                        @keyup.enter="edit(index, item)"
-                      ></v-text-field>
-                      <v-chip
-                        v-else
+                    <template v-slot:item="{ item }">
+
+                      <v-chip                      
                         :color="`${item.color} lighten-3`"
                         dark
                         label
                         small
                       >
-                        {{ item.text }}
+                        {{ item.nom }}
                       </v-chip>                     
 
                     </template>
@@ -191,7 +187,7 @@
                     hover
                     length="5"
                     size="40"
-                    value="2"
+                    :value="2"
                   ></v-rating>
                 </v-col>
 
@@ -227,7 +223,7 @@
 
                             </v-col>
                             <v-col cols="2" sm="2" md="2" lg="2" xl="2">
-                              <v-btn-toggle v-model="value">
+                              <v-btn-toggle>
                                 <v-btn 
 
                                   small
@@ -282,7 +278,9 @@
 
 <script>
 import TagDAO from '../services/api.tag';
+import DenreeDao from '../services/api.denree';
 let DAOTag = new TagDAO()
+let DAODenree = new DenreeDao()
 
 export default {
   
@@ -312,24 +310,32 @@ export default {
           activator: null,
           attach: null,
           colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
-          editing: null,
-          editingIndex: -1,
           items: [
             { header: 'Rechercher votre ingrédient' },
             {
-              text: 'Foo',
-              color: 'blue',
+              
+                id_denree:0,
+                nom: 'Foo',
+                nutriscore:'A',
+                calories: '10',
+                color: 'blue',
+              
             },
             {
-              text: 'Bar',
+              id_denree:0,
+              nom: 'Bar',
+              nutriscore:'A',
+              calories: '10',
               color: 'red',
             },
           ],
-          nonce: 1,
-          menu: false,
+          nonce: 1,        
           model: [
             {
-              text: 'Foo',
+              id_denree:0,
+              nom: 'Foo',
+              nutriscore:'A',
+              calories: '10',
               color: 'blue',
             },
           ],
@@ -388,16 +394,8 @@ export default {
           this.$set(this.currentSteps[$event], "description", value);
         },
         //combobox
-      edit (index, item) {
-        if (!this.editing) {
-          this.editing = item
-          this.editingIndex = index
-        } else {
-          this.editing = null
-          this.editingIndex = -1
-        }
-      },
-      filter (item, queryText, itemText) {
+
+      filter (item, queryText, itemText) {        
         if (item.header) return false
 
         const hasValue = val => val != null ? val : ''
@@ -430,12 +428,13 @@ export default {
     watch: {
       //select couleur pour badge ingredient
       model (val, prev) {
+        console.log('get color ' + val + '   ' + prev)
         if (val.length === prev.length) return
 
         this.model = val.map(v => {
           if (typeof v === 'string') {
             v = {
-              text: v,
+              nom: v,
               color: this.colors[this.nonce - 1],
             }
 
@@ -447,6 +446,24 @@ export default {
           return v
         })
       },
+      //get from api
+      search(){
+        if(this.search !== null && this.search.length === 3){
+          console.log('find api')
+          DAODenree.searchProduct(this.search).then(
+            (response)=>{
+              console.log(response.data)
+              this.items = response.data
+              this.items.push({header: 'Rechercher votre ingrédient'})
+            },
+            (error)=>{
+              alert(error.message)
+            }
+          )
+
+          
+        }
+      }
     },
 }
 </script>

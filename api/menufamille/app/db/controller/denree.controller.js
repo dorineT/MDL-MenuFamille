@@ -89,9 +89,9 @@ exports.PutDenree = (req, res) => {
   //// Find with like recipe
 
   exports.FindWithLike = (req, res) => {
-    const lettres = "%" +  req.params.nom + "%";
+    const lettres = req.params.nom + "%";
     Denree.findAll({
-      where: { nom : {[Op.iLike]: lettres}}
+      where: { nom : {[Op.iLike]: lettres}}     
     }).then(data => {
       res.send(data);
     })
