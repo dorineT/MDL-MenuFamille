@@ -90,7 +90,7 @@
                       <v-list-item v-if="search !== null && search.length > 2">
                         <span class="subheading mr-2">Nouvel ingrédient</span>
                         <v-chip
-                          :color="`${colors[nonce - 1]} lighten-3`"
+                          color="green lighten-3"
                           label
                           small
                         >
@@ -230,7 +230,7 @@
                                   dark
                                   fab  
                                   class="colorbtnGreen"
-                                  rounded                         
+                                                           
                                   @click="addStep(index, $event)"
                                   v-if="index != 0 && index == currentSteps.length - 1"
                                 >
@@ -241,7 +241,7 @@
                                 dark
                                 fab
                                   class="colorbtnOrange"
-                                  rounded
+                                  
                                   @click="removeStep(index, $event)"
                                   v-if="index != 0 && index != currentSteps.length"
                                 >
@@ -311,33 +311,10 @@ export default {
           attach: null,
           colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
           items: [
-            { header: 'Rechercher votre ingrédient' },
-            {
-              
-                id_denree:0,
-                nom: 'Foo',
-                nutriscore:'A',
-                calories: '10',
-                color: 'blue',
-              
-            },
-            {
-              id_denree:0,
-              nom: 'Bar',
-              nutriscore:'A',
-              calories: '10',
-              color: 'red',
-            },
+            { header: 'Rechercher votre ingrédient' }
           ],
           nonce: 1,        
           model: [
-            {
-              id_denree:0,
-              nom: 'Foo',
-              nutriscore:'A',
-              calories: '10',
-              color: 'blue',
-            },
           ],
           x: 0,
           search: null,
@@ -406,7 +383,7 @@ export default {
         return text.toString()
           .toLowerCase()
           .indexOf(query.toString().toLowerCase()) > -1
-      },
+      }
     },
     computed: {
         width() {
@@ -423,45 +400,69 @@ export default {
                 case "xl":
                     return this.$vuetify.breakpoint.width - x * 3;
             }
-        }
+        },
+      getColor(){
+        if( this.nonce > this.colors.length ) this.nonce = 0
+        let color = this.colors[this.nonce]
+        this.nonce ++
+        return color
+      }
     },
     watch: {
-      //select couleur pour badge ingredient
+      //select couleur pour badge ingredient new ingredient
       model (val, prev) {
-        console.log('get color ' + val + '   ' + prev)
         if (val.length === prev.length) return
 
         this.model = val.map(v => {
-          if (typeof v === 'string') {
-            v = {
-              nom: v,
-              color: this.colors[this.nonce - 1],
-            }
+          let product = {}
+          console.log('map')
+          console.log(v)          
 
-            this.items.push(v)
-
-            this.nonce++
-          }
-
-          return v
+          switch(typeof v){
+            case 'string': 
+              DAODenree.findCreateProduct(v).then(
+                (response) =>{
+                  product = response.data[0]
+                  if (product !== null) {
+              
+                    product.color= this.colors[this.nonce - 1],               
+                    v = structuredClone(product)
+                    this.model.push(product)
+                    this.items.push(product)                    
+                    this.nonce++
+                    console.log(v)
+                    return v
+                  }
+                },
+                (error) => {
+                  alert('erreur lors de la création de l\'ingrédient')
+                  return
+                }
+              ); break;
+              default:
+                console.log(v)
+                return v 
+          }                      
         })
       },
       //get from api
       search(){
-        if(this.search !== null && this.search.length === 3){
-          console.log('find api')
+        if(this.search !== null && this.search.length === 3){       
           DAODenree.searchProduct(this.search).then(
-            (response)=>{
-              console.log(response.data)
-              this.items = response.data
+            (response)=>{            
+              let denrees = response.data
+              this.items = []
+              denrees.forEach(element => {
+                element.color = this.colors[this.nonce - 1]
+                this.nonce++
+              });
+              this.items = structuredClone(denrees)
               this.items.push({header: 'Rechercher votre ingrédient'})
             },
             (error)=>{
               alert(error.message)
             }
-          )
-
-          
+          )          
         }
       }
     },

@@ -4,7 +4,7 @@
 		@click:outside="closeDialogueEvent"
 		:max-width="width"                
 		transition="dialog-transition"
-        scrollable
+        scrollable        
 	>
 		<!--<v-toolbar dark color="#FFB74D">
 					<v-btn icon dark @click="$emit('closeDialog', false, message)">
@@ -179,26 +179,26 @@
 			return {
 				iconBullet: "mdi-circle-small",
 				message: "",
-				recipe: {},
+				recipe: {},              
 			};
 		},
-		created() {
-			//get recette info
-			DAORecette.getById(this.id_recette).then(
-				(response) => {
-					this.recipe = response.data;
-				},
-				(error) => {
-					this.message =
-						(error.response && error.response.data) ||
-						error.message ||
-						error.toString();
-
-					this.$emit("closeDialog", true, this.message);
-				}
-			);
-		},
 		methods: {
+            fetchData(){
+                console.log('fetch data')
+                DAORecette.getById(this.id_recette).then(
+                    (response) => {
+                        this.recipe = response.data;
+                    },
+                    (error) => {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message ||
+                            error.toString();
+
+                        this.$emit("closeDialog", true, this.message);
+                    }
+                );
+            },
 			closeDialogueEvent() {
 				console.log("destroyed");
 				this.$emit("closeDialog", false, this.message);
@@ -215,6 +215,13 @@
 				return moment.utc().hours(h).minutes(m).format("hh:mm");
 			},
 		},
+        watch:{
+            dialogInfoRecipe(){
+                if(this.dialogInfoRecipe !== null && this.dialogInfoRecipe){
+                    this.fetchData()
+                }
+            }
+        },
 		computed: {
 			width() {
 				let x = 100;
