@@ -17,3 +17,5 @@ router.delete('/:id', calendrier_recette.DeletCalender_Recipe);
 router.put('/Update_Periode_with_Tag/:id',calendrier_recette.Update_Periode_with_Tag);
 
 router.get('/c/:id',calendrier_recette.Get_periode_withTag);
+
+router.get('/get_sugget/:id',calendrier_recette.Get_sugget);

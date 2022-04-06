@@ -219,3 +219,77 @@ exports.Update_Periode_with_Tag = (req, res) => {
 
 
 };
+/**
+ *
+ * @param req
+ * @param res
+ * @constructor
+ * @return
+ * {
+    "id_periode": 4,
+    "id_calendrier": 2,
+    "id_recette": null,
+    "periode": "matin",
+    "is_recette": true,
+    "nb_personne": 1,
+    "suggestions": [
+        {
+            "id_periode": 4,
+            "id_recette": 102,
+            "id_membre": 8,
+            "id_menu": 4,
+            "membre": {
+                "nom": "dev",
+                "prenom": "dev",
+                "recettes": [
+                    {
+                        "nom": "Frite",
+                        "favoris": {
+                            "id_recette": 102,
+                            "id_membre": 8
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+ */
+exports.Get_sugget = (req, res) => {
+    const id = req.params.id;
+    CalendrierRecette.findByPk(id,{
+
+        include :[
+            {
+
+                model: db.suggestion,
+
+                include:[
+                    {
+                        model : db.membres,
+                        attributes: ["nom","prenom"],
+                        include:[
+                            {
+                                model : db.recette,
+                                attributes: ["nom"]
+                            }
+                        ]
+                    }
+
+                ]
+
+            }
+
+        ]
+    }).then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Menus."
+        });
+    });
+
+
+
+}
