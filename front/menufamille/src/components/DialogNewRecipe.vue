@@ -72,9 +72,8 @@
                 <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                    <v-combobox
                    label="Ingrédients"
-                    v-model="model"
-                    auto-select-first
-                    :filter="filter"
+                    v-model="currentIngredients"                   
+                   :filter="filter"
                     :hide-no-data="!search"
                     :items="items"
                     :search-input.sync="search"
@@ -97,7 +96,7 @@
                           {{ search }}
                         </v-chip>
                       </v-list-item>
-                     <v-list-item v-else>
+                    <v-list-item v-else>
                         <span class="subheading mr-2">Veuillez entrer un ingrédient</span> 
                       </v-list-item>
                     </template>
@@ -144,20 +143,21 @@
                     </v-card-title>
                     <v-card-text class="d-flex">
                       <v-form>
-
                         <div
                           class="ml-6 d-inline-block"
                           v-for="(ingredient, index) in currentIngredients"
                           :key="index"
                         >
-                          {{ ingredient.name }}
+                        <div v-if="ingredient !== undefined">
+                          {{ ingredient.nom }}
                           <v-text-field                                                        
                             @input="updateQuantity(index, $event.target.value)"
                             :value="ingredient.quantity"
                             placeholder="200g, 20ml.."
                             required                           
-                            class="text-field-witdth"
+                            class="text-field-width"
                           ></v-text-field>
+                        </div>
                         </div>
                       </v-form>
                     </v-card-text>
@@ -182,13 +182,23 @@
                 </v-col>
                  <v-col cols="12" sm="4" md="4" lg="4" xl="4">
                    Difficulté
-                  <v-rating                
-                    color="green lighten-3"
+                  <v-rating                                   
                     hover
                     length="5"
                     size="40"
                     :value="2"
-                  ></v-rating>
+                    
+                  >
+                    <template v-slot:item="props">
+                      <v-icon
+                        :color="props.isFilled ? 'green lighten-3' : 'grey lighten-1'"
+                        large
+                        @click="props.click"
+                      >
+                        {{ props.isFilled ? 'mdi-chef-hat' : 'mdi-chef-hat' }}
+                      </v-icon>
+                    </template>
+                  </v-rating>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="12" lg="12" xl="12">
@@ -296,10 +306,6 @@ export default {
             ingredients: [],
             steps: [],
           },
-          currentIngredients: [
-            { name: "beurre", quantity: "200g" },
-            { name: "farine", quantity: "100g" },
-          ],
           currentSteps: [
             { step: 1, description: "Faire fondre le beurre." },
             { step: 2, description: "Mélanger avec la farine." },
@@ -314,8 +320,7 @@ export default {
             { header: 'Rechercher votre ingrédient' }
           ],
           nonce: 1,        
-          model: [
-          ],
+          currentIngredients: [],        
           x: 0,
           search: null,
           y: 0,
@@ -372,7 +377,9 @@ export default {
         },
         //combobox
 
-      filter (item, queryText, itemText) {        
+      filter (item, queryText, itemText) {
+        console.log('filter')
+        
         if (item.header) return false
 
         const hasValue = val => val != null ? val : ''
@@ -383,6 +390,12 @@ export default {
         return text.toString()
           .toLowerCase()
           .indexOf(query.toString().toLowerCase()) > -1
+      },
+      getColor(){       
+        if( this.nonce > this.colors.length ) this.nonce = 0
+        let color = this.colors[this.nonce]
+        this.nonce ++
+        return color
       }
     },
     computed: {
@@ -401,22 +414,14 @@ export default {
                     return this.$vuetify.breakpoint.width - x * 3;
             }
         },
-      getColor(){
-        if( this.nonce > this.colors.length ) this.nonce = 0
-        let color = this.colors[this.nonce]
-        this.nonce ++
-        return color
-      }
     },
     watch: {
       //select couleur pour badge ingredient new ingredient
-      model (val, prev) {
+      currentIngredients (val, prev) {     
         if (val.length === prev.length) return
 
-        this.model = val.map(v => {
-          let product = {}
-          console.log('map')
-          console.log(v)          
+        this.currentIngredients = val.map(v => {
+          let product = {}       
 
           switch(typeof v){
             case 'string': 
@@ -427,7 +432,7 @@ export default {
               
                     product.color= this.colors[this.nonce - 1],               
                     v = structuredClone(product)
-                    this.model.push(product)
+                    this.currentIngredients.push(product)
                     this.items.push(product)                    
                     this.nonce++
                     console.log(v)
@@ -439,24 +444,23 @@ export default {
                   return
                 }
               ); break;
-              default:
-                console.log(v)
+              default:               
                 return v 
           }                      
         })
       },
       //get from api
-      search(){
-        if(this.search !== null && this.search.length === 3){       
+      search(){         
+        if(this.search !== null && this.search.length === 3){ 
+          console.log('api')      
           DAODenree.searchProduct(this.search).then(
             (response)=>{            
-              let denrees = response.data
-              this.items = []
+              let denrees = response.data            
               denrees.forEach(element => {
-                element.color = this.colors[this.nonce - 1]
-                this.nonce++
+                element.color = this.getColor()
               });
               this.items = structuredClone(denrees)
+              console.log(this.items)
               this.items.push({header: 'Rechercher votre ingrédient'})
             },
             (error)=>{
