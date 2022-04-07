@@ -27,7 +27,7 @@
             <td class="nodata" colspan="0">Auncun menu sélectionné</td>
           </tbody>
           <tbody v-else>
-          <tr scope="row">   Matin
+          <tr>   Matin
             <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -141,17 +141,7 @@ export default {
         nbPersonneFamille: null,
         headers: [],
         menu: {}, 
-          items: [
-            {
-            name: 'matin',
-          },
-          {
-            name: 'midi',
-          },
-          {
-            name: 'soir',
-          },
-          ],
+          items: [],
           pageCount: 0,
           page: 1,
           nbJourMenu: 0,
