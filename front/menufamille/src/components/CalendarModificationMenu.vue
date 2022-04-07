@@ -26,7 +26,7 @@
               <td class="nodata" colspan="0">Auncun menu sélectionné</td>
             </tbody>
             <tbody v-else>
-            <tr>
+            <tr> Matin
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                 <v-btn text @click="goToRecette(item)">
 
@@ -39,7 +39,7 @@
                 <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
-            <tr>
+            <tr> Midi
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn text @click="goToRecette(item)">
                     <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>
@@ -50,7 +50,7 @@
                 <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
-            <tr>
+            <tr> Soir
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                 <v-btn  text @click="goToRecette(item)">
                   <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
@@ -190,7 +190,7 @@ export default {
           eventBus.$emit('openDialog', periodeFind, menuFind.date)
         },
       populateHeader(menu,iStart, iEnd){ 
-        this.headers = []
+        this.headers = ['']
         this.nbJourMenu = 0       
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){

@@ -267,7 +267,7 @@ let DAOMenu = new MenuDao()
   margin-top: 20px
   margin-bottom: 20px  
 
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .v-data-table > .v-data-table__wrapper > table > thead > tr > td, .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td 
+.v-data-table > 
   border-left: thin solid
-    
+
 </style>

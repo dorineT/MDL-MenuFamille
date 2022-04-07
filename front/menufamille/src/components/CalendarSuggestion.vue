@@ -324,8 +324,7 @@ export default {
 .tdplat
   text-align: center
 
-.v-btn.v-size--default
-  vertical-align: bottom
+
 
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .v-data-table > .v-data-table__wrapper > table > thead > tr > td, .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td 
   border-left: thin solid
