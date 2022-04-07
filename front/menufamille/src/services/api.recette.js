@@ -20,14 +20,13 @@ export default class RecetteDAO{
     /**
      * Get les recettes en fonction de Tag donnés
      */
-     async getFromTags(tags){
-        let data
+    getFromTags(tags){       
         let sendTags = []
         tags.forEach(element => {
           sendTags.push(element.nom)
         });
         console.log(sendTags)
-        await api.get("/recette/FindFromTags/",{
+        return api.get("/recette/FindFromTags/",{
           params: {
             tag: sendTags
           },
@@ -35,10 +34,5 @@ export default class RecetteDAO{
             return qs.stringify(params)
           }
         })
-          .then((response) => {            
-            data = response.data            
-          }); 
-        
-        return data
     }
 }

@@ -102,33 +102,23 @@ let DAOMenu = new MenuDao()
       }
     },
 
-    async created () {
+    created () {
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'   
       this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-      if(this.$store.state.info.idFamilleActuel !== null){
-        this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
-
-        this.menus.forEach(menu => {         
-            let periodeNew = { 
-                text: menu.periode_debut + ' - ' +menu.periode_fin,
-                value: menu.id_menu
-              }     
-            this.itemPeriode.push(periodeNew)        
-        });
-      }
+      this.fetchMenu()
 
     },
     watch:{
-        async comboboxMenuSelected(slot){           
+      async comboboxMenuSelected(slot){           
         if(slot === 'Aucun menu sélectionné'){           
           this.items = []
         }
         else{ //check période des menus
            
            if(this.menus === null){
-            this.menus = await DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel)
+             await this.fetchMenu()
            }
            console.log(this.menus)
           //get id du menu
@@ -150,6 +140,26 @@ let DAOMenu = new MenuDao()
       }
     },
     methods:{
+      fetchMenu(){
+        this.menus = []
+        if(this.$store.state.info.idFamilleActuel !== null){
+          DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel).then(
+            (response) =>{
+              this.menus = response.data
+              this.menus.forEach(menu => {         
+                  let periodeNew = { 
+                      text: menu.periode_debut + ' - ' +menu.periode_fin,
+                      value: menu.id_menu
+                    }     
+                  this.itemPeriode.push(periodeNew)        
+              });
+            },
+            (error) =>{
+              alert(error.message)
+            }
+          )
+        }
+      },
       goToRecette(text){
           alert('Bientot disponible ' + text)
         },

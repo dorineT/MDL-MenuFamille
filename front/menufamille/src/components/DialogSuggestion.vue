@@ -115,10 +115,25 @@
 				//get recette si tag defini
 				if (this.infoMenu.tags.length > 0) {
 					console.log("get recette en fonction des tags");
-          			this.itemRecettes =  await DAORecette.getFromTags(this.infoMenu.tags)      
+          			DAORecette.getFromTags(this.infoMenu.tags).then(
+						  (response) => {
+							  this.itemRecettes = response.data
+						  },
+						  (error) =>{
+							  alert(error.message)
+						  }
+					  )    
 				} else {
-					this.itemRecettesAll = await DAORecette.getAll();
-					this.itemRecettes = structuredClone(this.itemRecettesAll);
+					DAORecette.getAll().then(
+						(response) => {
+							this.itemRecettesAll = response.data
+							this.itemRecettes = structuredClone(this.itemRecettesAll);
+						},
+						(error) => {
+							alert(error.message)
+						}
+					)
+					
 				}
 				if (this.infoMenu.suggestions.length > 0) {
 					//get recette en fonction des suggestions déjà faite

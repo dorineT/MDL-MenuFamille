@@ -1,6 +1,6 @@
 <template>
     <div class="cardmargin ">
-      <dialog-new-recipe :dialogNewRecipe="showDialogueNewRecipe" @closeDialogNewRecipe="closeDialogNewRecipe" />
+      <dialog-new-recipe :dialogNewRecipeProps="showDialogueNewRecipe" @closeDialogNewRecipe="closeDialogNewRecipe" />
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
