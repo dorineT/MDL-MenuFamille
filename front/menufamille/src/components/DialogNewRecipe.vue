@@ -139,7 +139,7 @@
                 <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                   <v-card>
                     <v-card-title>
-                      Quantité
+                      Quantités
                     </v-card-title>
                     <v-card-text class="d-flex">
                       <v-form>
@@ -149,14 +149,28 @@
                           :key="index"
                         >
                         <div v-if="ingredient !== undefined">
-                          {{ ingredient.nom }}
-                          <v-text-field                                                        
-                            @input="updateQuantity(index, $event.target.value)"
-                            :value="ingredient.quantity"
-                            placeholder="200g, 20ml.."
-                            required                           
-                            class="text-field-width"
-                          ></v-text-field>
+                          {{ ingredient.nom }}<br>
+                          <div class="d-inline-flex">
+                            <v-text-field                                                       
+                              :value="ingredient.quantite"
+                              @blur="updateQuantity(index,$event.target.value)"
+                              placeholder="200"
+                              type="number"
+                              required                           
+                              class="text-field-width mr-3"
+                            ></v-text-field>
+                            <v-autocomplete
+                            auto-select-first
+                            required
+                            placeholder="gr,ml,.."     
+                              class="text-field-width"                                            
+                              @blur="updateMesure(index,$event.target.value)"
+                              :input="ingredient.mesure"
+                              :items="mesureListe"                          
+                              color="green lighten-2"
+                              no-data-text="Aucune mesure correspondante"
+                            ></v-autocomplete>
+                          </div>
                         </div>
                         </div>
                       </v-form>
@@ -224,7 +238,7 @@
                                 dense
                                 outlined
                                 rounded                        
-                                @input="updateSteps(index, $event.target.value)"
+                                @blur="updateSteps(index, $event.target.value)"
                                 v-model="step.description"
                                 :label="'Etape '+step.step"
                                 placeholder="Verser la farine dans un bol ..."                           
@@ -297,6 +311,7 @@ export default {
     props:['dialogNewRecipe'],
     data() {
         return {
+          mesureListe:['cr','gr','kg','ml','cl','dl','L','cm','mm'],
           tagsListe: [],
           tagsChoix:[],
           recipe: {
@@ -337,28 +352,13 @@ export default {
         closeDialogueEvent(){
             this.$emit('closeDialogNewRecipe')
         },
-        addTag: function (event) {
-          event.preventDefault();
-          // trim deletes extra whitespaces at the beginning and the end of the string
-          var tag = event.target.value;
-          if (tag.length > 0) {
-            tag = tag.replace(" ", "-");
-            this.currentIngredients.push({ name: tag, quantity: "none" });
-            //this.$set(this.recipe.ingredients, tag, "");
-            event.target.value = "";
-          }
-        },
-        removeTag: function (index) {
-          this.currentIngredients.splice(index, 1);
-          //this.$delete(this.recipe.ingredients, ingredient)
-        },
-        removeLastTag: function (event) {
-          if (event.target.value.length === 0) {
-            this.removeTag(this.currentIngredients.length - 1);
-          }
-        },
         updateQuantity(index, value) {
-          this.$set(this.currentIngredients[index], "quantity", value);
+          console.log("update quantity "  + value)                   
+          this.$set(this.currentIngredients[index], "quantite", value);
+        },
+        updateMesure(index, value) {
+          console.log("update mesure ")                      
+          this.$set(this.currentIngredients[index], "mesure", value);
         },
         addStep(index, event) {
           event.preventDefault();
@@ -378,8 +378,6 @@ export default {
         //combobox
 
       filter (item, queryText, itemText) {
-        console.log('filter')
-        
         if (item.header) return false
 
         const hasValue = val => val != null ? val : ''
@@ -434,8 +432,7 @@ export default {
                     v = structuredClone(product)
                     this.currentIngredients.push(product)
                     this.items.push(product)                    
-                    this.nonce++
-                    console.log(v)
+                    this.nonce++                  
                     return v
                   }
                 },
@@ -451,16 +448,14 @@ export default {
       },
       //get from api
       search(){         
-        if(this.search !== null && this.search.length === 3){ 
-          console.log('api')      
+        if(this.search !== null && this.search.length === 3){            
           DAODenree.searchProduct(this.search).then(
             (response)=>{            
               let denrees = response.data            
               denrees.forEach(element => {
                 element.color = this.getColor()
               });
-              this.items = structuredClone(denrees)
-              console.log(this.items)
+              this.items = structuredClone(denrees)        
               this.items.push({header: 'Rechercher votre ingrédient'})
             },
             (error)=>{
