@@ -1,0 +1,42 @@
+
+$formNewW: 15rem;
+$formNewH: 20rem;
+
+#formNew{
+    display: inline-block;
+    position: relative;
+    width: 15rem; 
+    height: 20rem;
+    padding: 1rem;
+    color: white;
+    
+
+    &-container{
+        padding: 1rem;
+        width: $formNewW - 1rem; 
+        height: $formNewH - 1rem;
+        border-radius: 10px;
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+        background-color: $tertiary;
+
+        h2{
+            margin-top: 0;
+        }
+    
+        & input{
+            padding: 3px; 
+            border: none;
+            border-radius: 3px;
+        }
+        
+        & button{
+            float: right;
+            margin-right: 0.5rem;
+            color: white;
+            background-color: coral;
+            border: 1px solid white; 
+            border-radius: 3px;
+            font-size: 1rem;
+        }
+    }
+}

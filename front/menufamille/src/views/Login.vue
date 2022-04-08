@@ -100,7 +100,7 @@ export default {
       return this.$store.state.auth.status.loggedIn;
     },
   },
-  created() {
+  mounted() {
     if (this.loggedIn) {
       this.$router.push("/");
     }
