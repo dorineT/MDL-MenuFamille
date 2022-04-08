@@ -1,7 +1,7 @@
 const db = require("../models");
 var bcrypt = require("bcryptjs");
 const Membres = db.membres;
-const Family = db.famille;
+const Role = db.famille_membre;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Members from the database.
@@ -156,4 +156,22 @@ exports.removeNotif = (req, res) => {
             err.message || `Some error occurred while Leaving Familly_Member with id_famille=${id_fam}`
       });
   }); 
+}
+
+exports.updateRoles = (req, res) => {
+  var authorities = [];
+  Role.findAll({
+    where: {id_membre: req.id_membre, statut: 'accepter'},
+    include :[{
+      model: db.famille,
+    }]
+  }).then(roles => {      
+    for (let i = 0; i < roles.length; i++) {
+      authorities.push([roles[i].id_famille,roles[i].famille.nom, roles[i].famille.nb_membres, roles[i].role])
+    }
+  
+    res.status(200).send({
+      roles: authorities
+    });
+  });
 }

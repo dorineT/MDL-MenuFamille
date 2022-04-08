@@ -63,7 +63,7 @@ exports.UpdateFamilly = (req, res) => {
   // Delete CRUD
 
   exports.DeleteFamilly = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id_famille;
     Famille.destroy({
       where: {id_famille: id}
     })

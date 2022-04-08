@@ -31,3 +31,5 @@ router.put("/:id", [authJwt.verifyToken], membres.UpdateMember);
 router.put("/pwd/:id",[authJwt.verifyToken, authJwt.VerifyPwd], membres.UpdateMember)
 
 router.delete("/notif/delete/:id_famille", [authJwt.verifyToken], membres.removeNotif);
+
+router.get("/roles/update", [authJwt.verifyToken], membres.updateRoles);

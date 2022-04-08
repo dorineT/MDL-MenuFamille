@@ -33,4 +33,8 @@ export default class FamilyDao{
     getNotif() {
         return api.get("/famille/notif");
     }
+
+    removeFamily(id_famille) {
+        return api.delete("/famille/"+id_famille);
+    }
 }

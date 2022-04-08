@@ -30,7 +30,7 @@ router.post('/', famille.PutFamilly);
 
 router.put('/:id', famille.UpdateFamilly);
 
-router.delete('/:id', famille.DeleteFamilly);
+router.delete('/:id_famille',[authJwt.verifyToken, authJwt.isMember , authJwt.isParent], famille.DeleteFamilly);
 
 //doit etre ajoute sur toutes les requetes
 router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard);

@@ -1,7 +1,14 @@
 <template>
-   
+    <v-dialog
+    
+      v-model="dialogSup"
+      persistent
+      max-width="700"
+    >
 
-    <v-card style="margin: 20px" outlined>
+    <template v-slot:activator="{ on, attrs }">
+
+    <v-card style="margin: 20px;opacity: 0.85"  outlined>
       <v-alert text type="error" border="left"  style="margin: 10px" dismissible v-if="update">
               {{message.message}}
       </v-alert>
@@ -11,14 +18,34 @@
      
 
         <v-container fluid>
-           <v-col cols="3">
+          <v-row align-content="start">
+           <v-col cols="12" sm="12" md="3" lg="3" xl="3">
             <v-select
                 :items="select"
                 v-model="selected"
                 label="Liste familles"
                 @change="changeFamille()"
             ></v-select>  
-            </v-col>
+           </v-col>
+           <v-col cols="12" sm="12" md="3" lg="3" xl="3">
+              <v-btn
+              color="#FFB74D"
+              class="mr-3"
+              elevation="2"
+              rounded
+              small
+              >Créer</v-btn>
+              <v-btn
+              color="red"
+              elevation="2"
+              rounded
+              small
+              v-show="currentRole === 'parent'"
+              v-bind="attrs"
+              v-on="on"
+              >Supprimer</v-btn>
+              </v-col>
+          </v-row>
           
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" >
@@ -89,7 +116,7 @@
               </v-card>
               
             </v-col>
-            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="this.isRequest">
+            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="isRequest">
               <v-card height="200px">
                 <v-toolbar flat>
                   <v-toolbar-title>Demandes en attente</v-toolbar-title>
@@ -152,12 +179,38 @@
             </v-col>
           </v-row>
         </v-container>
-    </v-card>  
+    </v-card>
+    </template>
+    <v-card>
+        <v-card-title class="text-h5">
+          Suppression de la famille!
+        </v-card-title>
+        <v-card-text>Voulez-vous vraiment supprimer la famille <strong>{{selected}}</strong> ?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogSup = false"
+          >
+            Annuler
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="deleteFamily"
+          >
+            Supprimer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </template>
 
 <script>
 import FamilyDao from '../services/api.famille';
-import Requestcard from '../components/RequestCard.vue'
+import Requestcard from '../components/RequestCard.vue';
+import User from '../models/user';
 let DAOfamily = new FamilyDao;
   export default {
     components: { Requestcard },    
@@ -165,6 +218,8 @@ let DAOfamily = new FamilyDao;
     editedIndex: -1,
     data (){
       return{
+        user: new User(''),
+        dialogSup: false,
         codeRules: [
         v => !!v || 'Veuillez entrer un code',
         v => v !== null && v.length == 6 || 'Code invalide',
@@ -239,6 +294,24 @@ let DAOfamily = new FamilyDao;
         if(this.$route.query.code) this.joinFamily(this.$route.query.code);
     },
     methods : {
+      deleteFamily() {
+        DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            this.dialogSup = false;
+            const item = this.select.find(famille => famille.id === this.currentFamily.idFamilleActuel)
+            let index = this.select.indexOf(item)
+            this.select.splice(index, 1)
+            this.changeFamille();
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
       changeFamille(){
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
@@ -346,8 +419,9 @@ let DAOfamily = new FamilyDao;
          DAOfamily.switchRole(item.id, this.currentFamily.idFamilleActuel, newRole).then(
           (response) => {
             let index = this.membresFamily.indexOf(item)
-            this.membresFamily[index].role = newRole 
+            this.membresFamily[index].role = newRole
             this.update = false;
+            if(item.id === this.$store.state.auth.user.id_membre) this.changeFamille();
           },
           (error) => {
               this.update = true;
