@@ -49,7 +49,7 @@ router.delete("/:id_famille/:id_membre",[authJwt.verifyToken, authJwt.isMember ,
 
 router.put('/switch/:id_famille/:id_membre',[authJwt.verifyToken, authJwt.isParent], famille.SwitchRole);
 
-router.post('/CreateFamilly/:id_mem',[authJwt.verifyToken], famille.CreateFamilly);
+router.post('/createFamilly/:id_membre',[authJwt.verifyToken], famille.CreateFamilly);
 
 
 router.get('/CheckAccesCode/:id_famille', famille.CheckAccesCode);

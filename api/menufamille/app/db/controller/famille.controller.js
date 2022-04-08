@@ -186,14 +186,13 @@ exports.SwitchRole = (req, res) => {
 /// Create familly + add person
 
 exports.CreateFamilly = (req, res) => {
-  const id_mem = req.params.id_mem;
-  Famille.create({ nom: req.body.nom, code_acces: req.body.code_acces, nb_membres: 1})
+  const id_mem = req.params.id_membre;
+  Famille.create({ nom: req.body.nom, nb_membres: req.body.count})
   .then(data => { 
 
     const id_fam = data.id_famille;
-    console.log(id_fam);
 
-    db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: "parent"})
+    db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: "parent", statut: 'accepter'})
     .then(data2 => {
       res.send(data);
     })

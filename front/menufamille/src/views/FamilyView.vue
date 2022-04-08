@@ -5,16 +5,15 @@
       persistent
       max-width="700"
     >
-
+    
     <template v-slot:activator="{ on, attrs }">
-
     <v-card style="margin: 20px;opacity: 0.85"  outlined>
+      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" />
       <v-alert text type="error" border="left"  style="margin: 10px" dismissible v-if="update">
               {{message.message}}
       </v-alert>
       
-      <v-card-title>Mes Familles
-      </v-card-title>
+      <v-card-title class="mt-2">Mes Familles</v-card-title>
      
 
         <v-container fluid>
@@ -34,6 +33,7 @@
               elevation="2"
               rounded
               small
+              @click="createFamily"
               >Créer</v-btn>
               <v-btn
               color="red"
@@ -151,6 +151,19 @@
                          <qr-code :size="150" :text="accessCode" error-level="L"></qr-code>
                       </v-col>
                     </v-row>
+                    <v-row>
+                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+                        <v-btn
+                        color="red"
+                        elevation="2"
+                        rounded
+                        small
+                        @click="quitFamily"
+                        >
+                        Quitter la famille
+                        </v-btn>
+                      </v-col>
+                    </v-row>
                   </v-container>
               </v-card>
 
@@ -210,15 +223,17 @@
 <script>
 import FamilyDao from '../services/api.famille';
 import Requestcard from '../components/RequestCard.vue';
+import DialogCreateFamily from '../components/DialogCreateFamily.vue'
 import User from '../models/user';
 let DAOfamily = new FamilyDao;
   export default {
-    components: { Requestcard },    
+    components: { Requestcard, DialogCreateFamily },    
     name: 'family',
     editedIndex: -1,
     data (){
       return{
         user: new User(''),
+        dialogFm: false,
         dialogSup: false,
         codeRules: [
         v => !!v || 'Veuillez entrer un code',
@@ -240,6 +255,11 @@ let DAOfamily = new FamilyDao;
         requestFamily:[],
         joinFamillyInput: null
       }
+    },
+    watch: {
+    '$store.state.auth.user': function () {
+      this.updateView()
+    }
     },
     computed: {
       headers() {
@@ -279,7 +299,19 @@ let DAOfamily = new FamilyDao;
         return host+"/family?code="+this.code;
       }
     },
-    created() {
+    mounted() {
+        this.updateView();
+        this.updateMember();
+        this.generateCode();
+        if(this.currentRole === 'parent')  this.updateRequest();
+        if(this.$route.query.code) this.joinFamily(this.$route.query.code);
+    },
+    methods : {
+      createFamily() {
+        this.dialogFm = !this.dialogFm;
+      },
+      updateView() {
+        this.select = []
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })
@@ -288,19 +320,12 @@ let DAOfamily = new FamilyDao;
         } else {
           this.selected = this.select.length > 0 ? this.select[0] : null
         }
-        this.updateMember();
-        this.generateCode();
-        if(this.currentRole === 'parent')  this.updateRequest();
-        if(this.$route.query.code) this.joinFamily(this.$route.query.code);
-    },
-    methods : {
+      },
       deleteFamily() {
         DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.dialogSup = false;
-            const item = this.select.find(famille => famille.id === this.currentFamily.idFamilleActuel)
-            let index = this.select.indexOf(item)
-            this.select.splice(index, 1)
+            this.selected = this.select[0];
             this.changeFamille();
           },
           (error) => {
@@ -391,6 +416,23 @@ let DAOfamily = new FamilyDao;
             }
         )
         
+      },
+      quitFamily() {
+        DAOfamily.removeMember(this.currentFamily.idFamilleActuel, this.$store.state.auth.user.id_membre).then(
+          (response) => {
+            this.selected = this.select[0];
+            this.changeFamille();
+            this.update = false;
+            
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       },
       joinFamily(code) {
         DAOfamily.joinFamily(code).then(

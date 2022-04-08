@@ -279,11 +279,16 @@ CREATE OR REPLACE FUNCTION public.delete_update_membre()
 AS $function$
 declare
 	nb integer;
+	isCascade integer;
 begin
 	if old.role = 'parent' then
+		SELECT COUNT(query_start) as nb_query into isCascade FROM pg_stat_activity as activity where query_start is not null and query like 'DELETE FROM "famille" WHERE "id_famille" = %'
+			group by query_start
+			ORDER BY query_start  desc
+			limit 4;
 		select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f."role" = 'parent' group by f.id_famille;
-    	if nb > 0 and nb = 1 then 
-       		raise exception 'unique parent de la famille' using ERRCODE = 23500;
+    	if nb > 0 and nb = 1 and isCascade IS NULL then 
+       		raise exception 'unique parent de la famille!' using ERRCODE = 23500;
     	end if;
     end if;
    	if tg_op = 'UPDATE' then 

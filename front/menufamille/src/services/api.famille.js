@@ -37,4 +37,8 @@ export default class FamilyDao{
     removeFamily(id_famille) {
         return api.delete("/famille/"+id_famille);
     }
+
+    createFamily(id_membre, body) {
+        return api.post("/famille/createFamilly/"+ id_membre, body);
+    }
 }
