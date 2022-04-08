@@ -29,20 +29,38 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
-                <v-text-field
+                Nombre de personnes: {{recipe.nbPers}}
+                <v-slider
+                                  
                   v-model="recipe.nbPers"
-                  label="Nombre de personnes"
-                  required
-                  type="number"
-                  :rules="ruleRequired"
-                ></v-text-field>
+                  color="green lighten-3"
+                  track-color="grey"
+                  always-dirty
+                  min="1"
+                  :max = "max"             
+                >
+                  <template v-slot:prepend>
+                    <v-icon                      
+                      @click="decrement"
+                    >
+                      mdi-minus
+                    </v-icon>
+                  </template>
+
+                  <template v-slot:append>
+                    <v-icon                      
+                      @click="increment"
+                    >
+                      mdi-plus
+                    </v-icon>
+                  </template>
+                </v-slider>
               </v-col>
 
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
                 <v-autocomplete
-                :rules="ruleRequired"
-                required
+                :rules="[required]"              
                 label="Catégories"
                   chips
                   clearable
@@ -61,7 +79,7 @@
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
                 <v-autocomplete
-                  :rules="ruleRequired"
+                  :rules="[required]"
                   required
                   label="Tags"
                   chips
@@ -82,7 +100,7 @@
               <!--Ingredients-->
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                  <v-combobox
-                :rules="ruleRequired"
+                :rules="[required]"
                  label="Ingrédients"
                   v-model="currentIngredients"                   
                  :filter="filter"
@@ -95,8 +113,8 @@
                   clearable
                   multiple
                   small-chips
-                  rounded                  
-                  required                  
+                  solo
+                  rounded                                                      
                 >
                   <template v-slot:no-data>
                     <v-list-item v-if="search !== null && search.length > 2">
@@ -313,7 +331,7 @@
         </v-card-text>
 
         <v-card-actions class="pa-3">
-          <v-btn rounded color="grey">
+          <v-btn rounded color="grey" @click="closeDialogueEvent">
             Annuler
           </v-btn>
           <v-btn rounded class="colorbtnGreen" @click="validation">
@@ -339,21 +357,21 @@ export default {
     props:['dialogNewRecipeProps'],
     data() {
         return {
-          mesureListe:['cr','gr','kg','ml','cl','dl','L','cm','mm'],
+          mesureListe:['cr','gr','kg','ml','cl','dl','L','cm','mm','unité'],
           categorieListe: [],
           valid: false,
+          defaultMax: 30,
           tagsListe: [],
           tagsChoix:[],
           categorieChoix: [],
           recipe: {
             nom: null,
-            nbPers: null,
+            nbPers: 1,
             image: null,
-            ingredients: [],
-            steps: [],
+            ingredients: [],        
             preparationTime: null,
             cuissonTime: null,
-            difficulte: 0
+            difficulte: 1
           },
           currentSteps: [
             { step: 1, description: "Faire fondre le beurre." },
@@ -382,6 +400,7 @@ export default {
             this.$emit('closeDialogNewRecipe')
         },
         updateQuantity(index, value) {
+
           console.log("update quantity "  + value)                   
           this.$set(this.currentIngredients[index], "quantite", value);
         },
@@ -409,6 +428,12 @@ export default {
         updateSteps(index, value) {          
           this.$set(this.currentSteps[index], "description", value);
         },
+        decrement () {
+          this.recipe.nbPers--
+        },
+        increment () {
+          this.recipe.nbPers++
+        },
         //combobox
 
       filter (item, queryText, itemText) {
@@ -429,12 +454,67 @@ export default {
         this.nonce ++
         return color
       },
+      required(value) {
+        if (value instanceof Array && value.length == 0) {
+          return 'Champ requis.';
+        }
+        return !!value || 'Champ requis.';
+      },
       validation(){
         console.log('submit form')
-        this.$refs.form.validate()
-      }
+        //if(!this.$refs.form.validate()) return
+
+        let textPreparation = ""
+        this.currentSteps.forEach( step => {
+          textPreparation += step.step + ": " + step.description+" \n "
+        })  
+
+        console.log(this.currentIngredients)
+
+        let denreesListe = []
+
+        this.currentIngredients.forEach( ing => {
+          console.log(ing)
+          denreesListe.push({
+            id_denree: ing.id_denree,
+            nom: ing.nom,
+            calories: ing.calories,
+            nutriscore: ing.nutriscore,
+            recette_denree: {
+              quantite: ing.quantite,
+              mesure: ing.mesure
+            }
+          })
+        })
+
+        let newRecette = {
+          nom: this.recipe.nom,
+          difficulte: this.recipe.difficulte,
+          calorie: 0,
+          temps_cuisson: this.recipe.cuissonTime,
+          temps_preparation: this.recipe.preparationTime,
+          nb_personne: this.recipe.nbPers,
+          nutriscore: 'A',
+          preparation: textPreparation,
+          url_image: this.recipe.image,
+          tags: this.tagsChoix,
+          categories: this.categorieChoix,
+          denrees: denreesListe
+        }
+
+        console.log(newRecette)
+
+      },
     },
     computed: {
+        max() {
+          if( this.recipe.nbPers === this.defaultMax) {
+            this.defaultMax = this.defaultMax + 50
+            return this.defaultMax;
+          } else {
+            return this.defaultMax;
+          }
+        },
         width() {
             let x = 100;
             switch (this.$vuetify.breakpoint.name) {
@@ -465,8 +545,7 @@ export default {
               this.categorieListe = response.data
             }
           )
-        }
-        //fetch categorie
+        }        
       },
       //select couleur pour badge ingredient new ingredient
       currentIngredients (val, prev) {     
@@ -475,29 +554,31 @@ export default {
         this.currentIngredients = val.map(v => {
           let product = {}       
 
-          switch(typeof v){
-            case 'string': 
-              DAODenree.findCreateProduct(v).then(
-                (response) =>{
-                  product = response.data[0]
-                  if (product !== null) {
+          if(typeof v === 'string'){
+            console.log('create')
+            DAODenree.findCreateProduct(v).then(
+              (response) =>{
+                product = response.data[0]
+                if (product !== null) {
               
-                    product.color= this.colors[this.nonce - 1],               
-                    v = structuredClone(product)
-                    this.currentIngredients.push(product)
-                    this.items.push(product)                    
-                    this.nonce++                  
-                    return v
-                  }
-                },
-                (error) => {
-                  alert('erreur lors de la création de l\'ingrédient')
-                  return
+                  product.color= this.colors[this.nonce - 1],               
+                  v = structuredClone(product)
+                  this.currentIngredients.push(product)
+                  this.items.push(product)                    
+                  this.nonce++                                      
                 }
-              ); break;
-              default:               
-                return v 
-          }                      
+              },
+              (error) => {
+                alert('erreur lors de la création de l\'ingrédient')
+                return
+              }
+            );
+          }
+          else{
+            console.log('hekkk')
+            console.log(v)
+            return v
+          }                    
         })
       },
       //get from api

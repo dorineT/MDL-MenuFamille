@@ -147,9 +147,9 @@ export default {
       menuSuggest.getMenuById(this.menuId).then(
         (response) =>{
           this.menu = response.data
-          this.menu.plat_identique_matin = menu.plat_identique_matin === -1 ? null : menu.plat_identique_matin
-          this.menu.plat_identique_midi = menu.plat_identique_midi === -1 ? null : menu.plat_identique_midi
-          this.menu.plat_identique_soir = menu.plat_identique_soir === -1 ? null : menu.plat_identique_soir
+          this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+          this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+          this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
 
           this.loading = false
           this.nbPersonneFamille = this.$store.state.info.nbMembreActuel

@@ -16,11 +16,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.ENUM('accepter','refuser','attente'),
         defaultValue: 'attente',
         allowNull: false
-      },
-      valid: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
       }
     },
     {
