@@ -337,3 +337,23 @@ exports.GetMeanNutAndCal = (req, res) => {
         });
       });  
 }
+
+/// get back a list of recipe from it's categories
+
+exports.Get_From_Cat = (req, res) => {
+  let periode_req = req.params.periode;
+  Recipe.findAll({
+    where :{
+      '$categories.periode$': periode_req
+    },
+    include :[{model: Tag, through: {attributes: []}}, {model: Categorie, as: "categories", through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]
+  }).then(data => {
+      res.send(data)
+  })
+  .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Recipes."
+      });
+    });
+}

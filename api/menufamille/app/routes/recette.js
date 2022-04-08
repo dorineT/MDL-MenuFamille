@@ -21,7 +21,7 @@ router.delete('/:id', recette.DeleteRecipe);
 
 router.get('/FindWithTags',[authJwt.verifyToken], recette.find_All_Tags); //KO, c'est quoi la différence avec allTags ?
 
-router.get('/FindRecipe/:id', recette.find_Recipe);
+router.get('/FindRecipe/:id',[authJwt.verifyToken], recette.find_Recipe);
 
 router.get('/FindFromTags/',[authJwt.verifyToken], recette.find_Recipe_tags);
 
@@ -36,3 +36,6 @@ router.get('/GetAllNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetAllN
 
 // Get mean nutriscores and calories
 router.get('/GetMeanNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetMeanNutAndCal);
+
+// Get recipe from it's categories
+router.get('/GetFromCategory/:periode', recette.Get_From_Cat);

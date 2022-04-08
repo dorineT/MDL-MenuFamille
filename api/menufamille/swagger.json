@@ -1319,7 +1319,44 @@
               }
             }
           }
+        },
+        "/recette/GetFromCategory/{periode}": {
+          "get": {
+            "tags": [
+              "recipe"
+            ],
+            "summary": "Get back a list of recipes from their categories",
+            "description": "with a period, get back all the recipes linked to it",
+            "operationId": "Get_From_Cat",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "periode",
+                "in": "path",
+                "description": "matin, midi or soir",
+                "required": true,
+                "type": "integer"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recette": { "type" : "array", "items" :
+                      {
+                        "$ref": "#/definitions/Recette_all_info" 
+                      }
+                    }
+                  }
+              }
+            }
+          }
         }
+      }
       },
   "securityDefinitions": {
     "api_key": {
