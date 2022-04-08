@@ -78,8 +78,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
-                <v-autocomplete
-                  :rules="[required]"
+                <v-autocomplete                  
                   required
                   label="Tags"
                   chips
@@ -299,7 +298,7 @@
                                 class="colorbtnGreen"
                                                            
                                 @click="addStep(index, $event)"
-                                v-if="index != 0 && index == currentSteps.length - 1"
+                                v-if="index === currentSteps.length - 1"
                               >
                                 <v-icon>mdi-plus-thick</v-icon>
                               </v-btn>
@@ -310,7 +309,7 @@
                                 class="colorbtnOrange"
                                   
                                 @click="removeStep(index, $event)"
-                                v-if="index != 0 && index != currentSteps.length"
+                                v-if="index !== 0 && index != currentSteps.length"
                               >
                                 <v-icon>mdi-minus-thick</v-icon>                                  
                               </v-btn>
@@ -348,9 +347,11 @@
 import TagDAO from '../services/api.tag';
 import DenreeDao from '../services/api.denree';
 import CategorieDao from '../services/api.categorie'
+import RecetteDAO from '../services/api.recette'
 let DAOTag = new TagDAO()
 let DAODenree = new DenreeDao()
 let DAOCategorie = new CategorieDao()
+let DAORecette = new RecetteDAO()
 
 export default {
   
@@ -367,16 +368,13 @@ export default {
           recipe: {
             nom: null,
             nbPers: 1,
-            image: null,
-            ingredients: [],        
+            image: null,                 
             preparationTime: null,
             cuissonTime: null,
             difficulte: 1
           },
-          currentSteps: [
-            { step: 1, description: "Faire fondre le beurre." },
-            { step: 2, description: "Mélanger avec la farine." },
-          ],
+          currentSteps: [{step:1, description:null}],
+          currentIngredients: [],
 
           ruleRequired: [v => !!v || 'Champs requis'],
 
@@ -388,7 +386,7 @@ export default {
             { header: 'Rechercher votre ingrédient' }
           ],
           nonce: 1,        
-          currentIngredients: [],        
+              
           x: 0,
           search: null,
           y: 0,
@@ -460,9 +458,13 @@ export default {
         }
         return !!value || 'Champ requis.';
       },
+      transformTime(time){
+        let tab = time.split(':')
+        return parseInt(tab[0]*60) + parseInt(tab[1])
+      },
       validation(){
         console.log('submit form')
-        //if(!this.$refs.form.validate()) return
+        if(!this.$refs.form.validate()) return
 
         let textPreparation = ""
         this.currentSteps.forEach( step => {
@@ -475,24 +477,26 @@ export default {
 
         this.currentIngredients.forEach( ing => {
           console.log(ing)
-          denreesListe.push({
-            id_denree: ing.id_denree,
-            nom: ing.nom,
-            calories: ing.calories,
-            nutriscore: ing.nutriscore,
-            recette_denree: {
-              quantite: ing.quantite,
-              mesure: ing.mesure
-            }
-          })
+          if(ing !== undefined){
+            denreesListe.push({
+              id_denree: ing.id_denree,
+              nom: ing.nom,
+              calories: ing.calories,
+              nutriscore: ing.nutriscore,
+              recette_denree: {
+                quantite: ing.quantite,
+                mesure: ing.mesure
+              }
+            })
+          }
         })
 
         let newRecette = {
           nom: this.recipe.nom,
           difficulte: this.recipe.difficulte,
           calorie: 0,
-          temps_cuisson: this.recipe.cuissonTime,
-          temps_preparation: this.recipe.preparationTime,
+          temps_cuisson: this.transformTime(this.recipe.cuissonTime),
+          temps_preparation: this.transformTime(this.recipe.preparationTime),
           nb_personne: this.recipe.nbPers,
           nutriscore: 'A',
           preparation: textPreparation,
@@ -503,6 +507,17 @@ export default {
         }
 
         console.log(newRecette)
+        DAORecette.sendRecette(newRecette).then(
+          (response) =>{
+            alert('Recette enregistrée')
+            this.closeDialogueEvent()
+          },
+
+          (error) =>{
+            alert(error.message)
+          }
+        )
+        
 
       },
     },
@@ -532,7 +547,21 @@ export default {
         },
     },
     watch: {
-      dialogNewRecipeProps(){        
+      dialogNewRecipeProps(){ 
+        this.items = []
+        this.currentIngredients = []
+        this.categorieChoix = []
+        this.tagsChoix = []
+        this.currentSteps = [{step:1, description:''}]
+        this.recipe= {
+          nom: null,
+          nbPers: 1,
+          image: null,                 
+          preparationTime: null,
+          cuissonTime: null,
+          difficulte: 1
+        }
+
         if(this.dialogNewRecipeProps){
           DAOTag.getAll().then(
             (response) =>{
@@ -574,8 +603,7 @@ export default {
               }
             );
           }
-          else{
-            console.log('hekkk')
+          else if(typeof v === 'object'){            
             console.log(v)
             return v
           }                    
