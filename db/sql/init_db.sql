@@ -11,7 +11,7 @@ SET TIMEZONE TO 'UTC+1';
 CREATE TABLE FAMILLE (
                          id_famille SERIAL NOT NULL ,
                          nom VARCHAR NOT NULL ,
-                         code_acces VARCHAR UNIQUE NOT NULL,
+                         code_acces VARCHAR UNIQUE,
                          nb_membres INTEGER NOT NULL,
                          PRIMARY KEY (id_famille)
 );
@@ -51,10 +51,12 @@ CREATE TABLE REFRESH_TOKEN (
 );
 
 CREATE TYPE arbre AS ENUM ('parent','enfant');
+CREATE TYPE statut AS ENUM ('accepter','refuser','attente');
 CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
                                 role arbre NOT NULL,
+                                valid statut NOT NULL DEFAULT 'attente',
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
@@ -117,6 +119,7 @@ CREATE TABLE DENREE (
     id_denree SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE ,
     nutriscore VARCHAR,
+    calories INTEGER NOT NULL,
     PRIMARY KEY (id_denree)
 
 );
@@ -270,17 +273,30 @@ for each row
 execute procedure delete_famille()
 
 
-create function delete_update_membre()
-returns trigger as $$
+CREATE OR REPLACE FUNCTION public.delete_update_membre()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
 declare
 	nb integer;
+	isCascade integer;
 begin
-	select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f.id_membre = old.id_membre  and f."role" = 'parent' group by f.id_famille;
-    if nb > 0 and nb = 1 then 
-       raise exception 'unique parent de la famille' using ERRCODE = 23500;
+	if old.role = 'parent' then
+		SELECT COUNT(query_start) as nb_query into isCascade FROM pg_stat_activity as activity where query_start is not null and query like 'DELETE FROM "famille" WHERE "id_famille" = %'
+			group by query_start
+			ORDER BY query_start  desc
+			limit 4;
+		select count(*) as nb into nb from famille_membre f where f.id_famille = old.id_famille  and f."role" = 'parent' group by f.id_famille;
+    	if nb > 0 and nb = 1 and isCascade IS NULL then 
+       		raise exception 'unique parent de la famille!' using ERRCODE = 23500;
+    	end if;
     end if;
-    return old;  
-end; $$ language plpgsql;
+   	if tg_op = 'UPDATE' then 
+    	return new;  
+    elsif tg_op = 'DELETE' then
+    	return old;
+    end if;
+end; $function$;
 
 create trigger delete_membre
 before delete
@@ -290,6 +306,7 @@ execute procedure delete_update_membre();
 
 create trigger update_membre
 before update
+of role
 on famille_membre
 for each row 
 execute procedure delete_update_membre();

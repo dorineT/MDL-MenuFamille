@@ -9,6 +9,9 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
+    updateRoles( {commit} , user) {
+      commit('updateRoles', user);
+    },
     update( {commit} , user) {
       return DAOUser.updateUser(user).then(
         (response) => {
@@ -54,6 +57,10 @@ export const auth = {
     }
   },
   mutations: {
+    updateRoles(state, user) {
+      state.status.loggedIn = true;
+      state.user = { ...state.user, roles: user.roles};
+    },
     update(state, user) {
       state.status.loggedIn = true;
       state.user = { ...state.user, firstname: user.firstname, lastname: user.lastname};

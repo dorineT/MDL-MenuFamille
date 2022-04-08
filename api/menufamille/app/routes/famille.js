@@ -30,7 +30,7 @@ router.post('/', famille.PutFamilly);
 
 router.put('/:id', famille.UpdateFamilly);
 
-router.delete('/:id', famille.DeleteFamilly);
+router.delete('/:id_famille',[authJwt.verifyToken, authJwt.isMember , authJwt.isParent], famille.DeleteFamilly);
 
 //doit etre ajoute sur toutes les requetes
 router.get("/:id/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard);
@@ -47,14 +47,35 @@ router.get("/GetListFamilly/:id",[authJwt.verifyToken], famille.GetListFamilly);
 
 router.delete("/:id_famille/:id_membre",[authJwt.verifyToken, authJwt.isMember , authJwt.isParent], famille.DeleteMemberFamilly);
 
-router.put('/Defrole/:id_fam/:id_mem',[authJwt.verifyToken, authJwt.isParent], famille.DefineRole);
+router.put('/switch/:id_famille/:id_membre',[authJwt.verifyToken, authJwt.isParent], famille.SwitchRole);
 
-router.get('/IsThereParent/:id_fam', [authJwt.verifyToken], famille.PapaOuTes);
+router.post('/createFamilly/:id_membre',[authJwt.verifyToken], famille.CreateFamilly);
 
-router.post('/CreateFamilly/:id_mem',[authJwt.verifyToken], famille.CreateFamilly);
 
-router.put('/AjouterMembreNumber/:id',[authJwt.verifyToken], famille.AddMemberCount);
+router.get('/CheckAccesCode/:id_famille', famille.CheckAccesCode);
 
-router.put('/RetirerMembreNumber/:id',[authJwt.verifyToken], famille.LowerMemberCount);
+router.get("/GetListMembre/:id_famille",[authJwt.verifyToken], (req, res)=> {
+  req.statut = "accepter";
+  famille.GetListMembre(req,res)
+});
 
-router.get('/CheckAccesCode/:code', famille.CheckAccesCode);
+router.get("/Request/:id_famille",[authJwt.verifyToken, authJwt.isMember, authJwt.isParent], (req, res)=> {
+  req.statut = "attente";
+  famille.GetListMembre(req,res)
+});
+
+router.get("/notif",[authJwt.verifyToken], famille.GetListNotif);
+
+router.put("/request/:id_membre/:id_famille/accepted", [authJwt.verifyToken, authJwt.isMember, authJwt.isParent], (req,res) => {
+  req.statut = "accepter"
+  famille.Update_Statut_Request(req,res);
+  }
+);
+
+router.put("/request/:id_membre/:id_famille/refused", [authJwt.verifyToken, authJwt.isMember, authJwt.isParent], (req,res) => {
+  req.statut = "refuser"
+  famille.Update_Statut_Request(req,res);
+  }
+);
+
+router.post("/join",[authJwt.verifyToken, authJwt.VerifyCode], famille.joinFamilly);

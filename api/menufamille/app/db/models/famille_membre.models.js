@@ -9,7 +9,12 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true
       },
       role: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('parent','enfant'),
+        allowNull: false
+      },
+      statut: {
+        type: Sequelize.ENUM('accepter','refuser','attente'),
+        defaultValue: 'attente',
         allowNull: false
       },
       valid: {

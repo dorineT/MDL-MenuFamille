@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
       calories: {
         type: Sequelize.INTEGER,
         allowNull: true
-      }
+      },
     },
     {
         timestamps: false
