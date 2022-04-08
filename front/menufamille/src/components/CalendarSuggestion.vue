@@ -10,6 +10,8 @@
           class="elevation-8"
           disable-sort
           mobile-breakpoint="0"
+          :loading="loading"
+          loading-text="Loading... Please wait"
           :footer-props="{             
             'disable-items-per-page':true,
             itemsPerPage:7,      
@@ -28,7 +30,7 @@
           <tbody v-else>
           <tr>
             <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                 <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                   <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
@@ -41,7 +43,7 @@
                     </v-avatar>
                   </div>                
                 </div>
-                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">   
+                <v-btn v-if="item.plat===''" text @click="goToRecette(item)">   
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn>                 
@@ -50,7 +52,7 @@
           </tr>
           <tr>
             <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
               <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                 <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
@@ -63,7 +65,7 @@
                   </v-avatar>
                 </div>                
               </div>
-              <v-btn   v-if="item.plat!=='/'" text @click="goToRecette(item)">           
+              <v-btn   v-if="item.plat===''" text @click="goToRecette(item)">           
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn>          
@@ -72,7 +74,7 @@
           </tr>
           <tr>
             <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-              <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
+              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
                 <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                   <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
@@ -85,7 +87,7 @@
                     </v-avatar>
                   </div>                
                 </div>
-              <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
+              <v-btn v-if="item.plat===''" text @click="goToRecette(item)">                  
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.plat === ''" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
               </v-btn> 
@@ -126,29 +128,44 @@ export default {
         nbPersonneFamille: null,
         headers: [],
         menu: {}, 
-          items: [],
-          pageCount: 0,
-          page: 1,
-          nbJourMenu: 0,
-          platsMatin:[],
-          platsMidi: [],
-          platsSoir: [],
-          errorMessage: {
-            message: "",
-            error: false,
-          },    
+        items: [],
+        pageCount: 0,
+        page: 1,
+        nbJourMenu: 0,
+        platsMatin:[],
+        platsMidi: [],
+        platsSoir: [],
+        errorMessage: {
+          message: "",
+          error: false,
+        },
+        loading: true,    
       }
     },
    // call api to get the menu 
-    async created(){
-      this.menu = await menuSuggest.getMenuById(this.menuId) 
-      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+    mounted(){
+      menuSuggest.getMenuById(this.menuId).then(
+        (response) =>{
+          this.menu = response.data
+          this.menu.plat_identique_matin = menu.plat_identique_matin === -1 ? null : menu.plat_identique_matin
+          this.menu.plat_identique_midi = menu.plat_identique_midi === -1 ? null : menu.plat_identique_midi
+          this.menu.plat_identique_soir = menu.plat_identique_soir === -1 ? null : menu.plat_identique_soir
 
-      this.items = this.menu.calendriers
-      let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+          this.loading = false
+          this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-      this.populateHeader(this.items,0,indiceEnd)
-      this.fillPlat(this.items,0,indiceEnd)     
+          this.items = this.menu.calendriers
+          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+
+          this.populateHeader(this.items,0,indiceEnd)
+          this.fillPlat(this.items,0,indiceEnd)   
+        },
+
+        (error) =>{
+          alert(error.message)
+        }
+      )
+  
       eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
     },
     destroy(){
@@ -185,8 +202,7 @@ export default {
         this.platsSoir = []
 
         while(iStart<iEnd & iStart<menu.length){
-          let jourPlat = menu[iStart]     
-
+          let jourPlat = menu[iStart]          
           let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
             id_jour: jourPlat.id_calendrier,
@@ -194,7 +210,7 @@ export default {
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
             nbPers: periode.nb_personne,
             tags: periode.tags,
-            suggestions: periode.suggestions
+            suggestions: periode.suggestions,         
           })
 
           periode = jourPlat.calendrier_recettes[1]
@@ -285,8 +301,8 @@ export default {
           this.fillPlat(this.items,iStart,iEnd)
           this.errorMessage.error = false	
           
-          //call api
-          menuSuggest.sendMenuUpdate(this.menu)
+          //call api and send periode only
+          menuSuggest.sendPeriodeUpdateSuggestion(menuPeriodeOld)
         }
       },
     }
@@ -301,4 +317,7 @@ export default {
 
 .tdplat
   text-align: center
+
+.sizeP
+  font-size: large
 </style>

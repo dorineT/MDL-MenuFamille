@@ -27,6 +27,14 @@
     {
       "name": "membre",
       "description": "Operations about Membre"
+    },
+    {
+      "name": "recipe",
+      "description": "Operations on Recipe"
+    },
+    {
+      "name": "denree",
+      "description": "Operations on Denree"
     }
   ],
   "schemes": [
@@ -912,7 +920,7 @@
       }
     },
     "/membre/{id_fam}/{id_mem} (delete)": {
-      "post": {
+      "delete": {
         "tags": [
           "membre"
         ],
@@ -950,8 +958,260 @@
           }
         }
       }
-    }
-  },
+    },
+    "/membre/AddFav/{id_mem}/{id_rec}": {
+      "post": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Add a recipe to the favorites",
+        "description": "Add a recipe to the favorites, need to be child or parent",
+        "operationId": "AddFavorites",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_rec",
+            "in": "path",
+            "description": "id of the recipe",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_membre": {"type": "integer", "format": "int64"},
+                "id_recette": {"type": "integer", "format": "int64"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/membre/RemoveFav/{id_mem}/{id_rec}": {
+      "delete": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Remove a recipe from favorites",
+        "description": "Remove a recipe from favorites, need to be child or parent",
+        "operationId": "RemoveFavorites",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "id_rec",
+            "in": "path",
+            "description": "id of the recipe",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/membre/ListFav/{id_mem}": {
+      "get": {
+        "tags": [
+          "membre"
+        ],
+        "summary": "Get the list of the favorites from a member",
+        "description": "Get the list of the favorites from a member, need to be child or parent",
+        "operationId": "ListFavorites",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_mem",
+            "in": "path",
+            "description": "id of the member",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "recettes": { "type" : "array", "items" :
+                  {"type": "object", "properties": 
+                    {
+                      "id_recette": {"type": "integer","format": "int64"},
+                      "nom": {"type":"string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/CreateRecipeAllInfo": {
+      "post": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Create a recipe",
+        "description": "Create a recipe and link it with it's denree, categories and tags",
+        "operationId": "Create_Recipe_All_Infos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "recipe",
+            "in": "body",
+            "description": "full information of a recipe",
+            "required": true,
+            "type": "object",
+            "properties": {
+              "nom" : {"type" : "string"},
+              "difficulte" : {"type" : "integer", "format": "int64"},
+              "calorie" : {"type" : "integer", "format": "int64"},
+              "temps_cuisson" : {"type" : "integer", "format": "int64"},
+              "temps_preparation" : {"type" : "integer", "format": "int64"},
+              "nb_personne" : {"type" : "integer", "format": "int64"},
+              "nutriscore" : {"type" : "string"},
+              "preparation" : {"type" : "string"},
+              "tags": { "$ref":"#/definitions/Tags_full"},
+              "categorie": { "$ref": "#/definitions/Categorie_full"},
+              "denree" : { "$ref": "#/definitions/Denree_full"}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                      "id_recette": {"type": "integer","format": "int64"},
+                      "nom" : {"type" : "string"},
+                      "difficulte" : {"type" : "integer", "format": "int64"},
+                      "calorie" : {"type" : "integer", "format": "int64"},
+                      "temps_cuisson" : {"type" : "integer", "format": "int64"},
+                      "temps_preparation" : {"type" : "integer", "format": "int64"},
+                      "nb_personne" : {"type" : "integer", "format": "int64"},
+                      "nutriscore" : {"type" : "string"},
+                      "preparation" : {"type" : "string"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/denree/Like/{nom}": {
+          "get": {
+            "tags": [
+              "denree"
+            ],
+            "summary": "Get a list of denree with the name 'nom' or something close to that",
+            "description": "Get a list of denree with a name + an iLike (like an SQL 'Like' but case insensitive)",
+            "operationId": "FindWithLike",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "nom",
+                "in": "path",
+                "description": "name of the denree",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "denrees": { "type" : "array", "items" :
+                      {"type": "object", "properties": 
+                        {
+                          "id_denree": {"type": "integer","format": "int64"},
+                          "nom": {"type":"string"},
+                          "nutriscore": {"type": "string"},
+                          "calories": {"type": "integer","format": "int64"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/denree/FindOrCreate/{nom}": {
+          "get": {
+            "tags": [
+              "denree"
+            ],
+            "summary": "Find a denree from it's exact name (case sensitive) or create it without nutriscore",
+            "description": "Get a denree or create it",
+            "operationId": "FindWithLike",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "nom",
+                "in": "path",
+                "description": "exact name of the denree",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_denree": {"type": "integer","format": "int64"},
+                    "nom": {"type":"string"},
+                    "nutriscore": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
   "securityDefinitions": {
     "api_key": {
       "type": "apiKey",
@@ -1136,7 +1396,14 @@
       "type": "object",
       "properties": {
         "id_tag": { "type" : "integer", "format": "int64"},
-        "periode" : {"type" : "string"}
+        "nom" : {"type" : "string"}
+      }
+    },
+    "Categorie_full":{
+      "type": "object",
+      "properties": {
+        "id_categorie": { "type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"}
       }
     },
     "Membre_full":{
@@ -1156,6 +1423,32 @@
         "nom" : {"type" : "string"},
         "prenom" : {"type" : "string"},
         "email" : {"type" : "string"}
+      }
+    },
+    "Denree_full" :{
+      "type": "object",
+      "properties": {
+        "id_denree" : {"type" : "integer", "format": "int64"},
+        "nom" : {"type" : "string"},
+        "nutriscore" : {"type" : "string"},
+        "calories": {"type": "integer","format": "int64"},
+        "recette_denree" : {"type": "object", "properties": {"quantite" : {"type" : "integer", "format": "int64"}}}
+      }
+    },
+    "Recette_all_info":{
+      "type": "object",
+      "properties": {
+        "nom" : {"type" : "string"},
+        "difficulte" : {"type" : "integer", "format": "int64"},
+        "calorie" : {"type" : "integer", "format": "int64"},
+        "temps_cuisson" : {"type" : "integer", "format": "int64"},
+        "temps_preparation" : {"type" : "integer", "format": "int64"},
+        "nb_personne" : {"type" : "integer", "format": "int64"},
+        "nutriscore" : {"type" : "string"},
+        "preparation" : {"type" : "string"},
+        "tags": { "$ref":"#/definitions/Tags_full"},
+        "categorie": { "$ref": "#/definitions/Categorie_full"},
+        "denree" : { "$ref": "#/definitions/Denree_full"}
       }
     }
   }

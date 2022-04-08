@@ -62,7 +62,7 @@ export default {
       items: []
     }
   },
-  created(){
+  mounted(){
     eventBus.$on('formValideOK', this.stepAvance)
   },
   destroyed() {

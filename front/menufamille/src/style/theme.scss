@@ -1,0 +1,50 @@
+@import 'general';
+
+////////////////// INTERFACE //////////////////
+
+@import 'interface/card';
+@import 'interface/tags';
+@import 'interface/new-recipe';
+@import 'interface/badges';
+@import 'interface/block';
+
+////////////////// STYLE GENERAL //////////////////
+
+// @font-face {
+//     font-family: 'Arial Rounded MT Bold';
+//     src: url('../fonts/arlrdbd.ttf');
+//   }
+
+
+
+
+
+.custom-text-secondary{
+    color: $secondary;
+}
+
+.custom-text-secondary{
+    color: $secondary;
+}
+
+.custom-text-tertiary{
+    color: $tertiary;
+}
+
+.custom-btn-primary{
+    width: 2rem;
+    background-color: $primary;
+    color: $white;
+}
+
+.custom-btn-secondary{
+    width: 2rem;
+    background-color: $secondary;
+    color: $white;
+}
+
+.custom-btn-tertiary{
+    width: 2rem;
+    background-color: $tertiary;
+    color: $white;
+}

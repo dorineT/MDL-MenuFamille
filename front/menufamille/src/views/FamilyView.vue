@@ -312,6 +312,7 @@ let DAOfamily = new FamilyDao;
       },
       updateView() {
         this.select = []
+
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })
