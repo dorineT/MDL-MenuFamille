@@ -74,8 +74,8 @@ export default {
             showDialogueInfoRecipe: false
         }
     },
-    created(){
-      console.log('created recipe card')
+    mounted(){
+      console.log('mounted recipe card')
     },
     methods:{
         showInfo(){

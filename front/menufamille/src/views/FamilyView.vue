@@ -169,7 +169,7 @@ let DAOfamily = new FamilyDao;
         return this.$store.state.info
       }
     },
-    created() {
+    mounted() {
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })

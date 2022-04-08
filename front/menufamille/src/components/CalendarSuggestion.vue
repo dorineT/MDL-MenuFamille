@@ -143,7 +143,7 @@ export default {
       }
     },
    // call api to get the menu 
-    created(){
+    mounted(){
       menuSuggest.getMenuById(this.menuId).then(
         (response) =>{
           this.menu = response.data

@@ -69,7 +69,7 @@ export default{
             error: false,
         }
     },
-    created(){
+    mounted(){
       this.loadingRecipe = true
     },
     mounted(){

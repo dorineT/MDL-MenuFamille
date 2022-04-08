@@ -160,8 +160,8 @@ export default {
         
       }
     },
-    created(){ 
-      console.log('created '+this.idMenu)
+    mounted(){ 
+      console.log('mounted '+this.idMenu)
       
       DAOMenu.getMenuById(this.idMenu).then(
         (response) => {

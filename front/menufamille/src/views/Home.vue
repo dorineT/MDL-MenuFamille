@@ -113,7 +113,7 @@
         famille: [],        
       }
     },
-    created(){      
+    mounted(){      
       
       this.$store.state.auth.user.roles.forEach(element => {        
         this.famille.push(element[1])

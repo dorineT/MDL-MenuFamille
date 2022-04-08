@@ -89,7 +89,7 @@
 				id_menu: null,
 			};
 		},
-		created() {
+		mounted() {
 			eventBus.$on("openDialogSuggestion", this.openModal); //listening event form CalendarSuggestion.vue
 		},
 		destroyed() {

@@ -44,7 +44,7 @@ export default {
       idPeriode: null
     }
   },
-  created(){
+  mounted(){
     eventBus.$on('postMenuModification', this.postMenu)
     this.idPeriode = this.$route.query.menu.value
     this.periode = this.$route.query.menu.text

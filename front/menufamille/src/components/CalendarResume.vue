@@ -102,7 +102,7 @@ let DAOMenu = new MenuDao()
       }
     },
 
-    created () {
+    mounted () {
       console.log(this.$vuetify.breakpoint.width)
       this.comboboxMenuSelected='Aucun menu sélectionné'   
       this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
@@ -155,6 +155,7 @@ let DAOMenu = new MenuDao()
               });
             },
             (error) =>{
+              this.menus = []
               alert(error.message)
             }
           )

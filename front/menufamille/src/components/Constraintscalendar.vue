@@ -360,7 +360,7 @@
 
 			};
 		},
-		async created() {
+		async mounted() {
 			DAOTag.getAll().then(
 				(response) => {
 					this.tagsListe = response.data

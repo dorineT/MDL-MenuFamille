@@ -240,7 +240,7 @@
 				jourSemaine: null,
 			};
 		},
-		created() {
+		mounted() {
 			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component			
 		},
 		destroyed() {
