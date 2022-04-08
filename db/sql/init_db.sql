@@ -270,7 +270,7 @@ create trigger delete_famille
 before delete
 on membres
 for each row 
-execute procedure delete_famille()
+execute procedure delete_famille();
 
 
 CREATE OR REPLACE FUNCTION public.delete_update_membre()
@@ -310,3 +310,30 @@ of role
 on famille_membre
 for each row 
 execute procedure delete_update_membre();
+
+CREATE OR REPLACE FUNCTION public.update_nb_famille()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+declare
+	nb_membres_max  integer;
+	actual_nb_membres integer;
+begin
+   	if tg_op = 'INSERT' then
+   		select count(*) as nb into actual_nb_membres from famille_membre fm where id_famille = new.id_famille and "statut" != 'refuser';
+		select nb_membres into nb_membres_max from famille where id_famille = new.id_famille;
+   		if nb_membres_max = actual_nb_membres then 
+   			update famille set nb_membres = nb_membres_max+1 where id_famille = new.id_famille;
+   		end if;
+    	return new;  
+    elsif tg_op = 'DELETE' then
+    	select nb_membres into nb_membres_max from famille where id_famille = old.id_famille;
+    	update famille set nb_membres = nb_membres_max-1 where id_famille = old.id_famille;
+    	return old;
+    end if;
+end; $function$;
+
+create trigger update_nb_famille before
+delete or insert
+on
+public.famille_membre for each row execute function update_nb_famille();
