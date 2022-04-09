@@ -71,11 +71,11 @@ export default {
     props: ['recipe'],
     data(){
         return{
-            showDialogueInfoRecipe: false
+            showDialogueInfoRecipe: false            
         }
     },
     methods:{
-        showInfo(){
+        showInfo(){            
             this.showDialogueInfoRecipe = true
         },
         closeDialog(error, message){           

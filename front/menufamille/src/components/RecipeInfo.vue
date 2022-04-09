@@ -14,7 +14,7 @@
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
 	</v-toolbar>
-     <v-card >
+     <v-card v-if="dialogInfoRecipe">
             <v-card-text>
             <v-container fluid>
                 <v-row>
@@ -250,7 +250,7 @@ import vuetify from '../plugins/vuetify';
 			},
 		},
         watch:{
-            dialogInfoRecipe(){
+            dialogInfoRecipe(){               
                 if(this.dialogInfoRecipe !== null && this.dialogInfoRecipe){
                     this.fetchData()
                 }
@@ -272,9 +272,7 @@ import vuetify from '../plugins/vuetify';
 						return this.$vuetify.breakpoint.width - x * 3;
 				}
 			},
-            widthImage() {
-                console.log(this.$vuetify.breakpoint.width)
-                console.log(this.$vuetify.breakpoint.name)
+            widthImage() {     
                 let x = 100;
                 switch (this.$vuetify.breakpoint.name) {
                     case "xs":
