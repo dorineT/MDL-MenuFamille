@@ -1,51 +1,67 @@
 <template>
-	<v-dialog
-		v-model="dialogInfoRecipe"
-		@click:outside="closeDialogueEvent"
-		:max-width="width"                
-		transition="dialog-transition"
-        scrollable        
-	>
-		<!--<v-toolbar dark color="#FFB74D">
+
+  <v-dialog
+    v-model="dialogInfoRecipe"
+    @click:outside="closeDialogueEvent"
+    @keydown.esc="closeDialogueEvent"
+    :max-width="width"
+    transition="dialog-transition"
+  >
+    <v-toolbar dark color="#FFB74D">
+
+
 					<v-btn icon dark @click="$emit('closeDialog', false, message)">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
-				</v-toolbar>-->
-        <v-card>
+	</v-toolbar>
+     <v-card >
             <v-card-text>
             <v-container fluid>
                 <v-row>
                     <!--
                         col image
                         -->
-                    <v-col cols="3" sm="4" md="5" lg="5" xl="5">
+                    <v-col cols="12" sm="5" md="5" lg="5" xl="5" style="position:fixed" class="media">
                         <v-img
-                            v-if="recipe.url_image !== null"
+                            v-if="recipe.url_image !== null"                            
                             style="border-radius: 60px"
                             :aspect-ratio="16 / 9"
-                            contain
-                            :max-height="height"
+                            contain                        
+                            :width="widthImage"
+                            max-width="500"  
                             :src="recipe.url_image"
                         ></v-img>
                         <v-img
                             v-else
                             :aspect-ratio="16 / 9"
                             contain
-                            :max-height="height"
-                            max-width="500"
+                            :width="widthImage"
+                            max-width="500"  
                             src="../assets/platNone.jpg"
                         ></v-img>
                     </v-col>
-
-                    <!--texte-->
-                    <v-col cols="9" sm="8" md="7" lg="7" xl="7" style="overflow: auto">
-                        
+                    <v-col cols="12" sm="5" md="5" lg="5" xl="5" class="media">
                         <v-row>
-                            <v-col>                             
-                                    <h3 class="headline mb-0">{{ recipe.nom }}</h3>
-                                
+                            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                                <v-img
+                                    v-if="recipe.url_image !== null"
+                                    style="border-radius: 60px; visibility: hidden;"
+                                    :aspect-ratio="16 / 9"
+                                    contain                        
+                                    :width="widthImage"
+                                    :src="recipe.url_image"                                  
+                                ></v-img>
+                                <v-img v-else
+                                    :aspect-ratio="16 / 9"
+                                    contain   
+                                    :width="widthImage"
+                                    max-width="500"          
+                                    src="../assets/platNone.jpg"
+                                    style="visibility: hidden;"
+                                ></v-img>
                             </v-col>
-                            <v-col self-align="center">
+
+                            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                                 <v-chip-group>
                                     <v-chip
                                         v-for="categorie in recipe.categories"
@@ -56,6 +72,33 @@
                                     </v-chip>
                                 </v-chip-group>
                             </v-col>
+
+                            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                                <v-chip-group>
+                                    <v-chip
+                                        v-for="tag in recipe.tags"
+                                        :key="tag.id_tag"
+                                        color="green lighten-2"
+                                    >
+                                        {{ tag.nom }}
+                                    </v-chip>
+                                </v-chip-group>
+                            </v-col>
+
+                        </v-row>
+                       
+                    </v-col>
+                   
+
+                    <!--texte-->
+                    <v-col cols="12" sm="7" md="7" lg="7" xl="7" style="overflow: auto">
+                        
+                        <v-row>
+                            <v-col>                             
+                                    <h3 class="headline mb-0 font">{{ recipe.nom }}</h3>
+                                
+                            </v-col>
+
                         </v-row>                      
                         <v-row>
                             
@@ -136,15 +179,7 @@
                                     :src="require('../assets/' + recipe.nutriscore + '.jpg')"
                                 ></v-img>
 
-                                <v-chip-group>
-                                    <v-chip
-                                        v-for="tag in recipe.tags"
-                                        :key="tag.id_tag"
-                                        color="green lighten-2"
-                                    >
-                                        {{ tag.nom }}
-                                    </v-chip>
-                                </v-chip-group>
+
                             </v-col>
                         </v-row>
                         <v-row>
@@ -156,7 +191,6 @@
                                 auto-grow
                                 :value="recipe.preparation"
                             ></v-textarea>
-                            e Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
                         </v-row>
                         
                     </v-col>
@@ -165,13 +199,14 @@
             </v-container>
             </v-card-text>
         </v-card>
-	</v-dialog>
+  </v-dialog>
 </template>
 
 <script>
-	import RecetteDAO from "../services/api.recette";
-	let DAORecette = new RecetteDAO();
-	import moment from "moment";
+import RecetteDAO from "../services/api.recette";
+let DAORecette = new RecetteDAO();
+import moment from "moment";
+import vuetify from '../plugins/vuetify';
 
 	export default {
 		props: ["id_recette", "dialogInfoRecipe"],
@@ -183,8 +218,7 @@
 			};
 		},
 		methods: {
-            fetchData(){
-                console.log('fetch data')
+            fetchData(){              
                 DAORecette.getById(this.id_recette).then(
                     (response) => {
                         this.recipe = response.data;
@@ -199,8 +233,7 @@
                     }
                 );
             },
-			closeDialogueEvent() {
-				console.log("destroyed");
+			closeDialogueEvent() {			
 				this.$emit("closeDialog", false, this.message);
 			},
 			//transforme des minutes en format 00:00
@@ -212,7 +245,10 @@
 				}
 				var h = (mins / 60) | 0,
 					m = mins % 60 | 0;
-				return moment.utc().hours(h).minutes(m).format("hh:mm");
+
+                console.log('heure : ' + h)
+                console.log('minutes '  + m)
+				return moment.utc().hours(h).minutes(m).format("HH:mm");
 			},
 		},
         watch:{
@@ -238,6 +274,30 @@
 						return this.$vuetify.breakpoint.width - x * 3;
 				}
 			},
+            widthImage() {
+                console.log(this.$vuetify.breakpoint.width)
+                console.log(this.$vuetify.breakpoint.name)
+                let x = 100;
+                switch (this.$vuetify.breakpoint.name) {
+                    case "xs":
+                        return 100
+                        //return this.$vuetify.breakpoint.width - x;
+                    case "sm":
+                        
+                        return 200;
+                        //return this.$vuetify.breakpoint.width - x;
+                    case "md":
+                        if(this.$vuetify.breakpoint.width <= 1084) return 300
+                        return 400
+                        //return this.$vuetify.breakpoint.width - x;
+                    case "lg":
+                        return 450;
+                        //return this.$vuetify.breakpoint.width - x * 2;
+                    case "xl":
+                        return 500;
+                        //return this.$vuetify.breakpoint.width - x * 3;
+                }
+            },
 			height() {
 				let x = 0;
 				switch (this.$vuetify.breakpoint.name) {
@@ -255,10 +315,20 @@
 			},
 		},
 	};
+
 </script>
 
 <style lang="sass">
 @import '../style/globalStyle'
+
+
+@media (max-width: 601px)
+  .media
+    display: none
+    
+
+html
+    overflow-y: auto
 
 $primary: $colorGreen
 $secondary: $colorOrange
@@ -300,6 +370,18 @@ $secondary: $colorOrange
         position: relative
         width: 6.4rem
         text-align: right
+        margin-left: -2rem
+
+    #time-valueCuisson
+        width: 8.3rem
+        margin-left: -2rem
+
+    #value-calories
+        width: 8rem
+        margin-left: -2rem
+
+    #value-nbPersonne
+        width: 7rem
         margin-left: -2rem
 
 </style>

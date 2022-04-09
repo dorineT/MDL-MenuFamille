@@ -35,4 +35,9 @@ export default class RecetteDAO{
           }
         })
     }
+
+
+    sendRecette(recette){
+      return api.post("recette/CreateRecipeAllInfo/", recette)
+    }
 }

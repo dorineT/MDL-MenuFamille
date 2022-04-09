@@ -1,8 +1,8 @@
 <template>
     <v-dialog       
         v-model="dialogNewRecipeProps"
-        @click:outside="closeDialogueEvent"
-        @keydown.esc="closeDialogueEvent"
+        @click:outside="closeDialogueEvent(null)"
+        @keydown.esc="closeDialogueEvent(null)"
         :max-width="width"                
         transition="dialog-transition"
         scrollable
@@ -29,20 +29,38 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
-                <v-text-field
+                Nombre de personnes: {{recipe.nbPers}}
+                <v-slider
+                                  
                   v-model="recipe.nbPers"
-                  label="Nombre de personnes"
-                  required
-                  type="number"
-                  :rules="ruleRequired"
-                ></v-text-field>
+                  color="green lighten-3"
+                  track-color="grey"
+                  always-dirty
+                  min="1"
+                  :max = "max"             
+                >
+                  <template v-slot:prepend>
+                    <v-icon                      
+                      @click="decrement"
+                    >
+                      mdi-minus
+                    </v-icon>
+                  </template>
+
+                  <template v-slot:append>
+                    <v-icon                      
+                      @click="increment"
+                    >
+                      mdi-plus
+                    </v-icon>
+                  </template>
+                </v-slider>
               </v-col>
 
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
                 <v-autocomplete
-                :rules="ruleRequired"
-                required
+                :rules="[required]"              
                 label="Catégories"
                   chips
                   clearable
@@ -60,8 +78,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
-                <v-autocomplete
-                  :rules="ruleRequired"
+                <v-autocomplete                  
                   required
                   label="Tags"
                   chips
@@ -82,7 +99,7 @@
               <!--Ingredients-->
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                  <v-combobox
-                :rules="ruleRequired"
+                :rules="[required]"
                  label="Ingrédients"
                   v-model="currentIngredients"                   
                  :filter="filter"
@@ -95,8 +112,8 @@
                   clearable
                   multiple
                   small-chips
-                  rounded                  
-                  required                  
+                  solo
+                  rounded                                                      
                 >
                   <template v-slot:no-data>
                     <v-list-item v-if="search !== null && search.length > 2">
@@ -281,7 +298,7 @@
                                 class="colorbtnGreen"
                                                            
                                 @click="addStep(index, $event)"
-                                v-if="index != 0 && index == currentSteps.length - 1"
+                                v-if="index === currentSteps.length - 1"
                               >
                                 <v-icon>mdi-plus-thick</v-icon>
                               </v-btn>
@@ -292,7 +309,7 @@
                                 class="colorbtnOrange"
                                   
                                 @click="removeStep(index, $event)"
-                                v-if="index != 0 && index != currentSteps.length"
+                                v-if="index !== 0 && index != currentSteps.length"
                               >
                                 <v-icon>mdi-minus-thick</v-icon>                                  
                               </v-btn>
@@ -313,7 +330,7 @@
         </v-card-text>
 
         <v-card-actions class="pa-3">
-          <v-btn rounded color="grey">
+          <v-btn rounded color="grey" @click="closeDialogueEvent(null)">
             Annuler
           </v-btn>
           <v-btn rounded class="colorbtnGreen" @click="validation">
@@ -330,35 +347,34 @@
 import TagDAO from '../services/api.tag';
 import DenreeDao from '../services/api.denree';
 import CategorieDao from '../services/api.categorie'
+import RecetteDAO from '../services/api.recette'
 let DAOTag = new TagDAO()
 let DAODenree = new DenreeDao()
 let DAOCategorie = new CategorieDao()
+let DAORecette = new RecetteDAO()
 
 export default {
   
     props:['dialogNewRecipeProps'],
     data() {
         return {
-          mesureListe:['cr','gr','kg','ml','cl','dl','L','cm','mm'],
+          mesureListe:['cr','gr','kg','ml','cl','dl','L','cm','mm','unité'],
           categorieListe: [],
           valid: false,
+          defaultMax: 30,
           tagsListe: [],
           tagsChoix:[],
           categorieChoix: [],
           recipe: {
             nom: null,
-            nbPers: null,
-            image: null,
-            ingredients: [],
-            steps: [],
+            nbPers: 1,
+            image: null,                 
             preparationTime: null,
             cuissonTime: null,
-            difficulte: 0
+            difficulte: 1
           },
-          currentSteps: [
-            { step: 1, description: "Faire fondre le beurre." },
-            { step: 2, description: "Mélanger avec la farine." },
-          ],
+          currentSteps: [{step:1, description:null}],
+          currentIngredients: [],
 
           ruleRequired: [v => !!v || 'Champs requis'],
 
@@ -370,7 +386,7 @@ export default {
             { header: 'Rechercher votre ingrédient' }
           ],
           nonce: 1,        
-          currentIngredients: [],        
+              
           x: 0,
           search: null,
           y: 0,
@@ -378,15 +394,13 @@ export default {
       },
 
     methods:{
-        closeDialogueEvent(){
-            this.$emit('closeDialogNewRecipe')
+        closeDialogueEvent(newItem){
+            this.$emit('closeDialogNewRecipe', newItem)
         },
-        updateQuantity(index, value) {
-          console.log("update quantity "  + value)                   
+        updateQuantity(index, value) {                         
           this.$set(this.currentIngredients[index], "quantite", value);
         },
-        updateMesure(index, value) {
-          console.log("update mesure ")                      
+        updateMesure(index, value) {                          
           this.$set(this.currentIngredients[index], "mesure", value);
         },
         addStep(index, event) {
@@ -409,6 +423,12 @@ export default {
         updateSteps(index, value) {          
           this.$set(this.currentSteps[index], "description", value);
         },
+        decrement () {
+          this.recipe.nbPers--
+        },
+        increment () {
+          this.recipe.nbPers++
+        },
         //combobox
 
       filter (item, queryText, itemText) {
@@ -429,12 +449,80 @@ export default {
         this.nonce ++
         return color
       },
-      validation(){
-        console.log('submit form')
-        this.$refs.form.validate()
-      }
+      required(value) {
+        if (value instanceof Array && value.length == 0) {
+          return 'Champ requis.';
+        }
+        return !!value || 'Champ requis.';
+      },
+      transformTime(time){
+        let tab = time.split(':')
+        return parseInt(tab[0]*60) + parseInt(tab[1])
+      },
+      validation(){        
+        if(!this.$refs.form.validate()) return
+
+        let textPreparation = ""
+        this.currentSteps.forEach( step => {
+          textPreparation += step.step + ": " + step.description+" \n "
+        })  
+
+        let denreesListe = []
+
+        this.currentIngredients.forEach( ing => {      
+          if(ing !== undefined){
+            denreesListe.push({
+              id_denree: ing.id_denree,
+              nom: ing.nom,
+              calories: ing.calories,
+              nutriscore: ing.nutriscore,
+              recette_denree: {
+                quantite: ing.quantite,
+                mesure: ing.mesure
+              }
+            })
+          }
+        })
+
+        let newRecette = {
+          nom: this.recipe.nom,
+          difficulte: this.recipe.difficulte,
+          calorie: 0,
+          temps_cuisson: this.transformTime(this.recipe.cuissonTime),
+          temps_preparation: this.transformTime(this.recipe.preparationTime),
+          nb_personne: this.recipe.nbPers,
+          nutriscore: 'A',
+          preparation: textPreparation,
+          url_image: this.recipe.image,
+          tags: this.tagsChoix,
+          categories: this.categorieChoix,
+          denrees: denreesListe
+        }
+  
+        DAORecette.sendRecette(newRecette).then(
+          (response) =>{
+            alert('Recette enregistrée')
+            newRecette.id_recette = response.data.id_recette
+            this.closeDialogueEvent(newRecette)
+          },
+
+          (error) =>{
+            alert(error.message)
+          }
+        )
+        
+
+      },
     },
     computed: {
+        max() {
+          if( this.recipe.nbPers === this.defaultMax) {
+            this.defaultMax = this.defaultMax + 50
+            return this.defaultMax;
+          } else {
+            return this.defaultMax;
+          }
+        },
         width() {
             let x = 100;
             switch (this.$vuetify.breakpoint.name) {
@@ -452,7 +540,21 @@ export default {
         },
     },
     watch: {
-      dialogNewRecipeProps(){        
+      dialogNewRecipeProps(){ 
+        this.items = []
+        this.currentIngredients = []
+        this.categorieChoix = []
+        this.tagsChoix = []
+        this.currentSteps = [{step:1, description:''}]
+        this.recipe= {
+          nom: null,
+          nbPers: 1,
+          image: null,                 
+          preparationTime: null,
+          cuissonTime: null,
+          difficulte: 1
+        }
+
         if(this.dialogNewRecipeProps){
           DAOTag.getAll().then(
             (response) =>{
@@ -465,8 +567,7 @@ export default {
               this.categorieListe = response.data
             }
           )
-        }
-        //fetch categorie
+        }        
       },
       //select couleur pour badge ingredient new ingredient
       currentIngredients (val, prev) {     
@@ -475,25 +576,28 @@ export default {
         this.currentIngredients = val.map(v => {
           let product = {}       
 
-          switch(typeof v){
-            case 'string': 
-              DAODenree.findCreateProduct(v).then(
-                (response) =>{
-                  product = response.data[0]
-                  if (product !== null) {
-              
-                    product.color= this.colors[this.nonce - 1],               
-                    v = structuredClone(product)
-                    this.currentIngredients.push(product)
-                    this.items.push(product)                    
-                    this.nonce++                  
-                    return v
-                  }
+          if(typeof v === 'string'){       
+            DAODenree.findCreateProduct(v).then(
+              (response) =>{
+                product = response.data[0]
+                if (product !== null) {
+                  product.color= this.colors[this.nonce - 1],               
+                  v = structuredClone(product)
+                  this.currentIngredients.push(product)
+                  this.items.push(product)                    
+                  this.nonce++                                      
                 }
-              ); break;
-              default:               
-                return v 
-          }                      
+              },
+              (error) => {
+                alert('erreur lors de la création de l\'ingrédient')
+                return
+              }
+            );
+          }
+          else if(typeof v === 'object'){
+            if(v === undefined) return         
+            return v
+          }                    
         })
       },
       //get from api

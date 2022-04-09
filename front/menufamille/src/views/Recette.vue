@@ -16,7 +16,8 @@
 
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
-                    <v-card tile flat class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
+
+                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent parentClass"  :height="ContainerHeight">
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
@@ -70,7 +71,7 @@ export default{
     computed: {
         ContainerHeight () {
 
-            let x = 200
+            let x = 350
             switch (this.$vuetify.breakpoint.name) {
                 case 'xs': return this.$vuetify.breakpoint.height - x
                 case 'sm': return this.$vuetify.breakpoint.height - x
@@ -103,7 +104,11 @@ export default{
         //show modal      
         this.showDialogueNewRecipe = true
       },
-      closeDialogNewRecipe(){
+      closeDialogNewRecipe(newItem){
+        console.log(newItem)
+        if(newItem !== null){
+          this.recipe.push(newItem)
+        }
         this.showDialogueNewRecipe = false
       }
     }
@@ -112,6 +117,11 @@ export default{
 
 <style lang="sass">
 @import "../style/globalStyle"
+
+.parentClass
+  overflow-y: auto
+  overflow-x: hidden
+  position: static
 
 </style>
 
