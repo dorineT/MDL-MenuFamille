@@ -38,6 +38,10 @@ export default class MenuDao{
       })
     }
 
+    sendMenuAddSuggestion(suggestion){
+      api.put("/menu/"+suggestion.id_periode+"/"+suggestion.id_recette+"/"+suggestion.id_menu)
+    }
+
     /**
      * Recupere un menu selon son id avec toutes ses informations (jour, periode, recette)
      * @param {*} idMenu 

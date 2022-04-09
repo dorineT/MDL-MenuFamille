@@ -27,7 +27,8 @@
             <td class="nodata" colspan="0">Auncun menu sélectionné</td>
           </tbody>
           <tbody v-else>
-          <tr>   Matin
+          <tr>   
+            <td class="tdplat"> <strong>Matin</strong> </td>
             <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -52,7 +53,8 @@
               <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
             </td>
           </tr>
-          <tr> Midi
+          <tr> 
+            <td class="tdplat"> <strong>Midi</strong> </td>
             <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -81,7 +83,8 @@
               <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
             </td>
           </tr>
-          <tr> Soir
+          <tr> 
+            <td class="tdplat"> <strong>Soir</strong> </td>
             <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
               <h4 v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </h4>
               <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
@@ -186,7 +189,7 @@ export default {
        
         },
       populateHeader(menu,iStart, iEnd){ 
-        this.headers = ['Période']
+        this.headers = [{text: 'Période', align:'center'}]
         this.nbJourMenu = 0       
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
@@ -307,8 +310,9 @@ export default {
           this.fillPlat(this.items,iStart,iEnd)
           this.errorMessage.error = false	
           
-          //call api
-          menuSuggest.sendMenuUpdate(this.menu)
+          //call api    
+          let sugg = item.suggestions.find(el => el.id_membre === this.currentUser.id_membre)        
+          menuSuggest.sendMenuAddSuggestion(sugg)
         }
       },
     }
@@ -323,13 +327,5 @@ export default {
 
 .tdplat
   text-align: center
-
-
-
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td, .v-data-table > .v-data-table__wrapper > table > thead > tr > td, .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td 
-  border-left: thin solid
-
-
-
 
 </style>
