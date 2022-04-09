@@ -113,7 +113,7 @@
         famille: [],        
       }
     },
-    created(){      
+    mounted(){      
       
       this.$store.state.auth.user.roles.forEach(element => {        
         this.famille.push(element[1])
@@ -147,32 +147,38 @@
           this.getUnlockedSuggestionMenu() 
         }
       },
-      async getUnlockedMenu(){      
+      getUnlockedMenu(){      
         this.menuToValide = []
-        let menus = await DAOMenu.getMenuUnlocked(this.$store.state.info.idFamilleActuel)     
-        menus.forEach(menu => {         
-            let periodeNew = { 
-                text: menu.periode_debut + ' - ' +menu.periode_fin,
-                value: menu.id_menu
-              }                   
-            this.menuToValide.push(periodeNew)        
-        });
-      },
-      async getUnlockedSuggestionMenu(){
-        this.menuToSuggest = []
-        let menus = await DAOMenu.getMenuSuggestionUnlocked(this.$store.state.info.idFamilleActuel)
-        menus.forEach(menu => {
-           
-          let periodeSugg = {
-          text:menu.periode_debut+ ' - ' +menu.periode_fin,
-          value:menu.id_menu,
-          
-        }    
-        
-        this.menuToSuggest.push(periodeSugg)
-      })
-      }
+        DAOMenu.getMenuUnlocked(this.$store.state.info.idFamilleActuel).then(
+          (response) =>{
+            let menus = response.data
+            menus.forEach(menu => {         
+                let periodeNew = { 
+                    text: menu.periode_debut + ' - ' +menu.periode_fin,
+                    value: menu.id_menu
+                  }                   
+                this.menuToValide.push(periodeNew)        
+            });
+          }
+        ) 
 
+      },
+      getUnlockedSuggestionMenu(){
+        this.menuToSuggest = []
+        DAOMenu.getMenuSuggestionUnlocked(this.$store.state.info.idFamilleActuel).then(
+          (response) =>{
+            let menus = response.data
+
+            menus.forEach(menu => {           
+                let periodeSugg = {
+                  text:menu.periode_debut+ ' - ' +menu.periode_fin,
+                  value:menu.id_menu,          
+              }      
+              this.menuToSuggest.push(periodeSugg)
+            })
+          }
+        )
+      }
     }
   }
 </script>

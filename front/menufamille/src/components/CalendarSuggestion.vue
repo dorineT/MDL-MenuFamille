@@ -143,16 +143,29 @@ export default {
       }
     },
    // call api to get the menu 
-    async created(){
-      this.menu = await menuSuggest.getMenuById(this.menuId) 
-      this.loading = false
-      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+    mounted(){
+      menuSuggest.getMenuById(this.menuId).then(
+        (response) =>{
+          this.menu = response.data
+          this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+          this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+          this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
 
-      this.items = this.menu.calendriers
-      let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+          this.loading = false
+          this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
-      this.populateHeader(this.items,0,indiceEnd)
-      this.fillPlat(this.items,0,indiceEnd)     
+          this.items = this.menu.calendriers
+          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+
+          this.populateHeader(this.items,0,indiceEnd)
+          this.fillPlat(this.items,0,indiceEnd)   
+        },
+
+        (error) =>{
+          alert(error.message)
+        }
+      )
+  
       eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
     },
     destroy(){

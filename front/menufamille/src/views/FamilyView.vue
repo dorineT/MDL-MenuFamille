@@ -1,24 +1,51 @@
 <template>
-   
-
-    <v-card style="margin: 20px" outlined>
+    <v-dialog
+    
+      v-model="dialogSup"
+      persistent
+      max-width="700"
+    >
+    
+    <template v-slot:activator="{ on, attrs }">
+    <v-card style="margin: 20px;opacity: 0.85"  outlined>
+      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" />
       <v-alert text type="error" border="left"  style="margin: 10px" dismissible v-if="update">
               {{message.message}}
       </v-alert>
       
-      <v-card-title>Mes Familles
-      </v-card-title>
+      <v-card-title class="mt-2">Mes Familles</v-card-title>
      
 
         <v-container fluid>
-           <v-col cols="3">
+          <v-row align-content="start">
+           <v-col cols="12" sm="12" md="3" lg="3" xl="3">
             <v-select
                 :items="select"
                 v-model="selected"
                 label="Liste familles"
                 @change="changeFamille()"
             ></v-select>  
-            </v-col>
+           </v-col>
+           <v-col cols="12" sm="12" md="3" lg="3" xl="3">
+              <v-btn
+              color="#FFB74D"
+              class="mr-3"
+              elevation="2"
+              rounded
+              small
+              @click="createFamily"
+              >Créer</v-btn>
+              <v-btn
+              color="red"
+              elevation="2"
+              rounded
+              small
+              v-show="currentRole === 'parent'"
+              v-bind="attrs"
+              v-on="on"
+              >Supprimer</v-btn>
+              </v-col>
+          </v-row>
           
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" >
@@ -56,29 +83,52 @@
                     </template>
                     <template v-slot:item.actions = "{ item }">
                       
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
                       <v-icon
-                        small
                         class="mr-2"
+                        v-on="on"
+                        @click="switchRole(item)"
+                        color="blue"
                       >
                         mdi-account-convert
                       </v-icon>
+                      </template>
+                      <span>Changer rôle</span>
+                      </v-tooltip>
                       
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
                       <v-icon
-                        small
                         class="mr-2"
+                        v-on="on"
                         @click="deleteMember(item)"
+                        color="red"
                       >
                         mdi-account-multiple-minus
                       </v-icon>
+                        </template>
+                      <span>Retirer membre</span>
+                      </v-tooltip>
                     </template>
                   </v-data-table>
                 </v-card-text>
               </v-card>
               
             </v-col>
-            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6">
-              <v-card>
-                 demande adhésion // idem data table
+            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="isRequest">
+              <v-card height="200px">
+                <v-toolbar flat>
+                  <v-toolbar-title>Demandes en attente</v-toolbar-title>
+                </v-toolbar>
+                <v-divider></v-divider>
+
+                <v-list>
+                  <v-col v-for="membre in requestFamily" :key="membre.id" cols="12">
+                    <requestcard :name="membre.membre" :id="membre.id" @requestStatut="requestStatut" />
+                  </v-col>
+                </v-list>
+
               </v-card>
              
             </v-col>
@@ -88,13 +138,30 @@
                                   <v-container fluid>
                     <v-row>
                       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
-                famille actuelle
-                + action qu'on peut faire + 
-                info de la famille
-               
+                        <v-text-field
+                          label="Code d'accès:"
+                          outlined
+                          shaped
+                          :value="code"
+                          readonly
+                          prepend-inner-icon="mdi-qrcode-scan"
+                        ></v-text-field>
                       </v-col>
-                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center" v-if="isCode">
-                         <qr-code :size="150" text="Hello World!"></qr-code>
+                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" align="center">
+                         <qr-code :size="150" :text="accessCode" error-level="L"></qr-code>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+                        <v-btn
+                        color="red"
+                        elevation="2"
+                        rounded
+                        small
+                        @click="quitFamily"
+                        >
+                        Quitter la famille
+                        </v-btn>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -105,32 +172,76 @@
               <v-card>
                 <v-card-title>Rejoindre une famille</v-card-title>
                 <v-card-text>
+                  <v-form
+                  ref="form"
+                  >
                         <v-text-field
-                          name="name"
+                          name="code"
+                          append-outer-icon='mdi-send'
                           label="Code d'accès"
                           v-model="joinFamillyInput"
+                          :rules="codeRules"
                           id="id"
+                          required
+                          @click:append-outer="() => {if (!$refs.form.validate()) return; joinFamily(joinFamillyInput)}"
                         ></v-text-field>
+                  </v-form>
                   </v-card-text>
               </v-card>
               
             </v-col>
           </v-row>
         </v-container>
-    </v-card>  
+    </v-card>
+    </template>
+    <v-card>
+        <v-card-title class="text-h5">
+          Suppression de la famille!
+        </v-card-title>
+        <v-card-text>Voulez-vous vraiment supprimer la famille <strong>{{selected}}</strong> ?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogSup = false"
+          >
+            Annuler
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="deleteFamily"
+          >
+            Supprimer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </template>
 
 <script>
 import FamilyDao from '../services/api.famille';
+import Requestcard from '../components/RequestCard.vue';
+import DialogCreateFamily from '../components/DialogCreateFamily.vue'
+import User from '../models/user';
 let DAOfamily = new FamilyDao;
-  export default {    
+  export default {
+    components: { Requestcard, DialogCreateFamily },    
     name: 'family',
     editedIndex: -1,
     data (){
       return{
+        user: new User(''),
+        dialogFm: false,
+        dialogSup: false,
+        codeRules: [
+        v => !!v || 'Veuillez entrer un code',
+        v => v !== null && v.length == 6 || 'Code invalide',
+        ],
         select: [],
         selected: "",
-        isCode: false,
+        code: "",
         dialogDelete: false,
         message: "",
         update: false,
@@ -140,7 +251,19 @@ let DAOfamily = new FamilyDao;
           role: '',
           actions: ''
         },
-        headers:[
+        membresFamily:[],
+        requestFamily:[],
+        joinFamillyInput: null
+      }
+    },
+    watch: {
+    '$store.state.auth.user': function () {
+      this.updateView()
+    }
+    },
+    computed: {
+      headers() {
+        return [
           {
             text: 'Membre',
             align: 'start',
@@ -153,23 +276,42 @@ let DAOfamily = new FamilyDao;
             sortable: false,  
             value: 'role'               
           },
-          {
+          (this.currentRole === 'parent'? {
             text: 'Actions',
             align: '',
             sortable: false,   // des boutons, faire un template slot de la colonne pour custom   
             value:'actions'
-          },
-        ],
-        membresFamily:[],
-        joinFamillyInput: null
-      }
-    },
-    computed: {
+          }: ''
+          ) 
+        ];
+      },
+      isRequest() {
+        return this.requestFamily > 0;
+      },
       currentFamily() {
-        return this.$store.state.info
+        return this.$store.state.info;
+      },
+      currentRole() {
+        return this.$store.state.info.roleActuel;
+      },
+      accessCode() {
+        const host = window.location.protocol + "//" + window.location.host;
+        return host+"/family?code="+this.code;
       }
     },
-    created() {
+    mounted() {
+        this.updateView();
+        this.updateMember();
+        this.generateCode();
+        if(this.currentRole === 'parent')  this.updateRequest();
+        if(this.$route.query.code) this.joinFamily(this.$route.query.code);
+    },
+    methods : {
+      createFamily() {
+        this.dialogFm = !this.dialogFm;
+      },
+      updateView() {
+        this.select = []
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })
@@ -178,27 +320,67 @@ let DAOfamily = new FamilyDao;
         } else {
           this.selected = this.select.length > 0 ? this.select[0] : null
         }
-        this.updateMember();
-    },
-    methods : {
+      },
+      deleteFamily() {
+        DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            this.dialogSup = false;
+            this.selected = this.select[0];
+            this.changeFamille();
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
       changeFamille(){
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
-          this.updateMember();      
+          this.updateMember();
+          this.generateCode();
+          if(this.currentRole === 'parent')  this.updateRequest();
         }
+      },
+      updateRequest() {
+        this.requestFamily = []
+        DAOfamily.getRequest(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            response.data.membres.forEach(membre => {
+              let value = {
+                id: membre.id_membre,
+                membre: membre.nom + " " +membre.prenom,
+              }
+              this.requestFamily.push(value)
+              this.update = false;
+            })
+            console.log(this.requestFamily)
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       },
       updateMember() {
         this.membresFamily = []
         DAOfamily.getMembers(this.currentFamily.idFamilleActuel).then(
           (response) => {
             response.data.membres.forEach(membre => {
+
               let value = {
                 id: membre.id_membre,
                 membre: membre.nom + " " +membre.prenom,
-                role: membre.role.role,
-                action: ''
+                role: membre.role.role
               }
+              if(this.currentRole === 'parent') value = Object.assign(value, {action: ''});
               this.membresFamily.push(value)
               this.update = false;
             })
@@ -235,12 +417,102 @@ let DAOfamily = new FamilyDao;
         )
         
       },
+      quitFamily() {
+        DAOfamily.removeMember(this.currentFamily.idFamilleActuel, this.$store.state.auth.user.id_membre).then(
+          (response) => {
+            this.selected = this.select[0];
+            this.changeFamille();
+            this.update = false;
+            
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
+      joinFamily(code) {
+        DAOfamily.joinFamily(code).then(
+          (response) => {
+            this.update = false;
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
+      switchRole(item) {
+         let newRole;
+         switch(item.role) {
+           case 'enfant':
+             newRole = 'parent';
+             break;
+           case 'parent':
+             newRole = 'enfant';
+             break;
+         }
+         DAOfamily.switchRole(item.id, this.currentFamily.idFamilleActuel, newRole).then(
+          (response) => {
+            let index = this.membresFamily.indexOf(item)
+            this.membresFamily[index].role = newRole
+            this.update = false;
+            if(item.id === this.$store.state.auth.user.id_membre) this.changeFamille();
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
+      requestStatut(type, id_membre) {
+        DAOfamily.updateRequest(type, this.currentFamily.idFamilleActuel, id_membre).then(
+          (response) => {
+            this.update = false;
+            const item = this.requestFamily.find(membre => membre.id == id_membre)
+            this.requestFamily.splice(this.requestFamily.indexOf(item), 1)
+            if(type === 'accepted') this.updateMember();
+          },
+          (error) => {
+              this.update = true;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
+      },
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+      },
+      generateCode() {
+        DAOfamily.getCodeFamily(this.currentFamily.idFamilleActuel).then(
+          (response) => {
+            this.code = response.data.code;
+            this.update = false;
+          },
+          (error) => {
+              this.update = true;
+              this.closeDelete()
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+        )
       }
     }
 }

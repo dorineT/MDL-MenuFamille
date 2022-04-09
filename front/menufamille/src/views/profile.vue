@@ -5,7 +5,7 @@
     
       v-model="dialogSup"
       persistent
-      max-width="400"
+      max-width="700"
     >
   
   <template v-slot:activator="{ on, attrs }">

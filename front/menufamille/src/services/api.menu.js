@@ -5,15 +5,8 @@ export default class MenuDao{
      * Get les menus validés (verrou à true) selon la famille sélectionnée
      * @param idFamille
      */
-    async getMenuLock(idFamille) { 
-        let menus = []
-        
-        await api.get("/menu/GetLockedMenu/"+idFamille)
-          .then((response) => {            
-            menus = response.data
-                      
-          });        
-        return menus 
+    getMenuLock(idFamille) {        
+        return api.get("/menu/GetLockedMenu/"+idFamille)        
     }
 
     /**
@@ -68,19 +61,7 @@ export default class MenuDao{
      * @returns 
      */
     async getMenuById(idMenu){
-      let menu
-        
-      await api.get("/menu/GetAllInfo/"+idMenu)
-        .then((response) => {            
-          menu = response.data  
-          
-          menu.plat_identique_matin = menu.plat_identique_matin === -1 ? null : menu.plat_identique_matin
-          menu.plat_identique_midi = menu.plat_identique_midi === -1 ? null : menu.plat_identique_midi
-          menu.plat_identique_soir = menu.plat_identique_soir === -1 ? null : menu.plat_identique_soir
-        });
-               
-
-      return menu
+      return api.get("/menu/GetAllInfo/"+idMenu)
     }
 
     /**
@@ -89,13 +70,8 @@ export default class MenuDao{
      * @param {*} idFamille 
      * @returns 
      */
-    async getMenuUnlocked(idFamille){
-      let menus = []
-      await api.get("/menu/GetUnlockedMenu/"+idFamille).then((response) =>{
-        menus = response.data
-      })
-
-      return menus
+    async getMenuUnlocked(idFamille){    
+      return api.get("/menu/GetUnlockedMenu/"+idFamille)
     }
 
     /**
@@ -104,14 +80,8 @@ export default class MenuDao{
      * @param {*} idFamille 
      * @returns 
      */
-    async getMenuSuggestionUnlocked(idFamille){
-      let suggestionMenus = []
-      await api.get("/menu/GetSuggestUnlockedMenu/"+idFamille).then((response) =>{
-        suggestionMenus = response.data
-       
-      })
-
-      return suggestionMenus
+    async getMenuSuggestionUnlocked(idFamille){     
+      return api.get("/menu/GetSuggestUnlockedMenu/"+idFamille)
     }
 
 

@@ -32,3 +32,6 @@ router.get('/GetMenuId/:id', menu.Get_Menu_By_Id);
 
 //get menu complet
 router.get('/GetAllInfo/:id', menu.Get_Menu_All_Info_PK);
+
+// Menu en mode suggestion avec date ok
+router.get('/GetSuggestionOK/:id_famille', menu.Get_Menu_Can_Be_Suggested);

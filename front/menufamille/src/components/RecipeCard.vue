@@ -1,7 +1,7 @@
 <template>
       <v-card @click="showInfo" class="card-recipe" >
         <v-card-title primary-title>                                        
-            <h3 class="headline mb-0">{{recipe.nom}}</h3>                                                                                    
+            <h3 class="headline mb-0 spanTitle">{{recipe.nom}}</h3>                                                                                    
         </v-card-title>
         <v-card-text  style="height: 240px">
             <v-row class="d-flex justify-center">
@@ -74,8 +74,8 @@ export default {
             showDialogueInfoRecipe: false
         }
     },
-    created(){
-      console.log('created recipe card')
+    mounted(){
+      console.log('mounted recipe card')
     },
     methods:{
         showInfo(){
@@ -93,13 +93,28 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass"> 
   
 .card-recipe 
   margin: 20px !important
   margin-right: 5px !important
   margin-left: 5px !important
+  transition: transform .2s
+
+  .spanTitle
+    width: 100% 
+    display: inline-block
+    text-overflow: ellipsis
+    overflow: hidden
+    white-space: nowrap
 
   &:hover
     box-shadow: 0 5px 20px 0 #9CCC65, 0 6px 20px 0 #9CCC65 !important
+    transform: scale(1.1)
+    z-index: 1
+    //position: absolute
+    //width: 250px
+
+    .spanTitle
+      white-space: normal !important
 </style>

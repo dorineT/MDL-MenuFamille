@@ -1,5 +1,6 @@
 <template>
     <div class="cardmargin ">
+      <dialog-new-recipe :dialogNewRecipeProps="showDialogueNewRecipe" @closeDialogNewRecipe="closeDialogNewRecipe" />
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
@@ -7,13 +8,18 @@
                             {{message.message}}
                     </v-alert>
                     <v-card >
-                        <h2>Carnet de recette</h2>
+                        <v-card-title>
+                          Carnet de recettes
+                        </v-card-title>
+                        <v-card-actions  >
+                          <v-btn rounded small class="colorbtnGreen" @click="newRecipe">Nouvelle recette</v-btn>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
-                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
+                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent parentClass"  :height="ContainerHeight">
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
@@ -47,21 +53,23 @@
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
 import loadingAvocado from '../components/loadingAvocado.vue'
+import DialogNewRecipe from '../components/DialogNewRecipe.vue'
 let DAORecette = new RecetteDAO()
 
 export default{
     components: {
-      RecipeCard, loadingAvocado
+      RecipeCard, loadingAvocado, DialogNewRecipe
     },
     data(){
         return{
             recipe: [],
             loadingRecipe: false,
+            showDialogueNewRecipe: false,
             message: "",
             error: false,
         }
     },
-    created(){
+    mounted(){
       this.loadingRecipe = true
     },
     mounted(){
@@ -72,7 +80,7 @@ export default{
     computed: {
         ContainerHeight () {
 
-            let x = 200
+            let x = 350
             switch (this.$vuetify.breakpoint.name) {
                 case 'xs': return this.$vuetify.breakpoint.height - x
                 case 'sm': return this.$vuetify.breakpoint.height - x
@@ -91,7 +99,7 @@ export default{
         this.recipe=[]
         this.loadingRecipe = true
         this.fetchRecipe()
-      },
+      },      
       fetchRecipe(){
         DAORecette.getAll().then(
           (response) => {
@@ -109,6 +117,13 @@ export default{
               error.toString();
           }
         )
+      },
+      newRecipe(){
+        //show modal      
+        this.showDialogueNewRecipe = true
+      },
+      closeDialogNewRecipe(){
+        this.showDialogueNewRecipe = false
       }
     }
 }
@@ -116,6 +131,12 @@ export default{
 
 <style lang="sass">
 @import "../style/globalStyle"
+
+.parentClass
+  overflow-y: auto
+  overflow-x: hidden
+  //position: static
+
 </style>
 
 <style>

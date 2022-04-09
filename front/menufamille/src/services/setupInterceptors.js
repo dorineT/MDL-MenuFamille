@@ -16,6 +16,13 @@ const setup = (store) => {
   );
   axiosInstance.interceptors.response.use(
     (res) => {
+      if(res.data.roles === undefined) {
+        axiosInstance.get("/user/roles/update").then(
+          (response) => {
+              store.dispatch("auth/updateRoles", response.data);
+          }
+        )
+      }
       return res;
     },
     async (err) => {

@@ -13,7 +13,11 @@ module.exports = (sequelize, Sequelize) => {
       nutriscore: {
         type: Sequelize.STRING,
         allowNull: true
-      }
+      },
+      calories: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+      },
     },
     {
         timestamps: false

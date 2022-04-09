@@ -1,4 +1,5 @@
 <template>
+
   <v-dialog
     v-model="dialogInfoRecipe"
     @click:outside="closeDialogueEvent"
@@ -7,6 +8,8 @@
     transition="dialog-transition"
   >
     <v-toolbar dark color="#FFB74D">
+
+
 					<v-btn icon dark @click="$emit('closeDialog', false, message)">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
@@ -184,93 +187,89 @@ import RecetteDAO from "../services/api.recette";
 let DAORecette = new RecetteDAO();
 import moment from "moment";
 
-export default {
-  props: ["id_recette", "dialogInfoRecipe"],
-  data() {
-    return {
-      cards: [
-        {
-          title: "Favorite road trips",
-          src: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
-          flex: 6,
-        },
-        {
-          title: "Best airlines",
-          src: "https://cdn.vuetifyjs.com/images/cards/plane.jpg",
-          flex: 6,
-        },
-      ],
-      iconBullet: "mdi-circle-small",
-      message: "",
-      recipe: {},
-    };
-  },
-  created() {
-    //get recette info
-    DAORecette.getById(this.id_recette).then(
-      (response) => {
-        this.recipe = response.data;
-      },
-      (error) => {
-        this.message =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
+	export default {
+		props: ["id_recette", "dialogInfoRecipe"],
+		data() {
+			return {
+				iconBullet: "mdi-circle-small",
+				message: "",
+				recipe: {},              
+			};
+		},
+		methods: {
+            fetchData(){
+                console.log('fetch data')
+                DAORecette.getById(this.id_recette).then(
+                    (response) => {
+                        this.recipe = response.data;
+                    },
+                    (error) => {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message ||
+                            error.toString();
 
-        this.$emit("closeDialog", true, this.message);
-      }
-    );
-  },
-  methods: {
-    closeDialogueEvent() {
-      console.log("destroyed");
-      this.$emit("closeDialog", false, this.message);
-    },
-    //transforme des minutes en format 00:00
-    transformTime(mins) {
-      if (mins >= 24 * 60 || mins < 0) {
-        throw new RangeError(
-          "Valid input should be greater than or equal to 0 and less than 1440."
-        );
-      }
-      var h = (mins / 60) | 0,
-        m = mins % 60 | 0;
-      return moment.utc().hours(h).minutes(m).format("hh:mm");
-    },
-  },
-  computed: {
-    width() {
-      let x = 100;
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return this.$vuetify.breakpoint.width - x;
-        case "sm":
-          return this.$vuetify.breakpoint.width - x;
-        case "md":
-          return this.$vuetify.breakpoint.width - x;
-        case "lg":
-          return this.$vuetify.breakpoint.width - x * 2;
-        case "xl":
-          return this.$vuetify.breakpoint.width - x * 3;
-      }
-    },
-    height() {
-      let x = 0;
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return this.$vuetify.breakpoint.height - x;
-        case "sm":
-          return this.$vuetify.breakpoint.height - x;
-        case "md":
-          return this.$vuetify.breakpoint.height - x;
-        case "lg":
-          return this.$vuetify.breakpoint.height - x;
-        case "xl":
-          return this.$vuetify.breakpoint.height - x;
-      }
-    },
-  },
-};
+                        this.$emit("closeDialog", true, this.message);
+                    }
+                );
+            },
+			closeDialogueEvent() {
+				console.log("destroyed");
+				this.$emit("closeDialog", false, this.message);
+			},
+			//transforme des minutes en format 00:00
+			transformTime(mins) {
+				if (mins >= 24 * 60 || mins < 0) {
+					throw new RangeError(
+						"Valid input should be greater than or equal to 0 and less than 1440."
+					);
+				}
+				var h = (mins / 60) | 0,
+					m = mins % 60 | 0;
+				return moment.utc().hours(h).minutes(m).format("hh:mm");
+			},
+		},
+        watch:{
+            dialogInfoRecipe(){
+                if(this.dialogInfoRecipe !== null && this.dialogInfoRecipe){
+                    this.fetchData()
+                }
+            }
+        },
+		computed: {
+			width() {
+				let x = 100;
+				switch (this.$vuetify.breakpoint.name) {
+					case "xs":
+						return this.$vuetify.breakpoint.width - x;
+					case "sm":
+						return this.$vuetify.breakpoint.width - x;
+					case "md":
+						return this.$vuetify.breakpoint.width - x;
+					case "lg":
+						return this.$vuetify.breakpoint.width - x * 2;
+					case "xl":
+						return this.$vuetify.breakpoint.width - x * 3;
+				}
+			},
+			height() {
+				let x = 0;
+				switch (this.$vuetify.breakpoint.name) {
+					case "xs":
+						return this.$vuetify.breakpoint.height - x;
+					case "sm":
+						return this.$vuetify.breakpoint.height - x;
+					case "md":
+						return this.$vuetify.breakpoint.height - x;
+					case "lg":
+						return this.$vuetify.breakpoint.height - x;
+					case "xl":
+						return this.$vuetify.breakpoint.height - x;
+				}
+			},
+		},
+	};
+
 </script>
 
 <style lang="sass">
