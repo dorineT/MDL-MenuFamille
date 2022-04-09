@@ -249,17 +249,32 @@ exports.Create_Recipe_All_Infos = (req, res) => {
 
     /// On tacle d'abords les Tags  
     req.body.tags.forEach(tag => {
-      db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag});
+      db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag}).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting Recipes tag"
+        });
+    });
     });
 
     /// Au tour des Catégories
     req.body.categories.forEach(categorie => {
-      db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie});
+      db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie}).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting recette categorie"
+        });
+    });
     });
 
     /// Enfin les Denrées
     req.body.denrees.forEach(denree => {
-      db.recette_denree.create({ id_recette: id_new_recette, id_denree : denree.id_denree, quantite : denree.recette_denree.quantite});
+      db.recette_denree.create({ id_recette: id_new_recette, id_denree : denree.id_denree, quantite : denree.recette_denree.quantite}).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting denree recette"
+        });
+    });
     });
     
     res.send(data);
