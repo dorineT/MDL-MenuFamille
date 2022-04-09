@@ -4,7 +4,11 @@ const Op = db.Sequelize.Op;
 
 // Retrieve all Category from the database.
 exports.findAll = (req, res) => {
-    Categorie.findAll()
+    Categorie.findAll({
+      order: [
+        [ 'periode', 'ASC']
+      ] 
+    })
     .then(data => {
       res.send(data);
     })

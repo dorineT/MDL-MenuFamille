@@ -76,8 +76,6 @@ export default {
     },
     methods:{
         showInfo(){
-            console.log('hello')
-            console.log(this.recipe)
             this.showDialogueInfoRecipe = true
         },
         closeDialog(error, message){           
