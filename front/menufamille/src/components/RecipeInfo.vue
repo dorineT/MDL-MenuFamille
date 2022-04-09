@@ -246,8 +246,6 @@ import vuetify from '../plugins/vuetify';
 				var h = (mins / 60) | 0,
 					m = mins % 60 | 0;
 
-                console.log('heure : ' + h)
-                console.log('minutes '  + m)
 				return moment.utc().hours(h).minutes(m).format("HH:mm");
 			},
 		},

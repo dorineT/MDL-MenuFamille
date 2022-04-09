@@ -17,7 +17,7 @@
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
 
-                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent parentClass"  :height="ContainerHeight">
+                    <v-card tile flat class="d-flex transparent parentClass"  :height="ContainerHeight">
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
@@ -58,9 +58,7 @@ export default{
     data(){
         return{
             recipe: [],
-            showDialogueNewRecipe: false,
-            message: "",
-            error: false,
+            showDialogueNewRecipe: false
         }
     },
     mounted(){
@@ -93,10 +91,7 @@ export default{
       fetchRecipe(){
         DAORecette.getAll().then(
           (response) => {
-            console.log(response)
             this.recipe = response.data
-            this.error = false
-            console.log(this.error)
           }
         )
       },
