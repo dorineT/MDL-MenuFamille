@@ -31,7 +31,6 @@ export const auth = {
         },
         error => {
           commit('loginFailure');
-          console.log(error)
           return Promise.reject(error);
         }
       );

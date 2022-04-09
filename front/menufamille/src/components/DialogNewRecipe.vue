@@ -581,7 +581,6 @@ export default {
               (response) =>{
                 product = response.data[0]
                 if (product !== null) {
-              
                   product.color= this.colors[this.nonce - 1],               
                   v = structuredClone(product)
                   this.currentIngredients.push(product)
@@ -612,9 +611,6 @@ export default {
               });
               this.items = structuredClone(denrees)        
               this.items.push({header: 'Rechercher votre ingrédient'})
-            },
-            (error)=>{
-              alert(error.message)
             }
           )          
         }

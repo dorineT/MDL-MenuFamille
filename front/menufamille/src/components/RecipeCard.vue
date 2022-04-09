@@ -80,9 +80,6 @@ export default {
         },
         closeDialog(error, message){           
             this.showDialogueInfoRecipe = false    
-            if(error){               
-                this.$emit('transmitError', message)
-            }
         }
     }
 }

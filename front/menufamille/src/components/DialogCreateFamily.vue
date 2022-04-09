@@ -8,18 +8,6 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-alert
-                text
-                type="error"
-                border="left"
-                width="100%"
-                dismissible
-                v-if="update"
-              >
-                {{ message.message }}
-              </v-alert>
-            </v-row>
-            <v-row>
               <v-col cols="12">
                   <v-form
                   ref="form"
@@ -80,7 +68,6 @@ export default {
   data() {
     return {
       dialogPw: this.dialogProc,
-      update: false,
       message: "",
       name: "",
       count: 1,
@@ -106,16 +93,8 @@ export default {
         if (!this.$refs.form.validate()) return;
         DAOfamily.createFamily(this.$store.state.auth.user.id_membre, {nom: this.name, count: this.count}).then(
           (response) => {
-            this.update = false;
             this.$emit('closeFam');
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
     }
   },

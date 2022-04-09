@@ -364,9 +364,6 @@
 			DAOTag.getAll().then(
 				(response) => {
 					this.tagsListe = response.data
-				},
-				(error) => {
-					alert(error.message)
 				}
 			)
 			eventBus.$on('validateFormContrainte', this.validateForm);			

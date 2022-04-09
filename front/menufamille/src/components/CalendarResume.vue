@@ -156,7 +156,6 @@ let DAOMenu = new MenuDao()
             },
             (error) =>{
               this.menus = []
-              alert(error.message)
             }
           )
         }

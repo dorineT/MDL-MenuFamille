@@ -159,10 +159,6 @@ export default {
 
           this.populateHeader(this.items,0,indiceEnd)
           this.fillPlat(this.items,0,indiceEnd)   
-        },
-
-        (error) =>{
-          alert(error.message)
         }
       )
   

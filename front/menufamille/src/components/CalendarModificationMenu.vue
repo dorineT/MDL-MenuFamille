@@ -176,10 +176,6 @@ export default {
           this.fillPlat(this.items,0,indiceEnd) 
 
           this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
-        },
-
-        (error) =>{
-          alert(error.message)
         }
       )
       
