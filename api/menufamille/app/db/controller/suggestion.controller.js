@@ -49,7 +49,7 @@ exports.put_suggestion = (req, res) => {
 exports.Update_suggestion = (req, res) => {
     const id_periode = req.params.id_periode;
     const id_recette = req.params.id_recette;
-    const id_membre = req.params.id_membre;
+    const id_membre = req.id_membre;
     const id_menu = req.params.id_menu;
 
     Suggestion.update(req.body, {
@@ -85,7 +85,7 @@ exports.Update_suggestion = (req, res) => {
 exports.Delete_suggestion = (req, res) => {
     const id_periode = req.params.id_periode;
     const id_recette = req.params.id_recette;
-    const id_membre = req.params.id_membre;
+    const id_membre = req.id_membre;
     const id_menu = req.params.id_menu;
     Suggestion.destroy({
         where: {

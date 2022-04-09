@@ -1,5 +1,6 @@
 const Router = require('express-promise-router')
 const suggestion = require("../db/controller/suggestion.controller.js");
+const { authJwt } = require("../middleware")
 
 
 // create a new express-promise-router
@@ -13,6 +14,6 @@ router.get('/', suggestion.findAll);
 //creation d'un menu
 router.post('/', suggestion.put_suggestion);
 
-router.put('/:id_periode/:id_recette/:id_membre/:id_menu', suggestion.Update_suggestion);
+router.put('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken] ,suggestion.Update_suggestion);
 
-router.delete('/:id_periode/:id_recette/:id_membre/:id_menu', suggestion.Delete_suggestion);
+router.delete('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken] ,suggestion.Delete_suggestion);
