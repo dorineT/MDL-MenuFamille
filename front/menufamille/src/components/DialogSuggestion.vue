@@ -118,9 +118,6 @@
           			DAORecette.getFromTags(this.infoMenu.tags).then(
 						  (response) => {
 							  this.itemRecettes = response.data
-						  },
-						  (error) =>{
-							  alert(error.message)
 						  }
 					  )    
 				} else {
@@ -128,9 +125,6 @@
 						(response) => {
 							this.itemRecettesAll = response.data
 							this.itemRecettes = structuredClone(this.itemRecettesAll);
-						},
-						(error) => {
-							alert(error.message)
 						}
 					)
 					

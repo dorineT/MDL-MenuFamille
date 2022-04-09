@@ -4,9 +4,6 @@
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
-                    <v-alert  type="error" border="left" color="red" dismissible v-if="error">
-                            {{message.message}}
-                    </v-alert>
                     <v-card >
                         <v-card-title>
                           Carnet de recettes
@@ -19,7 +16,7 @@
 
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
-                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
+                    <v-card tile flat class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
@@ -39,9 +36,7 @@
                       
                         </v-row>    
                         
-                    </v-card> 
-
-                    <loading-avocado v-else></loading-avocado>                   
+                    </v-card>                 
                    
                 </v-col>
             </v-row>
@@ -52,25 +47,20 @@
 <script>
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
-import loadingAvocado from '../components/loadingAvocado.vue'
 import DialogNewRecipe from '../components/DialogNewRecipe.vue'
 let DAORecette = new RecetteDAO()
 
 export default{
     components: {
-      RecipeCard, loadingAvocado, DialogNewRecipe
+      RecipeCard, DialogNewRecipe
     },
     data(){
         return{
             recipe: [],
-            loadingRecipe: false,
             showDialogueNewRecipe: false,
             message: "",
             error: false,
         }
-    },
-    mounted(){
-      this.loadingRecipe = true
     },
     mounted(){
         
@@ -97,7 +87,6 @@ export default{
         this.message = message
         this.error = true
         this.recipe=[]
-        this.loadingRecipe = true
         this.fetchRecipe()
       },      
       fetchRecipe(){
@@ -105,16 +94,8 @@ export default{
           (response) => {
             console.log(response)
             this.recipe = response.data
-            this.loadingRecipe = false
             this.error = false
             console.log(this.error)
-          },
-          (error) => {
-            this.error = true;
-            this.message =
-              (error.response && error.response.data) ||
-              error.message ||
-              error.toString();
           }
         )
       },

@@ -3,6 +3,9 @@ import TokenService from "./token.service";
 const setup = (store) => {
   axiosInstance.interceptors.request.use(
     (config) => {
+      if(config.url !== '/user/roles/update' && !config.url.includes("/recette/FindRecipe/") && store.state.auth.status.loggedIn) {
+        store.dispatch("loading/loading");
+      }
       const token = TokenService.getLocalAccessToken();
       if (token) {
         // config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
@@ -16,6 +19,7 @@ const setup = (store) => {
   );
   axiosInstance.interceptors.response.use(
     (res) => {
+      store.dispatch("loading/reset");
       if(res.data.roles === undefined) {
         axiosInstance.get("/user/roles/update").then(
           (response) => {
@@ -26,6 +30,11 @@ const setup = (store) => {
       return res;
     },
     async (err) => {
+      if(store.state.auth.status.loggedIn) {
+        if(err.response.data !== undefined) {
+          store.dispatch("loading/error", err.response.data.message);
+        }
+      }
       const originalConfig = err.config;
       if (originalConfig.url !== "/user/signin" && err.response) {
         // Access Token was expired

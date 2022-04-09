@@ -489,10 +489,6 @@ export default {
                     this.nonce++                  
                     return v
                   }
-                },
-                (error) => {
-                  alert('erreur lors de la création de l\'ingrédient')
-                  return
                 }
               ); break;
               default:               
@@ -511,9 +507,6 @@ export default {
               });
               this.items = structuredClone(denrees)        
               this.items.push({header: 'Rechercher votre ingrédient'})
-            },
-            (error)=>{
-              alert(error.message)
             }
           )          
         }

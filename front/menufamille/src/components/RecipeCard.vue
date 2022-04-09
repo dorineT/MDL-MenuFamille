@@ -85,7 +85,6 @@ export default {
             console.log('close dialogue recipe card ' + error)
             this.showDialogueInfoRecipe = false    
             if(error){
-                console.log("hhhello")
                 this.$emit('transmitError', message)
             }
         }
