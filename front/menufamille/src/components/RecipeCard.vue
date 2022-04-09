@@ -74,18 +74,15 @@ export default {
             showDialogueInfoRecipe: false
         }
     },
-    mounted(){
-      console.log('mounted recipe card')
-    },
     methods:{
         showInfo(){
+            console.log('hello')
+            console.log(this.recipe)
             this.showDialogueInfoRecipe = true
         },
-        closeDialog(error, message){
-            console.log('close dialogue recipe card ' + error)
+        closeDialog(error, message){           
             this.showDialogueInfoRecipe = false    
-            if(error){
-                console.log("hhhello")
+            if(error){               
                 this.$emit('transmitError', message)
             }
         }
@@ -113,7 +110,7 @@ export default {
     transform: scale(1.1)
     z-index: 1
     //position: absolute
-    //width: 250px
+    
 
     .spanTitle
       white-space: normal !important

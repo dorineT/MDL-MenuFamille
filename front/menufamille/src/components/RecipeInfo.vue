@@ -197,8 +197,7 @@ import moment from "moment";
 			};
 		},
 		methods: {
-            fetchData(){
-                console.log('fetch data')
+            fetchData(){              
                 DAORecette.getById(this.id_recette).then(
                     (response) => {
                         this.recipe = response.data;
@@ -213,8 +212,7 @@ import moment from "moment";
                     }
                 );
             },
-			closeDialogueEvent() {
-				console.log("destroyed");
+			closeDialogueEvent() {			
 				this.$emit("closeDialog", false, this.message);
 			},
 			//transforme des minutes en format 00:00

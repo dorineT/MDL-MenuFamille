@@ -239,8 +239,7 @@ exports.find_Recipe_tags = (req, res) => {
 
 // Créer une recette avec absolument tout (recette + tags + catégories + denrées ) --> impossible à faire avec des includes, on va tout cascader
 
-exports.Create_Recipe_All_Infos = (req, res) => {
-  
+exports.Create_Recipe_All_Infos = (req, res) => {  
   Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, 
                   temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, 
                   preparation: req.body.preparation, url_image: req.body.url_image})

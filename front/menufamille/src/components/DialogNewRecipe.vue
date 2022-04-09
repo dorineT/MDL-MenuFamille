@@ -1,8 +1,8 @@
 <template>
     <v-dialog       
         v-model="dialogNewRecipeProps"
-        @click:outside="closeDialogueEvent"
-        @keydown.esc="closeDialogueEvent"
+        @click:outside="closeDialogueEvent(null)"
+        @keydown.esc="closeDialogueEvent(null)"
         :max-width="width"                
         transition="dialog-transition"
         scrollable
@@ -330,7 +330,7 @@
         </v-card-text>
 
         <v-card-actions class="pa-3">
-          <v-btn rounded color="grey" @click="closeDialogueEvent">
+          <v-btn rounded color="grey" @click="closeDialogueEvent(null)">
             Annuler
           </v-btn>
           <v-btn rounded class="colorbtnGreen" @click="validation">
@@ -394,16 +394,13 @@ export default {
       },
 
     methods:{
-        closeDialogueEvent(){
-            this.$emit('closeDialogNewRecipe')
+        closeDialogueEvent(newItem){
+            this.$emit('closeDialogNewRecipe', newItem)
         },
-        updateQuantity(index, value) {
-
-          console.log("update quantity "  + value)                   
+        updateQuantity(index, value) {                         
           this.$set(this.currentIngredients[index], "quantite", value);
         },
-        updateMesure(index, value) {
-          console.log("update mesure ")                      
+        updateMesure(index, value) {                          
           this.$set(this.currentIngredients[index], "mesure", value);
         },
         addStep(index, event) {
@@ -462,8 +459,7 @@ export default {
         let tab = time.split(':')
         return parseInt(tab[0]*60) + parseInt(tab[1])
       },
-      validation(){
-        console.log('submit form')
+      validation(){        
         if(!this.$refs.form.validate()) return
 
         let textPreparation = ""
@@ -471,12 +467,9 @@ export default {
           textPreparation += step.step + ": " + step.description+" \n "
         })  
 
-        console.log(this.currentIngredients)
-
         let denreesListe = []
 
-        this.currentIngredients.forEach( ing => {
-          console.log(ing)
+        this.currentIngredients.forEach( ing => {      
           if(ing !== undefined){
             denreesListe.push({
               id_denree: ing.id_denree,
@@ -505,12 +498,12 @@ export default {
           categories: this.categorieChoix,
           denrees: denreesListe
         }
-
-        console.log(newRecette)
+  
         DAORecette.sendRecette(newRecette).then(
           (response) =>{
             alert('Recette enregistrée')
-            this.closeDialogueEvent()
+            newRecette.id_recette = response.data.id_recette
+            this.closeDialogueEvent(newRecette)
           },
 
           (error) =>{
@@ -583,8 +576,7 @@ export default {
         this.currentIngredients = val.map(v => {
           let product = {}       
 
-          if(typeof v === 'string'){
-            console.log('create')
+          if(typeof v === 'string'){       
             DAODenree.findCreateProduct(v).then(
               (response) =>{
                 product = response.data[0]
@@ -603,8 +595,8 @@ export default {
               }
             );
           }
-          else if(typeof v === 'object'){            
-            console.log(v)
+          else if(typeof v === 'object'){
+            if(v === undefined) return         
             return v
           }                    
         })

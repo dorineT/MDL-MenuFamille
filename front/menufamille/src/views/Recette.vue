@@ -122,7 +122,11 @@ export default{
         //show modal      
         this.showDialogueNewRecipe = true
       },
-      closeDialogNewRecipe(){
+      closeDialogNewRecipe(newItem){
+        console.log(newItem)
+        if(newItem !== null){
+          this.recipe.push(newItem)
+        }
         this.showDialogueNewRecipe = false
       }
     }
@@ -135,7 +139,7 @@ export default{
 .parentClass
   overflow-y: auto
   overflow-x: hidden
-  //position: static
+  position: static
 
 </style>
 
