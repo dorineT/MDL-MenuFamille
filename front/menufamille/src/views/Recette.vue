@@ -30,7 +30,7 @@
                                   }"
                                   height="350px"
                                   transition="fade-transition">
-                                  <recipe-card  :recipe="item" @transmitError="receivedError"></recipe-card>
+                                  <recipe-card  :recipe="item"></recipe-card>
                                </v-lazy>  
                                 
                             </v-col> 
@@ -79,15 +79,7 @@ export default{
             }
       },
     },
-    methods:{
-      receivedError(message){
-        console.log('received error recette')
-        
-        this.message = message
-        this.error = true
-        this.recipe=[]
-        this.fetchRecipe()
-      },      
+    methods:{      
       fetchRecipe(){
         DAORecette.getAll().then(
           (response) => {
