@@ -10,9 +10,13 @@
     <v-toolbar dark color="#FFB74D">
 
 
-					<v-btn icon dark @click="$emit('closeDialog', false, message)">
+					<v-btn icon dark @click="$emit('closeDialog')">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
+                    <v-spacer></v-spacer>
+        <v-toolbar-items>
+            <v-btn dark text @click="generatePDF()"> Générer le pdf </v-btn>             
+        </v-toolbar-items>
 	</v-toolbar>
      <v-card v-if="dialogInfoRecipe">
             <v-card-text>
@@ -97,6 +101,22 @@
                             <v-col>                             
                                     <h3 class="headline mb-0 font">{{ recipe.nom }}</h3>
                                 
+                            </v-col>
+                            <v-col>
+                                <v-btn v-if="isFavoris===0"
+                                  icon
+                                  color="green lighten-3"
+                                  @click="addFavorite"
+                                >
+                                  <v-icon>mdi-star-outline</v-icon>
+                                </v-btn>
+                                   <v-btn v-else
+                                  icon
+                                  color="green lighten-3"
+                                  @click="deleteFavorite"
+                                >
+                                  <v-icon>mdi-star</v-icon>
+                                </v-btn>
                             </v-col>
 
                         </v-row>                      
@@ -203,8 +223,10 @@
 </template>
 
 <script>
-import RecetteDAO from "../services/api.recette";
+import RecetteDAO from "../services/api.recette"
+import FavorisDao from "../services/api.favoris"
 let DAORecette = new RecetteDAO();
+let DAOFavoris = new FavorisDao();
 import moment from "moment";
 import vuetify from '../plugins/vuetify';
 
@@ -214,7 +236,8 @@ import vuetify from '../plugins/vuetify';
 			return {
 				iconBullet: "mdi-circle-small",
 				message: "",
-				recipe: {},              
+				recipe: {}, 
+                isFavoris: 0,             
 			};
 		},
 		methods: {
@@ -223,18 +246,23 @@ import vuetify from '../plugins/vuetify';
                     (response) => {
                         this.recipe = response.data;
                     },
-                    (error) => {
-                        this.message =
-                            (error.response && error.response.data) ||
-                            error.message ||
-                            error.toString();
-
-                        this.$emit("closeDialog", true, this.message);
+                    (error) => {                        
+                        this.$emit("closeDialog");
                     }
                 );
+
+                DAOFavoris.find(this.id_recette).then(
+                    (response) =>{
+                        if(response.data === ''){
+                            this.isFavoris = 0
+                        }else{
+                            this.isFavoris = 1
+                        }
+                    }
+                )
             },
 			closeDialogueEvent() {			
-				this.$emit("closeDialog", false, this.message);
+				this.$emit("closeDialog");
 			},
 			//transforme des minutes en format 00:00
 			transformTime(mins) {
@@ -248,13 +276,26 @@ import vuetify from '../plugins/vuetify';
 
 				return moment.utc().hours(h).minutes(m).format("HH:mm");
 			},
+            generatePDF(){
+
+            },
+            addFavorite(){        
+                console.log('new favoris')
+                this.isFavoris = 1
+                DAOFavoris.create(this.id_recette)
+            },
+            deleteFavorite(){
+                console.log('delete fav')
+                this.isFavoris = 0
+                DAOFavoris.delete(this.id_recette)
+            }
 		},
         watch:{
             dialogInfoRecipe(){               
                 if(this.dialogInfoRecipe !== null && this.dialogInfoRecipe){
                     this.fetchData()
                 }
-            }
+            },
         },
 		computed: {
 			width() {

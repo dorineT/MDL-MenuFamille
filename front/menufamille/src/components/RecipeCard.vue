@@ -1,7 +1,24 @@
 <template>
       <v-card @click="showInfo" class="card-recipe" >
         <v-card-title primary-title>                                        
-            <h3 class="headline mb-0 spanTitle">{{recipe.nom}}</h3>                                                                                    
+          <v-container>
+              <v-row>
+                <v-col   cols="8" sm="9" md="9" lg="10" xl="10">
+                  <h3 class="headline mb-0 spanTitle">{{recipe.nom}}</h3> 
+                </v-col>
+                <v-col cols="1" sm="1" md="1" lg="1" xl="1">
+                  <v-rating                                   
+                    hover
+                    length="1"
+                    size="20"
+                    color="green lighten-2"
+                    :value="1"          
+                    readonly
+                  >
+                  </v-rating>   
+                </v-col>
+              </v-row>  
+            </v-container>                                                                               
         </v-card-title>
         <v-card-text  style="height: 240px">
             <v-row class="d-flex justify-center">
@@ -78,7 +95,7 @@ export default {
         showInfo(){            
             this.showDialogueInfoRecipe = true
         },
-        closeDialog(error, message){           
+        closeDialog(){           
             this.showDialogueInfoRecipe = false    
         }
     }
@@ -94,7 +111,7 @@ export default {
   transition: transform .2s
 
   .spanTitle
-    width: 100% 
+    width: 80% 
     display: inline-block
     text-overflow: ellipsis
     overflow: hidden

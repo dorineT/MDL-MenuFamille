@@ -28,7 +28,7 @@
                                   :options="{
                                       threshold: 0.25
                                   }"
-                                  height="350px"
+                                  height="400px"
                                   transition="fade-transition">
                                   <recipe-card  :recipe="item"></recipe-card>
                                </v-lazy>  

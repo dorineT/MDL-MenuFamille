@@ -1,6 +1,7 @@
 const Router = require('express-promise-router')
 const favoris = require("../db/controller/favoris.controller.js");
-
+const auth = require("../db/controller/auth.controller");
+const { authJwt } = require("../middleware")
 
 // create a new express-promise-router
 // this has the same API as the normal express router except
@@ -8,12 +9,19 @@ const favoris = require("../db/controller/favoris.controller.js");
 const router = new Router()
 module.exports = router
 
+router.use(function(req, res, next) { //toujours en premier
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+});
 
-    // Retrieve all Calender
-router.get('/', favoris.findAll);
 
-router.post('/', favoris.PutFavorite);
+router.get('/',[authJwt.verifyToken], favoris.findAll);
+router.get('/:id_recette',[authJwt.verifyToken], favoris.find);
 
-router.put('/:id_recette/:id_membre', favoris.Update_Favoris);
+router.post('/',[authJwt.verifyToken], favoris.PutFavorite);
 
-router.delete(':id_recette/:id_membre', favoris.DeletFavoris);
+
+router.delete('/:id_recette',[authJwt.verifyToken], favoris.DeleteFavoris);
