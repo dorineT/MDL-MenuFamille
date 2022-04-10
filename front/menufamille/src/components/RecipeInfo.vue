@@ -287,7 +287,7 @@ import vuetify from '../plugins/vuetify';
             deleteFavorite(){
                 console.log('delete fav')
                 this.isFavoris = 0
-                DAOFavoris.delete(this.id_recette)
+                DAOFavoris.deleteRecipe(this.id_recette)
             }
 		},
         watch:{

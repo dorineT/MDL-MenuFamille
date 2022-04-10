@@ -7,7 +7,7 @@ export default class FavorisDao{
      * @returns les favoris d'un membre
      */
     getAll(){
-        return api.get("/favoris")
+        return api.get("/membres/listFav")
     }
 
     /**
@@ -16,12 +16,12 @@ export default class FavorisDao{
      * @returns 
      */
     find(idRecette){
-        return api.get("/favoris/"+idRecette)
+        return api.get("/membres/findFavoris/"+idRecette)
     }
 
 
     create(idRecette){
-        return api.post("/favoris",{
+        return api.post("/membres/AddFav",{
             id_recette: idRecette
         })
     }
@@ -31,7 +31,7 @@ export default class FavorisDao{
      * @param {} idRecette 
      * @returns 
      */
-    delete(idRecette){
-        return api.delete("/favoris"+idRecette)
+    deleteRecipe(idRecette){
+        return api.delete("/membres/RemoveFav/"+idRecette)
     }
 }

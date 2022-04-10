@@ -12,7 +12,7 @@
                     length="1"
                     size="20"
                     color="green lighten-2"
-                    :value="1"          
+                    :value="recipe.isFavoris"          
                     readonly
                   >
                   </v-rating>   
@@ -85,7 +85,7 @@ export default {
     components:{
         RecipeInfo
     },
-    props: ['recipe'],
+    props: ['recipe','isFavoris'],
     data(){
         return{
             showDialogueInfoRecipe: false            

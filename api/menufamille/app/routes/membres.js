@@ -9,6 +9,23 @@ const router = new Router()
 module.exports = router
 
 
+router.use(function(req, res, next) { //toujours en premier
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+});
+
+
+
+router.post('/AddFav',[authJwt.verifyToken], membres.AddFavorites);
+router.delete('/RemoveFav/:id_recette',[authJwt.verifyToken], membres.RemoveFavorites);
+router.get('/listFav',[authJwt.verifyToken], membres.ListAllFavorite);
+router.get('/findFavoris/:id_recette',[authJwt.verifyToken], membres.FindFavorite);
+
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);
+
 // Retrieve all Members
 router.get('/', membres.findAll);
 
@@ -26,10 +43,4 @@ router.delete('/:id', membres.DeleteMember);
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
 
-router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);
 
-router.post('/AddFav/:id_mem/:id_rec',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.AddFavorites);
-
-router.delete('/RemoveFav/:id_mem/:id_rec',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.RemoveFavorites);
-
-router.get('/ListFav/:id_mem',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.ListFavorites);

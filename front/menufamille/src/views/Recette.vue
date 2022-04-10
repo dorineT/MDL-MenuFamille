@@ -49,7 +49,9 @@
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
 import DialogNewRecipe from '../components/DialogNewRecipe.vue'
+import FavorisDao from '../services/api.favoris'
 let DAORecette = new RecetteDAO()
+let DAOFavoris = new FavorisDao()
 
 export default{
     components: {
@@ -58,6 +60,7 @@ export default{
     data(){
         return{
             recipe: [],
+            favoris: [],
             showDialogueNewRecipe: false
         }
     },
@@ -84,8 +87,25 @@ export default{
         DAORecette.getAll().then(
           (response) => {
             this.recipe = response.data
+
+            DAOFavoris.getAll().then(
+              (response)=>{
+                this.favoris = response.data              
+                console.log(this.favoris)
+                this.recipe.forEach(element => {
+                  let isIn = this.favoris.some(id => id.id_recette === element.id_recette)
+                  if(isIn){
+                    element.isFavoris = 1
+                  }else{
+                    element.isFavoris = 0
+                  }
+                   
+                });
+              }
+            )
           }
         )
+
       },
       newRecipe(){
         //show modal      
@@ -98,7 +118,7 @@ export default{
         }
         this.showDialogueNewRecipe = false
       }
-    }
+    },
 }
 </script>
 
