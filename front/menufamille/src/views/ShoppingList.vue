@@ -4,7 +4,7 @@
     class="cardShopping">
 
     <shopping-info></shopping-info>
-
+ 
     </v-card>
 
 
