@@ -105,8 +105,7 @@ let DAOMenu = new MenuDao()
       }
     },
 
-    mounted () {
-      console.log(this.$vuetify.breakpoint.width)
+    mounted () {      
       this.comboboxMenuSelected='Aucun menu sélectionné'   
       this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
 
@@ -122,8 +121,7 @@ let DAOMenu = new MenuDao()
            
            if(this.menus === null){
              await this.fetchMenu()
-           }
-           console.log(this.menus)
+           }          
           //get id du menu
           this.headers = []
           this.platsMatin  = []
@@ -133,7 +131,7 @@ let DAOMenu = new MenuDao()
           let menuSelected = this.menus.find(menu => menu.id_menu === slot)  
           
           this.items = menuSelected.calendriers
-          console.log(this.items)
+        
 
           let indiceEnd = this.items.length < 7 ? this.items.length : 7       
           this.populateHeader(this.items,0,indiceEnd)
@@ -194,7 +192,7 @@ let DAOMenu = new MenuDao()
 
         while(iStart<iEnd & iStart<menu.length){
           let jourPlat = menu[iStart]     
-          console.log(jourPlat)
+       
           let periode = jourPlat.calendrier_recettes[0]
           this.platsMatin.push({
             id_jour: jourPlat.id_calendrier,

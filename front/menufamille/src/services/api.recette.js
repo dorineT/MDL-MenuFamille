@@ -32,8 +32,7 @@ export default class RecetteDAO{
         let sendTags = []
         tags.forEach(element => {
           sendTags.push(element.nom)
-        });
-        console.log(sendTags)
+        });   
         return api.get("/recette/FindFromTags/",{
           params: {
             tag: sendTags

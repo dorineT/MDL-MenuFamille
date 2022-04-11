@@ -114,7 +114,7 @@
 
 				//get recette si tag defini
 				if (this.infoMenu.tags.length > 0) {
-					console.log("get recette en fonction des tags");
+				
           			DAORecette.getFromTags(this.infoMenu.tags).then(
 						  (response) => {
 							  this.itemRecettes = response.data
@@ -129,21 +129,12 @@
 					)
 					
 				}
-				if (this.infoMenu.suggestions.length > 0) {
-					//get recette en fonction des suggestions déjà faite
-					console.log("delete suggestion");
-				}
 
 				//reset
 				this.resetNewRecette();
 			},
 			sauvegardeMenuJour() {
-				//mise a jour calendrier
-				console.log('sauvegarde')
-				console.log(this.infoMenu);
-				console.log(this.newRecetteChoix)
-
-				console.log(this.currentUser)
+				//mise a jour calendrier	
 
 				this.infoMenu.suggestions.push({
 					id_periode: this.infoMenu.id_periode,

@@ -90,8 +90,7 @@ export default{
 
             DAOFavoris.getAll().then(
               (response)=>{
-                this.favoris = response.data              
-                console.log(this.favoris)
+                this.favoris = response.data                             
                 this.recipe.forEach(element => {
                   let isIn = this.favoris.some(id => id.id_recette === element.id_recette)
                   if(isIn){
@@ -111,8 +110,7 @@ export default{
         //show modal      
         this.showDialogueNewRecipe = true
       },
-      closeDialogNewRecipe(newItem){
-        console.log(newItem)
+      closeDialogNewRecipe(newItem){       
         if(newItem !== null){
           this.recipe.push(newItem)
         }

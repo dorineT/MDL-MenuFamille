@@ -190,8 +190,7 @@ export default {
     EventBus.on("logout", () => {
       this.logOut();
     });
-    if(this.loggedIn) this.notification();
-    console.log(this.listNotif);
+    if(this.loggedIn) this.notification();    
   },
   beforeDestroy() {
     EventBus.remove("logout");

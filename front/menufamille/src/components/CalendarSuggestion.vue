@@ -187,7 +187,7 @@ export default {
       goToRecette(item){      
           let menuFind = this.items.find(el => el.id_calendrier === item.id_jour)// le jour         
           let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)  
-          console.log(periodeFind) 
+      
           //open dialogue with even bus
           eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date, menuFind.menu_calendrier.id_menu)
        
@@ -302,12 +302,12 @@ export default {
         }
 
         if (this.errorMessage.message !== "") {   
-          console.log('erreur')   			
+      			
           this.errorMessage.error = true
           menuPeriodeOld = periodeSave     
 
         } else {
-          console.log('ok')   
+   
           let iStart = (this.page-1) * 7
           let iEnd = this.page * 7              
           this.fillPlat(this.items,iStart,iEnd)

@@ -136,8 +136,7 @@
        
         this.$router.push({name:'MenuSuggestion', query: {menu: item}});
       },
-      changeFamille(){
-        console.log('changement')
+      changeFamille(){       
         //select les menus correspondants
         if(this.selectedFamille !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)

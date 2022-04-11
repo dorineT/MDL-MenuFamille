@@ -169,8 +169,7 @@
 				//open dialogue with even bus
 				eventBus.$emit('openDialog', periodeFind, menuFind.date)
 			},
-			setUpData(form) {
-				console.log(form);
+			setUpData(form) {				
 				if (form != null) {
 					this.formData = form;
 					this.populateTabJours();
@@ -216,13 +215,11 @@
 				this.platsMatin = [];
 				this.platsMidi = [];
 				this.platsSoir = [];
-
-				console.log('fill plat ' + iStart +' => '+ iEnd)
+			
 
 				while ((iStart < iEnd) & (iStart < this.items.length)) {
 
-					let jourPlat = this.items[iStart];
-					console.log(jourPlat)
+					let jourPlat = this.items[iStart];					
 					let periode = jourPlat.calendrier_recettes[0];
 					this.platsMatin.push({
 						id_jour: jourPlat.id_calendrier,
@@ -314,8 +311,7 @@
 
 					id += 1;
 				}
-
-				console.log(this.items)
+				
 			},
 			//event quand on clique sur page suivante
 			nextPageMenu() {
@@ -341,8 +337,6 @@
 
 			/// UPDATE
 			updateMenuJourCreate(item) {
-				console.log("update pass");
-				console.log(item); // une periode
 
 				let menuJourOld = this.items.find(
 					(elem) => elem.id_calendrier === item.id_calendrier
@@ -356,8 +350,6 @@
 				//let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
 				//or (new)
 				let periodeSave = structuredClone(menuPeriodeOld);
-				console.log("menuJourOld");
-				console.log(menuJourOld);
 
 				if (item.periode === "matin") {
 					menuJourOld.calendrier_recettes[0] = structuredClone(item);
@@ -386,16 +378,12 @@
 							2
 						);
 					}
-				}
-				console.log("menuJourOld new ");
-				console.log(menuJourOld);
+				}	
 
-				if (this.errorMessage.message !== "") {
-					console.log("erreur");
+				if (this.errorMessage.message !== "") {					
 					this.errorMessage.error = true;
 					menuPeriodeOld = periodeSave;
-				} else {
-					console.log("ok");
+				} else {					
 					let iStart = (this.page - 1) * 7;
 					let iEnd = this.page * 7;
 					this.fillPlat(iStart, iEnd);
@@ -416,8 +404,7 @@
 					verrou: false,
 					days_until_suggestion: this.formData.daysUntilSuggestion,
 					calendriers: structuredClone(this.items),
-				};
-				console.log(menuNew);
+				};				
 				DAOMenu.sendMenuCreate(menuNew);
 				this.$router.push("/");
 			},

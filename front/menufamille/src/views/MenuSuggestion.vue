@@ -41,14 +41,11 @@ export default {
       idPeriode: null,             
     }
   },
-  beforeMount(){ 
-    console.log("je suiis la")      
+  beforeMount(){      
     eventBus.$on('postSuggestion', this.postSuggMenu)
     
-    this.idPeriode = this.$route.query.menu.value
-    console.log(this.idPeriode)            //! c'est vraiment ID 0
-    this.periode = this.$route.query.menu.text
-    console.log(this.periode) 
+    this.idPeriode = this.$route.query.menu.value 
+    this.periode = this.$route.query.menu.text   
   },
 
   destroyed() {
@@ -57,8 +54,7 @@ export default {
 
   methods: {
     postSuggMenu(postmenu){
-      menuSuggest.sendMenuUpdate(postmenu)
-      console.log('test postSuggMenu' + postmenu)
+      menuSuggest.sendMenuUpdate(postmenu)     
       this.$router.push('/')
     }
   }

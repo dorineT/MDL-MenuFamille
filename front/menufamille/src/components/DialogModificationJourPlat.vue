@@ -244,7 +244,7 @@
 			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component			
 		},
 		destroyed() {
-			console.log('destro')
+		
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
@@ -285,7 +285,7 @@
 		methods: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
 			async openModal(itemReceived, dateJour) {
-				console.log(itemReceived)
+				
 				
 				this.suggestionsListe = []
 				this.showModifMenu = false; //display les cartes de mofification de la recette
@@ -315,7 +315,7 @@
 				this.infoMenu.suggestions = structuredClone(itemReceived.suggestions)
 				
 				this.suggestionsListe = structuredClone(itemReceived.suggestions)
-				console.log(this.suggestionsListe)
+				
 				this.tagsChoix = []
 
 				//charger tous les tags de la bd
@@ -342,14 +342,14 @@
 				this.recetteChoisie =  this.infoMenu.recette.nom
 
 				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
-				console.log(this.infoMenu.recette)
+			
 				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
 					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
 				}
 				else if (this.infoMenu.tags.length > 0) {
-					console.log('tag defini')
+				
 					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-					console.log(this.tagsChoix)
+				
 					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}				
 				
@@ -379,8 +379,7 @@
 				this.radioSelectionSuggestion = null
 			},
 			changeChoixPlat() {	
-				console.log('change choix plat')
-				console.log(this.radioSelectionSuggestion)		
+	
 				this.comboboxRecetteSelected = null
 				if(this.radioSelectionSuggestion !== undefined ){
 					this.newRecetteChoix = this.radioSelectionSuggestion.recette.nom
@@ -396,8 +395,7 @@
 			resetTag(){				
 				this.tagsChoix = []
 				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){
-					console.log("passage ")				
-					console.log(this.radioSelectionSuggestion)
+					
 					if(this.radioSelectionSuggestion !== null){						
 						this.tagsChoix = this.copyTab(this.radioSelectionSuggestion.recette.tags)						
 					}else{
@@ -405,9 +403,9 @@
 					}
 				}
 				else if (this.infoMenu.tags.length > 0) {
-					console.log('tag defini')
+				
 					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-					console.log(this.tagsChoix)
+					
 					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}
 			},

@@ -164,8 +164,7 @@ export default {
         
       }
     },
-    mounted(){ 
-      console.log('mounted '+this.idMenu)
+    mounted(){       
       
       DAOMenu.getMenuById(this.idMenu).then(
         (response) => {
@@ -281,8 +280,6 @@ export default {
       /// UPDATE CALENDRIER ////
 
       updateMenuJour(item){  
-        console.log('update pass')  
-        console.log(item) // une periode
             
         let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
         let menuPeriodeOld = menuJourOld.calendrier_recettes.find(elem => elem.id_periode === item.id_periode)
@@ -291,9 +288,7 @@ export default {
         //copy all attribute from menuPeriodeOld to periodeSave
         //let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
         //or (new)
-        let periodeSave = structuredClone(menuPeriodeOld)  
-        console.log('menuJourOld')
-        console.log(menuJourOld)
+        let periodeSave = structuredClone(menuPeriodeOld)    
 
         if(item.periode === 'matin'){
           menuJourOld.calendrier_recettes[0] = structuredClone(item)
@@ -313,16 +308,12 @@ export default {
             this.errorMessage.message = checkContrainte.verifContraintePlat(this.items, this.menu.plat_identique_soir, 2);
           }
         }
-        console.log('menuJourOld new ')
-        console.log(menuJourOld)
 
-        if (this.errorMessage.message !== "") {   
-          console.log('erreur')   			
+        if (this.errorMessage.message !== "") {           			
           this.errorMessage.error = true
           menuPeriodeOld = periodeSave     
 
-        } else {
-          console.log('ok')   
+        } else {        
           let iStart = (this.page-1) * 7
           let iEnd = this.page * 7              
           this.fillPlat(this.items,iStart,iEnd)

@@ -14,8 +14,7 @@ export const auth = {
     },
     update( {commit} , user) {
       return DAOUser.updateUser(user).then(
-        (response) => {
-          console.log(response)
+        (response) => {       
           commit('update', user)  
         },
         error => {

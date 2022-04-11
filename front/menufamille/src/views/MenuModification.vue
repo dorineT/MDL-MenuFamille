@@ -46,8 +46,6 @@ export default {
   },
   beforeMount(){
     eventBus.$on('postMenuModification', this.postMenu)
-    console.log('page menu ' )
-    console.log(this.$route.query.menu)
     this.idPeriode = this.$route.query.menu.value
     this.periode = this.$route.query.menu.text
   },
