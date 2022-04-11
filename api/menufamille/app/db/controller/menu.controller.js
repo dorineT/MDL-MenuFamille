@@ -421,10 +421,11 @@ exports.Get_suggest_periode = (req, res) => {
 
 
 exports.create_New_Menu = (req,res) => {
-
+  console.log("hello")
+  console.log(req.body)
   Menu.create({
-    periode_debut: moment(req.body.periode_debut) ,
-    periode_fin: moment(req.body.periode_fin),
+    periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
+    periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),
 
     id_famille: req.body.id_famille,
     plat_identique_matin: req.body.plat_identique_matin,
@@ -435,22 +436,24 @@ exports.create_New_Menu = (req,res) => {
     verrou : req.body.verrou
 
   }).then(data => {
+    console.log('coucou  data')
       const id_new_menu = data.id_menu
       req.body.calendriers.forEach(cal => {
-
+        console.log('coucou 66')
 
           db.calendrier.create({
-              date: moment(cal.date)
+              date: moment(cal.date,"DD/MM/YYYY")
 
 
           }).then(data => {
+            console.log('coucou')
               const id_new_calendar = data.id_calendrier
               db.menu_calendrier.create({
                   id_menu: id_new_menu,
                   id_calendrier: id_new_calendar
               })
               cal.calendrier_recettes.forEach(per => {
-
+                console.log('coucou 2')
 
                   db.calendrier_recette.create({
 
@@ -461,14 +464,16 @@ exports.create_New_Menu = (req,res) => {
                       nb_personne: per.nb_personne,
                       suggestions: []
                   }).then(data => {
+                    console.log('coucou  3')
                       const id_periode = data.id_periode
-                      per.tag.forEach(tag_index => {
-
+                      per.tags.forEach(tag_index => {
+                          console.log(tag_index)
 
                           db.tag_periode.create({
                               id_periode: id_periode,
                               id_tag: tag_index.id_tag
-                          }).then().catch(err => {
+                          }).catch(err => {
+                              console.log('erreur insert tag')
                               res.status(500).send({
                                   message:
                                       err.message || "Some error occurred while retrieving locked Menus."
@@ -478,6 +483,7 @@ exports.create_New_Menu = (req,res) => {
                       })
 
                   }).catch(err => {
+                    console.log('erreur insertcal rec')
                       res.status(500).send({
                           message:
                               err.message || "Some error occurred while retrieving locked Menus."
@@ -486,6 +492,7 @@ exports.create_New_Menu = (req,res) => {
 
               })
           }).catch(err => {
+            console.log('erreur insert cal')
               res.status(500).send({
                   message:
                       err.message || "Some error occurred while retrieving locked Menus."

@@ -14,21 +14,16 @@ export default class MenuDao{
      * @param newMenu le nouveau menu
      * @param idFamille l'id de la famille
      */
-    sendMenuCreate(newMenu, idFamille){  
-        api.post("/menu/",{
-          menu: newMenu,
-          id_famille: idFamille
-        })
+    sendMenuCreate(newMenu){  
+        return api.post("/menu/new_menu",newMenu)
     }
 
     /**
      * Envoie le menu modifié (sans tous ses objets jours etc)
      * @param {*} newMenu le menu a modifier
      */
-    sendMenuUpdate(newMenu){      
-      api.put("/menu/",{
-        menu: newMenu,
-      })
+    sendMenuUpdate(periode){      
+      api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
     }
 
     /**

@@ -9,15 +9,9 @@ const router = new Router()
 module.exports = router
 
 
-    // Retrieve all Calender
-router.get('/', menu.findAll);
-
-//creation d'un menu
-router.post('/', menu.PutMenu);
 
 router.put('/:id', menu.UpdateMenu);
 
-router.delete('/:id', menu.DeleteMenu);
 
 //utilise pour la recup de menus verrouillés avec toute leur infos
 router.get('/GetLockedMenu/:id_fam', menu.Get_Current_Locked_Menu); 

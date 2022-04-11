@@ -27,6 +27,7 @@
 					</tbody>
 					<tbody v-else>
 						<tr>
+							<td class="tdplat"> <strong>Matin</strong> </td>
 							<td
 								class="tdplat"
 								v-for="(item, i) in platsMatin"
@@ -53,6 +54,7 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="tdplat"> <strong>Midi</strong> </td>
 							<td
 								class="tdplat"
 								v-for="(item, i) in platsMidi"
@@ -79,6 +81,7 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="tdplat"> <strong>Soir</strong> </td>
 							<td
 								class="tdplat"
 								v-for="(item, i) in platsSoir"
@@ -193,7 +196,7 @@
 				}
 			},
 			populateHeader(iStart, iEnd) {
-				this.headers = [];
+				this.headers = [{text: 'Période', align:'center'}];
 				this.nbJourMenu = 0;
 				// 7 jour max display dans le cal
 				while (
@@ -278,6 +281,7 @@
 							periode: "matin",
 							nb_personne: this.formData.nb_personne,
 							recette: null,
+							id_recette: null,
 							tags: this.formData.tagsMatin,
 							suggestion: null,
 						},
@@ -288,6 +292,7 @@
 							periode: "midi",
 							nb_personne: this.formData.nb_personne,
 							recette: null,
+							id_recette: null,
 							tags: this.formData.tagsMidi,
 							suggestion: null,
 						},
@@ -298,6 +303,7 @@
 							periode: "soir",
 							nb_personne: this.formData.nb_personne,
 							recette: null,
+							id_recette: null,
 							tags: this.formData.tagsSoir,
 							suggestion: null,
 						},
@@ -404,7 +410,10 @@
 					verrou: false,
 					days_until_suggestion: this.formData.daysUntilSuggestion,
 					calendriers: structuredClone(this.items),
-				};				
+				};
+				
+				console.log(menuNew)
+				
 				DAOMenu.sendMenuCreate(menuNew);
 				this.$router.push("/");
 			},
