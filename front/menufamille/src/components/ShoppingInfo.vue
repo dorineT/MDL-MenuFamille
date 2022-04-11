@@ -22,14 +22,14 @@
     <v-virtual-scroll
         :items="items"
         height="300"
-        item-height="64"
+        item-height="70"
         >
       
         <template v-slot:default="{item}">
             <v-list-item :key="item">
             <v-list-item-content>
                 <v-list-item-title>
-                 <v-btn> <strong> {{item.name}}</strong> </v-btn>
+                 <v-btn> <strong> {{item.name}}<br></strong> </v-btn>
                 </v-list-item-title>
              </v-list-item-content>  
 
@@ -41,7 +41,7 @@
                   >
                   </v-img>
               </div>
-
+                    
                 <v-list-item-action> 
                    
                         <p>Quantité : {{item.quantité}}</p>
@@ -58,44 +58,34 @@
 <div class="mag"> 
 <h3>Magasins disponibles:</h3>
 </div>
-<!--
+
 <v-card
     elevation="16"
-    max-width="400"
+    max-width="600"
     class="listeMagasins"
     >
 
     <v-virtual-scroll
-        :items="items"
-        height="300"
-        item-height="64"
+        :items="shops"
+        height="210"
+        item-height="70"
         >
+
         <template v-slot:default="{item}">
             <v-list-item :key="item">
-             <v-list-item-action>
-                <v-btn
-                fab
-                small
-                depressed
-                color="primary"
-                >
-                {{item}}
-                </v-btn>
-            </v-list-item-action>
-
             <v-list-item-content>
+                
                 <v-list-item-title>
-                    <strong> {{item}}</strong>
+                 <p>Prix total: {{item.totalPrice}} € chez <strong>{{item.name}}</strong></p>
                 </v-list-item-title>
-            </v-list-item-content>
 
+             </v-list-item-content> 
             </v-list-item>
             <v-divider></v-divider>
         </template>
     </v-virtual-scroll>
 
-
-</v-card> -->
+</v-card> 
 
  </div>
     
@@ -169,6 +159,25 @@ export default {
                 image:"https://media.istockphoto.com/photos/image-of-cola-glass-with-ice-cubes-over-white-picture-id482707206"
                 },
             ],
+            shops:[
+                {
+                    name:"Aldi",
+                    totalPrice:"30"
+
+
+                },
+                {
+                    name:"Colruyt",
+                    totalPrice:"50"
+
+                },
+                {
+                    name:"Delaize",
+                    totalPrice:"70"
+
+                },
+                
+            ]
            
         }
     },
@@ -202,6 +211,10 @@ watch:{
 .mag
     float: right
     margin-top: -335px
+
+.listeMagasins
+    top: -300px
+    right: -850px
 
 
 </style>
