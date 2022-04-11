@@ -1,130 +1,124 @@
 <template>
-
   <div style="margin: 4px">
       
-      <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
+    <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
       
-      <v-data-table
-          :headers="headers"
-          :items="items"   
-                                      
-          class="elevation-8"
-          disable-sort
-          mobile-breakpoint="0"
-          :loading="loading"
-          loading-text="Loading... Please wait"
-          :footer-props="{             
-            'disable-items-per-page':true,
-            itemsPerPage:7,      
-            'items-per-page-options': [7,14],
-            'items-per-page-text':'Lignes par page',
-          }"
-        hide-default-footer         
-        @page-count="pageCount = $event"
-        :page.sync="page"
-      > 
+    <v-data-table
+        :headers="headers"
+        :items="items"                                  
+        class="elevation-8"
+        disable-sort
+        mobile-breakpoint="0"
+        :loading="loading"
+        loading-text="Loading... Please wait"
+        :footer-props="{             
+          'disable-items-per-page':true,
+          itemsPerPage:7,      
+          'items-per-page-options': [7,14],
+          'items-per-page-text':'Lignes par page',
+        }"
+      hide-default-footer         
+      @page-count="pageCount = $event"
+      :page.sync="page"
+    > 
 
-        <template v-slot:body>
-          <tbody v-if="items.length === 0">
-            <td class="nodata" colspan="0">Auncun menu sélectionné</td>
-          </tbody>
-          <tbody v-else>
-          <tr>   
-            <td class="tdplat"> <strong>Matin</strong> </td>
-            <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
-              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
-                <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
-                  <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
-                    <p>{{ sugg.recette.nom }} </p>
-                    <v-avatar
-                      color="indigo"
-                      size="30"
-                    > <span class="white--text">
-                    {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
-                    </span>
-                    </v-avatar>
-                  </div>                
-                </div>
-
-                <v-btn v-if="item.plat===''" text @click="goToRecette(item)">   
-
-                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                           
-              </v-btn>     
-            </p>
-              <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
-            </td>
-          </tr>
-          <tr> 
-            <td class="tdplat"> <strong>Midi</strong> </td>
-            <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
-              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+      <template v-slot:body>
+        <tbody v-if="items.length === 0">
+          <td class="nodata" colspan="0">Auncun menu sélectionné</td>
+        </tbody>
+        <tbody v-else>
+        <tr>
+          <td class="tdplat"> <strong>Matin</strong> </td>
+          <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
+            <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
+            <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
               <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
                 <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
-                  <p>{{ sugg.recette.nom }} </p> 
+                  <p>{{ sugg.recette.nom }} </p>
                   <v-avatar
                     color="indigo"
                     size="30"
-                  ><span class="white--text">
+                  >
                   {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
-                  </span>
-                 
                   </v-avatar>
                 </div>                
               </div>
-
-              <v-btn   v-if="item.plat===''" text @click="goToRecette(item)">           
+            <p v-else>
+              <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
-                <p v-else-if="item.plat === ''" || item.suggestions.id_membre !== currentUser.id_membre" style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                             
-              </v-btn>          
-              <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
-            </td>
-          </tr>
-          <tr> 
-            <td class="tdplat"> <strong>Soir</strong> </td>
-            <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-              <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
-              <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
-                <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
-                  <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
-                    <p>{{ sugg.recette.nom }} </p>
-                    <v-avatar
-                      color="indigo"
-                      size="30"
-                    ><span class="white--text">
-                    {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
-                    </span>
-                    </v-avatar>
-                  </div>                
-                </div>
-              <v-btn v-if="item.plat===''" text @click="goToRecette(item)">                  
-
+                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                              
+              </v-btn> 
+            </p>                
+            <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
+          </td>
+        </tr>
+        <tr>
+          <td class="tdplat"> <strong>Midi</strong> </td>
+          <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
+            <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
+            <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+            <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
+              <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
+                <p>{{ sugg.recette.nom }} </p>
+                <v-avatar
+                  color="indigo"
+                  size="30"
+                >
+                {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                </v-avatar>
+              </div>                
+            </div>
+             <p v-else>
+              <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
+                <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
+                <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                              
+              </v-btn> 
+            </p>        
+            <p v-if="item.nbPers!==null & item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
+          </td>
+        </tr>
+        <tr>
+          <td class="tdplat"> <strong>Soir</strong> </td>
+          <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
+            <p class="sizeP" v-if="item.plat!=='' & item.plat !== '/'">{{ item.plat }} </p>
+            <p v-else-if="item.plat==='/'" style="color: red"><v-icon color="red">mdi-close-thick</v-icon></p>
+              <div v-else-if="item.suggestions.length > 0" class="d-inline-flex flex-column">
+                <div class="d-inline-flex flex-row" v-for="(sugg,i) in item.suggestions" :key="i+'sugg'">
+                  <p>{{ sugg.recette.nom }} </p>
+                  <v-avatar
+                    color="indigo"
+                    size="30"
+                  >
+                  {{ sugg.membre.prenom.slice(0,1) + sugg.membre.nom.slice(0,1)}}
+                  </v-avatar>
+                </div>                
+              </div>
+             <p v-else>
+              <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item)">                  
                 <p v-if="item.plat === '' &  item.tags.length > 0" style="color: green"><strong>Tags</strong></p>     
                 <p v-else-if="item.suggestions.length === 0 || item.suggestions.id_membre !== currentUser.id_membre"  style="color: green"><v-icon color="green" large>mdi-plus</v-icon></p>                              
               </v-btn> 
             </p>
-              <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers }} personnes </p>  
-            </td>
-          </tr>
-          </tbody>
-        </template>
-      </v-data-table>
+            <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers }} personnes </p>  
+          </td>
+        </tr>
+        </tbody>
+      </template>
+    </v-data-table>
 
-      <v-pagination
-        v-model="page"
-        :length="pageCount"
-        color="green"
-        @next="nextPageMenu"
-        @previous="previousPageMenu"
-        @input="changePageEvent"
-      ></v-pagination>
+    <v-pagination
+      v-model="page"
+      :length="pageCount"
+      color="green"
+      @next="nextPageMenu"
+      @previous="previousPageMenu"
+      @input="changePageEvent"
+    ></v-pagination>
 
-      <v-snackbar v-model="errorMessage.error" text color="red">
-        {{ errorMessage.message }}
-      </v-snackbar>
-    </div>
+    <v-snackbar v-model="errorMessage.error" text color="red">
+      {{ errorMessage.message }}
+    </v-snackbar>
+  </div>
 
 </template>
 
