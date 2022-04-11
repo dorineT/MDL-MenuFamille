@@ -23,7 +23,8 @@
 						</v-list-item-icon>
 						<v-list-item-title>Recettes</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/"  @click="() => {this.notification(); return drawer = ! drawer}">
+					<v-list-item to="/shoppingList"  @click="() => {this.notification(); return drawer = ! drawer}">
+
 						<v-list-item-icon>
 							<v-icon>mdi-format-list-text</v-icon>
 						</v-list-item-icon>
