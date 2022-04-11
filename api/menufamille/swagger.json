@@ -1161,12 +1161,13 @@
                   "type": "object",
                   "properties": {
                     "denrees": { "type" : "array", "items" :
-                      {"type": "object", "properties": 
-                        {
-                          "id_denree": {"type": "integer","format": "int64"},
-                          "nom": {"type":"string"},
-                          "nutriscore": {"type": "string"},
-                          "calories": {"type": "integer","format": "int64"}
+                      { "type": "object", "properties": 
+                          {
+                            "id_denree": {"type": "integer","format": "int64"},
+                            "nom": {"type":"string"},
+                            "nutriscore": {"type": "string"},
+                            "calories": {"type": "integer","format": "int64"}
+                          }
                         }
                       }
                     }
@@ -1174,43 +1175,188 @@
                 }
               }
             }
-          }
-        },
-        "/denree/FindOrCreate/{nom}": {
-          "get": {
-            "tags": [
-              "denree"
-            ],
-            "summary": "Find a denree from it's exact name (case sensitive) or create it without nutriscore",
-            "description": "Get a denree or create it",
-            "operationId": "FindWithLike",
-            "produces": [
-              "application/json"
-            ],
-            "parameters": [
-              {
-                "name": "nom",
-                "in": "path",
-                "description": "exact name of the denree",
-                "required": true,
-                "type": "string"
+          },
+          "/denree/FindOrCreate/{nom}": {
+            "get": {
+              "tags": [
+                "denree"
+              ],
+              "summary": "Find a denree from it's exact name (case sensitive) or create it without nutriscore and calories",
+              "description": "Get a denree or create it",
+              "operationId": "FindWithLike",
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                  "name": "nom",
+                  "in": "path",
+                  "description": "exact name of the denree",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "default": {
+                  "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id_denree": {"type": "integer","format": "int64"},
+                      "nom": {"type":"string"},
+                      "nutriscore": {"type": "string"},
+                      "calories" : {"type": "integer", "format": "int64"}
+                    }
+                  }
+                }
               }
-            ],
-            "responses": {
-              "default": {
-                "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id_denree": {"type": "integer","format": "int64"},
-                    "nom": {"type":"string"},
-                    "nutriscore": {"type": "string"}
+            }
+          },
+          "/denree/NutriAndCalo/{id_denree}": {
+            "get": {
+              "tags": [
+                "denree"
+              ],
+              "summary": "Get the nutriscore and the calories for a denree",
+              "description": "with an ID, search a denree and send it's calories and nutriscore",
+              "operationId": "Get_Nut_and_Cal",
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                  "name": "id_denree",
+                  "in": "path",
+                  "description": "the id of the denree",
+                  "required": true,
+                  "type": "integer"
+                }
+              ],
+              "responses": {
+                "default": {
+                  "description": "successful operation",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nutriscore": {"type": "string"},
+                      "calories" : {"type": "integer", "format": "int64"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/recette/GetAllNutAndCal/{id_recette}": {
+            "get": {
+              "tags": [
+                "recipe"
+              ],
+              "summary": "Get the nutriscore and the calories for all that is in a recipe",
+              "description": "with an ID, search a recipe and sends the calories and nutriscore of all it's denree",
+              "operationId": "GetAllNutAndCal",
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                  "name": "id_recette",
+                  "in": "path",
+                  "description": "the id of the denree",
+                  "required": true,
+                  "type": "integer"
+                }
+              ],
+              "responses": {
+                "default": {
+                  "description": "successful operation",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "denree": { "type" : "array", "items" :
+                        {"type": "object", "properties": 
+                          {
+                            "nutriscore": {"type":"string"},
+                            "calories": {"type": "integer","format": "int64"}
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/recette/GetMeanNutAndCal/{id_recette}": {
+            "get": {
+              "tags": [
+                "recipe"
+              ],
+              "summary": "Get the mean of the nutriscore and the calories for all that is in a recipe",
+              "description": "with an ID, search a recipe and sends the mean of the calories and nutriscore of all it's denree",
+              "operationId": "GetMeanNutAndCal",
+              "produces": [
+                "application/json"
+              ],
+              "parameters": [
+                {
+                  "name": "id_recette",
+                  "in": "path",
+                  "description": "the id of the denree",
+                  "required": true,
+                  "type": "integer"
+                }
+              ],
+              "responses": {
+                "default": {
+                  "description": "successful operation",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nutriscore": {"type":"string"},
+                      "calories": {"type": "integer","format": "int64"}
                   }
                 }
               }
             }
           }
+        },
+        "/recette/GetFromCategory/{periode}": {
+          "get": {
+            "tags": [
+              "recipe"
+            ],
+            "summary": "Get back a list of recipes from their categories",
+            "description": "with a period, get back all the recipes linked to it",
+            "operationId": "Get_From_Cat",
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "name": "periode",
+                "in": "path",
+                "description": "matin, midi or soir",
+                "required": true,
+                "type": "integer"
+              }
+            ],
+            "responses": {
+              "default": {
+                "description": "successful operation",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recette": { "type" : "array", "items" :
+                      {
+                        "$ref": "#/definitions/Recette_all_info" 
+                      }
+                    }
+                  }
+              }
+            }
+          }
         }
+      }
       },
   "securityDefinitions": {
     "api_key": {
@@ -1446,6 +1592,7 @@
         "nb_personne" : {"type" : "integer", "format": "int64"},
         "nutriscore" : {"type" : "string"},
         "preparation" : {"type" : "string"},
+        "image_url" : {"type" : "string"},
         "tags": { "$ref":"#/definitions/Tags_full"},
         "categorie": { "$ref": "#/definitions/Categorie_full"},
         "denree" : { "$ref": "#/definitions/Denree_full"}
