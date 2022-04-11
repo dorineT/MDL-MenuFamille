@@ -164,16 +164,25 @@ export default {
         
       }
     },
-    async created(){ 
-      console.log('created '+this.idMenu)
+    mounted(){ 
+      console.log('mounted '+this.idMenu)
       
-      this.menu = await DAOMenu.getMenuById(this.idMenu)  
-      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+      DAOMenu.getMenuById(this.idMenu).then(
+        (response) => {
+          this.menu = response.data
+          this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+          this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+          this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
+          
+          this.items = this.menu.calendriers
+          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+          this.populateHeader(this.items,0,indiceEnd)
+          this.fillPlat(this.items,0,indiceEnd) 
 
-      this.items = this.menu.calendriers
-      let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-      this.populateHeader(this.items,0,indiceEnd)
-      this.fillPlat(this.items,0,indiceEnd) 
+          this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+        }
+      )
+      
 
       eventBus.$on('updateMenuJour', this.updateMenuJour)
       eventBus.$on('validationModification', this.valideMenu)
@@ -317,7 +326,10 @@ export default {
           let iStart = (this.page-1) * 7
           let iEnd = this.page * 7              
           this.fillPlat(this.items,iStart,iEnd)
-          this.errorMessage.error = false			
+          this.errorMessage.error = false		
+          
+          // sendPeriodeUpdate
+          DAOMenu.sendPeriodeUpdate(menuPeriodeOld)
         }
 
       },

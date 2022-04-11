@@ -9,6 +9,23 @@ const router = new Router()
 module.exports = router
 
 
+router.use(function(req, res, next) { //toujours en premier
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+});
+
+
+
+router.post('/AddFav',[authJwt.verifyToken], membres.AddFavorites);
+router.delete('/RemoveFav/:id_recette',[authJwt.verifyToken], membres.RemoveFavorites);
+router.get('/listFav',[authJwt.verifyToken], membres.ListAllFavorite);
+router.get('/findFavoris/:id_recette',[authJwt.verifyToken], membres.FindFavorite);
+
+router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);
+
 // Retrieve all Members
 router.get('/', membres.findAll);
 
@@ -18,7 +35,6 @@ router.put('/:id', membres.UpdateMember);
 
 router.delete('/:id', membres.DeleteMember);
 
-router.get("/GetListMembre/:id",[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.GetListMembre);
 
 /// Dés que vous utilisez un des join où leave familly, afin de facilité la lisibilité des requètes, 
 /// la fonction pour ajouter un membre au nbr de membre dans la table famille
@@ -27,12 +43,4 @@ router.get("/GetListMembre/:id",[authJwt.verifyToken, authJwt.isParent, authJwt.
 /// famille/RetirerMembreNumber/:id
 /// où id est l'id de la famille
 
-router.post("/:id_fam/:id_mem",[authJwt.verifyToken], membres.JoinFamilly);
 
-router.delete("/:id_fam/:id_mem",[authJwt.verifyToken, authJwt.isParent], membres.LeaveFamilly);
-
-router.post('/AddFav/:id_mem/:id_rec',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.AddFavorites);
-
-router.delete('/RemoveFav/:id_mem/:id_rec',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.RemoveFavorites);
-
-router.get('/ListFav/:id_mem',[authJwt.verifyToken, authJwt.isParent, authJwt.isChild], membres.ListFavorites);

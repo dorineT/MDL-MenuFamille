@@ -4,6 +4,7 @@ const config = require("../config/auth.config.js");
 const db = require("../db/models");
 const Role = db.famille_membre
 const Membre = db.membres;
+const Familly = db.famille;
 
 const { TokenExpiredError } = jwt;
 const catchError = (err, res) => {
@@ -58,7 +59,7 @@ isParent = (req, res, next) => {
 };
 
 isMember = (req, res, next) => {
-  Role.findOne({where: {id_membre: req.params.id_membre, id_famille:  req.params.id_famille}}).then(
+  Role.findOne({where: {id_membre: req.id_membre, id_famille:  req.params.id_famille, statut: 'accepter'}}).then(
     async (role) => {
       if(!role) {
         return res.status(404).send({ message: "Not member of family!" });
@@ -95,11 +96,29 @@ VerifyPwd = (req, res, next) => {
     })
 }
 
+VerifyCode = (req, res, next) => {
+  Familly.findOne({
+    where: {
+      code_acces: req.body.code
+    }
+  })
+    .then(async (family) => {
+      if (!family) {
+        return res.status(404).send({ message: "Code invalide!" });
+      } else {
+        req.id_famille = family.id_famille
+        next();
+      }
+      return;
+    })
+}
+
 const authJwt = {
   verifyToken: verifyToken,
   isChild: isChild,
   isParent: isParent,
   VerifyPwd: VerifyPwd,
+  VerifyCode: VerifyCode,
   isMember: isMember
 };
 module.exports = authJwt;

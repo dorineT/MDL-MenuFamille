@@ -5,7 +5,7 @@
     
       v-model="dialogSup"
       persistent
-      max-width="400"
+      max-width="700"
     >
   
   <template v-slot:activator="{ on, attrs }">
@@ -15,12 +15,6 @@
         }">
       <v-card style="padding: 10px">
 
-      <!-- alert -->
-      <v-row>
-        <v-alert text type="error" border="left" width="100%" dismissible v-if="update">
-          {{message.message}}
-        </v-alert>
-      </v-row>
       <!-- avatar -->
       <v-row class="justify-center">
         <v-avatar size="150px">
@@ -150,7 +144,6 @@ export default {
       dialogPw: false,
       dialogSup: false,
       message: "",
-      update: false,
       isModified: false
     };
   },
@@ -177,15 +170,7 @@ export default {
       if (this.isModified) {
         this.$store.dispatch("auth/update", this.user).then(
           () => {
-            this.update = false;
             this.isModified = false;
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
           }
         )
       } else {
@@ -199,13 +184,6 @@ export default {
         () => {
               this.$store.dispatch("auth/logout");
               this.$router.push("/login");
-            },
-            (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
             }
       )
     } 

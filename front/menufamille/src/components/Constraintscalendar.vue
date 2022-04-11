@@ -360,8 +360,12 @@
 
 			};
 		},
-		async created() {
-			this.tagsListe =  await DAOTag.getAll()
+		async mounted() {
+			DAOTag.getAll().then(
+				(response) => {
+					this.tagsListe = response.data
+				}
+			)
 			eventBus.$on('validateFormContrainte', this.validateForm);			
 		},
 		destroyed() {

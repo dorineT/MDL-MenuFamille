@@ -41,7 +41,7 @@ export default {
       idPeriode: null,             
     }
   },
-  created(){ 
+  beforeMount(){ 
     console.log("je suiis la")      
     eventBus.$on('postSuggestion', this.postSuggMenu)
     
