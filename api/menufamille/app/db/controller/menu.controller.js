@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { calendrier, recette, sequelize } = require("../models");
+const { calendrier, recette, sequelize, famille } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
 const Op = db.Sequelize.Op;
@@ -197,12 +197,14 @@ exports.Get_Current_Locked_Menu = (req, res) => {
 exports.Get_Suggest_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
   let menus = [];
+  const date = Date.now();
   Menu.findAll({
     where : { [Op.and]: 
       {
         id_famille: id_fam,
         verrou: false,
-        type: 'suggestion'
+        type: 'suggestion',
+        periode_fin: {[Op.gte]: moment().subtract(this.days_until_suggestion, 'days').format()},
       } 
     }
 })
@@ -259,6 +261,7 @@ exports.Get_Menu_By_Id = (req, res) => {
   });  
 };
 
+
 //verifier avec le nb de jour untils_days_suggestion pour l'envoi des periodes de suggestion
 exports.Get_suggest_periode = (req, res) => {
   const id_fam = req.params.id_fam;
@@ -297,3 +300,4 @@ exports.Get_suggest_periode = (req, res) => {
         });
       });
 };
+

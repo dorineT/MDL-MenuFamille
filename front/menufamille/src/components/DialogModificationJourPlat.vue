@@ -240,10 +240,11 @@
 				jourSemaine: null,
 			};
 		},
-		created() {
+		mounted() {
 			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component			
 		},
 		destroyed() {
+			console.log('destro')
 			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
 		},
 		watch:{
@@ -318,11 +319,22 @@
 				this.tagsChoix = []
 
 				//charger tous les tags de la bd
-				this.tagsListeAll = await DAOTag.getAll()	
-				this.tagsListe = this.copyTab(this.tagsListeAll)		
+				DAOTag.getAll().then(
+					(response) =>{
+						this.tagsListeAll = response.data
+						this.tagsListe = this.copyTab(this.tagsListeAll)
+					}
+				)
+
+						
 				//charger toutes les recettes et leur tags
-				this.itemRecettesAll = await DAORecette.getAll()
-				this.itemRecettes = this.copyTab(this.itemRecettesAll)
+				DAORecette.getAllByCategory(this.periode).then(
+					(response) => {
+						this.itemRecettesAll = response.data
+						this.itemRecettes = this.copyTab(this.itemRecettesAll)
+					}
+				)
+				
 
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
@@ -341,7 +353,6 @@
 					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}				
 				
-
 
 				//reset
 				this.resetNewRecette();

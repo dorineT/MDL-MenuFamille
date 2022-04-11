@@ -11,7 +11,11 @@ module.exports = (sequelize, Sequelize) => {
       quantite: {
           type: Sequelize.INTEGER,
           allowNull: false
-      }
+      },
+      mesure: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
     },
     {
       timestamps: false

@@ -23,7 +23,7 @@ router.delete('/:id', menu.DeleteMenu);
 router.get('/GetLockedMenu/:id_fam', menu.Get_Current_Locked_Menu); 
 
 //menu non verrouille en mode suggestion
-router.get('/GetSuggestUnlockedMenu/:id_fam', menu.Get_Suggest_Unlocked_Menu);
+router.get('/GetSuggestUnlockedMenu/:id_fam', menu.Get_Suggest_Unlocked_Menu); //je le voulais ici le calcul de date day suggest until
 
 //menu non verrouilles
 router.get('/GetUnlockedMenu/:id_fam', menu.Get_Unlocked_Menu);
@@ -33,4 +33,6 @@ router.get('/GetMenuId/:id', menu.Get_Menu_By_Id);
 //get menu complet
 router.get('/GetAllInfo/:id', menu.Get_Menu_All_Info_PK);
 
-router.get('/Get_suggest_periode/:id_fam',menu.Get_suggest_periode)
+
+router.get('/Get_suggest_periode/:id_fam',menu.Get_suggest_periode) // ne sert à rien
+

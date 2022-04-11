@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       code_acces: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true
       },
       nb_membres: {

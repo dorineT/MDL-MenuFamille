@@ -37,6 +37,10 @@ module.exports = (sequelize, Sequelize) => {
       preparation: {
         type: Sequelize.TEXT,
         allowNull: true
+      },
+      url_image: {
+        type: Sequelize.STRING,
+        allowNull: true
       }
     },
     {

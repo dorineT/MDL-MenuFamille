@@ -1,7 +1,7 @@
 const db = require("../models");
 var bcrypt = require("bcryptjs");
 const Membres = db.membres;
-const Family = db.famille;
+const Role = db.famille_membre;
 const Op = db.Sequelize.Op;
 
 // Retrieve all Members from the database.
@@ -91,60 +91,8 @@ exports.DeleteMember = (req, res) => {
       });
   });
 };
-
-
-
-/// GetListMembre
-
-exports.GetListMembre = (req, res) =>{
-  const id_fam = req.params.id;
-   Family.findOne({
-     where :{
-       'id_famille': id_fam
-     },
-     attributes: [],
-     include: [
-     {
-      model: db.membres,
-      attributes: ["id_membre", "nom","prenom"],
-      through : {model: db.famille_membre, as: 'role', attributes: ["role"]}
-    }],
-   }
-   ).then(data => { 
-     res.send(data);
-   })
-   .catch(err => {
-     res.status(500).send({
-       message:
-         err.message || "Some error occurred while getting Membres"
-     });
-   });
- };
  
 
- /// Rejoindre une famille
-
- exports.JoinFamilly = (req, res) => {
-   const id_fam = req.params.id_fam;
-   const id_mem = req.params.id_mem;
-   const role_req = req.body.role;
-   if (role_req == "parent" || role_req == "enfant"){
-    db.famille_membre.create({id_famille: id_fam, id_membre: id_mem, role: role})
-    .then(data => { 
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while joining a familly"
-      });
-    });
-   } else {
-    res.status(403).send({
-      message: "Bad request, role must be 'parent' or 'enfant'" 
-    });
-  }
- }
 
 /// Quitter une famille 
 
@@ -178,12 +126,67 @@ exports.LeaveFamilly = (req, res) => {
   }); 
 }
 
+// remove notif
+exports.removeNotif = (req, res) => {
+  const id_fam = req.params.id_famille;
+  const id_mem = req.id_membre;
+  db.famille_membre.destroy({
+    where: 
+    { [Op.and]: 
+      {
+        id_famille: id_fam,
+        id_membre: id_mem,
+        statut: 'refuser'
+            }
+    } 
+  }).then(num =>{
+    if (num == 1) {
+      res.send({
+        message: `You left the familly with the ID ${id_fam}`
+      });
+    } else{
+      res.status(403).send({
+        message: `You cannot leave the familly with the ID ${id_fam}`
+      })
+    }
+  })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err.message || `Some error occurred while Leaving Familly_Member with id_famille=${id_fam}`
+      });
+  }); 
+}
+
+
+
+exports.updateRoles = (req, res) => {
+  var authorities = [];
+  Role.findAll({
+    where: {id_membre: req.id_membre, statut: 'accepter'},
+    include :[{
+      model: db.famille,
+    }]
+  }).then(roles => {      
+    for (let i = 0; i < roles.length; i++) {
+      authorities.push([roles[i].id_famille,roles[i].famille.nom, roles[i].famille.nb_membres, roles[i].role])
+    }
+  
+    res.status(200).send({
+      roles: authorities
+    });
+  });
+}
+
+////////////////////////////////////////////////
+/////////////////////FAVORIS/////////////////
+////////////////////////////////////////////
 
 /// Ajouter un favoris
 
 exports.AddFavorites = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_rec = req.params.id_rec;
+  const id_mem = req.id_membre;
+  const id_rec = req.body.id_recette;
   db.favoris.create({id_membre: id_mem, id_recette: id_rec})
   .then(data => { 
     res.send(data);
@@ -200,8 +203,9 @@ exports.AddFavorites = (req, res) => {
 /// Retirer un favoris
 
 exports.RemoveFavorites = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_rec = req.params.id_rec;
+  console.log('hello remove')
+  const id_mem = req.id_membre;
+  const id_rec = req.params.id_recette;
   db.favoris.destroy({
     where: 
     { [Op.and]: 
@@ -231,20 +235,15 @@ exports.RemoveFavorites = (req, res) => {
 
 /// Lister les favoris
 
-exports.ListFavorites = (req, res) =>{
-  const id_mem = req.params.id_mem;
-
-  Membres.findOne({
-    where :{
-      id_membre: id_mem
-    },
-    attributes: [],
-    include: [
-    {
-     model: db.recette,
-     attributes: ["id_recette","nom"],
-     through : {model: db.favoris, attributes: []}
-   }],
+exports.FindFavorite = (req, res) =>{
+  console.log('hhhelleo')
+  const id_mem = req.id_membre;
+  const id_rec = req.params.id_recette;
+  db.favoris.findOne({
+    where:{
+      id_membre: id_mem,
+      id_recette: id_rec
+    }
   }).then(data => { 
     res.send(data);
   })
@@ -255,3 +254,21 @@ exports.ListFavorites = (req, res) =>{
     });
   });
 }
+
+exports.ListAllFavorite = (req, res) => {
+  db.favoris.findAll({
+    where:{
+      id_membre: req.id_membre
+    },
+    attributes:['id_recette']
+  })
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving favorite."
+    });
+  });  
+};
