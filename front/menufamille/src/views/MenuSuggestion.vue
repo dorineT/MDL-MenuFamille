@@ -12,7 +12,7 @@
       ></calendar-suggestion>
       <div >
         <v-btn class = "retourSugg" outlined color = "red" to = "/"> Retour </v-btn>
-       <!-- <v-btn class = "sauvegarderSugg" outlined color = "green" @click ="saveSuggestion"> Sauvegarder </v-btn> -->
+      
       </div>
     </v-card>
 </template>
