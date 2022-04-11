@@ -301,3 +301,205 @@ exports.Get_suggest_periode = (req, res) => {
       });
 };
 
+//creation du menu -> recevoir un menu et toute ses infos
+/**
+ *
+ * @param req
+ * {
+        "periode_debut": "04/10/2022",
+        "periode_fin": "04/12/2022",
+
+        "id_famille": 3,
+        "plat_identique_matin": -1,
+        "plat_identique_midi": -1,
+        "plat_identique_soir": -1,
+        "days_until_suggestion": 2,
+        "type": "manuel",
+        "verrou": false,
+        "calendriers": [
+            {
+                "date": "04/10/2022",
+
+                "calendrier_recettes": [
+                    {
+
+
+                        "id_recette": 100,
+                        "periode": "matin",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+
+                        "id_recette": 101,
+                        "periode": "midi",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+
+                        "id_recette": 102,
+                        "periode": "soir",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    }
+                ]
+            },
+            {
+                "date": "04/11/2022",
+                "calendrier_recettes": [
+                    {
+
+                        "id_recette": 100,
+                        "periode": "matin",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+                        "id_recette": 101,
+                        "periode": "midi",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+                        "id_recette": 102,
+                        "periode": "soir",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    }
+                ]
+            },
+            {
+                "date": "04/12/2022",
+
+                "calendrier_recettes": [
+                    {
+
+                        "id_recette": 100,
+                        "periode": "matin",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+                        "id_recette": 101,
+                        "periode": "midi",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : []
+                    },
+                    {
+
+                        "id_recette": 102,
+                        "periode": "soir",
+                        "is_recette": true,
+                        "nb_personne": 1,
+                        "tag" : [
+                            {"id_tag": 3},
+                            {"id_tag": 2}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+ * @param res
+ */
+
+
+
+
+exports.create_New_Menu = (req,res) => {
+
+  Menu.create({
+    periode_debut: moment(req.body.periode_debut) ,
+    periode_fin: moment(req.body.periode_fin),
+
+    id_famille: req.body.id_famille,
+    plat_identique_matin: req.body.plat_identique_matin,
+    plat_identique_midi: req.body.plat_identique_midi,
+    plat_identique_soir: req.body.plat_identique_soir,
+    days_until_suggestion: req.body.days_until_suggestion,
+    type : req.body.type,
+    verrou : req.body.verrou
+
+  }).then(data => {
+      const id_new_menu = data.id_menu
+      req.body.calendriers.forEach(cal => {
+
+
+          db.calendrier.create({
+              date: moment(cal.date)
+
+
+          }).then(data => {
+              const id_new_calendar = data.id_calendrier
+              db.menu_calendrier.create({
+                  id_menu: id_new_menu,
+                  id_calendrier: id_new_calendar
+              })
+              cal.calendrier_recettes.forEach(per => {
+
+
+                  db.calendrier_recette.create({
+
+                      id_calendrier: id_new_calendar,
+                      id_recette: per.id_recette,
+                      periode: per.periode,
+                      is_recette: per.is_recette,
+                      nb_personne: per.nb_personne,
+                      suggestions: []
+                  }).then(data => {
+                      const id_periode = data.id_periode
+                      per.tag.forEach(tag_index => {
+
+
+                          db.tag_periode.create({
+                              id_periode: id_periode,
+                              id_tag: tag_index.id_tag
+                          }).then().catch(err => {
+                              res.status(500).send({
+                                  message:
+                                      err.message || "Some error occurred while retrieving locked Menus."
+                              })
+                          })
+
+                      })
+
+                  }).catch(err => {
+                      res.status(500).send({
+                          message:
+                              err.message || "Some error occurred while retrieving locked Menus."
+                      })
+                  })
+
+              })
+          }).catch(err => {
+              res.status(500).send({
+                  message:
+                      err.message || "Some error occurred while retrieving locked Menus."
+              })
+          })
+
+
+      })
+  res.send(data);
+  }).catch(err => {
+      res.status(500).send({
+          message:
+              err.message || "Some error occurred while retrieving locked Menus."
+      })
+  })
+}
+
