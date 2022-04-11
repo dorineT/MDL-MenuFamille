@@ -22,7 +22,7 @@ export default class MenuDao{
     }
 
     /**
-     * Envoie le menu modifié
+     * Envoie le menu modifié (sans tous ses objets jours etc)
      * @param {*} newMenu le menu a modifier
      */
     sendMenuUpdate(newMenu){      
@@ -31,19 +31,12 @@ export default class MenuDao{
       })
     }
 
-    sendMenuAddSuggestion(suggestion){
-      api.put("/menu/"+suggestion.id_periode+"/"+suggestion.id_recette+"/"+suggestion.id_menu)
-    }
-
     /**
-     * Envoie une periode avec une nouvelle suggestion
-     * @param {*} periode 
+     * Envoi une nouvelle suggestion
+     * @param {*} suggestion la suggestion (object)
      */
-    sendPeriodeUpdateSuggestion(periode){    
-      // adapt to api   
-      /*api.put("/suggestion/",{
-        periode: periode,
-      })*/
+    sendMenuAddSuggestion(suggestion){
+      api.put("/suggestion/"+suggestion.id_periode+"/"+suggestion.id_recette+"/"+suggestion.id_menu)
     }
 
 
