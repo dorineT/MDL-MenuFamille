@@ -223,12 +223,13 @@
 </template>
 
 <script>
+import jsPDF from 'jspdf'
 import RecetteDAO from "../services/api.recette"
 import FavorisDao from "../services/api.favoris"
 let DAORecette = new RecetteDAO();
 let DAOFavoris = new FavorisDao();
 import moment from "moment";
-import vuetify from '../plugins/vuetify';
+
 
 	export default {
 		props: ["id_recette", "dialogInfoRecipe"],
@@ -276,16 +277,79 @@ import vuetify from '../plugins/vuetify';
 
 				return moment.utc().hours(h).minutes(m).format("HH:mm");
 			},
-            generatePDF(){
-
+            pluriel(nb){
+                if(nb > 1) return 's'
+                return ''
             },
-            addFavorite(){        
-                console.log('new favoris')
+            generatePDF(){
+                let pdfName = this.recipe.nom; 
+                var doc = new jsPDF("p","mm","a4");
+
+                let normalSize = 16
+                let subTitle = 18
+                let lMargin=20; //left margin in mm
+                let rMargin=20; //right margin in mm
+                let pdfInMM=210;
+
+                let categories = ""
+                this.recipe.categories.forEach(c => {
+                    categories += c.periode +" "
+                });
+
+                let tags = "Tags : "
+                this.recipe.tags.forEach(t => {
+                    tags += t.nom +" "
+                });
+
+                //config
+                doc.setFont("times");
+                //doc.setFontType("bolditalic");
+                doc.setLineWidth(0.5);
+                
+
+                //text
+                doc.setFontSize(24);
+
+                doc.text(20, 25, this.recipe.nom);                
+                doc.line(20, 35, 190, 35);
+
+                doc.setFontSize(18);
+                doc.text(20, 50, 'Ingrédient :')
+
+                doc.setFontSize(14);
+                doc.text(90, 50, this.recipe.nb_personne + ' personne' + this.pluriel(this.recipe.nb_personne)); 
+                doc.text(90, 60, 'temps de préparation : ' + this.transformTime(this.recipe.temps_preparation)); 
+                doc.text(90, 70, 'temps de cuisson : '+this.transformTime(this.recipe.temps_cuisson));                
+                doc.text(90, 80, 'Calories : ' + this.recipe.calorie + 'kcal'); 
+                doc.text(90, 90, 'Nutriscore : ' + this.recipe.nutriscore); 
+                doc.text(90, 100, 'Catégorie : ' + categories);                 
+
+                let linesTags =doc.splitTextToSize(tags, (pdfInMM-90-rMargin));
+                doc.text(90,110,linesTags);
+                
+                let y = 60
+
+                this.recipe.denrees.forEach(denree => {
+                    let plurielAdd =''              
+                    if(denree.recette_denree.mesure === 'unité'){
+                        plurielAdd = this.pluriel(denree.recette_denree.quantite)
+                    }
+                    doc.text(30, y, '- ' + denree.nom + " : " + denree.recette_denree.quantite + " " + denree.recette_denree.mesure + plurielAdd); 
+                    y += 6
+                });
+
+                if(y < 130) y=130
+
+                let lines =doc.splitTextToSize(this.recipe.preparation, (pdfInMM-lMargin-rMargin));
+                doc.text(20,y,lines);
+
+                doc.save(pdfName + '.pdf');
+            },
+            addFavorite(){                       
                 this.isFavoris = 1
                 DAOFavoris.create(this.id_recette)
             },
-            deleteFavorite(){
-                console.log('delete fav')
+            deleteFavorite(){               
                 this.isFavoris = 0
                 DAOFavoris.deleteRecipe(this.id_recette)
             }

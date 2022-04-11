@@ -21,7 +21,7 @@
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
-                                cols="12" sm="6" md="4" lg="3" xl="3"
+                                cols="12" sm="4" md="3" lg="3" xl="3"
                                 >
                                 <!-- nom de recette -->
                                   <v-lazy
