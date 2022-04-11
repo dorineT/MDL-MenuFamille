@@ -29,7 +29,7 @@
                             >
       
                             <template v-slot:default="{item}">
-                                <v-list-item :key="item">
+                                <v-list-item :key="item.name">
                                     <v-list-item-content>
                                         <v-list-item-title>
                                             <v-btn> <strong> {{item.name}}</strong> </v-btn>
@@ -72,7 +72,7 @@
                             >
 
                             <template v-slot:default="{item}">
-                                <v-list-item :key="item">
+                                <v-list-item :key="item.name">
                                     <v-list-item-content>
                                         <v-list-item-title>
                                             <p>Prix total: {{item.totalPrice}} € chez <strong>{{item.name}}</strong></p>
