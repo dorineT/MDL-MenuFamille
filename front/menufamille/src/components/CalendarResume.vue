@@ -33,7 +33,8 @@
               <td class="nodata" colspan="0">Auncun menu sélectionné</td>
             </tbody>
             <tbody v-else>
-            <tr>
+            <tr> 
+              <td class="tdplat"> <strong>Matin</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
                   <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn>
                   <p v-else style="color: red">
@@ -43,7 +44,8 @@
                   <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p> 
               </td>
             </tr>
-            <tr>
+            <tr> 
+              <td class="tdplat"> <strong>Midi</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
                 <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }}</v-btn> 
                 <p v-else style="color: red">
@@ -53,7 +55,8 @@
                 <p v-if="item.nbPers!==null && item.nbPers !== nbPersonneFamille & item.plat !== '/'">{{item.nbPers}} personnes</p>                  
               </td>
             </tr>
-            <tr>
+            <tr> 
+              <td class="tdplat"> <strong>Soir</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
                   <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn> 
                   <p v-else style="color: red">
@@ -156,7 +159,6 @@ let DAOMenu = new MenuDao()
             },
             (error) =>{
               this.menus = []
-              alert(error.message)
             }
           )
         }
@@ -169,7 +171,7 @@ let DAOMenu = new MenuDao()
       },
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menu,iStart, iEnd){ 
-        this.headers = []
+        this.headers = [{text: 'Période', align:'center'}]
         this.nbJourMenu = 0       
         // 7 jour max display dans le cal        
         while(this.nbJourMenu < 7 & iStart < menu.length & iStart < iEnd){
@@ -277,4 +279,8 @@ let DAOMenu = new MenuDao()
 .marginClass
   margin-top: 20px
   margin-bottom: 20px  
+
+.v-data-table > 
+  border-left: thin solid
+
 </style>

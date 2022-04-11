@@ -9,9 +9,6 @@
     <template v-slot:activator="{ on, attrs }">
     <v-card style="margin: 20px;opacity: 0.85"  outlined>
       <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" />
-      <v-alert text type="error" border="left"  style="margin: 10px" dismissible v-if="update">
-              {{message.message}}
-      </v-alert>
       
       <v-card-title class="mt-2">Mes Familles</v-card-title>
      
@@ -244,7 +241,6 @@ let DAOfamily = new FamilyDao;
         code: "",
         dialogDelete: false,
         message: "",
-        update: false,
         editedItem: {
           id: '',
           membre: '',
@@ -327,14 +323,7 @@ let DAOfamily = new FamilyDao;
             this.dialogSup = false;
             this.selected = this.select[0];
             this.changeFamille();
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       changeFamille(){
@@ -356,17 +345,8 @@ let DAOfamily = new FamilyDao;
                 membre: membre.nom + " " +membre.prenom,
               }
               this.requestFamily.push(value)
-              this.update = false;
             })
-            console.log(this.requestFamily)
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       updateMember() {
@@ -382,16 +362,8 @@ let DAOfamily = new FamilyDao;
               }
               if(this.currentRole === 'parent') value = Object.assign(value, {action: ''});
               this.membresFamily.push(value)
-              this.update = false;
             })
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       deleteMember(item) {
@@ -403,16 +375,10 @@ let DAOfamily = new FamilyDao;
         DAOfamily.removeMember(this.currentFamily.idFamilleActuel, this.editedItem.id).then(
           (response) => {
             this.membresFamily.splice(this.editedIndex, 1)
-            this.update = false;
             this.closeDelete()
           },
           (error) => {
-              this.update = true;
               this.closeDelete()
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
             }
         )
         
@@ -422,30 +388,14 @@ let DAOfamily = new FamilyDao;
           (response) => {
             this.selected = this.select[0];
             this.changeFamille();
-            this.update = false;
             
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       joinFamily(code) {
         DAOfamily.joinFamily(code).then(
           (response) => {
-            this.update = false;
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       switchRole(item) {
@@ -462,33 +412,17 @@ let DAOfamily = new FamilyDao;
           (response) => {
             let index = this.membresFamily.indexOf(item)
             this.membresFamily[index].role = newRole
-            this.update = false;
             if(item.id === this.$store.state.auth.user.id_membre) this.changeFamille();
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       requestStatut(type, id_membre) {
         DAOfamily.updateRequest(type, this.currentFamily.idFamilleActuel, id_membre).then(
           (response) => {
-            this.update = false;
             const item = this.requestFamily.find(membre => membre.id == id_membre)
             this.requestFamily.splice(this.requestFamily.indexOf(item), 1)
             if(type === 'accepted') this.updateMember();
-          },
-          (error) => {
-              this.update = true;
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-            }
+          }
         )
       },
       closeDelete () {
@@ -502,15 +436,9 @@ let DAOfamily = new FamilyDao;
         DAOfamily.getCodeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.code = response.data.code;
-            this.update = false;
           },
           (error) => {
-              this.update = true;
               this.closeDelete()
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
             }
         )
       }

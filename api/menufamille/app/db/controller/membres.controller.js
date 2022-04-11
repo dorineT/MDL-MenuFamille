@@ -158,11 +158,35 @@ exports.removeNotif = (req, res) => {
   }); 
 }
 
+
+
+exports.updateRoles = (req, res) => {
+  var authorities = [];
+  Role.findAll({
+    where: {id_membre: req.id_membre, statut: 'accepter'},
+    include :[{
+      model: db.famille,
+    }]
+  }).then(roles => {      
+    for (let i = 0; i < roles.length; i++) {
+      authorities.push([roles[i].id_famille,roles[i].famille.nom, roles[i].famille.nb_membres, roles[i].role])
+    }
+  
+    res.status(200).send({
+      roles: authorities
+    });
+  });
+}
+
+////////////////////////////////////////////////
+/////////////////////FAVORIS/////////////////
+////////////////////////////////////////////
+
 /// Ajouter un favoris
 
 exports.AddFavorites = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_rec = req.params.id_rec;
+  const id_mem = req.id_membre;
+  const id_rec = req.body.id_recette;
   db.favoris.create({id_membre: id_mem, id_recette: id_rec})
   .then(data => { 
     res.send(data);
@@ -179,8 +203,9 @@ exports.AddFavorites = (req, res) => {
 /// Retirer un favoris
 
 exports.RemoveFavorites = (req, res) => {
-  const id_mem = req.params.id_mem;
-  const id_rec = req.params.id_rec;
+  console.log('hello remove')
+  const id_mem = req.id_membre;
+  const id_rec = req.params.id_recette;
   db.favoris.destroy({
     where: 
     { [Op.and]: 
@@ -208,39 +233,17 @@ exports.RemoveFavorites = (req, res) => {
   }); 
 }
 
-exports.updateRoles = (req, res) => {
-  var authorities = [];
-  Role.findAll({
-    where: {id_membre: req.id_membre, statut: 'accepter'},
-    include :[{
-      model: db.famille,
-    }]
-  }).then(roles => {      
-    for (let i = 0; i < roles.length; i++) {
-      authorities.push([roles[i].id_famille,roles[i].famille.nom, roles[i].famille.nb_membres, roles[i].role])
-    }
-  
-    res.status(200).send({
-      roles: authorities
-    });
-  });
-}
 /// Lister les favoris
 
-exports.ListFavorites = (req, res) =>{
-  const id_mem = req.params.id_mem;
-
-  Membres.findOne({
-    where :{
-      id_membre: id_mem
-    },
-    attributes: [],
-    include: [
-    {
-     model: db.recette,
-     attributes: ["id_recette","nom"],
-     through : {model: db.favoris, attributes: []}
-   }],
+exports.FindFavorite = (req, res) =>{
+  console.log('hhhelleo')
+  const id_mem = req.id_membre;
+  const id_rec = req.params.id_recette;
+  db.favoris.findOne({
+    where:{
+      id_membre: id_mem,
+      id_recette: id_rec
+    }
   }).then(data => { 
     res.send(data);
   })
@@ -251,3 +254,21 @@ exports.ListFavorites = (req, res) =>{
     });
   });
 }
+
+exports.ListAllFavorite = (req, res) => {
+  db.favoris.findAll({
+    where:{
+      id_membre: req.id_membre
+    },
+    attributes:['id_recette']
+  })
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving favorite."
+    });
+  });  
+};

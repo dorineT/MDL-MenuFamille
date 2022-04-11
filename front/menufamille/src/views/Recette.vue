@@ -4,9 +4,6 @@
         <v-container fluid fill-height>
             <v-row justify="center" >
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10">
-                    <v-alert  type="error" border="left" color="red" dismissible v-if="error">
-                            {{message.message}}
-                    </v-alert>
                     <v-card >
                         <v-card-title>
                           Carnet de recettes
@@ -19,29 +16,28 @@
 
                 <v-col cols="12" sm="12" md="12" lg="10" xl="10" >
                     
-                    <v-card tile flat v-if="!loadingRecipe" class="d-flex transparent"  style="overflow-y: auto; overflow-x: hidden;" :height="ContainerHeight">
+
+                    <v-card tile flat class="d-flex transparent parentClass"  :height="ContainerHeight">
                         <v-row >
 
                             <v-col v-for="(item,i) in recipe" :key="i" 
-                                cols="12" sm="6" md="4" lg="3" xl="3"
+                                cols="12" sm="4" md="3" lg="3" xl="3"
                                 >
                                 <!-- nom de recette -->
                                   <v-lazy
                                   :options="{
                                       threshold: 0.25
                                   }"
-                                  height="350px"
+                                  height="400px"
                                   transition="fade-transition">
-                                  <recipe-card  :recipe="item" @transmitError="receivedError"></recipe-card>
+                                  <recipe-card  :recipe="item"></recipe-card>
                                </v-lazy>  
                                 
                             </v-col> 
                       
                         </v-row>    
                         
-                    </v-card> 
-
-                    <loading-avocado v-else></loading-avocado>                   
+                    </v-card>                 
                    
                 </v-col>
             </v-row>
@@ -52,25 +48,21 @@
 <script>
 import RecetteDAO from '../services/api.recette'
 import RecipeCard from '../components/RecipeCard.vue'
-import loadingAvocado from '../components/loadingAvocado.vue'
 import DialogNewRecipe from '../components/DialogNewRecipe.vue'
+import FavorisDao from '../services/api.favoris'
 let DAORecette = new RecetteDAO()
+let DAOFavoris = new FavorisDao()
 
 export default{
     components: {
-      RecipeCard, loadingAvocado, DialogNewRecipe
+      RecipeCard, DialogNewRecipe
     },
     data(){
         return{
             recipe: [],
-            loadingRecipe: false,
-            showDialogueNewRecipe: false,
-            message: "",
-            error: false,
+            favoris: [],
+            showDialogueNewRecipe: false
         }
-    },
-    mounted(){
-      this.loadingRecipe = true
     },
     mounted(){
         
@@ -80,7 +72,7 @@ export default{
     computed: {
         ContainerHeight () {
 
-            let x = 200
+            let x = 350
             switch (this.$vuetify.breakpoint.name) {
                 case 'xs': return this.$vuetify.breakpoint.height - x
                 case 'sm': return this.$vuetify.breakpoint.height - x
@@ -90,47 +82,53 @@ export default{
             }
       },
     },
-    methods:{
-      receivedError(message){
-        console.log('received error recette')
-        
-        this.message = message
-        this.error = true
-        this.recipe=[]
-        this.loadingRecipe = true
-        this.fetchRecipe()
-      },      
+    methods:{      
       fetchRecipe(){
         DAORecette.getAll().then(
           (response) => {
-            console.log(response)
             this.recipe = response.data
-            this.loadingRecipe = false
-            this.error = false
-            console.log(this.error)
-          },
-          (error) => {
-            this.error = true;
-            this.message =
-              (error.response && error.response.data) ||
-              error.message ||
-              error.toString();
+
+            DAOFavoris.getAll().then(
+              (response)=>{
+                this.favoris = response.data              
+                console.log(this.favoris)
+                this.recipe.forEach(element => {
+                  let isIn = this.favoris.some(id => id.id_recette === element.id_recette)
+                  if(isIn){
+                    element.isFavoris = 1
+                  }else{
+                    element.isFavoris = 0
+                  }
+                   
+                });
+              }
+            )
           }
         )
+
       },
       newRecipe(){
         //show modal      
         this.showDialogueNewRecipe = true
       },
-      closeDialogNewRecipe(){
+      closeDialogNewRecipe(newItem){
+        console.log(newItem)
+        if(newItem !== null){
+          this.recipe.push(newItem)
+        }
         this.showDialogueNewRecipe = false
       }
-    }
+    },
 }
 </script>
 
 <style lang="sass">
 @import "../style/globalStyle"
+
+.parentClass
+  overflow-y: auto
+  overflow-x: hidden
+  position: static
 
 </style>
 

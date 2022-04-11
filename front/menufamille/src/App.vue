@@ -4,38 +4,39 @@
 		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
-					<v-list-item to="/" @click="drawer = ! drawer">
+					<v-list-item to="/" @click="drawer = ! drawer; notification">
 						<v-list-item-icon>
 							<v-icon>mdi-home</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Accueil</v-list-item-title>
 					</v-list-item>
 
-					<v-list-item to="/creationMenu" v-if="this.$store.state.info.roleActuel==='parent'"  @click="drawer = ! drawer">
+					<v-list-item to="/creationMenu" v-if="this.$store.state.info.roleActuel==='parent'"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
 							<v-icon>mdi-pencil</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Création Menu</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/recipe"  @click="drawer = ! drawer">
+					<v-list-item to="/recipe"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
 							<v-icon>mdi-food-turkey</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Recettes</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/shoppingList"  @click="drawer = ! drawer">
+					<v-list-item to="/shoppingList"  @click="() => {this.notification(); return drawer = ! drawer}">
+
 						<v-list-item-icon>
 							<v-icon>mdi-format-list-text</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Liste de courses</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/family"  @click="drawer = ! drawer">
+					<v-list-item to="/family"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
 							<v-icon>mdi-account-group</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Famille</v-list-item-title>
 					</v-list-item>
-					<v-list-item to="/profile"  @click="drawer = ! drawer">
+					<v-list-item to="/profile"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
 							<v-icon>mdi-account</v-icon>
 						</v-list-item-icon>
@@ -92,7 +93,20 @@
     </v-app-bar>
 
     <v-main :style="image" class="image">
-      <router-view style="opacity: 0.85" />
+      <div class="ma-10" v-if="isError">
+      <v-alert  
+                type="error"
+                border="left"
+                width="100%"
+                elevation="2"
+                dismissible 
+              >
+                {{ errorMessage }}
+      </v-alert>
+      </div>
+      <!--<error-screen style="opacity: 0.85" class="ma-10" v-if="isError" /> -->
+      <loading-avocado style="opacity: 0.85" class="ma-10" v-if="isLoading"/>
+      <router-view style="opacity: 0.85" v-show="!isLoading" />
     </v-main>
   </v-app>
 </template>
@@ -102,12 +116,14 @@ import EventBus from "./common/EventBus";
 import FamilyDao from "./services/api.famille";
 import UserDAO from "./services/api.user";
 import NotifCard from "./components/NotifCard.vue";
+import LoadingAvocado from './components/loadingAvocado.vue';
+import ErrorScreen from './components/errorScreen.vue';
 let DAOfamily = new FamilyDao();
 let DAOuser = new UserDAO();
 
 export default {
   name: "App",
-  components: { NotifCard},  
+  components: { NotifCard, LoadingAvocado, ErrorScreen},  
   metaInfo: {
     meta: [{ "http-equiv": "refresh", content: "900" }],
   },
@@ -121,6 +137,15 @@ export default {
     //loggedIn: true,
   }),
   computed: {
+    errorMessage() {
+      return this.$store.state.loading.message;
+    },
+    isError() {
+      return this.$store.state.loading.isError;
+    },
+    isLoading() {
+      return this.$store.state.loading.isLoading;
+    },
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
     },
@@ -138,6 +163,7 @@ export default {
     logOut() {
       this.$store.dispatch("auth/logout");
       this.$store.dispatch("info/reset");
+      this.$store.dispatch("loading/reset");
       this.$router.push("/login");
     },
 
@@ -164,7 +190,7 @@ export default {
     EventBus.on("logout", () => {
       this.logOut();
     });
-    this.notification();
+    if(this.loggedIn) this.notification();
     console.log(this.listNotif);
   },
   beforeDestroy() {

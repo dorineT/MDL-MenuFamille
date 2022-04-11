@@ -9,6 +9,14 @@ export default class RecetteDAO{
       return api.get("/recette/AllTags/")
     }
 
+    /**
+     * Get toutes les recettes et leur tag
+     * Par catégorie
+     */
+     getAllByCategory(category){
+      return api.get("/recette/GetFromCategory/"+category)
+    }
+
 
     /**
      * Get une recette et ses infos par id
@@ -34,5 +42,10 @@ export default class RecetteDAO{
             return qs.stringify(params)
           }
         })
+    }
+
+
+    sendRecette(recette){
+      return api.post("recette/CreateRecipeAllInfo/", recette)
     }
 }

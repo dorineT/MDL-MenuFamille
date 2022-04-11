@@ -1,8 +1,8 @@
 <template>
     <v-dialog       
         v-model="dialogNewRecipeProps"
-        @click:outside="closeDialogueEvent"
-        @keydown.esc="closeDialogueEvent"
+        @click:outside="closeDialogueEvent(null)"
+        @keydown.esc="closeDialogueEvent(null)"
         :max-width="width"                
         transition="dialog-transition"
         scrollable
@@ -78,8 +78,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="12">
                   
-                <v-autocomplete
-                  :rules="[required]"
+                <v-autocomplete                  
                   required
                   label="Tags"
                   chips
@@ -299,7 +298,7 @@
                                 class="colorbtnGreen"
                                                            
                                 @click="addStep(index, $event)"
-                                v-if="index != 0 && index == currentSteps.length - 1"
+                                v-if="index === currentSteps.length - 1"
                               >
                                 <v-icon>mdi-plus-thick</v-icon>
                               </v-btn>
@@ -310,7 +309,7 @@
                                 class="colorbtnOrange"
                                   
                                 @click="removeStep(index, $event)"
-                                v-if="index != 0 && index != currentSteps.length"
+                                v-if="index !== 0 && index != currentSteps.length"
                               >
                                 <v-icon>mdi-minus-thick</v-icon>                                  
                               </v-btn>
@@ -331,7 +330,7 @@
         </v-card-text>
 
         <v-card-actions class="pa-3">
-          <v-btn rounded color="grey" @click="closeDialogueEvent">
+          <v-btn rounded color="grey" @click="closeDialogueEvent(null)">
             Annuler
           </v-btn>
           <v-btn rounded class="colorbtnGreen" @click="validation">
@@ -348,9 +347,11 @@
 import TagDAO from '../services/api.tag';
 import DenreeDao from '../services/api.denree';
 import CategorieDao from '../services/api.categorie'
+import RecetteDAO from '../services/api.recette'
 let DAOTag = new TagDAO()
 let DAODenree = new DenreeDao()
 let DAOCategorie = new CategorieDao()
+let DAORecette = new RecetteDAO()
 
 export default {
   
@@ -367,16 +368,13 @@ export default {
           recipe: {
             nom: null,
             nbPers: 1,
-            image: null,
-            ingredients: [],        
+            image: null,                 
             preparationTime: null,
             cuissonTime: null,
             difficulte: 1
           },
-          currentSteps: [
-            { step: 1, description: "Faire fondre le beurre." },
-            { step: 2, description: "Mélanger avec la farine." },
-          ],
+          currentSteps: [{step:1, description:null}],
+          currentIngredients: [],
 
           ruleRequired: [v => !!v || 'Champs requis'],
 
@@ -388,7 +386,7 @@ export default {
             { header: 'Rechercher votre ingrédient' }
           ],
           nonce: 1,        
-          currentIngredients: [],        
+              
           x: 0,
           search: null,
           y: 0,
@@ -396,16 +394,13 @@ export default {
       },
 
     methods:{
-        closeDialogueEvent(){
-            this.$emit('closeDialogNewRecipe')
+        closeDialogueEvent(newItem){
+            this.$emit('closeDialogNewRecipe', newItem)
         },
-        updateQuantity(index, value) {
-
-          console.log("update quantity "  + value)                   
+        updateQuantity(index, value) {                         
           this.$set(this.currentIngredients[index], "quantite", value);
         },
-        updateMesure(index, value) {
-          console.log("update mesure ")                      
+        updateMesure(index, value) {                          
           this.$set(this.currentIngredients[index], "mesure", value);
         },
         addStep(index, event) {
@@ -460,39 +455,41 @@ export default {
         }
         return !!value || 'Champ requis.';
       },
-      validation(){
-        console.log('submit form')
-        //if(!this.$refs.form.validate()) return
+      transformTime(time){
+        let tab = time.split(':')
+        return parseInt(tab[0]*60) + parseInt(tab[1])
+      },
+      validation(){        
+        if(!this.$refs.form.validate()) return
 
         let textPreparation = ""
         this.currentSteps.forEach( step => {
-          textPreparation += step.step + ": " + step.description+" \n "
+          textPreparation += step.step + ": " + step.description+" \n"
         })  
-
-        console.log(this.currentIngredients)
 
         let denreesListe = []
 
-        this.currentIngredients.forEach( ing => {
-          console.log(ing)
-          denreesListe.push({
-            id_denree: ing.id_denree,
-            nom: ing.nom,
-            calories: ing.calories,
-            nutriscore: ing.nutriscore,
-            recette_denree: {
-              quantite: ing.quantite,
-              mesure: ing.mesure
-            }
-          })
+        this.currentIngredients.forEach( ing => {      
+          if(ing !== undefined){
+            denreesListe.push({
+              id_denree: ing.id_denree,
+              nom: ing.nom,
+              calories: ing.calories,
+              nutriscore: ing.nutriscore,
+              recette_denree: {
+                quantite: ing.quantite,
+                mesure: ing.mesure
+              }
+            })
+          }
         })
 
         let newRecette = {
           nom: this.recipe.nom,
           difficulte: this.recipe.difficulte,
           calorie: 0,
-          temps_cuisson: this.recipe.cuissonTime,
-          temps_preparation: this.recipe.preparationTime,
+          temps_cuisson: this.transformTime(this.recipe.cuissonTime),
+          temps_preparation: this.transformTime(this.recipe.preparationTime),
           nb_personne: this.recipe.nbPers,
           nutriscore: 'A',
           preparation: textPreparation,
@@ -501,8 +498,19 @@ export default {
           categories: this.categorieChoix,
           denrees: denreesListe
         }
+  
+        DAORecette.sendRecette(newRecette).then(
+          (response) =>{
+            alert('Recette enregistrée')
+            newRecette.id_recette = response.data.id_recette
+            this.closeDialogueEvent(newRecette)
+          },
 
-        console.log(newRecette)
+          (error) =>{
+            alert(error.message)
+          }
+        )
+        
 
       },
     },
@@ -532,7 +540,21 @@ export default {
         },
     },
     watch: {
-      dialogNewRecipeProps(){        
+      dialogNewRecipeProps(){ 
+        this.items = []
+        this.currentIngredients = []
+        this.categorieChoix = []
+        this.tagsChoix = []
+        this.currentSteps = [{step:1, description:''}]
+        this.recipe= {
+          nom: null,
+          nbPers: 1,
+          image: null,                 
+          preparationTime: null,
+          cuissonTime: null,
+          difficulte: 1
+        }
+
         if(this.dialogNewRecipeProps){
           DAOTag.getAll().then(
             (response) =>{
@@ -554,13 +576,11 @@ export default {
         this.currentIngredients = val.map(v => {
           let product = {}       
 
-          if(typeof v === 'string'){
-            console.log('create')
+          if(typeof v === 'string'){       
             DAODenree.findCreateProduct(v).then(
               (response) =>{
                 product = response.data[0]
                 if (product !== null) {
-              
                   product.color= this.colors[this.nonce - 1],               
                   v = structuredClone(product)
                   this.currentIngredients.push(product)
@@ -574,9 +594,8 @@ export default {
               }
             );
           }
-          else{
-            console.log('hekkk')
-            console.log(v)
+          else if(typeof v === 'object'){
+            if(v === undefined) return         
             return v
           }                    
         })
@@ -592,9 +611,6 @@ export default {
               });
               this.items = structuredClone(denrees)        
               this.items.push({header: 'Rechercher votre ingrédient'})
-            },
-            (error)=>{
-              alert(error.message)
             }
           )          
         }

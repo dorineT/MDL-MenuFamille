@@ -1,7 +1,24 @@
 <template>
       <v-card @click="showInfo" class="card-recipe" >
         <v-card-title primary-title>                                        
-            <h3 class="headline mb-0">{{recipe.nom}}</h3>                                                                                    
+          <v-container>
+              <v-row>
+                <v-col   cols="8" sm="9" md="9" lg="10" xl="10">
+                  <h3 class="headline mb-0 spanTitle">{{recipe.nom}}</h3> 
+                </v-col>
+                <v-col cols="1" sm="1" md="1" lg="1" xl="1">
+                  <v-rating v-if="recipe.isFavoris==1"                               
+                    hover
+                    length="1"
+                    size="30"
+                    color="yellow"
+                    :value="recipe.isFavoris"          
+                    readonly
+                  >
+                  </v-rating>   
+                </v-col>
+              </v-row>  
+            </v-container>                                                                               
         </v-card-title>
         <v-card-text  style="height: 240px">
             <v-row class="d-flex justify-center">
@@ -68,38 +85,46 @@ export default {
     components:{
         RecipeInfo
     },
-    props: ['recipe'],
+    props: ['recipe','isFavoris'],
     data(){
         return{
-            showDialogueInfoRecipe: false
+            showDialogueInfoRecipe: false            
         }
     },
-    mounted(){
-      console.log('mounted recipe card')
-    },
     methods:{
-        showInfo(){
+        showInfo(){            
             this.showDialogueInfoRecipe = true
         },
-        closeDialog(error, message){
-            console.log('close dialogue recipe card ' + error)
+        closeDialog(){           
             this.showDialogueInfoRecipe = false    
-            if(error){
-                console.log("hhhello")
-                this.$emit('transmitError', message)
-            }
         }
     }
 }
 </script>
 
-<style lang="sass">
+<style lang="sass"> 
   
 .card-recipe 
   margin: 20px !important
   margin-right: 5px !important
   margin-left: 5px !important
+  transition: transform .2s
+
+  .spanTitle
+    width: 100% 
+    display: inline-block
+    text-overflow: ellipsis
+    overflow: hidden
+    white-space: nowrap
 
   &:hover
     box-shadow: 0 5px 20px 0 #9CCC65, 0 6px 20px 0 #9CCC65 !important
+    transform: scale(1.1)
+    z-index: 1
+    //position: absolute
+    
+
+    .spanTitle
+      white-space: pre-wrap !important
+      word-break: break-word !important
 </style>
