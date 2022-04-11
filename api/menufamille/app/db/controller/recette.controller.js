@@ -1,56 +1,4 @@
 
-/* this file need the classes files to work. please merge them as soon as possible thanks a lot. 
-the Sequelize should be okay but need testing too */
-
-/*function Search_recipe(S_Tag, S_Type){
-
-    const{Op} = require('@sequelize/core');
-    
-    let recipes = null;
-
-    if (S_Tag == null && S_Type == null) {
-        recipes = Recipe.findAll();
-    } else if (S_Tag == null) {
-        recipes = Recipe.findAll({
-            where: {
-                type = S_Type
-            }
-        });
-    } else if (S_Type == null) {
-        recipes = Recipe.findAll({
-            where: {
-                tag = S_Tag
-            }
-        });
-    } else {
-        recipes = Recipe.findAll({
-            where: {
-                [Op.add]: [
-                    type = S_Type,
-                    tag = S_Tag
-                ]
-            }
-        });
-    }
-
-    return recipes;
-}*/
-
-
-
-/**
- * lister toutes les recttes avec leur tags
- * chercher une recette et obtenir TOUTES ses infos
- * + crud habituel
- * 
- * 
- * se baser sur type.controller.js (fonctionne) (dossier controller)
- * et les infos sont sur la bd en ligne de david
- * les routes sont ajouter dans index.js pour la base
- * les spec de route (dossier route) dans un fichier dédié (voir type.js)
- * idem un par table
- */
-
 const { recette } = require("../models");
 const db = require("../models");
 const Recipe = db.recette;
@@ -159,7 +107,12 @@ exports.DeleteRecipe = (req, res) => {
 /// Chercher une recette
 
 exports.find_Recipe = (req, res) => {
-    Recipe.findByPk(req.params.id, {include: [{model: Tag, through: {attributes: []}}, {model: Categorie, through: {attributes: []}}, {model: Denree, through: {attributes: ["quantite"]}}]})
+    Recipe.findByPk(req.params.id, {
+      include: [{model: Tag, through: {attributes: []}}, {
+        model: Categorie, through: {attributes: []}
+      }, {model: Denree, through: {attributes: ["quantite","mesure"]}}],
+
+    })
     .then(data => {
         res.send(data)
     })
@@ -174,7 +127,21 @@ exports.find_Recipe = (req, res) => {
 /// Chercher recette avec toutes les infos #40
 
 exports.find_Recipe_With_Tags= (req, res) => {
-  Recipe.findAll({include: {model: Tag, through: {attributes: []}}})
+  Recipe.findAll(
+    {
+      include:[
+        {
+          model: Tag, through: {attributes: []}
+        },
+        {
+          model: db.categorie
+        }
+      ],
+      order: [
+        [Categorie, 'periode', 'ASC']
+      ] 
+    }
+  )
   .then(data => {
       res.send(data)
   })
@@ -223,4 +190,138 @@ exports.find_Recipe_tags = (req, res) => {
         err.message || "Some error occurred while retrieving Recipes."
     });
   });  
+}
+
+
+// Créer une recette avec absolument tout (recette + tags + catégories + denrées ) --> impossible à faire avec des includes, on va tout cascader
+
+exports.Create_Recipe_All_Infos = (req, res) => {  
+  Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, 
+                  temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, 
+                  preparation: req.body.preparation, url_image: req.body.url_image})
+  .then(data => { 
+    const id_new_recette = data.id_recette;;
+
+    /// On tacle d'abords les Tags  
+    req.body.tags.forEach(tag => {
+      db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag}).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting Recipes tag"
+        });
+    });
+    });
+
+    /// Au tour des Catégories
+    req.body.categories.forEach(categorie => {
+      db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie}).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting recette categorie"
+        });
+    });
+    });
+
+    /// Enfin les Denrées
+    req.body.denrees.forEach(denree => {
+      db.recette_denree.create(
+        { 
+          id_recette: id_new_recette, 
+          id_denree : denree.id_denree, 
+          quantite : denree.recette_denree.quantite,
+          mesure: denree.recette_denree.mesure
+        
+        }).catch(err => {
+        res.status(500).send({
+            message:
+              err || "Some error occurred while inserting denree recette"
+        });
+    });
+    });
+    
+    res.send(data);
+    
+    })
+  .catch(err => {
+      res.status(500).send({
+          message:
+            err || "Some error occurred while inserting Recipes"
+      });
+  });
+}
+
+
+/// array de chaque calorie et nutriscore des 
+exports.GetAllNutAndCal = (req, res) => {
+
+  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
+  .then(data => {
+      res.send(data.denrees)
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Recipes."
+        });
+      });  
+}
+
+/// get mean of nutriscore and calories for a recipe
+
+exports.GetMeanNutAndCal = (req, res) => {
+
+  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
+  .then(data => {
+    
+    let tmp_nut = 0;
+    let tmp_cal = 0;
+    let nb_iter_nut = 0;
+    let nb_iter_cal = 0;
+    let retour = new Object(); 
+
+    data.denrees.forEach(denree =>{
+        if (denree.calories != null){
+        tmp_cal = tmp_cal + denree.calories;
+        nb_iter_cal = nb_iter_cal + 1;
+        }
+        switch(denree.nutriscore) {
+          case 'A' : tmp_nut = tmp_nut + 1 
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'B' : tmp_nut = tmp_nut + 2
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'C' : tmp_nut = tmp_nut + 3
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'D' : tmp_nut = tmp_nut + 4
+                     nb_iter_nut = nb_iter_nut + 1;
+            break;
+          case 'E' : tmp_nut = tmp_nut + 5
+                    nb_iter_nut = nb_iter_nut + 1;
+            break;
+        }
+      })
+    retour.calorie = tmp_cal /  nb_iter_cal;
+    tmp_nut = tmp_nut / nb_iter_nut;
+    if (1 <= tmp_nut <= 1.5 ){
+      retour.nutriscore = 'A';
+    } else if (1.5 < tmp_nut <= 2.5) {
+      retour.nutriscore = 'B';
+    } else if (2.5 < tmp_nut <= 3.5) {
+      retour.nutriscore = 'C';
+    } else if (3.5 < tmp_nut <= 4.5) {
+      retour.nutriscore = 'D';
+    } else {
+      retour.nutriscore = 'E';
+    }
+    
+    res.send(retour);
+    })
+    .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Recipes."
+        });
+      });  
 }

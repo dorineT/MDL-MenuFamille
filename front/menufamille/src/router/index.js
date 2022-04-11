@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/profile.vue'
+import Recette from '../views/Recette.vue'
 
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -32,6 +33,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/recipe',
+    name: 'Recette',
+    component: Recette
   },
   {
     path: '/menuModification',

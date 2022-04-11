@@ -72,7 +72,7 @@ exports.PutDenree = (req, res) => {
             message: "Denree was deleted"
           });
         } else{
-          res.send({
+          res.status(403).send({
             message: `Cannot delete denree with id=${id}`
           })
         }
@@ -85,3 +85,54 @@ exports.PutDenree = (req, res) => {
       });
     };
   
+
+  //// Find with like recipe
+
+  exports.FindWithLike = (req, res) => {
+    const lettres = req.params.nom + "%";
+    Denree.findAll({
+      where: { nom : {[Op.iLike]: lettres}}     
+    }).then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving denree."
+      });
+    }); 
+  }
+
+
+  //// Find or Create 
+
+  exports.FindOrCreate = (req, res) => {
+    const nomArg = req.params.nom;
+    Denree.findOrCreate({
+      where: { nom:  nomArg }
+    }).then(data => {
+      res.send(data);
+    }).catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving denree."
+      });
+    }); 
+  }
+
+  //// Get nutriscore and calories
+
+  exports.Get_Nut_and_Cal = (req, res) => {
+    const id_denreeArg = req.params.id_denree
+    Denree.findAll({
+      where: {id_denree: id_denreeArg},
+      attributes: ['nutriscore', 'calories']
+    }).then(data => {
+      res.send(data);
+    }).catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving denree."
+      });
+    });
+  }

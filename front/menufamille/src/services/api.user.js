@@ -16,4 +16,8 @@ export default class UserDao{
     updateUserPwd(id, data) {
         return api.put("/user/pwd/" + id, data)
     }
+
+    removeNotif(id_famille) {
+        return api.delete("/user/notif/delete/"+id_famille);
+    }
 }

@@ -151,7 +151,7 @@
 			};
 		},
 
-		created() {
+		mounted() {
 			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
 			eventBus.$on("configurationDD", this.setUpData);
 			eventBus.$on("creationMenuDone", this.creationMenuDone);
