@@ -464,7 +464,7 @@ export default {
 
         let textPreparation = ""
         this.currentSteps.forEach( step => {
-          textPreparation += step.step + ": " + step.description+" \n "
+          textPreparation += step.step + ": " + step.description+" \n"
         })  
 
         let denreesListe = []

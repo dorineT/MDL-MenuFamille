@@ -7,11 +7,11 @@
                   <h3 class="headline mb-0 spanTitle">{{recipe.nom}}</h3> 
                 </v-col>
                 <v-col cols="1" sm="1" md="1" lg="1" xl="1">
-                  <v-rating                                   
+                  <v-rating v-if="recipe.isFavoris==1"                               
                     hover
                     length="1"
-                    size="20"
-                    color="green lighten-2"
+                    size="30"
+                    color="yellow"
                     :value="recipe.isFavoris"          
                     readonly
                   >
@@ -111,7 +111,7 @@ export default {
   transition: transform .2s
 
   .spanTitle
-    width: 80% 
+    width: 100% 
     display: inline-block
     text-overflow: ellipsis
     overflow: hidden
@@ -125,5 +125,6 @@ export default {
     
 
     .spanTitle
-      white-space: normal !important
+      white-space: pre-wrap !important
+      word-break: break-word !important
 </style>

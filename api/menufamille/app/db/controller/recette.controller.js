@@ -110,7 +110,7 @@ exports.find_Recipe = (req, res) => {
     Recipe.findByPk(req.params.id, {
       include: [{model: Tag, through: {attributes: []}}, {
         model: Categorie, through: {attributes: []}
-      }, {model: Denree, through: {attributes: ["quantite"]}}],
+      }, {model: Denree, through: {attributes: ["quantite","mesure"]}}],
 
     })
     .then(data => {
@@ -224,7 +224,14 @@ exports.Create_Recipe_All_Infos = (req, res) => {
 
     /// Enfin les Denrées
     req.body.denrees.forEach(denree => {
-      db.recette_denree.create({ id_recette: id_new_recette, id_denree : denree.id_denree, quantite : denree.recette_denree.quantite}).catch(err => {
+      db.recette_denree.create(
+        { 
+          id_recette: id_new_recette, 
+          id_denree : denree.id_denree, 
+          quantite : denree.recette_denree.quantite,
+          mesure: denree.recette_denree.mesure
+        
+        }).catch(err => {
         res.status(500).send({
             message:
               err || "Some error occurred while inserting denree recette"

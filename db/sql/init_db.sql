@@ -110,6 +110,7 @@ CREATE TABLE RECETTE_DENREE (
                                 id_recette INTEGER NOT NULL,
                                 id_denree INTEGER NOT NULL,
                                 quantite INTEGER NOT NULL,
+                                mesure VARCHAR NOT NULL,
                                 PRIMARY KEY (id_recette,id_denree)
 );
 

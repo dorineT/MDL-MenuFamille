@@ -133,8 +133,8 @@
                                             ><v-icon v-text="iconBullet"></v-icon
                                         ></v-list-item-icon>
                                         <v-list-item-content
-                                            >{{ denree.nom }}
-                                            {{ denree.recette_denree.quantite }} gr</v-list-item-content
+                                            >{{ denree.nom }},
+                                            {{ denree.recette_denree.quantite }} {{denree.recette_denree.mesure}}</v-list-item-content
                                         >
                                     </v-list-item>
                                 </v-list>
