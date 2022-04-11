@@ -121,7 +121,7 @@
 						  }
 					  )    
 				} else {
-					DAORecette.getAll().then(
+					DAORecette.getAllByCategory(itemReceived.periode).then(
 						(response) => {
 							this.itemRecettesAll = response.data
 							this.itemRecettes = structuredClone(this.itemRecettesAll);

@@ -328,7 +328,7 @@
 
 						
 				//charger toutes les recettes et leur tags
-				DAORecette.getAll().then(
+				DAORecette.getAllByCategory(this.periode).then(
 					(response) => {
 						this.itemRecettesAll = response.data
 						this.itemRecettes = this.copyTab(this.itemRecettesAll)
