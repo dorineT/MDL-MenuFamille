@@ -1,93 +1,92 @@
 <template>
 
-<div> 
-    <v-select
-        class="combobox_class"
-        color="orange lighten-2"
-        label="Choix du menu"
-        no-data-text="Aucun menu disponible"
-        v-model="comboboxMenu"
-        >               <!--items à ajouter-->
-    </v-select>
+    <div> 
+        <v-select
+            class="combobox_class"
+            color="orange lighten-2"
+            label="Choix du menu"
+            no-data-text="Aucun menu disponible"
+            v-model="comboboxMenu"
+            >               <!--items à ajouter-->
+        </v-select>
   
-<v-btn class="viderListe" outlined color = "red" to = ""> Supprimer liste de course</v-btn>
+        <v-btn class="viderListe" outlined color = "red" to = ""> Supprimer liste de courses</v-btn>
 
-<h3>Liste des denrées:</h3>
+        <v-container class="containShop" fluid>
+            <v-row>
+                <v-col cols= "12" sm="6" md="6" lg="6" xl="6"> 
+                    <h3>Liste des denrées:</h3>
 
-<v-card
-    elevation="16"
-    max-width="500"
-    class="listeDenree"
-    >
-    <v-virtual-scroll
-        :items="items"
-        height="300"
-        item-height="70"
-        >
+                    <v-card
+                        elevation="16"
+                        max-width="700"
+                        class="listeDenree"
+                        >
+                        <v-virtual-scroll
+                            :items="items"
+                            height="490"
+                            item-height="80"
+                            >
       
-        <template v-slot:default="{item}">
-            <v-list-item :key="item">
-            <v-list-item-content>
-                <v-list-item-title>
-                 <v-btn> <strong> {{item.name}}<br></strong> </v-btn>
-                </v-list-item-title>
-             </v-list-item-content>  
+                            <template v-slot:default="{item}">
+                                <v-list-item :key="item">
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            <v-btn> <strong> {{item.name}}</strong> </v-btn>
+                                        </v-list-item-title>
+                                    </v-list-item-content> 
 
-             <div>
-                  <v-img
-                  max-height="50"
-                  max-width="50"
-                  :src="item.image"
-                  >
-                  </v-img>
-              </div>
+                                    <div>
+                                        <v-img
+                                            max-height="50"
+                                            max-width="50"
+                                            :src="item.image"
+                                        >
+                                        </v-img>
+                                    </div>
                     
-                <v-list-item-action> 
-                   
-                        <p>Quantité : {{item.quantité}}</p>
-                 
-                </v-list-item-action>
-              
-              
-            </v-list-item>
-            <v-divider></v-divider>
-        </template>
-    </v-virtual-scroll>
-</v-card>
+                                    <v-list-item-action> 
+                                        <p>Quantité : {{item.quantité}}</p>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                            </template>
+                        </v-virtual-scroll>
+                    </v-card>
+                </v-col>
+                <v-col>
+                    <div class="mag"> 
+                        <h3>Magasins disponibles:</h3>
+                    </div>
 
-<div class="mag"> 
-<h3>Magasins disponibles:</h3>
-</div>
+                    <v-card
+                        elevation="16"
+                        max-width="700"
+                        class="listeMagasins"
+                        >
 
-<v-card
-    elevation="16"
-    max-width="600"
-    class="listeMagasins"
-    >
+                        <v-virtual-scroll
+                            :items="shops"
+                            height="280"
+                            item-height="70"
+                            >
 
-    <v-virtual-scroll
-        :items="shops"
-        height="210"
-        item-height="70"
-        >
-
-        <template v-slot:default="{item}">
-            <v-list-item :key="item">
-            <v-list-item-content>
-                
-                <v-list-item-title>
-                 <p>Prix total: {{item.totalPrice}} € chez <strong>{{item.name}}</strong></p>
-                </v-list-item-title>
-
-             </v-list-item-content> 
-            </v-list-item>
-            <v-divider></v-divider>
-        </template>
-    </v-virtual-scroll>
-
-</v-card> 
-
- </div>
+                            <template v-slot:default="{item}">
+                                <v-list-item :key="item">
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            <p>Prix total: {{item.totalPrice}} € chez <strong>{{item.name}}</strong></p>
+                                        </v-list-item-title>
+                                    </v-list-item-content> 
+                                </v-list-item>
+                                <v-divider></v-divider>
+                            </template>
+                        </v-virtual-scroll>
+                    </v-card> 
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
     
 </template>
 
@@ -207,14 +206,4 @@ watch:{
 .viderListe
     float: right
     margin-top: -70px
-
-.mag
-    float: right
-    margin-top: -335px
-
-.listeMagasins
-    top: -300px
-    right: -850px
-
-
 </style>

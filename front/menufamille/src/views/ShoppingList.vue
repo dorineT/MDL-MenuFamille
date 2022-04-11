@@ -24,7 +24,4 @@ export default {
 <style lang="sass">
 .cardShopping
   margin: 10px
-  padding: 15px
-  padding-top: 30px
-
 </style>
