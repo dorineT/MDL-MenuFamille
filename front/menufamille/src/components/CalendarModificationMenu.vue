@@ -320,7 +320,7 @@ export default {
           this.errorMessage.error = false		
           
           // sendPeriodeUpdate
-          DAOMenu.sendPeriodeUpdate(menuPeriodeOld)
+          DAOMenu.sendPeriodeUpdate(item)
         }
 
       },

@@ -22,8 +22,8 @@ export default class MenuDao{
      * Envoie le menu modifié (sans tous ses objets jours etc)
      * @param {*} newMenu le menu a modifier
      */
-    sendMenuUpdate(periode){      
-      api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
+    sendMenuUpdate(menu){
+      api.put("/menu/"+menu.id_menu, menu)
     }
 
     /**
@@ -41,10 +41,9 @@ export default class MenuDao{
      * @param {*} periode 
      */
      sendPeriodeUpdate(periode){    
-      // adapt to api   
-      /*api.put("/calendrier_recette/",{
-        periode: periode,
-      })*/
+      console.log("envoi")
+      console.log(periode)
+      api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
     }
 
     /**

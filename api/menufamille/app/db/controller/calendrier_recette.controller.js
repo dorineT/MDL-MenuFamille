@@ -138,9 +138,11 @@ exports.Get_periode_withTag = (req, res) =>{
 }
  */
 exports.Update_Periode_with_Tag = (req, res) => {
+  console.log("update tag")
+
   const id = req.params.id;
 
-    var message = ""
+  var message = ""
   const data = {
     id_periode:  req.body.id_periode ,
     id_calendrier: req.body.id_calendrier ,
@@ -151,7 +153,7 @@ exports.Update_Periode_with_Tag = (req, res) => {
 
 
       ///////
-      CalendrierRecette.update(data, {
+  CalendrierRecette.update(data, {
     where: {
       id_periode: id
     }
@@ -189,9 +191,9 @@ exports.Update_Periode_with_Tag = (req, res) => {
                         err.message || `Cannot delete Calender_Recipe with id_periode = ${id}`
 
             });
-            console.log(req.body["tag_periode"])
+            console.log(req.body["tags"])
 ////recréa
-    req.body["tag_periode"].forEach(element =>
+    req.body["tags"].forEach(element =>
         db.tag_periode.create({id_tag: element.id_tag,id_periode : id}).then(num =>{
             if (num == 1) {
                 message = message + `tag_periode update `
