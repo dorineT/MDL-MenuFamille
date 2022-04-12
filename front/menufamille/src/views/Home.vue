@@ -165,6 +165,22 @@
       }  
       
     },
+    watch:{
+      async comboboxMenuSelected(slot){
+        alert(slot.value)
+
+        //bind component
+        if(slot.type === 'modification'){
+
+        }
+        else if(slot.type === 'suggestion'){
+
+        }
+        else{
+          // locked type
+        }
+       }
+    },
     methods:{
       goToModificationMenu(item){             
         this.$router.push({name:'MenuModification', query: {menu: item}});    
@@ -194,7 +210,8 @@
             menus.forEach(menu => {         
                 let periodeNew = { 
                     text: menu.periode_debut + ' - ' +menu.periode_fin,
-                    value: menu.id_menu
+                    value: menu.id_menu,
+                    type: 'modification'
                   }         
                 this.itemPeriode.push(periodeNew)            
                 //this.menuToValide.push(periodeNew)        
@@ -212,7 +229,8 @@
             menus.forEach(menu => {           
                 let periodeSugg = {
                   text:menu.periode_debut+ ' - ' +menu.periode_fin,
-                  value:menu.id_menu,          
+                  value:menu.id_menu,
+                  type: 'suggestion'          
               }     
               this.itemPeriode.push(periodeSugg)   
               //this.menuToSuggest.push(periodeSugg)
@@ -229,7 +247,8 @@
             menus.forEach(menu => {           
                 let periode = {
                   text:menu.periode_debut+ ' - ' +menu.periode_fin,
-                  value:menu.id_menu,          
+                  value:menu.id_menu, 
+                  type: 'locked'         
               }
               this.itemPeriode.push(periode)    
               //this.menuLocked.push(periode)
