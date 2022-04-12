@@ -301,6 +301,18 @@ exports.Get_suggest_periode = (req, res) => {
       });
 };
 
+/**
+ *
+ * @param array
+ * @param callback
+ * @returns {Promise<void>}
+ */
+async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
+}
+
 //creation du menu -> recevoir un menu et toute ses infos
 /**
  *
@@ -420,9 +432,9 @@ exports.Get_suggest_periode = (req, res) => {
 
 
 
-exports.create_New_Menu = (req,res) => {
+exports.create_New_Menu = async(req,res) => {
 
-  Menu.create({
+    await Menu.create({
     periode_debut: moment(req.body.periode_debut) ,
     periode_fin: moment(req.body.periode_fin),
 
@@ -434,25 +446,25 @@ exports.create_New_Menu = (req,res) => {
     type : req.body.type,
     verrou : req.body.verrou
 
-  }).then(data => {
+  }).then(async (data) => {
       const id_new_menu = data.id_menu
-      req.body.calendriers.forEach(cal => {
+      //req.body.calendriers.forEach(cal => {
+        await asyncForEach(req.body.calendriers,async (cal) =>{
 
-
-          db.calendrier.create({
+          await db.calendrier.create({
               date: moment(cal.date)
 
 
-          }).then(data => {
+          }).then(async (data) => {
               const id_new_calendar = data.id_calendrier
-              db.menu_calendrier.create({
+              await db.menu_calendrier.create({
                   id_menu: id_new_menu,
                   id_calendrier: id_new_calendar
               })
-              cal.calendrier_recettes.forEach(per => {
+              //cal.calendrier_recettes.forEach(per => {
+                  await asyncForEach(cal.calendrier_recettes, async(per) =>{
 
-
-                  db.calendrier_recette.create({
+                   await db.calendrier_recette.create({
 
                       id_calendrier: id_new_calendar,
                       id_recette: per.id_recette,
@@ -460,12 +472,12 @@ exports.create_New_Menu = (req,res) => {
                       is_recette: per.is_recette,
                       nb_personne: per.nb_personne,
                       suggestions: []
-                  }).then(data => {
+                  }).then(async (data) => {
                       const id_periode = data.id_periode
-                      per.tag.forEach(tag_index => {
+                      //per.tag.forEach(tag_index => {
+                        await asyncForEach(per.tag, async(tag_index) =>{
 
-
-                          db.tag_periode.create({
+                          await db.tag_periode.create({
                               id_periode: id_periode,
                               id_tag: tag_index.id_tag
                           }).then().catch(err => {
