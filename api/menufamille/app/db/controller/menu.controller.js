@@ -11,6 +11,7 @@ const {asyncForEach} = require("../../middleware/asyncForEach");
 exports.findAll = (req, res) => {
     Menu.findAll()
     .then(data => {
+
       res.send(data);
     })
     .catch(err => {
@@ -142,6 +143,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
       ]    
   })
   .then(response => {
+      
       res.send(response);      
 }).catch(err => {
     res.status(500).send({
@@ -421,14 +423,11 @@ exports.Get_suggest_periode = (req, res) => {
  */
 
 
-
-
 exports.create_New_Menu = async(req,res) => {
 
     await Menu.create({
-    periode_debut: moment(req.body.periode_debut) ,
-    periode_fin: moment(req.body.periode_fin),
-
+    periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
+    periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),
     id_famille: req.body.id_famille,
     plat_identique_matin: req.body.plat_identique_matin,
     plat_identique_midi: req.body.plat_identique_midi,
@@ -447,6 +446,7 @@ exports.create_New_Menu = async(req,res) => {
 
 
           }).then(async (data) => {
+
               const id_new_calendar = data.id_calendrier
               await db.menu_calendrier.create({
                   id_menu: id_new_menu,
@@ -463,6 +463,7 @@ exports.create_New_Menu = async(req,res) => {
                       is_recette: per.is_recette,
                       nb_personne: per.nb_personne,
                       suggestions: []
+
                   }).then(async (data) => {
                       const id_periode = data.id_periode
                       //per.tag.forEach(tag_index => {
@@ -471,7 +472,8 @@ exports.create_New_Menu = async(req,res) => {
                           await db.tag_periode.create({
                               id_periode: id_periode,
                               id_tag: tag_index.id_tag
-                          }).then().catch(err => {
+                          }).catch(err => {
+                              console.log('erreur insert tag')
                               res.status(500).send({
                                   message:
                                       err.message || "Some error occurred while retrieving locked Menus."
@@ -481,6 +483,7 @@ exports.create_New_Menu = async(req,res) => {
                       })
 
                   }).catch(err => {
+                    console.log('erreur insertcal rec')
                       res.status(500).send({
                           message:
                               err.message || "Some error occurred while retrieving locked Menus."
@@ -489,6 +492,7 @@ exports.create_New_Menu = async(req,res) => {
 
               })
           }).catch(err => {
+            console.log('erreur insert cal')
               res.status(500).send({
                   message:
                       err.message || "Some error occurred while retrieving locked Menus."

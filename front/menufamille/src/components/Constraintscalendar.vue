@@ -121,16 +121,32 @@
 				<v-container grid-list-xl fluid>
 					<v-row wrap>
 						<v-col xs12 sm6 md3>
-							<h3>Nombre de personnes :</h3>
-							<v-text-field
-								type="number"
-								step="any"
-								min="0"
-								ref="input"
-								:rules="nbPlatRule"
-								v-model.number="form.nb_personne"
-								required
-							></v-text-field>
+							<h3>Nombre de personnes :  {{form.nb_personne}}</h3>
+							<v-slider
+                                  
+							  v-model="form.nb_personne"
+							  color="green lighten-3"
+							  track-color="grey"
+							  always-dirty
+							  min="1"
+							  :max = "max"             
+							>
+							  <template v-slot:prepend>
+								<v-icon                      
+								  @click="decrement"
+								>
+								  mdi-minus
+								</v-icon>
+							  </template>
+
+							  <template v-slot:append>
+								<v-icon                      
+								  @click="increment"
+								>
+								  mdi-plus
+								</v-icon>
+							  </template>
+							</v-slider>
 						</v-col>
 					</v-row>
 				</v-container>
@@ -281,7 +297,7 @@
 									<v-radio-group
 										v-model="form.choixMenuAutomatique"
 										row
-										:disabled="disabledChoixMenuAutomatique"
+										:disabled="isDisabled"
 									>
 										<v-radio label="Favoris" value="favoris"></v-radio>
 										<v-radio label="Historique" value="historique"></v-radio>
@@ -289,7 +305,7 @@
 								</v-card-text>
 							</v-card>
 						</v-col>
-						<v-col v-if="form.choixTypeMenu === 'manuel'">
+						<v-col v-if="form.choixTypeMenu === 'suggestion'">
 							<v-card >
 								<v-card-title >
 									Délais de clotûre des suggestions :
@@ -340,7 +356,8 @@
 					tagsMidi: [],
 					tagsSoir: [],
 				},
-
+				isDisabled: true,
+				defaultMax: 30,
 				valid: true,
 				textFieldDisabled: true,
 				textFieldFinDisabled: false,
@@ -366,6 +383,7 @@
 					this.tagsListe = response.data
 				}
 			)
+			this.form.nb_personne = this.$store.state.info.nbMembreActuel
 			eventBus.$on('validateFormContrainte', this.validateForm);			
 		},
 		destroyed() {
@@ -379,6 +397,12 @@
 			},
 		},
 		methods: {
+			decrement () {
+			  this.form.nb_personne--
+			},
+			increment () {
+			  this.form.nb_personne++
+			},
 			formatDate(date) {
 				return date ? moment(date).format("DD/MM/YYYY") : null
 			},
@@ -386,7 +410,10 @@
 				if (!this.disabledChoixMenuAutomatique) {
 					this.form.choixMenuAutomatique = "null";
 				}
-				this.disabledChoixMenuAutomatique = !this.disabledChoixMenuAutomatique;
+				if(this.form.choixTypeMenu === "automatique"){				
+					this.isDisabled = false
+				}
+				else this.isDisabled = true				
 			},
 			checkDateDebut(){
 				if(this.form.periode_debut === null) return 'Champs requis'
@@ -431,7 +458,15 @@
 			},
 			minDateToday(){
 				return moment().format("YYYY-MM-DD")
-			}
+			},
+			max() {
+			  if( this.form.nb_personne === this.defaultMax) {
+				this.defaultMax = this.defaultMax + 50
+				return this.defaultMax;
+			  } else {
+				return this.defaultMax;
+			  }
+			},
 		},
 	};
 </script>
