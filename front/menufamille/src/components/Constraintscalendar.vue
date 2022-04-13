@@ -386,7 +386,7 @@
 			this.form.nb_personne = this.$store.state.info.nbMembreActuel
 			eventBus.$on('validateFormContrainte', this.validateForm);			
 		},
-		destroyed() {
+		destroyed() {			
 			eventBus.$off('validateFormContrainte');
 		},
 		watch: {
@@ -444,7 +444,7 @@
 			},
 			validateForm() {						
 				if(this.$refs.form.validate()){
-					eventBus.$emit('formValideOK', this.form)
+					this.$emit('formValideOK', this.form)
 				}
 
 			},

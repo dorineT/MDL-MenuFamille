@@ -441,7 +441,7 @@ exports.create_New_Menu = async(req,res) => {
         await asyncForEach(req.body.calendriers,async (cal) =>{
 
           await db.calendrier.create({
-              date: moment(cal.date)
+              date: moment(cal.date,"DD/MM/YYYY")
 
 
           }).then(async (data) => {

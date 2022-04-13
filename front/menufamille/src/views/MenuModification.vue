@@ -2,21 +2,14 @@
     <v-card       
         class="cardmarginModification"
     >
-      <dialogue-modification-jour-plat :stringUpdateModal="'updateMenuJour'"></dialogue-modification-jour-plat>
+      
 
       <calendar-modification-menu
         :periodeMenu="periode"
         :idMenu="idPeriode"
       ></calendar-modification-menu>
 
-      <div >
-            <v-btn class="margin" outlined color="grey" to="/">Retour</v-btn>
-     
-            <v-btn  class="margin" outlined color="orange" @click="saveModification">Sauvegarder</v-btn>
-       
-            <v-btn class="margin"  outlined color="green" @click="valideModification">Valider</v-btn>
 
-      </div>
 
     </v-card>
 </template>
@@ -60,7 +53,7 @@ export default {
       eventBus.$emit('saveModification')
     },
     postMenu(menu){
-      DAOMenu.sendMenuUpdate(menu, this.$store.state.info.idFamilleActuel)
+      
       if(this.$router.path !== '/') this.$router.push('/');
     }
   }
@@ -76,6 +69,5 @@ export default {
 .flexDroite
   float: right
 
-.margin
-  margin: 10px  
+ 
 </style>
