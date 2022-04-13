@@ -6,6 +6,7 @@ const Tag = db.tag;
 const Categorie = db.categorie;
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
+const {asyncForEach} = require("../../middleware/asyncForEach");
 
 /// GetAllRecipes Simple for CRUD
 
@@ -194,17 +195,18 @@ exports.find_Recipe_tags = (req, res) => {
 
 
 // Créer une recette avec absolument tout (recette + tags + catégories + denrées ) --> impossible à faire avec des includes, on va tout cascader
-
-exports.Create_Recipe_All_Infos = (req, res) => {  
-  Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, 
+//ici
+exports.Create_Recipe_All_Infos = async(req, res) => {
+  await Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson,
                   temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, 
                   preparation: req.body.preparation, url_image: req.body.url_image})
-  .then(data => { 
+  .then(async(data) => {
     const id_new_recette = data.id_recette;;
 
     /// On tacle d'abords les Tags  
-    req.body.tags.forEach(tag => {
-      db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag}).catch(err => {
+
+        await asyncForEach(req.body.tags,async (tag) =>{
+      await db.recette_tags.create({ id_recette: id_new_recette, id_tag: tag.id_tag}).catch(err => {
         res.status(500).send({
             message:
               err || "Some error occurred while inserting Recipes tag"
@@ -213,8 +215,9 @@ exports.Create_Recipe_All_Infos = (req, res) => {
     });
 
     /// Au tour des Catégories
-    req.body.categories.forEach(categorie => {
-      db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie}).catch(err => {
+
+        await asyncForEach(req.body.categories,async (categorie) =>{
+      await db.recette_categories.create({ id_recette: id_new_recette, id_categorie: categorie.id_categorie}).catch(err => {
         res.status(500).send({
             message:
               err || "Some error occurred while inserting recette categorie"
@@ -223,8 +226,9 @@ exports.Create_Recipe_All_Infos = (req, res) => {
     });
 
     /// Enfin les Denrées
-    req.body.denrees.forEach(denree => {
-      db.recette_denree.create(
+
+        await asyncForEach(req.body.denrees,async (denree) =>{
+      await db.recette_denree.create(
         { 
           id_recette: id_new_recette, 
           id_denree : denree.id_denree, 

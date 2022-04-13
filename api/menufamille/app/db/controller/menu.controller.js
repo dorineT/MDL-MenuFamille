@@ -5,11 +5,13 @@ const Menu = db.menu;
 const Op = db.Sequelize.Op;
 
 const moment = require('moment')
+const {asyncForEach} = require("../../middleware/asyncForEach");
 
 // Retrieve all Menus from the database.
 exports.findAll = (req, res) => {
     Menu.findAll()
     .then(data => {
+
       res.send(data);
     })
     .catch(err => {
@@ -141,6 +143,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
       ]    
   })
   .then(response => {
+      
       res.send(response);      
 }).catch(err => {
     res.status(500).send({
@@ -300,6 +303,8 @@ exports.Get_suggest_periode = (req, res) => {
       });
 };
 
+
+
 //creation du menu -> recevoir un menu et toute ses infos
 /**
  *
@@ -327,7 +332,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -336,7 +341,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -345,7 +350,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -358,7 +363,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -366,7 +371,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -374,7 +379,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -388,7 +393,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -396,7 +401,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -404,7 +409,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : [
+                        "tags" : [
                             {"id_tag": 3},
                             {"id_tag": 2}
                         ]
@@ -417,15 +422,11 @@ exports.Get_suggest_periode = (req, res) => {
  */
 
 
+exports.create_New_Menu = async(req,res) => {
 
-
-exports.create_New_Menu = (req,res) => {
-  console.log("hello")
-  console.log(req.body)
-  Menu.create({
+    await Menu.create({
     periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
     periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),
-
     id_famille: req.body.id_famille,
     plat_identique_matin: req.body.plat_identique_matin,
     plat_identique_midi: req.body.plat_identique_midi,
@@ -434,27 +435,26 @@ exports.create_New_Menu = (req,res) => {
     type : req.body.type,
     verrou : req.body.verrou
 
-  }).then(data => {
-    console.log('coucou  data')
+  }).then(async (data) => {
       const id_new_menu = data.id_menu
-      req.body.calendriers.forEach(cal => {
-        console.log('coucou 66')
+      //req.body.calendriers.forEach(cal => {
+        await asyncForEach(req.body.calendriers,async (cal) =>{
 
-          db.calendrier.create({
-              date: moment(cal.date,"DD/MM/YYYY")
+          await db.calendrier.create({
+              date: moment(cal.date)
 
 
-          }).then(data => {
-            console.log('coucou')
+          }).then(async (data) => {
+
               const id_new_calendar = data.id_calendrier
-              db.menu_calendrier.create({
+              await db.menu_calendrier.create({
                   id_menu: id_new_menu,
                   id_calendrier: id_new_calendar
               })
-              cal.calendrier_recettes.forEach(per => {
-                console.log('coucou 2')
+              //cal.calendrier_recettes.forEach(per => {
+                  await asyncForEach(cal.calendrier_recettes, async(per) =>{
 
-                  db.calendrier_recette.create({
+                   await db.calendrier_recette.create({
 
                       id_calendrier: id_new_calendar,
                       id_recette: per.id_recette,
@@ -462,13 +462,13 @@ exports.create_New_Menu = (req,res) => {
                       is_recette: per.is_recette,
                       nb_personne: per.nb_personne,
                       suggestions: []
-                  }).then(data => {
-                    console.log('coucou  3')
-                      const id_periode = data.id_periode
-                      per.tags.forEach(tag_index => {
-                          console.log(tag_index)
 
-                          db.tag_periode.create({
+                  }).then(async (data) => {
+                      const id_periode = data.id_periode
+                      //per.tag.forEach(tag_index => {
+                        await asyncForEach(per.tags, async(tag_index) =>{
+
+                          await db.tag_periode.create({
                               id_periode: id_periode,
                               id_tag: tag_index.id_tag
                           }).catch(err => {
