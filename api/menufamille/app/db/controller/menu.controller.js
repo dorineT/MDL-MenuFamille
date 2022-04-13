@@ -5,6 +5,7 @@ const Menu = db.menu;
 const Op = db.Sequelize.Op;
 
 const moment = require('moment')
+const {asyncForEach} = require("../../middleware/asyncForEach");
 
 // Retrieve all Menus from the database.
 exports.findAll = (req, res) => {
@@ -301,17 +302,7 @@ exports.Get_suggest_periode = (req, res) => {
       });
 };
 
-/**
- *
- * @param array
- * @param callback
- * @returns {Promise<void>}
- */
-async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-    }
-}
+
 
 //creation du menu -> recevoir un menu et toute ses infos
 /**
@@ -340,7 +331,7 @@ async function asyncForEach(array, callback) {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -349,7 +340,7 @@ async function asyncForEach(array, callback) {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -358,7 +349,7 @@ async function asyncForEach(array, callback) {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -371,7 +362,7 @@ async function asyncForEach(array, callback) {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -379,7 +370,7 @@ async function asyncForEach(array, callback) {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -387,7 +378,7 @@ async function asyncForEach(array, callback) {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -401,7 +392,7 @@ async function asyncForEach(array, callback) {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -409,7 +400,7 @@ async function asyncForEach(array, callback) {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -417,7 +408,7 @@ async function asyncForEach(array, callback) {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : [
+                        "tags" : [
                             {"id_tag": 3},
                             {"id_tag": 2}
                         ]
@@ -475,7 +466,7 @@ exports.create_New_Menu = async(req,res) => {
                   }).then(async (data) => {
                       const id_periode = data.id_periode
                       //per.tag.forEach(tag_index => {
-                        await asyncForEach(per.tag, async(tag_index) =>{
+                        await asyncForEach(per.tags, async(tag_index) =>{
 
                           await db.tag_periode.create({
                               id_periode: id_periode,
