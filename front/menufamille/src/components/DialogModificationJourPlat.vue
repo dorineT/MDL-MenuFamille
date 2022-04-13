@@ -1,14 +1,14 @@
   <template>
 	<v-row justify="center">
 		<v-dialog
-			v-model="dialog"
+			v-model="dialogShow"
 			fullscreen
 			hide-overlay
 			transition="dialog-bottom-transition"
 		>
 			<v-card>
 				<v-toolbar dark color="#FFB74D">
-					<v-btn icon dark @click="dialog = false">
+					<v-btn icon dark @click="$emit('closeDialog')">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
 					<v-toolbar-title>Modification du menu</v-toolbar-title>
@@ -206,7 +206,6 @@
 </template>
 
 <script>
-	import { eventBus } from "../main";
 	import RecetteDAO from "../services/api.recette"
 	import TagDAO from '../services/api.tag';
 	import moment from 'moment'
@@ -214,7 +213,7 @@
 	let DAOTag = new TagDAO()
 
 	export default {
-		props: ["stringUpdateModal"],
+		props: ["stringUpdateModal","dialogShow", "itemReceived", "dateJour"],
 		data() {
 			return {
 				dialog: false,
@@ -240,12 +239,8 @@
 				jourSemaine: null,
 			};
 		},
-		mounted() {
-			eventBus.$on("openDialog", this.openModal); //listening event form CalendarModificationMenu component			
-		},
-		destroyed() {
-		
-			eventBus.$off("openDialog"); //listening event form CalendarModificationMenu component
+		mounted(){
+
 		},
 		watch:{
 			tagsChoix(){
@@ -280,26 +275,23 @@
 							}
 					});
 				}
-			}
-		},
-		methods: {
+			},
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async openModal(itemReceived, dateJour) {
+			async dialogShow() {
 				
 				
 				this.suggestionsListe = []
-				this.showModifMenu = false; //display les cartes de mofification de la recette
-				this.dialog = true;
+				this.showModifMenu = false; //display les cartes de mofification de la recette				
 
-				this.infoMenu.id_calendrier = itemReceived.id_calendrier
-				this.infoMenu.id_periode = itemReceived.id_periode
-				this.infoMenu.id_recette = itemReceived.id_recette
-				this.infoMenu.is_recette = itemReceived.is_recette
-				this.infoMenu.periode = itemReceived.periode
+				this.infoMenu.id_calendrier = this.itemReceived.id_calendrier
+				this.infoMenu.id_periode = this.itemReceived.id_periode
+				this.infoMenu.id_recette = this.itemReceived.id_recette
+				this.infoMenu.is_recette = this.itemReceived.is_recette
+				this.infoMenu.periode = this.itemReceived.periode
 				this.infoMenu.recette = {}		
-				if(itemReceived.recette !== null){						
-					this.infoMenu.recette.nom = itemReceived.recette.nom;
-					this.infoMenu.recette.tags = this.copyTab(itemReceived.recette.tags)
+				if(this.itemReceived.recette !== null){						
+					this.infoMenu.recette.nom = this.itemReceived.recette.nom;
+					this.infoMenu.recette.tags = this.copyTab(this.itemReceived.recette.tags)
 				}else{
 					let recette = {}
 					recette.nom = "Pas de recette prévue"
@@ -307,14 +299,14 @@
 					this.infoMenu.recette= recette
 				}			
 
-				this.infoMenu.nb_personne = itemReceived.nb_personne;			
-				this.date = dateJour;	
-				this.jourSemaine = moment(dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
-				this.periode = itemReceived.periode;
-				this.infoMenu.tags = this.copyTab(itemReceived.tags)				
-				this.infoMenu.suggestions = structuredClone(itemReceived.suggestions)
+				this.infoMenu.nb_personne = this.itemReceived.nb_personne;			
+				this.date = this.dateJour;	
+				this.jourSemaine = moment(this.dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
+				this.periode = this.itemReceived.periode;
+				this.infoMenu.tags = this.copyTab(this.itemReceived.tags)				
+				this.infoMenu.suggestions = structuredClone(this.itemReceived.suggestions)
 				
-				this.suggestionsListe = structuredClone(itemReceived.suggestions)
+				this.suggestionsListe = structuredClone(this.itemReceived.suggestions)
 				
 				this.tagsChoix = []
 
@@ -360,6 +352,9 @@
 				//set nb perso
 				this.numberPersonneNew = this.numberPersonneOld;	
 			},
+		},
+		methods: {
+
 			/**Copier un tableau - superficielle
 			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
 			copyTab(source){
@@ -449,9 +444,11 @@
 				}
 
 				// envoi uniquement le menu jour modifie		
-				eventBus.$emit(this.stringUpdateModal, this.infoMenu)
-				this.dialog = false
-				if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
+				console.log("hello")
+				this.$emit('updatePeriode', this.infoMenu)
+				this.$emit('closeDialog')
+				//if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
+				this.snackbar = true
 			},
 		},
 	};

@@ -1,7 +1,6 @@
 <template>
    <v-container fluid>
 
-    <dialogue-modification-jour-plat :stringUpdateModal="'updateMenuJourCreate'"></dialogue-modification-jour-plat>
 
     <v-stepper v-model="e1" alt-labels>
       <v-stepper-header>
@@ -18,7 +17,7 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">         
-            <Constraintscalendar/>
+            <Constraintscalendar @formValideOK="stepAvance"/>
           
             <div class="flexDroite">
               <v-btn text disabled> Retour </v-btn>
@@ -41,7 +40,6 @@
 
 <script>
 import Constraintscalendar from "../components/Constraintscalendar";
-import DialogueModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 import CalendarConstraintDayDay from "../components/CalendarConstraintDayDay";
 import {eventBus } from '../main'
 
@@ -51,7 +49,6 @@ export default {
   components: {
     Constraintscalendar,
     CalendarConstraintDayDay,//: () => import('../components/CalendarConstraintDayDay'),
-    DialogueModificationJourPlat
   },
 
   data(){
@@ -61,12 +58,6 @@ export default {
       form: null,
       items: []
     }
-  },
-  mounted(){
-    eventBus.$on('formValideOK', this.stepAvance)
-  },
-  destroyed() {
-    eventBus.$off("formValideOK",); //listening event form CalendarModificationMenu component
   },
   methods: {
     submit() {

@@ -1,9 +1,9 @@
  <template>
 	<v-row justify="center">
-		<v-dialog v-model="dialog" persistent max-width="600px">
+		<v-dialog v-model="dialogShow" persistent max-width="600px">
 			<v-card>
 				<v-toolbar dark color="#FFB74D">
-					<v-btn icon dark @click="dialog = false">
+					<v-btn icon dark @click="$emit('closeDialog')">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
 					<v-toolbar-title>Suggestion de menu</v-toolbar-title>
@@ -75,9 +75,9 @@
 	let DAORecette = new RecetteDAO();
 
 	export default {
+		props: ["dialogShow", "itemReceived", "dateJour", "idMenu"],
 		data() {
-			return {
-				dialog: false,
+			return {				
 				infoMenu: {},
 				snackbar: false,
 				timeout: 3000,			
@@ -100,28 +100,27 @@
 			  return this.$store.state.auth.user;
 			},
 		},
-		methods: {
+		watch: {
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async openModal(itemReceived, dateJournee, idMenu) {
-				this.dialog = true;
+			dialogShow() {			
 
-				this.id_menu = idMenu
-				this.infoMenu = structuredClone(itemReceived);
-				this.date = dateJournee;
-				this.jourSemaine = moment(dateJournee, "DD-MM-YYYY")
+				this.id_menu = this.idMenu
+				this.infoMenu = structuredClone(this.itemReceived);
+				this.date = this.dateJour;
+				this.jourSemaine = moment(this.dateJour, "DD-MM-YYYY")
 					.locale("fr")
 					.format("dddd");
 
 				//get recette si tag defini
 				if (this.infoMenu.tags.length > 0) {
 				
-          			DAORecette.getFromTags(this.infoMenu.tags).then(
+					DAORecette.getFromTags(this.infoMenu.tags).then(
 						  (response) => {
 							  this.itemRecettes = response.data
 						  }
 					  )    
 				} else {
-					DAORecette.getAllByCategory(itemReceived.periode).then(
+					DAORecette.getAllByCategory(this.itemReceived.periode).then(
 						(response) => {
 							this.itemRecettesAll = response.data
 							this.itemRecettes = structuredClone(this.itemRecettesAll);
@@ -133,6 +132,8 @@
 				//reset
 				this.resetNewRecette();
 			},
+		},
+		methods: {
 			sauvegardeMenuJour() {
 				//mise a jour calendrier	
 
@@ -149,12 +150,12 @@
 					recette: structuredClone(this.newRecetteChoix)
 
 				})
-
-				this.dialog = false;
+		
 				this.snackbar = true;
 
 				// envoi uniquement le menu jour modifie
-				eventBus.$emit("updateMenuSuggestionJour", structuredClone(this.infoMenu));
+				this.$emit("updateSugg",  structuredClone(this.infoMenu))
+				this.$emit("closeDialog")
 			},
 
 			resetNewRecette() {

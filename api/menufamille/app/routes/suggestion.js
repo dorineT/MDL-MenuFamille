@@ -12,7 +12,7 @@ module.exports = router
 router.get('/', suggestion.findAll);
 
 //creation d'un menu
-router.post('/', suggestion.put_suggestion);
+router.post('/',[authJwt.verifyToken] ,suggestion.put_suggestion);
 
 router.put('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken] ,suggestion.Update_suggestion);
 

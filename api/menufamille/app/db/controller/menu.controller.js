@@ -168,7 +168,7 @@ exports.Get_Current_Locked_Menu = (req, res) => {
       verrou: true,
       periode_fin: {[Op.gte]: date}
     },
-    include: [ 
+    /*include: [ 
       {
         model: db.calendrier,
         include: [
@@ -178,11 +178,10 @@ exports.Get_Current_Locked_Menu = (req, res) => {
           }
         ]
       }
-    ],
+    ],*/
     order: [
-      [db.calendrier, 'date', 'ASC'],
-      [db.calendrier, db.calendrier_recette, 'id_periode', 'ASC']
-    ]   
+      ['periode_debut', 'ASC']
+    ]  
   }).then(response => {
 
       res.send(response)
@@ -223,7 +222,7 @@ exports.Get_Suggest_Unlocked_Menu = (req, res) => {
 };
 
 
-//// Envoyer les menus non vérrouillés  /!\ ne pas tester, pas de Islocked dans la BDD.
+//// Envoyer les menus non vérrouillés 
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
@@ -442,7 +441,7 @@ exports.create_New_Menu = async(req,res) => {
         await asyncForEach(req.body.calendriers,async (cal) =>{
 
           await db.calendrier.create({
-              date: moment(cal.date)
+              date: moment(cal.date,"DD/MM/YYYY")
 
 
           }).then(async (data) => {

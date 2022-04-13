@@ -1,7 +1,8 @@
 <template>
 
-  <div style="margin: 4px">
-      
+  <v-card style="margin: 4px">
+      <dialog-modification-jour-plat :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :stringUpdateModal="'updateMenuJour'" @closeDialog="closeDialogModification" @updatePeriode="updateMenuJour"></dialog-modification-jour-plat>
+
       <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
       
       <v-data-table
@@ -124,16 +125,25 @@
         </v-row>
       </v-container>
 
+      <div >          
+     
+            <v-btn  class="margin" outlined color="orange" @click="saveMenu">Sauvegarder</v-btn>
+       
+            <v-btn class="margin"  outlined color="green" @click="valideMenu">Valider</v-btn>
+
+      </div>
+
       <v-snackbar v-model="errorMessage.error" text color="red">
         {{ errorMessage.message }}
       </v-snackbar>
-    </div>
+    </v-card>
 
 </template>
 
 <script>
 import {eventBus } from '../main'
 import checkContrainte from '../services/checkContrainteMenu'
+import DialogModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 
 import MenuDAO from '../services/api.menu'
 import moment from 'moment'
@@ -141,8 +151,17 @@ let DAOMenu = new MenuDAO()
 
 export default {
     props:['periodeMenu','idMenu'],
+    components:{
+      DialogModificationJourPlat
+    },
     data () {
       return {
+        // dialogue 
+        showDialog:false,
+        itemSend: null,
+        periodeSend: null,
+
+        //calendar
         headers: [],
         menu: {},
         items: [],
@@ -182,15 +201,6 @@ export default {
         }
       )
       
-
-      eventBus.$on('updateMenuJour', this.updateMenuJour)
-      eventBus.$on('validationModification', this.valideMenu)
-      eventBus.$on('saveModification', this.saveMenu)
-    },
-    destroy(){
-      eventBus.$off('validationModification')
-      eventBus.$off('updateMenuJour')
-      eventBus.$off('saveModification')
     },
     methods:{
       //// Affichage calendrier ///
@@ -198,8 +208,10 @@ export default {
           let menuFind = this.items.find(el => el.id_calendrier === item.id_jour)// le jour         
           let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)      
 
-          //open dialogue with even bus
-          eventBus.$emit('openDialog', periodeFind, menuFind.date)
+          //open dialogue
+          this.itemSend = periodeFind
+          this.periodeSend = menuFind.date
+          this.showDialog = true          
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
@@ -326,10 +338,13 @@ export default {
       },
       valideMenu(){
         this.menu.verrou = true
-        eventBus.$emit('postMenuModification', this.menu)
+        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
       },
       saveMenu(){
-        eventBus.$emit('postMenuModification', this.menu)
+        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
+      },
+      closeDialogModification(){
+        this.showDialog = false
       }
       
     }
@@ -338,6 +353,8 @@ export default {
 
 
 <style lang="sass">
+.margin
+  margin: 10px 
 
 .v-data-table
   white-space: pre-wrap

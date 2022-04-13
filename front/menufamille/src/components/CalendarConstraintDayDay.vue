@@ -1,7 +1,11 @@
 <template>
 	<v-card v-if="formData != null">
+
+		<dialog-modification-jour-plat :stringUpdateModal="'updateMenuJourCreate'" :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" @closeDialog="closeDialogModification" @updatePeriode="updateMenuJour"></dialog-modification-jour-plat>
+		
+
 		<div style="margin: 4px">
-			<div style="margin: 4px">
+			<div style="margin: 20px">
 				Menu : du {{ formData.periode_debut }} au {{ formData.periode_fin }}
 			</div>
 
@@ -131,12 +135,20 @@
 	import { eventBus } from "../main";
 	import moment from "moment";
 	import checkContrainte from "./../services/checkContrainteMenu";
+	import DialogModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 	import MenuDao from "./../services/api.menu";
 	let DAOMenu = new MenuDao();
 
 	export default {
+	components: { DialogModificationJourPlat },
 		data() {
 			return {
+				i: 0,
+				//dialog
+				showDialog: false,
+				itemSend: null,
+				periodeSend: null,
+				//cal
 				headers: [],
 				pageCount: 0,
 				page: 1,
@@ -154,13 +166,11 @@
 			};
 		},
 
-		mounted() {
-			eventBus.$on("updateMenuJourCreate", this.updateMenuJourCreate);
+		mounted() {					
 			eventBus.$on("configurationDD", this.setUpData);
 			eventBus.$on("creationMenuDone", this.creationMenuDone);
 		},
-		destroyed() {
-			eventBus.$off("updateMenuJourCreate");
+		destroyed() {					
 			eventBus.$off("configurationDD");
 			eventBus.$off("creationMenuDone");
 		},
@@ -170,7 +180,9 @@
 				let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)      
 
 				//open dialogue with even bus
-				eventBus.$emit('openDialog', periodeFind, menuFind.date)
+				this.itemSend = periodeFind
+				this.periodeSend = menuFind.date
+				this.showDialog = true         				
 			},
 			setUpData(form) {				
 				if (form != null) {
@@ -342,8 +354,7 @@
 			},
 
 			/// UPDATE
-			updateMenuJourCreate(item) {
-
+			updateMenuJour(item) {				
 				let menuJourOld = this.items.find(
 					(elem) => elem.id_calendrier === item.id_calendrier
 				);
@@ -397,6 +408,10 @@
 				}
 			},
 
+			closeDialogModification(){			
+				this.showDialog = false
+			},
+
 			creationMenuDone() {
 				let menuNew = {
 					id_menu: null,
@@ -410,11 +425,11 @@
 					verrou: false,
 					days_until_suggestion: this.formData.daysUntilSuggestion,
 					calendriers: structuredClone(this.items),
-				};
+				};							
 				
-				console.log(menuNew)
-				
-				DAOMenu.sendMenuCreate(menuNew);
+				if(i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
+				i+=1
+			
 				this.$router.push("/");
 			},
 		},
