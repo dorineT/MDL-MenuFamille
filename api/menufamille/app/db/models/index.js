@@ -4,9 +4,9 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   dialectOptions:{
-    useUTC:true
+    useUTC:false
   },
-  timezone: '+01:00',
+  timezone: 'Europe/Belgium',
   define: {
     freezeTableName: true
   },
