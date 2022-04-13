@@ -10,6 +10,7 @@ const moment = require('moment')
 exports.findAll = (req, res) => {
     Menu.findAll()
     .then(data => {
+
       res.send(data);
     })
     .catch(err => {
@@ -141,6 +142,7 @@ exports.Get_Menu_All_Info_PK = (req, res) =>{
       ]    
   })
   .then(response => {
+      
       res.send(response);      
 }).catch(err => {
     res.status(500).send({
@@ -328,7 +330,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -337,7 +339,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -346,7 +348,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -359,7 +361,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -367,7 +369,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -375,7 +377,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     }
                 ]
             },
@@ -389,7 +391,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "matin",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -397,7 +399,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "midi",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : []
+                        "tags" : []
                     },
                     {
 
@@ -405,7 +407,7 @@ exports.Get_suggest_periode = (req, res) => {
                         "periode": "soir",
                         "is_recette": true,
                         "nb_personne": 1,
-                        "tag" : [
+                        "tags" : [
                             {"id_tag": 3},
                             {"id_tag": 2}
                         ]
