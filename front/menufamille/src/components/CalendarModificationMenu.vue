@@ -201,15 +201,6 @@ export default {
         }
       )
       
-
-      eventBus.$on('updateMenuJour', this.updateMenuJour)
-      eventBus.$on('validationModification', this.valideMenu)
-      eventBus.$on('saveModification', this.saveMenu)
-    },
-    destroy(){
-      eventBus.$off('validationModification')
-      eventBus.$off('updateMenuJour')
-      eventBus.$off('saveModification')
     },
     methods:{
       //// Affichage calendrier ///

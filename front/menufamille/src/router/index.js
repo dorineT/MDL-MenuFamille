@@ -7,11 +7,11 @@ import Recette from '../views/Recette.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 
-import MenuModification from '../views/MenuModification.vue'
+
 import FamilyView from '../views/FamilyView.vue'
 
 import ShoppingList from '../views/ShoppingList.vue'
-import MenuSuggestion from '../views/MenuSuggestion.vue'
+
 import CreationMenu from '../views/CreationMenu.vue'
 
 Vue.use(VueRouter)
@@ -42,23 +42,13 @@ const routes = [
     name: 'Recette',
     component: Recette
   },
-  {
-    path: '/menuModification',
-    name: 'MenuModification',
-    component: MenuModification,
-    props: true
-  },
+
   {
     path: '/family',
     name: 'FamilyView',
     component: FamilyView
   },
-  {
-    path: '/menuSuggestion',
-    name: 'MenuSuggestion',
-    component: MenuSuggestion
-    
-  },
+
   {
 
     // links to access to the creation menu page

@@ -31,7 +31,9 @@ export default class MenuDao{
      * @param {*} suggestion la suggestion (object)
      */
     sendMenuAddSuggestion(suggestion){
-      api.put("/suggestion/"+suggestion.id_periode+"/"+suggestion.id_recette+"/"+suggestion.id_menu)
+      console.log('send suggestion')
+      console.log(suggestion)
+      api.post("/suggestion",suggestion)
     }
 
 

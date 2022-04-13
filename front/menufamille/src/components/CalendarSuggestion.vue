@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 4px">
-      
+    <dialog-suggestion :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :idMenu="idMenu" @closeDialog="closeDialogSuggestion" @updateSugg="updateMenuSuggestion"></dialog-suggestion>
     <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
       
     <v-data-table
@@ -124,16 +124,21 @@
 
 <script>
 import MenuDao from '../services/api.menu'
-import {eventBus } from '../main'
 import checkContrainte from '../services/checkContrainteMenu'
 import moment from 'moment'
+import DialogSuggestion from './DialogSuggestion.vue'
 let menuSuggest = new MenuDao()
 
 export default {
-    props:['periodeMenu','menuId'],
+	components: { DialogSuggestion },
+    props:['periodeMenu','idMenu'],
     data () {
       return {
-        
+        // dialogue 
+        showDialog:false,
+        itemSend: null,
+        periodeSend: null,        
+        //cal
         nbPersonneFamille: null,
         headers: [],
         menu: {}, 
@@ -158,7 +163,7 @@ export default {
   },
    // call api to get the menu 
     mounted(){
-      menuSuggest.getMenuById(this.menuId).then(
+      menuSuggest.getMenuById(this.idMenu).then(
         (response) =>{
           this.menu = response.data
           this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
@@ -175,12 +180,7 @@ export default {
           this.fillPlat(this.items,0,indiceEnd)   
         }
       )
-  
-      eventBus.$on('updateMenuSuggestionJour', this.updateMenuSuggestionJour)     
 
-    },
-    destroy(){
-      eventBus.$off('updateMenuSuggestionJour')
     },
     methods:{
       //// Affichage calendrier ///
@@ -189,8 +189,9 @@ export default {
           let periodeFind = menuFind.calendrier_recettes.find(el => el.id_periode === item.id_periode)  
       
           //open dialogue with even bus
-          eventBus.$emit('openDialogSuggestion', periodeFind, menuFind.date, menuFind.menu_calendrier.id_menu)
-       
+          this.periodeSend = menuFind.date
+          this.itemSend = periodeFind          
+          this.showDialog = true               
         },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
@@ -268,10 +269,13 @@ export default {
         this.populateHeader(this.items, iStart, iEnd)
         this.fillPlat(this.items,iStart,iEnd)
       },
+      closeDialogSuggestion(){
+        this.showDialog = false
+      },
 
       /// UPDATE CALENDRIER////
 
-      updateMenuSuggestionJour(item){
+      updateMenuSuggestion(item){
 
         let menuJourOld = this.items.find( elem => elem.id_calendrier === item.id_calendrier)
         let menuPeriodeOld = menuJourOld.calendrier_recettes.find(elem => elem.id_periode === item.id_periode)

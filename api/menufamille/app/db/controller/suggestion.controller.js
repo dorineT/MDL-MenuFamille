@@ -24,11 +24,12 @@ exports.findAll = (req, res) => {
 /// Post CRUD
 
 exports.put_suggestion = (req, res) => {
-
+    console.log("create suggestion " + req.body.id_periode+" "+req.body.id_recette +" "+req.body.id_menu + " "+ req.id_membre)
+    
     Suggestion.create({
         id_periode: req.body.id_periode,
         id_recette: req.body.id_recette,
-        id_membre: req.body.id_membre,
+        id_membre: req.id_membre,
         id_menu: req.body.id_menu
 
     })

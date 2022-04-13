@@ -2,15 +2,15 @@
 
   <div style="margin: 4px">
 
-    <v-select
+    <!--<v-select
       color="orange lighten-2"
       label="Choix du menu"
       class="combobox-class"
       no-data-text="Aucun menu disponible"
       :items="itemPeriode"      
-      v-model="comboboxMenuSelected"></v-select>
+      v-model="comboboxMenuSelected"></v-select>-->
 
-
+        <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
         <v-data-table
             :headers="headers"
             :items="items"                                  
@@ -88,85 +88,49 @@ import MenuDao from './../services/api.menu'
 import moment from 'moment'
 let DAOMenu = new MenuDao()
   export default {
+    props:['periodeMenu','idMenu'],
     data () {
       return {
         headers: [],
         items:[],        
-        menus: null,
+        //menus: null,
         itemPeriode: [],
-        comboboxMenuSelected: null,
+        //comboboxMenuSelected: null,
         pageCount: 0,
         page: 1,
         nbJourMenu: 0,
         platsMatin:[],
         platsMidi: [],
         platsSoir: [],
-        nbPersonneFamille: 1
+        nbPersonneFamille: null
       }
     },
 
-    mounted () {      
-      this.comboboxMenuSelected='Aucun menu sélectionné'   
-      this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
-
+    mounted () {           
       this.fetchMenu()
 
     },
-    watch:{
-      async comboboxMenuSelected(slot){           
-        if(slot === 'Aucun menu sélectionné'){           
-          this.items = []
-        }
-        else{ //check période des menus
-           
-           if(this.menus === null){
-             await this.fetchMenu()
-           }          
-          //get id du menu
-          this.headers = []
-          this.platsMatin  = []
-          this.platsMidi  = []
-          this.platsSoir = []
-          this.nbJourMenu = 0    
-          let menuSelected = this.menus.find(menu => menu.id_menu === slot)  
-          
-          this.items = menuSelected.calendriers
-        
-
-          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-          this.populateHeader(this.items,0,indiceEnd)
-          this.fillPlat(this.items,0,indiceEnd)   
-
-        }
-      }
-    },
     methods:{
-      fetchMenu(){
-        this.menus = []
-        if(this.$store.state.info.idFamilleActuel !== null){
-          DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel).then(
-            (response) =>{
-              this.menus = response.data
-              this.menus.forEach(menu => {         
-                  let periodeNew = { 
-                      text: menu.periode_debut + ' - ' +menu.periode_fin,
-                      value: menu.id_menu
-                    }     
-                  this.itemPeriode.push(periodeNew)        
-              });
-            },
-            (error) =>{
-              this.menus = []
-            }
-          )
-        }
+      fetchMenu(){        
+        DAOMenu.getMenuById(this.idMenu).then(
+          (response) => {
+            this.menu = response.data
+            this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+            this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+            this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
+          
+            this.items = this.menu.calendriers
+            let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+            this.populateHeader(this.items,0,indiceEnd)
+            this.fillPlat(this.items,0,indiceEnd) 
+
+            this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+          }
+        )
       },
       goToRecette(text){
           alert('Bientot disponible ' + text)
         },
-      IscomboboxChange(slot){        
-        return this.comboboxMenuSelected === slot
-      },
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
