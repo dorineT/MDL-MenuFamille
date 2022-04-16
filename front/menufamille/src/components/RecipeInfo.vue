@@ -229,6 +229,7 @@ import FavorisDao from "../services/api.favoris"
 let DAORecette = new RecetteDAO();
 let DAOFavoris = new FavorisDao();
 import moment from "moment";
+moment.locale('fr')
 
 
 	export default {

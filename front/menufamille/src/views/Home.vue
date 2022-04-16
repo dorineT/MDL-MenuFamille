@@ -84,7 +84,8 @@
         //dynamic bind
         componentName: null,
         idMenu: null,
-        periode: null
+        periode: null,
+        i: 0,
       }
     },
     async mounted(){            
@@ -93,7 +94,8 @@
       });
       if(this.$store.state.info.nomFamille !== null) {
         this.selectedFamille = this.$store.state.info.nomFamille
-        this.itemPeriode = []       
+        this.itemPeriode = []  
+        this.i = 0     
         await this.getLockedMenu()        
         await this.getUnlockedSuggestionMenu() 
         await this.getUnlockedMenu()
@@ -107,7 +109,7 @@
     },
     watch:{
       async comboboxMenuSelected(slot){      
-        this.idMenu = slot.value
+        this.idMenu = slot.id_menu
         this.periode = slot.text
         //bind component
         if(slot.type === 'modification'){
@@ -130,7 +132,8 @@
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)
           // change store value
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])   
-          this.itemPeriode = []          
+          this.itemPeriode = []    
+          this.i = 0      
           await this.getLockedMenu() 
           await this.getUnlockedSuggestionMenu()    
           await this.getUnlockedMenu()
@@ -138,8 +141,7 @@
         }
       },
       getUnlockedMenu(){      
-        this.menuToValide = []
-        console.log('valid get') 
+        this.menuToValide = []      
         if(this.$store.state.info.roleActuel!=='parent') return
         DAOMenu.getMenuUnlocked(this.$store.state.info.idFamilleActuel).then(
           (response) =>{
@@ -148,9 +150,11 @@
             menus.forEach(menu => {         
                 let periodeNew = { 
                     text: menu.periode_debut + ' - ' +menu.periode_fin,
-                    value: menu.id_menu,
+                    value: this.i,
+                    id_menu: menu.id_menu,
                     type: 'modification'
-                  }         
+                  }
+                  this.i+=1       
                 this.itemPeriode.push(periodeNew)            
                 //this.menuToValide.push(periodeNew)        
             });
@@ -159,8 +163,7 @@
 
       },
       getUnlockedSuggestionMenu(){
-        this.menuToSuggest = []
-        console.log('suggestion get') 
+        this.menuToSuggest = []    
         DAOMenu.getMenuSuggestionUnlocked(this.$store.state.info.idFamilleActuel).then(
           (response) =>{
             let menus = response.data            
@@ -168,9 +171,11 @@
             menus.forEach(menu => {           
                 let periodeSugg = {
                   text:menu.periode_debut+ ' - ' +menu.periode_fin,
-                  value:menu.id_menu,
+                  value: this.i,
+                  id_menu: menu.id_menu,
                   type: 'suggestion'          
               }     
+              this.i+=1
               this.itemPeriode.push(periodeSugg) 
                
               //this.menuToSuggest.push(periodeSugg)
@@ -179,8 +184,7 @@
         )
       },
       getLockedMenu(){
-        this.menuLocked = [{header:'Menu de la semaine'}]
-        console.log('locked get') 
+        this.menuLocked = [{header:'Menu de la semaine'}]   
         DAOMenu.getMenuLock(this.$store.state.info.idFamilleActuel).then(
           (response) =>{
             let menus = response.data
@@ -188,9 +192,11 @@
             menus.forEach(menu => {           
                 let periode = {
                   text:menu.periode_debut+ ' - ' +menu.periode_fin,
-                  value:menu.id_menu, 
+                  value: this.i,
+                  id_menu: menu.id_menu,
                   type: 'locked'         
               }
+              this.i+=1
               this.itemPeriode.push(periode)    
               //this.menuLocked.push(periode)
             })
@@ -200,6 +206,8 @@
       async eventChild(){
         if(this.componentName === 'CalendarModificationMenu'){
           console.log("hello event")
+          this.componentName = null
+          this.i = 0
           this.itemPeriode = []  
           await this.getLockedMenu()        
           await this.getUnlockedSuggestionMenu() 

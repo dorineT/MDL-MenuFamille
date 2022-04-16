@@ -15,7 +15,7 @@
 						<v-list-item-icon>
 							<v-icon>mdi-pencil</v-icon>
 						</v-list-item-icon>
-						<v-list-item-title>Création Menu</v-list-item-title>
+						<v-list-item-title>Nouveau menu</v-list-item-title>
 					</v-list-item>
 					<v-list-item to="/recipe"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>

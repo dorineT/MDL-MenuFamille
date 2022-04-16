@@ -126,6 +126,7 @@
 import MenuDao from '../services/api.menu'
 import checkContrainte from '../services/checkContrainteMenu'
 import moment from 'moment'
+moment.locale('fr')
 import DialogSuggestion from './DialogSuggestion.vue'
 let menuSuggest = new MenuDao()
 
@@ -163,24 +164,12 @@ export default {
   },
    // call api to get the menu 
     mounted(){
-      menuSuggest.getMenuById(this.idMenu).then(
-        (response) =>{
-          this.menu = response.data
-          this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
-          this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
-          this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
-
-          this.loading = false
-          this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
-
-          this.items = this.menu.calendriers
-          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-
-          this.populateHeader(this.items,0,indiceEnd)
-          this.fillPlat(this.items,0,indiceEnd)   
-        }
-      )
-
+      this.fetchMenu()
+    },
+    watch:{
+      idMenu(){        
+        this.fetchMenu()
+      }
     },
     methods:{
       //// Affichage calendrier ///
@@ -192,7 +181,26 @@ export default {
           this.periodeSend = menuFind.date
           this.itemSend = periodeFind          
           this.showDialog = true               
-        },
+      },
+      fetchMenu(){
+        menuSuggest.getMenuById(this.idMenu).then(
+          (response) =>{
+            this.menu = response.data
+            this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+            this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+            this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
+
+            this.loading = false
+            this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+
+            this.items = this.menu.calendriers
+            let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+
+            this.populateHeader(this.items,0,indiceEnd)
+            this.fillPlat(this.items,0,indiceEnd)   
+          }
+        )
+      },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
         this.nbJourMenu = 0       

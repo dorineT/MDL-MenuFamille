@@ -87,6 +87,7 @@
 import RecipeInfo from './../components/RecipeInfo.vue'
 import MenuDao from './../services/api.menu'
 import moment from 'moment'
+moment.locale('fr')
 let DAOMenu = new MenuDao()
   export default {
     props:['periodeMenu','idMenu'],
@@ -114,6 +115,12 @@ let DAOMenu = new MenuDao()
       this.fetchMenu()
 
     },
+    watch:{
+      idMenu(){      
+        this.fetchMenu()
+      }
+    },
+
     methods:{
       fetchMenu(){        
         DAOMenu.getMenuById(this.idMenu).then(

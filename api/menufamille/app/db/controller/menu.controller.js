@@ -42,6 +42,7 @@ exports.findAll = (req, res) => {
 /// Update CRUD
 
 exports.UpdateMenu = (req, res) => {
+  moment.locale('fr')
   console.log("helllo")
   const id = req.params.id;
   req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
@@ -426,7 +427,7 @@ exports.Get_suggest_periode = (req, res) => {
 
 
 exports.create_New_Menu = async(req,res) => {
-
+    moment.locale('fr')
     await Menu.create({
     periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
     periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),

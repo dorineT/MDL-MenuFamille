@@ -134,6 +134,7 @@
 <script>
 	import { eventBus } from "../main";
 	import moment from "moment";
+	moment.locale('fr')
 	import checkContrainte from "./../services/checkContrainteMenu";
 	import DialogModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 	import MenuDao from "./../services/api.menu";

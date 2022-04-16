@@ -333,6 +333,7 @@
 	import { eventBus } from "../main";
 	import TagDao from "../services/api.tag"
 	import moment from 'moment'
+	moment.locale('fr')
 	let DAOTag = new TagDao()
 	export default {
 		name: "ConstraintCalendar",
