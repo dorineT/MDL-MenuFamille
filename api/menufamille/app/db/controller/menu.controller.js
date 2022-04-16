@@ -42,7 +42,10 @@ exports.findAll = (req, res) => {
 /// Update CRUD
 
 exports.UpdateMenu = (req, res) => {
+  console.log("helllo")
   const id = req.params.id;
+  req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
+  req.body.periode_fin = moment(req.body.periode_fin,"DD/MM/YYYY")
     Menu.update(req.body, {
       where: {id_menu: id}
     })

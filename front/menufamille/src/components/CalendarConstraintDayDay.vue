@@ -427,8 +427,8 @@
 					calendriers: structuredClone(this.items),
 				};							
 				
-				if(i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
-				i+=1
+				if(this.i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
+				this.i+=1
 			
 				this.$router.push("/");
 			},

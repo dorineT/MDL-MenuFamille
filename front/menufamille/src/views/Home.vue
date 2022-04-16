@@ -50,7 +50,7 @@
         </v-row>
       </v-container>
 
-      <component v-bind:is="componentName" :periodeMenu="periode" :idMenu="idMenu"></component>
+      <component v-bind:is="componentName" :periodeMenu="periode" :idMenu="idMenu" @eventReceived="eventChild"></component>
     
 
     </v-card>
@@ -93,8 +93,7 @@
       });
       if(this.$store.state.info.nomFamille !== null) {
         this.selectedFamille = this.$store.state.info.nomFamille
-        this.itemPeriode = []
-        console.log('hello')
+        this.itemPeriode = []       
         await this.getLockedMenu()        
         await this.getUnlockedSuggestionMenu() 
         await this.getUnlockedMenu()
@@ -197,6 +196,16 @@
             })
           }
         )
+      },
+      async eventChild(){
+        if(this.componentName === 'CalendarModificationMenu'){
+          console.log("hello event")
+          this.itemPeriode = []  
+          await this.getLockedMenu()        
+          await this.getUnlockedSuggestionMenu() 
+          await this.getUnlockedMenu()
+        
+        }
       }
     }
   }

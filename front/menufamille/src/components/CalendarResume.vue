@@ -1,7 +1,7 @@
 <template>
 
   <div style="margin: 4px">
-
+    <recipe-info :id_recette="idRecette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"/>
     <!--<v-select
       color="orange lighten-2"
       label="Choix du menu"
@@ -36,7 +36,7 @@
             <tr> 
               <td class="tdplat"> <strong>Matin</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsMatin" :key="i+'matin'"> 
-                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn>
+                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.id_recette)">{{ item.plat }} </v-btn>
                   <p v-else style="color: red">
 
                     <v-icon color="red">mdi-close-thick</v-icon>
@@ -47,7 +47,7 @@
             <tr> 
               <td class="tdplat"> <strong>Midi</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsMidi" :key="i+'midi'"> 
-                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }}</v-btn> 
+                <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.id_recette)">{{ item.plat }}</v-btn> 
                 <p v-else style="color: red">
 
                   <v-icon color="red">mdi-close-thick</v-icon>
@@ -58,7 +58,7 @@
             <tr> 
               <td class="tdplat"> <strong>Soir</strong> </td>
               <td class="tdplat" v-for="(item,i) in platsSoir" :key="i+'soir'"> 
-                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.plat)">{{ item.plat }} </v-btn> 
+                  <v-btn v-if="item.plat!=='/'" text @click="goToRecette(item.id_recette)">{{ item.plat }} </v-btn> 
                   <p v-else style="color: red">
 
                     <v-icon color="red">mdi-close-thick</v-icon>
@@ -84,11 +84,13 @@
 </template>
 
 <script>
+import RecipeInfo from './../components/RecipeInfo.vue'
 import MenuDao from './../services/api.menu'
 import moment from 'moment'
 let DAOMenu = new MenuDao()
   export default {
     props:['periodeMenu','idMenu'],
+    components:{RecipeInfo},
     data () {
       return {
         headers: [],
@@ -102,7 +104,9 @@ let DAOMenu = new MenuDao()
         platsMatin:[],
         platsMidi: [],
         platsSoir: [],
-        nbPersonneFamille: null
+        nbPersonneFamille: null,
+        showDialogueInfoRecipe: false,
+        idRecette: null
       }
     },
 
@@ -129,8 +133,13 @@ let DAOMenu = new MenuDao()
         )
       },
       goToRecette(text){
-          alert('Bientot disponible ' + text)
+          //alert('Bientot disponible ' + text)
+          this.idRecette = text
+          this.showDialogueInfoRecipe = true
         },
+      closeDialog(){           
+          this.showDialogueInfoRecipe = false    
+      },
       //remplir le header de la table avec les jours de la semaine du menu sélectionné
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
@@ -161,6 +170,7 @@ let DAOMenu = new MenuDao()
           this.platsMatin.push({
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
+            id_recette: periode.id_recette,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), // can be null
             nbPers: periode.nb_personne,
             tags: periode.tags
@@ -170,6 +180,7 @@ let DAOMenu = new MenuDao()
           this.platsMidi.push({
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
+            id_recette: periode.id_recette,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"), 
             nbPers: periode.nb_personne,
             tags: periode.tags
@@ -179,6 +190,7 @@ let DAOMenu = new MenuDao()
           this.platsSoir.push({
             id_jour: jourPlat.id_calendrier,
             id_periode: periode.id_periode,
+            id_recette: periode.id_recette,
             plat: periode.recette !== null ? periode.recette.nom : (periode.is_recette ? "" : "/"),
             nbPers: periode.nb_personne,
             tags: periode.tags

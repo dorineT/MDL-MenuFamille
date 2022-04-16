@@ -338,7 +338,8 @@ export default {
       },
       valideMenu(){
         this.menu.verrou = true
-        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
+        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)
+        this.$emit('eventReceived')        
       },
       saveMenu(){
         DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
