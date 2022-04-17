@@ -14,6 +14,7 @@ const membres = require('./membres.js');
 const calendrier_recette = require('./calendrier_recette.js');
 const tag_periode = require('./tag_periode.js')
 const suggestion = require('./suggestion.js')
+const denree_type = require('./denree_type')
 
 const product = require('./product');
 const swaggerUi = require('swagger-ui-express'),
@@ -41,4 +42,5 @@ module.exports = app => {
   app.use('/calendrier_recette', calendrier_recette)
   app.use('/tag_periode',tag_periode)
   app.use('/suggestion',suggestion)
+  app.use('/denree_type',denree_type)
 }

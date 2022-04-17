@@ -1,6 +1,7 @@
 const db = require("../models");
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
+const {asyncForEach} = require("../../middleware/asyncForEach");
 
 // Retrieve all denree from the database.
 exports.findAll = (req, res) => {
@@ -135,4 +136,44 @@ exports.PutDenree = (req, res) => {
           err.message || "Some error occurred while retrieving denree."
       });
     });
+  }
+/**
+ *
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ * {
+    "nom":"CRAYON",
+    "nutriscore":"A",
+    "calories":300,
+    "type":[
+        {"id_type":1},
+        {"id_type":2}
+    ]
+}
+ */
+  exports.post_denree_and_type = async (req,res)=>{
+    await Denree.create({
+      nom: req.body.nom,
+      nutriscore: req.body.nutriscore,
+      calories:req.body.calories
+    })
+        .then(async(data) => {
+          const id_new_denree = data.id_denree;
+          asyncForEach(req.body.type,async(link_type)=>{
+            await db.denree_type.create({
+              id_denree: id_new_denree,
+              id_type: link_type.id_type
+            })
+          })
+          res.send(data)
+        })
+        .catch(err => {
+          res.status(500).send({
+            message:
+                err.message || "Some error occurred while inserting denree"
+          });
+
+        });
+
   }

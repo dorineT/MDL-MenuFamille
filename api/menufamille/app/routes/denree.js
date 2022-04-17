@@ -24,3 +24,5 @@ router.get('/Like/:nom', [authJwt.verifyToken], denree.FindWithLike);
 router.get('/FindOrCreate/:nom',[authJwt.verifyToken], denree.FindOrCreate);
 
 router.get('/NutriAndCalo/:id_denree',[authJwt.verifyToken], denree.Get_Nut_and_Cal);
+
+router.post('/and_type',denree.post_denree_and_type)
