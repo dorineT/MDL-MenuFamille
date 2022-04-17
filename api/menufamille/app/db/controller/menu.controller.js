@@ -303,6 +303,29 @@ exports.Get_suggest_periode = (req, res) => {
       });
 };
 
+exports.old_menu = async(req,res) =>{
+
+    const id_fam = req.params.id_fam;
+    await Menu.findAll({
+
+        where: {
+            id_famille: id_fam,
+            periode_fin: {[Op.lt]: moment().format()}},
+
+
+            through: {attributes: []}
+
+
+
+    }).then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Menus."
+        });
+    });
+}
 
 
 //creation du menu -> recevoir un menu et toute ses infos
