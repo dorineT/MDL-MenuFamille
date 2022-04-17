@@ -35,6 +35,10 @@
     {
       "name": "denree",
       "description": "Operations on Denree"
+    },
+    {
+      "name" : "categorie",
+      "description": "Operations on categories"
     }
   ],
   "schemes": [
@@ -1356,8 +1360,36 @@
             }
           }
         }
-      }
       },
+      "/categorie/": {
+        "get": {
+          "tags": [
+            "categorie"
+          ],
+          "summary": "get the list of all categories",
+          "description": "get a full list of periods",
+          "operationId": "findAll",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "default": {
+              "description": "successful operation",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categories": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Categorie_full"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "securityDefinitions": {
     "api_key": {
       "type": "apiKey",
