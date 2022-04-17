@@ -52,6 +52,7 @@ function get_stats_from_name(name,page = 1){
     xhr.onreadystatechange = function() {
 
         if (this.readyState == 4 && this.status == 200) {
+
             myArr = JSON.parse(this.responseText);
 
             var temp = []
