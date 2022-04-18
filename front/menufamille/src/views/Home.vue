@@ -204,8 +204,7 @@
         )
       },
       async eventChild(){
-        if(this.componentName === 'CalendarModificationMenu'){
-          console.log("hello event")
+        if(this.componentName === 'CalendarModificationMenu'){          
           this.componentName = null
           this.i = 0
           this.itemPeriode = []  
