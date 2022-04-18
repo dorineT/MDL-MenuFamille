@@ -1472,11 +1472,7 @@
           "schema": {
             "type": "object",
             "properties": {
-              "categories": { "type" : "array", "items" :
-                {
-                  "$ref": "#/definitions/Suggestion_full"
-              }
-            }
+              "$ref": "#/definitions/Suggestion_full"
           }
         }
       }
