@@ -1432,53 +1432,136 @@
       }
     }
   },
-  "/suggestion/{id_periode}/{id_recette}/{id_menu}": {
-    "put": {
-      "tags": [
-        "suggestion"
-      ],
-      "summary": "get the list of all suggestion",
-      "description": "get a full list of suggestion",
-      "operationId": "put_suggestion",
-      "produces": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "id_periode",
-          "in": "param",
-          "description": "id of a period",
-          "required": true,
-          "type": "integer"
-        },
-        {
-          "name": "id_recette",
-          "in": "param",
-          "description": "id of the recipe",
-          "required": true,
-          "type": "integer"
-        },
-        {
-          "name": "id_menu",
-          "in": "param",
-          "description": "id of the menu",
-          "required": true,
-          "type": "integer"
+      "/suggestion/{id_periode}/{id_recette}/{id_menu}": {
+        "put": {
+          "tags": [
+            "suggestion"
+          ],
+          "summary": "get the list of all suggestion",
+          "description": "get a full list of suggestion",
+          "operationId": "put_suggestion",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id_periode",
+              "in": "path",
+              "description": "id of a period",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "id_recette",
+              "in": "path",
+              "description": "id of the recipe",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "id_menu",
+              "in": "path",
+              "description": "id of the menu",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": "successful operation",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "$ref": "#/definitions/Suggestion_full"
+              }
+            }
+          }
         }
-      ],
-      "responses": {
-        "default": {
-          "description": "successful operation",
-          "schema": {
+      }
+    },
+    "menu/new_menu": {
+      "post": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "Create a new menu",
+        "description": "Create a new menu by passing all of it's informations",
+        "operationId": "create_New_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "menu",
+            "in": "body",
+            "description": "full information of the menu",
+            "required": true,
             "type": "object",
             "properties": {
-              "$ref": "#/definitions/Suggestion_full"
+              "période_debut" : {"type" : "string", "format": "date"},
+              "période_fin"   : {"type" : "string", "format": "date"},
+              "id_menu" : {"type" : "integer", "format": "int64"},
+              "id_famille" : {"type" : "integer", "format" : "int64"},
+              "plat_identique_matin" : {"type": "integer", "format": "int64"},
+              "plat_identique_midi" : {"type": "integer", "format": "int64"},
+              "plat_identique_soir" : {"type": "integer", "format": "int64"},
+              "days_until_suggestion": {"type": "integer", "format": "int64"},
+              "type" : {"type" : "string" },
+              "verrou" : {"type": "boolean"},
+              "calendrier" : { "$ref": "#/definitions/Calendrier_full"}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "$ref" :"#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu//old/{id_fam}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get all the old menus for a familly",
+        "description": "Create a new menu by passing all of it's informations",
+        "operationId": "create_New_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "menus": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Menu"
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
-  }
-}
   },
   "securityDefinitions": {
     "api_key": {
