@@ -102,3 +102,26 @@ exports.DeleteType = (req, res) => {
       });
   });
 };
+
+exports.find_all_info_ById = (req, res) => {
+    const id_type = req.params.id;
+    Type.findByPk(id_type,{
+        include :[
+            {
+
+                model: db.denree,
+                required: false,
+                attributes: ['nom'],
+
+            }
+
+        ]
+    }).then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Menus."
+        });
+    });
+};
