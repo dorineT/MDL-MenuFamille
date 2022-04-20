@@ -13,7 +13,13 @@
       v-model="dialogType"
       persistent
       max-width="500"
+      
     >
+      <v-form
+        ref="form1"
+        v-model="validNewIngredient"
+        lazy-validation
+      >
       <v-card>
         <v-card-title class="text-h5">
           Nouvel ingrédient
@@ -25,8 +31,8 @@
              @change="changeSearchName"
                dense
               outlined
-              rounded  
-              required
+              rounded                
+              :rules="ruleRequired"
             > 
 
             </v-text-field>
@@ -58,6 +64,7 @@
               <v-list-item-group
                 v-model="openFoodFactSelectedItem"
                 color="green lighten-2"
+                
               >
               <div v-for="(item,i) in openFoodFactList" :key="i">
               <v-list-item >
@@ -70,7 +77,12 @@
                 </div>
               </v-list-item-group>
             </v-list>
-
+            <v-alert
+              border="bottom"
+              color="blue"
+              type="info"
+              v-if="infoMessageSelectProduct"
+            >Veuillez séléctionner un produit</v-alert>
           
           </v-card-text>
         <v-card-actions>
@@ -83,6 +95,7 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      </v-form>
     </v-dialog>
 
 
@@ -458,6 +471,7 @@ export default {
           currentIngredients: [],
 
           ruleRequired: [v => !!v || 'Champs requis'],
+          
 
           //combobox
           activator: null,
@@ -479,7 +493,9 @@ export default {
           typeChoix: [],
           newIngredient: null,
           openFoodFactList: ['Lait entier', 'lait demi écrémé', 'lait écrémé'],
-          openFoodFactSelectedItem: null          
+          openFoodFactSelectedItem: null,
+          validNewIngredient: false,    
+          infoMessageSelectProduct: false,      
         };
       },
 
@@ -539,7 +555,7 @@ export default {
         this.nonce ++
         return color
       },
-      required(value) {
+      required(value) {        
         if (value instanceof Array && value.length == 0) {
           return 'Champ requis.';
         }
@@ -615,7 +631,18 @@ export default {
       addIngredient(){
         //call when ajouter is clicked
         //v form validation 
-        // call open food fact en fonction du type choisi
+        // call open food fact en fonction du type choisi          
+        let validOk = this.$refs.form1.validate() 
+        let validProduct
+        this.openFoodFactSelectedItem === null ? (this.infoMessageSelectProduct = true, validProduct=  false) : (this.infoMessageSelectProduct = false, validProduct= true)
+        console.log(validOk)
+        if(!validOk | !validProduct ){          
+          return
+        }                       
+
+        console.log("ok")
+        this.dialogType = false
+        //call find create
 
       },
       findCreate(){
