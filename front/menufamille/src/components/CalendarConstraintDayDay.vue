@@ -134,6 +134,7 @@
 <script>
 	import { eventBus } from "../main";
 	import moment from "moment";
+	moment.locale('fr')
 	import checkContrainte from "./../services/checkContrainteMenu";
 	import DialogModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 	import MenuDao from "./../services/api.menu";
@@ -427,8 +428,8 @@
 					calendriers: structuredClone(this.items),
 				};							
 				
-				if(i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
-				i+=1
+				if(this.i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
+				this.i+=1
 			
 				this.$router.push("/");
 			},

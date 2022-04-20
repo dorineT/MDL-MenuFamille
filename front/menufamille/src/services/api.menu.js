@@ -10,6 +10,14 @@ export default class MenuDao{
     }
 
     /**
+     * Get les menus verrouillés dont la date est passée
+     * @param idFamille
+     */
+     getMenuOld(idFamille) {        
+      return api.get("/menu/old/"+idFamille)        
+    }
+
+    /**
      * Envoie le nouveau menu à l'api par post
      * @param newMenu le nouveau menu
      * @param idFamille l'id de la famille

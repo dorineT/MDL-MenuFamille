@@ -70,6 +70,7 @@
 <script>
 	import { eventBus } from "../main";
 	import moment from "moment";
+	moment.locale('fr')
 	import RecetteDAO from "../services/api.recette";
 
 	let DAORecette = new RecetteDAO();

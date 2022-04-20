@@ -7,6 +7,49 @@
         transition="dialog-transition"
         scrollable
     >
+
+    <!---Type dialog--->
+    <v-dialog
+      v-model="dialogType"
+      persistent
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Choisissez le type de votre nouvel ingrédient !
+        </v-card-title>
+        <v-card-text>
+          
+            <v-autocomplete
+            :rules="[required]"              
+            label="Type"
+              chips
+              clearable
+              deletable-chips
+              multiple
+              :items="listeType"
+              item-text="nom"
+              item-value="id_type"
+              return-object
+              v-model="typeChoix"
+              color="green lighten-2"
+              no-data-text="Aucun type correspondant"
+            ></v-autocomplete>
+          
+          </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="addIngredient"
+          >
+            Ajouter
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
     <v-form
       ref="form"
       v-model="valid"
@@ -348,10 +391,12 @@ import TagDAO from '../services/api.tag';
 import DenreeDao from '../services/api.denree';
 import CategorieDao from '../services/api.categorie'
 import RecetteDAO from '../services/api.recette'
+import TypeDao from '../services/api.type'
 let DAOTag = new TagDAO()
 let DAODenree = new DenreeDao()
 let DAOCategorie = new CategorieDao()
 let DAORecette = new RecetteDAO()
+let DAOType = new TypeDao()
 
 export default {
   
@@ -390,6 +435,13 @@ export default {
           x: 0,
           search: null,
           y: 0,
+
+
+          //type dialog
+          dialogType: false,
+          listeType: [],
+          typeChoix: [],
+          newIngredient: null,
         };
       },
 
@@ -513,6 +565,36 @@ export default {
         
 
       },
+      //fetch type from database
+      async selectType(){
+        DAOType.findAll().then(
+          (response) => {
+            this.listeType = response.data
+            this.dialogType = true           
+          }
+        )        
+      },
+      addIngredient(){
+        // call open food fact en fonction du type choisi
+
+      },
+      findCreate(){
+        DAODenree.findCreateProduct(this.newIngredient).then(
+          (response) =>{
+            product = response.data[0]
+            if (product !== null) {
+              product.color= this.colors[this.nonce - 1],          
+              this.currentIngredients.push(product)
+              this.items.push(product)                    
+              this.nonce++                                      
+            }
+          },
+          (error) => {
+            alert('erreur lors de la création de l\'ingrédient')
+            return
+          }
+        );
+      }
     },
     computed: {
         max() {
@@ -576,23 +658,11 @@ export default {
         this.currentIngredients = val.map(v => {
           let product = {}       
 
-          if(typeof v === 'string'){       
-            DAODenree.findCreateProduct(v).then(
-              (response) =>{
-                product = response.data[0]
-                if (product !== null) {
-                  product.color= this.colors[this.nonce - 1],               
-                  v = structuredClone(product)
-                  this.currentIngredients.push(product)
-                  this.items.push(product)                    
-                  this.nonce++                                      
-                }
-              },
-              (error) => {
-                alert('erreur lors de la création de l\'ingrédient')
-                return
-              }
-            );
+          if(typeof v === 'string'){
+            this.newIngredient = v
+            this.selectType()
+            
+
           }
           else if(typeof v === 'object'){
             if(v === undefined) return         

@@ -15,7 +15,7 @@
 						<v-list-item-icon>
 							<v-icon>mdi-pencil</v-icon>
 						</v-list-item-icon>
-						<v-list-item-title>Création Menu</v-list-item-title>
+						<v-list-item-title>Nouveau menu</v-list-item-title>
 					</v-list-item>
 					<v-list-item to="/recipe"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
@@ -24,12 +24,17 @@
 						<v-list-item-title>Recettes</v-list-item-title>
 					</v-list-item>
 					<v-list-item to="/shoppingList"  @click="() => {this.notification(); return drawer = ! drawer}">
-
 						<v-list-item-icon>
 							<v-icon>mdi-format-list-text</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title>Liste de courses</v-list-item-title>
 					</v-list-item>
+          <v-list-item to="/history" @click="drawer = ! drawer; notification">
+            <v-list-item-icon>
+              <v-icon>mdi-history</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Historique</v-list-item-title>
+          </v-list-item>
 					<v-list-item to="/family"  @click="() => {this.notification(); return drawer = ! drawer}">
 						<v-list-item-icon>
 							<v-icon>mdi-account-group</v-icon>

@@ -209,6 +209,7 @@
 	import RecetteDAO from "../services/api.recette"
 	import TagDAO from '../services/api.tag';
 	import moment from 'moment'
+	moment.locale('fr')
 	let DAORecette = new RecetteDAO()
 	let DAOTag = new TagDAO()
 

@@ -61,11 +61,15 @@ exports.PutMenu = (req, res) => {
 /// Update CRUD
 
 exports.UpdateMenu = (req, res) => {
+  moment.locale('fr')
+  console.log("helllo")
   const id = req.params.id;
-  Menu.update(req.body, {
-    where: { id_menu: id }
-  })
-    .then(num => {
+  req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
+  req.body.periode_fin = moment(req.body.periode_fin,"DD/MM/YYYY")
+    Menu.update(req.body, {
+      where: {id_menu: id}
+    })
+    .then(num =>{
       if (num == 1) {
         res.send({
           message: "Menu was Updated"
@@ -466,11 +470,12 @@ exports.old_menu = async(req,res) =>{
  */
 
 
-exports.create_New_Menu = async (req, res) => {
 
-  await Menu.create({
-    periode_debut: moment(req.body.periode_debut, "DD/MM/YYYY"),
-    periode_fin: moment(req.body.periode_fin, "DD/MM/YYYY"),
+exports.create_New_Menu = async(req,res) => {
+    moment.locale('fr')
+    await Menu.create({
+    periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
+    periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),
     id_famille: req.body.id_famille,
     plat_identique_matin: req.body.plat_identique_matin,
     plat_identique_midi: req.body.plat_identique_midi,
