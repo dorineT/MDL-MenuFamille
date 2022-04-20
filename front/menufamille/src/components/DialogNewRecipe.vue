@@ -12,17 +12,30 @@
     <v-dialog
       v-model="dialogType"
       persistent
-      max-width="290"
+      max-width="500"
     >
       <v-card>
         <v-card-title class="text-h5">
-          Choisissez le type de votre nouvel ingrédient !
+          Nouvel ingrédient
         </v-card-title>
         <v-card-text>
-          
+            <v-text-field
+             label="Ingrédient"
+             v-model="newIngredient"
+             @change="changeSearchName"
+               dense
+              outlined
+              rounded  
+              required
+            > 
+
+            </v-text-field>
             <v-autocomplete
             :rules="[required]"              
-            label="Type"
+              label="Type"
+               dense
+              outlined
+              rounded  
               chips
               clearable
               deletable-chips
@@ -34,7 +47,30 @@
               v-model="typeChoix"
               color="green lighten-2"
               no-data-text="Aucun type correspondant"
+              @blur="changeType"
             ></v-autocomplete>
+            
+            <v-divider></v-divider> <br>
+            <h4>Résultats</h4>
+            
+
+            <v-list rounded>
+              <v-list-item-group
+                v-model="openFoodFactSelectedItem"
+                color="green lighten-2"
+              >
+              <div v-for="(item,i) in openFoodFactList" :key="i">
+              <v-list-item >
+                <v-list-item-content>
+                  <v-list-item-title>{{ item}}</v-list-item-title>
+                </v-list-item-content>
+                
+              </v-list-item>
+                  <v-divider></v-divider>
+                </div>
+              </v-list-item-group>
+            </v-list>
+
           
           </v-card-text>
         <v-card-actions>
@@ -442,6 +478,8 @@ export default {
           listeType: [],
           typeChoix: [],
           newIngredient: null,
+          openFoodFactList: ['Lait entier', 'lait demi écrémé', 'lait écrémé'],
+          openFoodFactSelectedItem: null          
         };
       },
 
@@ -575,17 +613,20 @@ export default {
         )        
       },
       addIngredient(){
+        //call when ajouter is clicked
+        //v form validation 
         // call open food fact en fonction du type choisi
 
       },
       findCreate(){
+        //call when button ajouter is pressed in modal new ingredient
         DAODenree.findCreateProduct(this.newIngredient).then(
           (response) =>{
             product = response.data[0]
             if (product !== null) {
               product.color= this.colors[this.nonce - 1],          
-              this.currentIngredients.push(product)
-              this.items.push(product)                    
+              this.currentIngredients.push(product) // ajouter au model ingredient 
+              this.items.push(product) // ajouter à la liste d'ingredient                    
               this.nonce++                                      
             }
           },
@@ -594,6 +635,15 @@ export default {
             return
           }
         );
+      },
+      // update de l'input type dans le modal ajout ingredient
+      changeType(){
+        console.log(this.typeChoix)
+        //open food fact search
+      },
+      changeSearchName(){
+        console.log(this.newIngredient)
+        //open food fact search
       }
     },
     computed: {
@@ -660,9 +710,8 @@ export default {
 
           if(typeof v === 'string'){
             this.newIngredient = v
-            this.selectType()
+            this.selectType() //open modal
             
-
           }
           else if(typeof v === 'object'){
             if(v === undefined) return         

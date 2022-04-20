@@ -348,8 +348,9 @@ export default {
         let res = await DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)
         this.$emit('eventReceived')        
       },
-      saveMenu(){
-        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
+      async saveMenu(){
+        let res = await DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)  
+        this.$emit('eventReceived')          
       },
       closeDialogModification(){
         this.showDialog = false

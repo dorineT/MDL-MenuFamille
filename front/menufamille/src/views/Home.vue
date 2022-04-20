@@ -51,7 +51,9 @@
       </v-container>
 
       <component v-bind:is="componentName" :periodeMenu="periode" :idMenu="idMenu" @eventReceived="eventChild"></component>
-    
+      <div v-if="componentName===null">
+        Choisissez un menu
+      </div>
 
     </v-card>
 </template>

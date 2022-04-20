@@ -2,7 +2,7 @@ const db = require("../models");
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
-const {get_stats_from_name} = require("../../middleware/openFoodFact");
+//const {get_stats_from_name} = require("../../middleware/openFoodFact");
 
 // Retrieve all denree from the database.
 exports.findAll = (req, res) => {
@@ -110,13 +110,13 @@ exports.PutDenree = (req, res) => {
 
   exports.FindOrCreate = (req, res) => {
     const nomArg = req.params.nom;
-    const stats = get_stats_from_name(nomArg)[0]
+    //const stats = get_stats_from_name(nomArg)[0]
     Denree.findOrCreate({
       where: { nom:  nomArg },
-      defaults:{
+      /*defaults:{
         nutriscore:stats[2].toUpperCase(),
         calories:stats[3]
-      }
+      }*/
     }).then(data => {
       res.send(data);
     }).catch(err => {
