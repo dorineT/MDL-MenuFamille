@@ -38,6 +38,26 @@ async function getProduct(product) {
         link += "&tagtype_" + i + "=categories&tag_contains_" + i + "=contains&tag_" + i + "=" + product.types[i]
     }
 
+<<<<<<< HEAD
+=======
+        if (this.readyState == 4 && this.status == 200) {
+
+            myArr = JSON.parse(this.responseText);
+
+            var temp = []
+            for (let row of myArr["products"]) {
+                temp = []
+                temp.push(row["_id"])// id
+                temp.push(row["product_name_fr"])// nom
+                temp.push(row["nutrition_grade_fr"])//score
+                temp.push(row["nutriments"]["energy_value"])// Kcal
+                list_for_return.push(temp)
+        }
+        };
+    };
+
+    xhr.send();
+>>>>>>> 517d47f424b47666091cfe81affae266c2a296f5
 
     return axios.get(link + "&page=1&search_simple=1&action=process&json=1");
 }
