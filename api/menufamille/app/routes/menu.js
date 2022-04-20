@@ -32,4 +32,8 @@ router.get('/Get_suggest_periode/:id_fam',menu.Get_suggest_periode) // ne sert Ã
 
 router.post('/new_menu',menu.create_New_Menu);
 
+<<<<<<< HEAD
+router.get('/food/:name', menu.getFood);
+=======
 router.get("/old/:id_fam",menu.old_menu);
+>>>>>>> 517d47f424b47666091cfe81affae266c2a296f5
