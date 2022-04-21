@@ -8,87 +8,9 @@ const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
 
-/// GetAllRecipes Simple for CRUD
 
-exports.findAll = (req, res) => {
-    Recipe.findAll()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Recipes."
-      });
-    });  
-};
 
-/// Put CRUD
 
-exports.PutRecipe = (req, res) => {
-  console.log(req.body);
-    Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, preparation: req.body.preparation})
-    .then(data => { 
-        res.send(data);
-      })
-    .catch(err => {
-        res.status(500).send({
-            message:
-              err.message || "Some error occurred while inserting Recipes"
-        });
-    });
-};
-
-//// Update CRUD
-exports.UpdateRecipe = (req, res) => {
-    const id = req.params.id;
-    Recipe.update(req.body, {
-      where: {id_recette: id}
-    })
-    .then(num =>{
-      if (num == 1) {
-        res.send({
-          message: "Recipe was Updated"
-        });
-      } else{
-        res.send({
-          message: `Cannot update recipe with id=${id}`
-        })
-      }
-    })
-    .catch(err => {
-        res.status(500).send({
-            message:
-              err.message || `Some error occurred while updating recipe id=${id}`
-        });
-    });
-  };
-
-//// Delete CRUD
-
-exports.DeleteRecipe = (req, res) => {
-    const id = req.params.id;
-    Recipe.destroy({
-      where: {id_recette: id}
-    })
-    .then(num =>{
-      if (num == 1) {
-        res.send({
-          message: "Recipe was delete"
-        });
-      } else{
-        res.send({
-          message: `Cannot delete recipe with id=${id}`
-        })
-      }
-    })
-    .catch(err => {
-        res.status(500).send({
-            message:
-              err.message || `Some error occurred while deleting recipe id=${id}`
-        });
-    });
-  };
 
 /// GetAllRecipes with tags
 
