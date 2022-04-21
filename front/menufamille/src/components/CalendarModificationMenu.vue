@@ -1,9 +1,9 @@
 <template>
 
-  <v-card style="margin: 4px">
+  <div style="margin: 4px">
       <dialog-modification-jour-plat :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :stringUpdateModal="'updateMenuJour'" @closeDialog="closeDialogModification" @updatePeriode="updateMenuJour"></dialog-modification-jour-plat>
 
-      <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
+      <div  style="margin: 4px">Mode modification </div>
       
       <v-data-table
             :headers="headers"
@@ -127,16 +127,16 @@
 
       <div >          
      
-            <v-btn  class="margin" outlined color="orange" @click="saveMenu">Sauvegarder</v-btn>
+            <v-btn  class="margin colorbtnOrange" rounded  @click="saveMenu">Sauvegarder</v-btn>
        
-            <v-btn class="margin"  outlined color="green" @click="valideMenu">Valider</v-btn>
+            <v-btn class="margin colorbtnGreen"  rounded  @click="valideMenu">Valider</v-btn>
 
       </div>
 
       <v-snackbar v-model="errorMessage.error" text color="red">
         {{ errorMessage.message }}
       </v-snackbar>
-    </v-card>
+    </div>
 
 </template>
 
@@ -362,6 +362,7 @@ export default {
 
 
 <style lang="sass">
+@import '../style/globalStyle'
 .margin
   margin: 10px 
 

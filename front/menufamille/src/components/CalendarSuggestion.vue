@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 4px">
     <dialog-suggestion :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :idMenu="idMenu" @closeDialog="closeDialogSuggestion" @updateSugg="updateMenuSuggestion"></dialog-suggestion>
-    <div  style="margin: 4px">Menu à suggérer: {{periodeMenu}} </div>
+    <div  style="margin: 4px">Mode suggestion </div>
       
     <v-data-table
         :headers="headers"
