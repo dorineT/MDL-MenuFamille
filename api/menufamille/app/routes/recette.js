@@ -8,7 +8,6 @@ const { authJwt } = require("../middleware")
 const router = new Router()
 module.exports = router
 
-router.get('/FindWithTags',[authJwt.verifyToken], recette.find_All_Tags); //KO, c'est quoi la différence avec allTags ?
 
 router.get('/FindRecipe/:id',[authJwt.verifyToken], recette.find_Recipe);
 

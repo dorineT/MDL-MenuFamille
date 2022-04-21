@@ -12,21 +12,6 @@ const {asyncForEach} = require("../../middleware/asyncForEach");
 
 
 
-/// GetAllRecipes with tags
-
- exports.find_All_Tags = (req, res) => {
-    Recipe.findAll({ include: recette_tags })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Recipes."
-      });
-    });  
-};
-
 /// Chercher une recette
 
 exports.find_Recipe = (req, res) => {

@@ -1525,7 +1525,7 @@
         }
       }
     },
-    "menu//old/{id_fam}": {
+    "menu/old/{id_fam}": {
       "get": {
         "tags": [
           "menu"
@@ -1557,6 +1557,104 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "/recette/AllTags": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "get all the recipes and their tags",
+        "description": "get all the recipes and their tagss",
+        "operationId": "find_Recipe_With_Tags",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "recipe": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Recette_with_tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/FindFromTags": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Gets all the recipe linked to a list of tags",
+        "description": "Gets all the recipe linked to a list of tags",
+        "operationId": "find_Recipe_tags",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "body",
+            "description": "a full list of tags",
+            "required": true,
+            "type": "array",
+            "items" : {
+              "nom" : "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "recipe": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Recette_with_tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/FindRecipe/{id_recette}": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Gets all the recipe linked to a list of tags",
+        "description": "Gets all the recipe linked to a list of tags",
+        "operationId": "find_Recipe_tags",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_recette",
+            "in": "param",
+            "description": "the id of the recipe we search for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Recette_all_info"
             }
           }
         }
@@ -1801,6 +1899,21 @@
         "tags": { "$ref":"#/definitions/Tags_full"},
         "categorie": { "$ref": "#/definitions/Categorie_full"},
         "denree" : { "$ref": "#/definitions/Denree_full"}
+      }
+    },
+    "Recette_with_tag":{
+      "type": "object",
+      "properties": {
+        "nom" : {"type" : "string"},
+        "difficulte" : {"type" : "integer", "format": "int64"},
+        "calorie" : {"type" : "integer", "format": "int64"},
+        "temps_cuisson" : {"type" : "integer", "format": "int64"},
+        "temps_preparation" : {"type" : "integer", "format": "int64"},
+        "nb_personne" : {"type" : "integer", "format": "int64"},
+        "nutriscore" : {"type" : "string"},
+        "preparation" : {"type" : "string"},
+        "image_url" : {"type" : "string"},
+        "tags": { "$ref":"#/definitions/Tags_full"}
       }
     }
   }
