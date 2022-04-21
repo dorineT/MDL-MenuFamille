@@ -444,8 +444,7 @@
 					this.infoMenu.nb_personne = parseInt(this.numberPersonneNew)
 				}
 
-				// envoi uniquement le menu jour modifie		
-				console.log("hello")
+				// envoi uniquement le menu jour modifie					
 				this.$emit('updatePeriode', this.infoMenu)
 				this.$emit('closeDialog')
 				//if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}

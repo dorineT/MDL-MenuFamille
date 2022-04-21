@@ -28,12 +28,12 @@ export default class RecetteDAO{
     /**
      * Get les recettes en fonction de Tag donnés
      */
-    getFromTags(tags){       
+    getFromTags(tags, periode){    
         let sendTags = []
         tags.forEach(element => {
           sendTags.push(element.nom)
         });   
-        return api.get("/recette/FindFromTags/",{
+        return api.get("/recette/FindFromTags/"+periode,{
           params: {
             tag: sendTags
           },

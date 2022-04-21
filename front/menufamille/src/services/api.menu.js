@@ -39,8 +39,7 @@ export default class MenuDao{
      * @param {*} suggestion la suggestion (object)
      */
     sendMenuAddSuggestion(suggestion){
-      console.log('send suggestion')
-      console.log(suggestion)
+
       api.post("/suggestion",suggestion)
     }
 
@@ -51,8 +50,6 @@ export default class MenuDao{
      * @param {*} periode 
      */
      sendPeriodeUpdate(periode){    
-      console.log("envoi")
-      console.log(periode)
       api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
     }
 

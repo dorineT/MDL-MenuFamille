@@ -21,7 +21,7 @@
         lazy-validation
       >
       <v-card>
-        <v-card-title class="text-h5">
+        <v-card-title >
           Nouvel ingrédient
         </v-card-title>
         <v-card-text>
@@ -39,6 +39,7 @@
             <v-autocomplete
             :rules="[required]"              
               label="Type"
+               
                dense
               outlined
               rounded  
@@ -57,7 +58,7 @@
             ></v-autocomplete>
             
             <v-divider></v-divider> <br>
-            <h4>Résultats</h4>
+            <p style="font-size: 18px">Résultats</p>
             
 
             <v-list rounded>
@@ -86,9 +87,10 @@
           
           </v-card-text>
         <v-card-actions>
-          <v-btn
-            color="green darken-1"
-            text
+          <v-btn rounded color="grey" @click="dialogType=false">
+            Annuler
+          </v-btn>
+          <v-btn rounded class="colorbtnGreen" 
             @click="addIngredient"
           >
             Ajouter
@@ -104,9 +106,9 @@
       v-model="valid"
       lazy-validation
     >
-      <v-card>
+      <v-card class="noPadding">
         <v-toolbar dark color="#9CCC65">
-          <v-card-title>Nouvelle une recette</v-card-title>
+          <v-card-title>Nouvelle recette</v-card-title>
         </v-toolbar>
 
         <v-card-text>
@@ -205,6 +207,8 @@
                   multiple
                   small-chips
                   solo
+                  flat
+                  outlined
                   rounded                                                      
                 >
                   <template v-slot:no-data>
@@ -259,7 +263,7 @@
 
               <!--quantite des ingredients-->
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-                <v-card>
+                <v-card color="blue-grey lighten-4">
                   <v-card-title>
                     Quantités
                   </v-card-title>
@@ -357,7 +361,7 @@
 
               <!--preparation de la recette -->
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-                <v-card>
+                <v-card color="blue-grey lighten-4">
                   <v-card-title>Préparation</v-card-title>
                   <v-card-text>
                     <v-form>
@@ -642,6 +646,7 @@ export default {
 
         console.log("ok")
         this.dialogType = false
+        this.resetModalNewIngredient()
         //call find create
 
       },
@@ -671,6 +676,10 @@ export default {
       changeSearchName(){
         console.log(this.newIngredient)
         //open food fact search
+      },
+      resetModalNewIngredient(){
+        this.newIngredient = null
+        //this.openFoodFactList = []
       }
     },
     computed: {

@@ -52,7 +52,12 @@
 
       <component v-bind:is="componentName" :periodeMenu="periode" :idMenu="idMenu" @eventReceived="eventChild"></component>
       <div v-if="componentName===null">
-        Choisissez un menu
+        <v-img
+           :aspect-ratio="16/9"                  
+          contain
+          max-height="500"
+          src="../assets/selectMenu.png">
+        </v-img>
       </div>
 
     </v-card>
