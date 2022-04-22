@@ -53,8 +53,6 @@ async function getProduct(product) {
         };
     };
 
-    xhr.send();
-
     return axios.get(link + "&page=1&search_simple=1&action=process&json=1");
 }
 

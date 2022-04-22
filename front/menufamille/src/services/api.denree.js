@@ -1,4 +1,5 @@
 import api from './api'
+var qs = require('qs');
 
 export default class DenreeDao{
     /**
@@ -15,5 +16,26 @@ export default class DenreeDao{
      */
     findCreateProduct(name){
         return api.get("/denree/FindOrCreate/"+name)
+    }
+
+    /**
+     * Get les produits d'open food fact sur base d'un nom et des types
+     * @param {*} name 
+     * @param {*} types 
+     * @returns 
+     */
+    getOpenFoodFactProduct(name, types){
+        let sendTypes = []
+        types.forEach(element => {
+            sendTypes.push(element.nom)
+        });   
+        return api.get("/menu/food/"+name,{
+          params: {
+            types: sendTypes
+          },
+          paramsSerializer: params => {
+            return qs.stringify(params)
+          }
+        })
     }
 }
