@@ -47,7 +47,7 @@ async function getProduct(product) {
 
 
     // ---beginning of treatment---
-    let n_word = ["jus"]
+    let n_word = ["jus"] // liste pour ban tout les mots imposible
 
 
     let list_for_return = []
@@ -64,21 +64,25 @@ async function getProduct(product) {
             n_word.forEach(ban_word => {
                 is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
             })
-
+            is_ok = is_ok && !(list_for_return.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
+            
+            is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
+            is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
+            console.log(product.product_name_fr)
         }catch (e){
             is_ok = false
         }
 
         if (is_ok){
 
-
-            var good_product =
+            var good_product = (product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase()
+            /**
                 {
                     "code":product._id,
-                    "nom":product.product_name_fr,
+                    "nom": (product.product_name_fr.replace(product.brands,"").replace("-","")),
                     "nutriscore":product.nutrition_grade_fr,
                     "calorie":product.nutriments.energy_value
-            }
+            }*/
 
 
 
@@ -88,12 +92,12 @@ async function getProduct(product) {
         }
 
     })
-    // supression des doublons et nom de marque
+    // supression des doublons
 
 
 
 
-    console.log(list_for_return)
+
 
     return list_for_return
 }

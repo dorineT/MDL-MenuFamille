@@ -30,10 +30,10 @@ exports.getFood = (req, res) => {
     for(let i=0;i<data.length;i++) {
       response.push(
         {
-          code: data[i].code,
-          nom: data[i].nom,
-          nutriscore: data[i].nutriscore,//.toUpperCase(),
-          calorie: data[i].calorie
+          //code: data[i].code,
+          nom: data[i]//.nom,
+          //nutriscore: data[i].nutriscore,//.toUpperCase(),
+          //calorie: data[i].calorie
         }
       )
     }
