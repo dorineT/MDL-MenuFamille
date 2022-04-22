@@ -31,32 +31,71 @@ function get_stats_from_barreCode(bar_code) {
     return ([nutriscore, kalorie])
 }
 
-
+/**
+ *
+ * @param product
+ * @returns {Promise<AxiosResponse<any>>}
+ */
 async function getProduct(product) {
+
     let link = "https://be-fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom
     for (let i = 0; i < product.types.length; i++) {
         link += "&tagtype_" + i + "=categories&tag_contains_" + i + "=contains&tag_" + i + "=" + product.types[i]
+
     }
+    var raw_data =  await axios.get(link + "&page=1&search_simple=1&action=process&json=1");
 
-        if (this.readyState == 4 && this.status == 200) {
 
-            myArr = JSON.parse(this.responseText);
+    // ---beginning of treatment---
+    let n_word = ["jus"]
 
-            var temp = []
-            for (let row of myArr["products"]) {
-                temp = []
-                temp.push(row["_id"])// id
-                temp.push(row["product_name_fr"])// nom
-                temp.push(row["nutrition_grade_fr"])//score
-                temp.push(row["nutriments"]["energy_value"])// Kcal
-                list_for_return.push(temp)
+
+    let list_for_return = []
+    let name_of_product = product.nom.toLowerCase()
+    let is_ok = false
+
+    raw_data.data.products.forEach( product => {
+
+        try{
+
+            is_ok = product.known_ingredients_n <= 3 || product.known_ingredients_n === undefined
+            is_ok = is_ok && product.product_name_fr !== undefined
+            is_ok = is_ok && (((product.product_name_fr.toLowerCase()).includes(name_of_product.toLowerCase()) || product.product_name_fr.toLowerCase() === name_of_product))
+            n_word.forEach(ban_word => {
+                is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
+            })
+
+        }catch (e){
+            is_ok = false
         }
-        };
-    };
 
-    xhr.send();
+        if (is_ok){
 
-    return axios.get(link + "&page=1&search_simple=1&action=process&json=1");
+
+            var good_product =
+                {
+                    "code":product._id,
+                    "nom":product.product_name_fr,
+                    "nutriscore":product.nutrition_grade_fr,
+                    "calorie":product.nutriments.energy_value
+            }
+
+
+
+            list_for_return.push(good_product)
+
+
+        }
+
+    })
+    // supression des doublons et nom de marque
+
+
+
+
+    console.log(list_for_return)
+
+    return list_for_return
 }
 
 module.exports = { get_stats_from_barreCode, getProduct };
