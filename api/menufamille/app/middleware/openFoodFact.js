@@ -65,10 +65,10 @@ async function getProduct(product) {
                 is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
             })
             is_ok = is_ok && !(list_for_return.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
-            
+
             is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
             is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
-            console.log(product.product_name_fr)
+           
         }catch (e){
             is_ok = false
         }
