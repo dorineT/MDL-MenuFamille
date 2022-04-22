@@ -21,7 +21,7 @@ router.delete('/:id', denree.DeleteDenree);
 
 router.get('/Like/:nom', [authJwt.verifyToken], denree.FindWithLike);
 
-router.get('/FindOrCreate/:nom', [authJwt.verifyToken],denree.FindOrCreate);//
+router.get('/FindOrCreate/:nom/:nutriscore/:calories', [authJwt.verifyToken],denree.FindOrCreate);//
 
 router.get('/NutriAndCalo/:id_denree',[authJwt.verifyToken], denree.Get_Nut_and_Cal);
 

@@ -108,16 +108,30 @@ exports.PutDenree = (req, res) => {
 
   //// Find or Create 
 
-  exports.FindOrCreate = (req, res) => {
+  exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
     //const stats = get_stats_from_name(nomArg)[0]
-    Denree.findOrCreate({
+    console.log(req.params.nutriscore)
+    console.log(req.params.calories)
+    console.log(req.query.types)
+    await Denree.findOrCreate({
       where: { nom:  nomArg },
-      /*defaults:{
-        nutriscore:stats[2].toUpperCase(),
-        calories:stats[3]
-      }*/
-    }).then(data => {
+      defaults:{
+        nutriscore: req.params.nutriscore,
+        calories: req.params.calories
+      }
+    }).then( async (data) => {
+      if (data[1] == true){
+        const id_new_denree = data[0].id_denree;
+        const typesList = req.query.types
+        asyncForEach(typesList, async(link_type)=>{
+          await db.denree_type.create({
+            id_denree: id_new_denree,
+            id_type: link_type.id_type,
+          
+          })
+        })
+      }
       res.send(data);
     }).catch(err => {
       res.status(500).send({

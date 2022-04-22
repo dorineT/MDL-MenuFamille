@@ -605,7 +605,7 @@
 					this.dialogType = true;
 				});
 			},
-			addIngredient() {
+			async addIngredient() {
 				//call when ajouter is clicked
 				//v form validation
 				// call open food fact en fonction du type choisi
@@ -618,16 +618,16 @@
 				if (!validOk | !validProduct) {
 					return;
 				}
-
-				console.log("ok " + this.openFoodFactList[this.openFoodFactSelectedItem]);        
+				        
 				this.dialogType = false;
-				this.resetModalNewIngredient();
+				
 				//call find create
-        //this.findCreate(this.openFoodFactList[this.openFoodFactSelectedItem])
+    			await this.findCreate(this.openFoodFactList[this.openFoodFactSelectedItem])
+				this.resetModalNewIngredient();
 			},
 			findCreate(product) {
-				//call when button ajouter is pressed in modal new ingredient
-				DAODenree.findCreateProduct(product.nom).then(
+				//call when button ajouter is pressed in modal new ingredient		
+				DAODenree.findCreateProduct(product.nom, this.typeChoix, product.nutriscore, product.calorie).then(
 					(response) => {
 						product = response.data[0];
 						if (product !== null) {
@@ -718,8 +718,7 @@
 			currentIngredients(val, prev) {
 				if (val.length === prev.length) return;
 
-				this.currentIngredients = val.map((v) => {
-					let product = {};
+				this.currentIngredients = val.map((v) => {				
 
 					if (typeof v === "string") {
 						this.newIngredient = v;

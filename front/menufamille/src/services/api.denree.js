@@ -14,8 +14,15 @@ export default class DenreeDao{
      * Rechercher ou creer une denree à partir de son nom complet
      * @param {} name 
      */
-    findCreateProduct(name){
-        return api.get("/denree/FindOrCreate/"+name)
+    findCreateProduct(name, sendTypes, nutriscore,calories){
+        return api.get("/denree/FindOrCreate/"+name+"/"+nutriscore+"/"+calories,{
+          params: {
+            types: sendTypes
+          },
+          paramsSerializer: params => {
+            return qs.stringify(params)
+          }
+        })
     }
 
     /**

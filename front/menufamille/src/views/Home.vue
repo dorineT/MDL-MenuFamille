@@ -55,7 +55,7 @@
         <v-img
            :aspect-ratio="16/9"                  
           contain
-          max-height="500"
+          max-height="400"
           src="../assets/selectMenu.png">
         </v-img>
       </div>
