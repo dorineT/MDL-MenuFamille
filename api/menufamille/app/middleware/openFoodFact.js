@@ -51,6 +51,9 @@ async function getProduct(product) {
 
 
     let list_for_return = []
+    let list_name = []
+    let name
+
     let name_of_product = product.nom.toLowerCase()
     let is_ok = false
 
@@ -65,10 +68,10 @@ async function getProduct(product) {
                 is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
                 is_ok = is_ok && !(product.categories.toLowerCase()).includes(ban_word.toLowerCase())
             })
-            is_ok = is_ok && !(list_for_return.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
+            is_ok = is_ok && !(list_name.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
 
-            is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
-            is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
+            is_ok = is_ok && !(list_name.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
+            is_ok = is_ok && !(list_name.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
 
             //categories_tags
 
@@ -78,18 +81,18 @@ async function getProduct(product) {
         }
 
         if (is_ok){
+            name = (product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase()
+            var good_product =
 
-            var good_product = (product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase()
-            /**
                 {
                     "code":product._id,
-                    "nom": (product.product_name_fr.replace(product.brands,"").replace("-","")),
+                    "nom": name,
                     "nutriscore":product.nutrition_grade_fr,
                     "calorie":product.nutriments.energy_value
-            }*/
+            }
 
 
-
+            list_name.push(name)
             list_for_return.push(good_product)
 
 
