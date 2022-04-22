@@ -47,7 +47,7 @@ async function getProduct(product) {
 
 
     // ---beginning of treatment---
-    let n_word = ["jus"] // liste pour ban tout les mots imposible
+    let n_word = ["jus","sauces"] // liste pour ban tout les mots imposible
 
 
     let list_for_return = []
@@ -63,14 +63,18 @@ async function getProduct(product) {
             is_ok = is_ok && (((product.product_name_fr.toLowerCase()).includes(name_of_product.toLowerCase()) || product.product_name_fr.toLowerCase() === name_of_product))
             n_word.forEach(ban_word => {
                 is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
+                is_ok = is_ok && !(product.categories.toLowerCase()).includes(ban_word.toLowerCase())
             })
             is_ok = is_ok && !(list_for_return.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
 
             is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
             is_ok = is_ok && !(list_for_return.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
-           
+
+            //categories_tags
+
         }catch (e){
             is_ok = false
+
         }
 
         if (is_ok){
