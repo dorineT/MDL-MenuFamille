@@ -7,6 +7,7 @@ const Categorie = db.categorie;
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
+const {getProduct} = require("../../middleware/openFoodFact");
 
 /// GetAllRecipes Simple for CRUD
 
@@ -347,5 +348,45 @@ exports.Get_From_Cat = (req, res) => {
         message:
           err.message || "Some error occurred while retrieving Recipes."
       });
+    });
+}
+
+exports.get_price = async(req,res) => {
+
+
+
+    Recipe.findByPk(req.params.id,{
+        include:[{
+            model: Denree,
+            include:[
+                {
+                    model:db.type
+                }
+            ]
+        }]
+    }).then(async(data) => {
+
+            await asyncForEach(data.denrees, async (denray) => {
+                let list_type = []
+                let name = denray.nom
+
+
+                await asyncForEach(denray.types,async(typent) => {
+                    list_type.push(`{"type":"${typent.nom}"}`)
+                })
+                let request = `{"nom":"${name}","types":[${list_type}]}`
+                console.log(request)
+                let list_answer = await getProduct(JSON.parse(request))
+                console.log(list_answer)
+            })
+        res.send(data)
+        }
+
+
+    ).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Recipes."
+        });
     });
 }

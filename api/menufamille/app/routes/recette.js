@@ -39,3 +39,5 @@ router.get('/GetMeanNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetMea
 
 // Get recipe from it's categories
 router.get('/GetFromCategory/:periode', recette.Get_From_Cat);
+
+router.get("/price/:id",recette.get_price)
