@@ -8,7 +8,7 @@ const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
 const {getProduct} = require("../../middleware/openFoodFact");
-
+const {get_comparse_for_product} = require("../../middleware/PingPrice");
 /// GetAllRecipes Simple for CRUD
 
 exports.findAll = (req, res) => {
@@ -352,8 +352,14 @@ exports.Get_From_Cat = (req, res) => {
 }
 
 exports.get_price = async(req,res) => {
-
-
+    var shop = {
+        "colruyt" : "boni",
+        "delhaize": "365",
+        "carrefour":" carrefour",
+        "intermarche":"intermarche"
+    }
+    var list_for_retrun = {}
+    var temp = {}
 
     Recipe.findByPk(req.params.id,{
         include:[{
@@ -372,14 +378,51 @@ exports.get_price = async(req,res) => {
 
 
                 await asyncForEach(denray.types,async(typent) => {
-                    list_type.push(`{"type":"${typent.nom}"}`)
+                    list_type.push(`"${typent.nom}"`)
                 })
                 let request = `{"nom":"${name}","types":[${list_type}]}`
-                console.log(request)
                 let list_answer = await getProduct(JSON.parse(request))
-                console.log(list_answer)
+
+
+                //id,region,brand,shops
+                await asyncForEach( list_answer,async(product) =>{
+
+
+
+
+                    let price_product = await get_comparse_for_product(product.code,10)
+                    //console.log(price_product.data)
+
+                    let json_price = []
+
+                    await asyncForEach(price_product.data,async(thisOne) => {
+
+                        let subOne = {
+                            name_fr:thisOne.name_fr,
+                            brand:thisOne.brand,
+                            shop_fr:thisOne.shop_fr,
+                            photo:thisOne.photo,
+                            unit:thisOne.unit,
+                            price:thisOne.price,
+                            price_per_unit:thisOne.price_per_unit,
+                            date:thisOne.date,
+                            url_fr:thisOne.url_fr
+
+                        }
+                        //console.log("sub= ",(`product:{${subOne.date}}`))
+
+                        json_price.push(`product:{${subOne}}`)
+                    })
+
+                    //temp = `{nom:${product.nom},info:[${json_price}]}`
+                    list_for_retrun[`{"nom":"${product.nom}"`] = `info:[${json_price}]}`
+                    } )
+
+
+
             })
-        res.send(data)
+
+        res.send(list_for_retrun)
         }
 
 

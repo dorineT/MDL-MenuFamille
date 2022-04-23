@@ -38,7 +38,7 @@ function get_stats_from_barreCode(bar_code) {
  */
 async function getProduct(product) {
 
-    let link = "https://be-fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom
+    let link = "https://be-fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom.toLowerCase()
     for (let i = 0; i < product.types.length; i++) {
         link += "&tagtype_" + i + "=categories&tag_contains_" + i + "=contains&tag_" + i + "=" + product.types[i]
 
@@ -77,7 +77,7 @@ async function getProduct(product) {
 
         }catch (e){
             is_ok = false
-
+            console.log(e)
         }
 
         if (is_ok){

@@ -1,5 +1,5 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-
+const axios = require('axios');
 
 /**
 https://api.pingprice.be/products?
@@ -7,20 +7,23 @@ https://api.pingprice.be/products?
 
  */
 
-async function  get_comparse_for_product (text,region,brand = ""){
+async function  get_comparse_for_product (id,region,brand ="",shops =""){
 
     const lg = "fr"
     const kheys = '625420a27e00cc0197e4d1e1'
 
-    var xhr =  new  XMLHttpRequest();
 
-    if (brand !== "") {
-        var url = [`https://api.pingprice.be/products?brand=${brand}&text=${text}&lg=${lg}&key=${kheys}&regions=${region}`]
+    if (brand !== "" && shops !== ""){
+        var url = `https://api.pingprice.be/products?brand=${brand}&ean=${id}&lg=${lg}&key=${kheys}&regions=${region}&shops=${shops}`}
+    else {
+        var url = `https://api.pingprice.be/products?ean=${id}&lg=${lg}&key=${kheys}&regions=${region}`}
 
-    }
-    console.log(url[0])
+
+    var raw_data =  await axios.get(url);
+    return raw_data
+    /**
     xhr.onreadystatechange = alertContents;
-    await xhr.open("GET",url[0],false)//false obligatoire sinon la fonction est non bloquante
+    await xhr.open("GET",url,false)//false obligatoire sinon la fonction est non bloquante
     xhr.responseType = 'json'
 
 
@@ -48,8 +51,8 @@ async function  get_comparse_for_product (text,region,brand = ""){
     }
     xhr.send()
 
-
+*/
 
 }
 
-get_comparse_for_product("pâte",5,"Boni")
+module.exports = {  get_comparse_for_product};
