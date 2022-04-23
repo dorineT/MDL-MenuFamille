@@ -350,7 +350,7 @@ exports.Get_From_Cat = (req, res) => {
       });
     });
 }
-
+// test avec id 102 = frite
 exports.get_price = async(req,res) => {
     var shop = {
         "colruyt" : "boni",
@@ -397,21 +397,12 @@ exports.get_price = async(req,res) => {
 
                     await asyncForEach(price_product.data,async(thisOne) => {
 
-                        let subOne = {
-                            name_fr:thisOne.name_fr,
-                            brand:thisOne.brand,
-                            shop_fr:thisOne.shop_fr,
-                            photo:thisOne.photo,
-                            unit:thisOne.unit,
-                            price:thisOne.price,
-                            price_per_unit:thisOne.price_per_unit,
-                            date:thisOne.date,
-                            url_fr:thisOne.url_fr
+                        let subOne = { toString(){return`{"product":{"name_fr":${thisOne.name_fr},"brand":${thisOne.brand},"shop_fr":${thisOne.shop_fr},"photo":${thisOne.photo},"unit":${thisOne.unit},"price":${thisOne.price},"price_per_unit":${thisOne.price_per_unit},"date":${thisOne.date},"url_fr":${thisOne.url_fr}}}`
+                            }
+                        };
+                        console.log("sub= ",JSON.parse(subOne))
 
-                        }
-                        //console.log("sub= ",(`product:{${subOne.date}}`))
-
-                        json_price.push(`product:{${subOne}}`)
+                        json_price.push(subOne)
                     })
 
                     //temp = `{nom:${product.nom},info:[${json_price}]}`
