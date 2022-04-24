@@ -349,10 +349,12 @@ moment.locale('fr')
             addFavorite(){                       
                 this.isFavoris = 1
                 DAOFavoris.create(this.id_recette)
+                this.$emit('changeFavoris_recipeInfo', this.id_recette, this.isFavoris)
             },
             deleteFavorite(){               
                 this.isFavoris = 0
                 DAOFavoris.deleteRecipe(this.id_recette)
+                this.$emit('changeFavoris_recipeInfo', this.id_recette, this.isFavoris)
             }
 		},
         watch:{

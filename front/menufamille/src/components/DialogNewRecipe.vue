@@ -39,7 +39,7 @@
               dense
               outlined
               rounded
-              chips
+              small-chips
               clearable
               deletable-chips
               multiple
@@ -95,7 +95,7 @@
 						>
 					</v-card-text>
 					<v-card-actions>
-						<v-btn rounded color="grey" @click="dialogType = false">
+						<v-btn rounded color="grey" @click="() => {dialogType = false; resetModalNewIngredient()}">
 							Annuler
 						</v-btn>
 						<v-btn rounded class="colorbtnGreen" @click="addIngredient">
@@ -115,7 +115,7 @@
 				<v-card-text>
 					<v-container fluid>
 						<v-row>
-							<v-col cols="12" sm="6" md="6" lg="6" xl="12">
+							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								<v-text-field
 									v-model="recipe.nom"
 									label="Nom"
@@ -123,7 +123,7 @@
 									:rules="ruleRequired"
 								></v-text-field>
 							</v-col>
-							<v-col cols="12" sm="6" md="6" lg="6" xl="12">
+							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								Nombre de personnes: {{ recipe.nbPers }}
 								<v-slider
 									v-model="recipe.nbPers"
@@ -143,7 +143,7 @@
 								</v-slider>
 							</v-col>
 
-							<v-col cols="12" sm="6" md="6" lg="6" xl="12">
+							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								<v-autocomplete
 									:rules="[required]"
 									label="Catégories"
@@ -160,7 +160,7 @@
 									no-data-text="Aucune catégorie correspondante"
 								></v-autocomplete>
 							</v-col>
-							<v-col cols="12" sm="6" md="6" lg="6" xl="12">
+							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								<v-autocomplete
 									required
 									label="Tags"
@@ -194,10 +194,9 @@
 									clearable
 									multiple
 									small-chips
-									solo
+								
 									flat
-									outlined
-									rounded
+
 								>
 									<template v-slot:no-data>
 										<v-list-item v-if="search !== null && search.length > 2">

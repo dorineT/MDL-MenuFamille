@@ -30,7 +30,7 @@
                                   }"
                                   height="400px"
                                   transition="fade-transition">
-                                  <recipe-card  :recipe="item"></recipe-card>
+                                  <recipe-card  :recipe="item" @updateFavoris_recipeCard="updateList"></recipe-card>
                                </v-lazy>  
                                 
                             </v-col> 
@@ -115,6 +115,10 @@ export default{
           this.recipe.push(newItem)
         }
         this.showDialogueNewRecipe = false
+      },
+      updateList(idRecette, favoris){
+        let recette = this.recipe.find( el => el.id_recette === idRecette)
+        recette.isFavoris = favoris
       }
     },
 }

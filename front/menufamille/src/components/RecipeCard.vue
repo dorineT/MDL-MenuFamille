@@ -75,7 +75,7 @@
             </v-col>                                                   
            </v-row>
         </v-card-actions>
-      <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog"/>
+      <recipe-info :id_recette="recipe.id_recette" :dialogInfoRecipe="showDialogueInfoRecipe" @closeDialog="closeDialog" @changeFavoris_recipeInfo="favorisUpdate"/>
     </v-card>
 </template>
 
@@ -97,7 +97,10 @@ export default {
         },
         closeDialog(){           
             this.showDialogueInfoRecipe = false    
-        }
+        },
+      favorisUpdate(id, isFavoris){
+        this.$emit('updateFavoris_recipeCard', id, isFavoris)
+      }
     }
 }
 </script>
