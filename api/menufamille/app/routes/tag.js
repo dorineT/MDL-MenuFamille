@@ -11,11 +11,3 @@ module.exports = router
 
     // Retrieve all Calender
 router.get('/', tag.findAll);
-
-router.post('/', tag.PutTag);
-
-router.post('/:id', tag.UpdateTag);
-
-router.delete('/:id', tag.Deletetag);
-
-router.get('/recette/:id',tag.TagRecette)

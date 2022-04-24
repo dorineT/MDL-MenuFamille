@@ -42,7 +42,11 @@
     },
     {
       "name" : "suggestion",
-      "description" : "Operations on the sugestion"
+      "description" : "Operations on the suggestion"
+    },
+    {
+      "name" : "tag",
+      "description" : "Operation of the tags"
     }
   ],
   "schemes": [
@@ -1184,7 +1188,7 @@
               }
             }
           },
-          "/denree/FindOrCreate/{nom}": {
+          "/denree/FindOrCreate/{nom}/{nutriscore}/{calories}": {
             "get": {
               "tags": [
                 "denree"
@@ -1202,11 +1206,37 @@
                   "description": "exact name of the denree",
                   "required": true,
                   "type": "string"
+                },
+                {
+                  "name": "nutriscore",
+                  "in": "path",
+                  "description": "number of the nutriscore",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "calories",
+                  "in": "path",
+                  "description": "number of the calories",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "types",
+                  "in" :"body",
+                  "description" : "list of the types",
+                  "required": true,
+                  "type" : "array", "items" :
+                  {"type": "object", "properties": 
+                    {
+                      "id_type": {"type": "integer","format": "int64"}
+                    }
+                  }
                 }
               ],
               "responses": {
                 "default": {
-                  "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
+                  "description": "successful operation",
                   "schema": {
                     "type": "object",
                     "properties": {
@@ -1655,6 +1685,27 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/Recette_all_info"
+            }
+          }
+        }
+      }
+    },
+    "/tag/": {
+      "get": {
+        "tags": [
+          "tag"
+        ],
+        "summary": "Gets all the tags from the database",
+        "description": "Gets all the tags from the database",
+        "operationId": "findAll",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Tags_full"
             }
           }
         }
