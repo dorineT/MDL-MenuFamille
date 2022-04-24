@@ -111,15 +111,12 @@ exports.PutDenree = (req, res) => {
   exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
     //const stats = get_stats_from_name(nomArg)[0]
-    console.log(req.params.nutriscore)
-    console.log(req.params.calories)
-    console.log(req.query.types)
     await Denree.findOrCreate({
       where: { nom:  nomArg },
-      defaults:{
-        nutriscore: req.params.nutriscore,
-        calories: req.params.calories
-      }
+      /*defaults:{
+        nutriscore: stats[2].toUpperCase(),
+        calories: stats[3]
+      }*/
     }).then( async (data) => {
       if (data[1] == true){
         const id_new_denree = data[0].id_denree;

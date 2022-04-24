@@ -627,7 +627,7 @@
 			},
 			findCreate(product) {
 				//call when button ajouter is pressed in modal new ingredient		
-				DAODenree.findCreateProduct(product.nom, this.typeChoix, product.nutriscore, product.calorie).then(
+				DAODenree.findCreateProduct(product.nom, this.typeChoix).then(
 					(response) => {
 						product = response.data[0];
 						if (product !== null) {
