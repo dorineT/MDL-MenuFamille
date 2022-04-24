@@ -1,4 +1,3 @@
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const axios = require('axios');
 
 /**

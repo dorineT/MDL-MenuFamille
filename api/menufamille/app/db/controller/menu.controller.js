@@ -24,20 +24,9 @@ exports.findAll = (req, res) => {
 };
 
 exports.getFood = (req, res) => {
-  let response = [];
   let product = {nom: req.params.name, types: req.query.types};
   getProduct(product).then((data) => {
-    for(let i=0;i<data.length;i++) {
-      response.push(
-        {
-          //code: data[i].code,
-          nom: data[i].nom,
-          //nutriscore: data[i].nutriscore,//.toUpperCase(),
-          //calorie: data[i].calorie
-        }
-      )
-    }
-    res.send(response)
+    res.send(data)
   })
 };
 

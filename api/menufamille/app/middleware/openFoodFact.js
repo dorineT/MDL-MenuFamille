@@ -1,34 +1,24 @@
 const axios = require('axios');
-/**
-* @overview : fonction donnant le nutriscore et les Kcal pour 100g, a besoin du code barre.
-* @requires : npm install xmlhttprequest
-* @param int bar_code : le numéro du code barre exemple : 737628064502
-* @return : [nutrisocre::type(String),kcal_pour_100g::type(int)] => exemple [ 'c', 385 ]
- */
-function get_stats_from_barreCode(bar_code) {
-    var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var plural = require('rosaenlg-pluralize-fr');
 
-    var url = 'http://world.openfoodfacts.org/api/v0/product/' + bar_code.toString() + '.json'
-    var xhr = new XMLHttpRequest();
+function countWords(str) {
+    const arr = str.split(' ');
+  
+    return arr.filter(word => word !== '').length;
+}
 
-    var nutriscore;
-    var kalorie;
 
-    xhr.open("GET", url, false)//false obligatoire sinon la fonction est non bloquante
-    xhr.onreadystatechange = function () {
-
-        if (this.readyState == 4 && this.status == 200) {
-            var myArr = JSON.parse(this.responseText);
-
-            nutriscore = myArr["product"]["nutrition_grade_fr"];
-            kalorie = myArr["product"]["nutriments"]["energy_value"];
-
-        };
-    };
-
-    xhr.send();
-
-    return ([nutriscore, kalorie])
+function occurrences(string, otherString, limit) {
+    if(string ===  otherString) return true;
+    let count = 0;
+    
+    for (let i=0; i< countWords(string); i++) {
+        for (let a=0; a< countWords(otherString); a++) {
+            if(string.split(' ')[i] === otherString.split(' ')[a]) count++;
+        }
+    }
+    if( count > limit) return true;
+    return false;
 }
 
 /**
@@ -45,68 +35,33 @@ async function getProduct(product) {
     }
     var raw_data =  await axios.get(link + "&page=1&search_simple=1&action=process&json=1");
 
+    //product.brands
+    //product.nom
+    //product.known_ingredients_n
 
-    // ---beginning of treatment---
-    let n_word = ["jus","sauces"] // liste pour ban tout les mots imposible
-
-
-    let list_for_return = []
-    let list_name = []
-    let name
-
-    let name_of_product = product.nom.toLowerCase()
-    let is_ok = false
+    let request_name = product.nom.toLowerCase();
+    let pluriel;
+    let list_return = [];
+    if(request_name.trim().indexOf( " " ) != -1) {
+        pluriel = plural(request_name[0])
+    } else {
+        pluriel = plural(request_name)
+    }
 
     raw_data.data.products.forEach( product => {
-
-        try{
-
-            is_ok = product.known_ingredients_n <= 3 || product.known_ingredients_n === undefined
-            is_ok = is_ok && product.product_name_fr !== undefined
-            is_ok = is_ok && (((product.product_name_fr.toLowerCase()).includes(name_of_product.toLowerCase()) || product.product_name_fr.toLowerCase() === name_of_product))
-            n_word.forEach(ban_word => {
-                is_ok = is_ok && !(product.product_name_fr.toLowerCase()).includes(ban_word.toLowerCase())
-                is_ok = is_ok && !(product.categories.toLowerCase()).includes(ban_word.toLowerCase())
-            })
-            is_ok = is_ok && !(list_name.includes((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())) //normal
-
-            is_ok = is_ok && !(list_name.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())-"s")) //pluriel
-            is_ok = is_ok && !(list_name.includes(((product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase())+"s")) //pluriel
-
-            //categories_tags
-
-        }catch (e){
-            is_ok = false
-            console.log(e)
-        }
-
-        if (is_ok){
-            name = (product.product_name_fr.replace(product.brands,"").replace("-","")).toLowerCase()
-            var good_product =
-
+        if(product.product_name_fr !== undefined) {
+            let product_name = product.product_name_fr.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ' ').trim().replace(product.brands,"").toLowerCase();
+            if(product_name.indexOf(request_name) === 0) {
+                var good_product =
                 {
-                    "code":product._id,
-                    "nom": name,
-                    "nutriscore":product.nutrition_grade_fr,
-                    "calorie":product.nutriments.energy_value
+                    "nom": product_name
+                }
+                list_return.push(good_product);
             }
-
-
-            list_name.push(name)
-            list_for_return.push(good_product)
-
-
         }
-
-    })
-    // supression des doublons
-
-
-
-
-
-
-    return list_for_return
+    });
+    return list_return.filter((v,i,a)=>a.findIndex(v2=>(occurrences(v2.nom, v.nom, countWords(request_name))) && v2.nom !== pluriel && v.nom !== pluriel)===i);
+    
 }
 
-module.exports = { get_stats_from_barreCode, getProduct };
+module.exports = { getProduct };
