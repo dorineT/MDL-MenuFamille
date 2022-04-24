@@ -138,7 +138,7 @@
 														></v-radio>
 
 														<v-avatar style="margin:25px" color="light-green lighten-1" size="35">
-															<span class="white--text text-h5">{{sug.membre.prenom.substring(0, 1)}}</span>
+															<span class="white--text text-h5">{{sug.membre.prenom.substring(0, 1)}}{{sug.membre.nom.substring(0, 1)}}</span>
 														</v-avatar>
 													</div>
 
