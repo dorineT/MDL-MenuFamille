@@ -2,12 +2,12 @@
 	<v-row justify="center">
 		<v-dialog
 			v-model="dialogShow"
-			fullscreen
+			
 			hide-overlay
 			transition="dialog-bottom-transition"
 		>
-			<v-card>
-				<v-toolbar dark color="#FFB74D">
+			<v-card class="noPadding">
+				<v-toolbar dark color="#9CCC65">
 					<v-btn icon dark @click="$emit('closeDialog')">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
@@ -17,7 +17,7 @@
 						<v-btn dark text @click="sauvegardeMenuJour()"> Sauvegarder </v-btn>
 					</v-toolbar-items>
 				</v-toolbar>
-
+				
 				<v-list subheader>
 					<v-subheader>
 						Menu du : {{ jourSemaine }} {{ periode }}, le {{date}}
@@ -84,7 +84,7 @@
 					<v-expand-transition>
 						<div v-show="showModifMenu">
 							<v-container fluid>
-								<v-row>
+								<v-row justify-center v-if="stringUpdateModal !== 'updateMenuJourCreate'">
 									<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 										<v-card   
 											elevation="7"
@@ -113,14 +113,13 @@
 										sm="6"
 										md="6"
 										lg="6"
-										xl="6"
-										v-if="stringUpdateModal !== 'updateMenuJourCreate'"
+										xl="6"										
 									>
 										<v-card   
 											elevation="7"
 											outlined
 											shaped>
-											<v-card-title> Suggestion </v-card-title>
+											<v-card-title> Suggestions </v-card-title>
 											<v-card-text>
 												<v-radio-group
 													v-model="radioSelectionSuggestion"
@@ -141,8 +140,34 @@
 															<span class="white--text text-h5">{{sug.membre.prenom.substring(0, 1)}}{{sug.membre.nom.substring(0, 1)}}</span>
 														</v-avatar>
 													</div>
+													<span v-if="suggestionsListe.length===0">Aucune suggestion proposé</span>
 
 												</v-radio-group>
+											</v-card-text>
+										</v-card>
+									</v-col>
+								</v-row>
+								<v-row v-else class="justify-center">
+									<v-col cols="12" sm="8" md="8" lg="8" xl="8" >
+										<v-card   
+											elevation="7"
+											outlined
+											shaped>
+											<v-card-title>
+												Choix parmis la liste de recettes
+											</v-card-title>
+											<v-card-text>
+												<v-autocomplete
+													color="orange lighten-2"
+													label="Recette"
+													:items="itemRecettes"
+													item-text="nom"
+													item-value="id_recette"
+													return-object
+													v-model="comboboxRecetteSelected"
+													@change="userActionListeRecette()"
+													no-data-text="Aucune recette correspondante"
+												></v-autocomplete>
 											</v-card-text>
 										</v-card>
 									</v-col>
@@ -153,8 +178,13 @@
 
 					<v-list-item>
 						<v-list-item-content>
-							<v-list-item-title>tags choisis</v-list-item-title>
+													
 							<v-col xl="6" md="6" sm="6" xs="12">
+								<v-card   
+								elevation="7"
+								outlined
+								shaped>
+								<v-card-title>Tags choisis</v-card-title>
 								<v-autocomplete
 									chips
 									clearable
@@ -168,24 +198,32 @@
 									color="orange lighten-2"
 									no-data-text="Aucun tag correspondant"
 								></v-autocomplete>
+								</v-card>
 							</v-col>
-						</v-list-item-content>
-					</v-list-item>
-
-					<v-list-item>
-						<v-list-item-content>
-							<v-list-item-title>Nombre de personnes</v-list-item-title>
 							<v-col xl="6" md="6" sm="6" xs="12">
-								<v-text-field
-									type="number"
-									step="1"
-									min="0"
-									ref="input"
-									:rules="[numberRule]"
+								<v-card   
+								elevation="7"
+								outlined
+								shaped>
+								<v-card-title>Nombre de personnes: {{ numberPersonneNew }}</v-card-title>
+								<v-slider
 									v-model="numberPersonneNew"
-									clearable
-								></v-text-field>
-							</v-col>
+									color="green lighten-3"
+									track-color="grey"
+									always-dirty
+									min="1"
+									:max="max"
+								>
+									<template v-slot:prepend>
+										<v-icon @click="decrement"> mdi-minus </v-icon>
+									</template>
+
+									<template v-slot:append>
+										<v-icon @click="increment"> mdi-plus </v-icon>
+									</template>
+								</v-slider>
+								</v-card>
+							</v-col>							
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
@@ -238,10 +276,21 @@
 				numberPersonneNew: null,
 				numberPersonneOld: null,
 				jourSemaine: null,
+				defaultMax: 30
 			};
 		},
 		mounted(){
 
+		},
+		computed: {
+			max() {
+				if (this.numberPersonneNew === this.defaultMax) {
+					this.defaultMax = this.defaultMax + 50;
+					return this.defaultMax;
+				} else {
+					return this.defaultMax;
+				}
+			},
 		},
 		watch:{
 			tagsChoix(){
@@ -355,7 +404,12 @@
 			},
 		},
 		methods: {
-
+			decrement() {
+				this.recipe.nbPers--;
+			},
+			increment() {
+				this.recipe.nbPers++;
+			},
 			/**Copier un tableau - superficielle
 			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
 			copyTab(source){
@@ -455,6 +509,7 @@
 </script>
 
 <style lang="sass">
+@import '../style/globalStyle'
 .v-application .primary--text
   color: #FFB74D !important
   caret-color: #FFB74D !important
