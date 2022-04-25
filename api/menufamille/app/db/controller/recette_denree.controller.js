@@ -20,7 +20,12 @@ exports.findAll = (req, res) => {
 /// PUT CRUD
 
 exports.PutRecipe_Denree = (req, res) => {
-  RecetteDenree.create({id_recette: req.body.id_recette, id_denree: req.body.id_denree, quantite: req.body.quantite})
+  RecetteDenree.create({
+    id_recette: req.body.id_recette,
+    id_denree: req.body.id_denree,
+    quantite: req.body.quantite,
+  mesure: req.body.mesure
+  })
   .then(data => {
     res.send(data);
   })

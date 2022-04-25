@@ -1,9 +1,9 @@
 <template>
 
-  <v-card style="margin: 4px">
+  <div style="margin: 4px">
       <dialog-modification-jour-plat :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :stringUpdateModal="'updateMenuJour'" @closeDialog="closeDialogModification" @updatePeriode="updateMenuJour"></dialog-modification-jour-plat>
 
-      <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
+      <div  style="margin: 4px">Mode modification </div>
       
       <v-data-table
             :headers="headers"
@@ -127,16 +127,16 @@
 
       <div >          
      
-            <v-btn  class="margin" outlined color="orange" @click="saveMenu">Sauvegarder</v-btn>
+            <v-btn  class="margin colorbtnOrange" rounded  @click="saveMenu">Sauvegarder</v-btn>
        
-            <v-btn class="margin"  outlined color="green" @click="valideMenu">Valider</v-btn>
+            <v-btn class="margin colorbtnGreen"  rounded  @click="valideMenu">Valider</v-btn>
 
       </div>
 
       <v-snackbar v-model="errorMessage.error" text color="red">
         {{ errorMessage.message }}
       </v-snackbar>
-    </v-card>
+    </div>
 
 </template>
 
@@ -147,6 +147,7 @@ import DialogModificationJourPlat from '../components/DialogModificationJourPlat
 
 import MenuDAO from '../services/api.menu'
 import moment from 'moment'
+moment.locale('fr')
 let DAOMenu = new MenuDAO()
 
 export default {
@@ -184,23 +185,12 @@ export default {
       }
     },
     mounted(){       
-      
-      DAOMenu.getMenuById(this.idMenu).then(
-        (response) => {
-          this.menu = response.data
-          this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
-          this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
-          this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
-          
-          this.items = this.menu.calendriers
-          let indiceEnd = this.items.length < 7 ? this.items.length : 7       
-          this.populateHeader(this.items,0,indiceEnd)
-          this.fillPlat(this.items,0,indiceEnd) 
-
-          this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
-        }
-      )
-      
+      this.fetchMenu()      
+    },
+    watch:{
+      idMenu(){       
+        this.fetchMenu()
+      }
     },
     methods:{
       //// Affichage calendrier ///
@@ -213,6 +203,23 @@ export default {
           this.periodeSend = menuFind.date
           this.showDialog = true          
         },
+      fetchMenu(){
+        DAOMenu.getMenuById(this.idMenu).then(
+          (response) => {
+            this.menu = response.data
+            this.menu.plat_identique_matin = this.menu.plat_identique_matin === -1 ? null : this.menu.plat_identique_matin
+            this.menu.plat_identique_midi = this.menu.plat_identique_midi === -1 ? null : this.menu.plat_identique_midi
+            this.menu.plat_identique_soir = this.menu.plat_identique_soir === -1 ? null : this.menu.plat_identique_soir
+          
+            this.items = this.menu.calendriers
+            let indiceEnd = this.items.length < 7 ? this.items.length : 7       
+            this.populateHeader(this.items,0,indiceEnd)
+            this.fillPlat(this.items,0,indiceEnd) 
+
+            this.nbPersonneFamille = this.$store.state.info.nbMembreActuel
+          }
+        )
+      },
       populateHeader(menu,iStart, iEnd){ 
         this.headers = [{text: 'Période', align:'center'}]
         this.nbJourMenu = 0       
@@ -336,12 +343,14 @@ export default {
         }
 
       },
-      valideMenu(){
+      async valideMenu(){
         this.menu.verrou = true
-        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
+        let res = await DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)
+        this.$emit('eventReceived')        
       },
-      saveMenu(){
-        DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)        
+      async saveMenu(){
+        let res = await DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)  
+        this.$emit('eventReceived')          
       },
       closeDialogModification(){
         this.showDialog = false
@@ -353,6 +362,7 @@ export default {
 
 
 <style lang="sass">
+@import '../style/globalStyle'
 .margin
   margin: 10px 
 

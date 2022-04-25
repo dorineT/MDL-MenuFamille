@@ -12,9 +12,10 @@ const famille = require('./famille.js');
 const tag = require('./tag.js');
 const membres = require('./membres.js');
 const calendrier_recette = require('./calendrier_recette.js');
-const tag_periode = require('./tag_periode.js')
-const suggestion = require('./suggestion.js')
-const denree_type = require('./denree_type')
+const tag_periode = require('./tag_periode.js');
+const suggestion = require('./suggestion.js');
+const denree_type = require('./denree_type.js');
+const recette_denre = require('./recette_denree.js');
 
 const product = require('./product');
 const swaggerUi = require('swagger-ui-express'),
@@ -43,4 +44,5 @@ module.exports = app => {
   app.use('/tag_periode',tag_periode)
   app.use('/suggestion',suggestion)
   app.use('/denree_type',denree_type)
+  app.use('/recette_denre',recette_denre)
 }

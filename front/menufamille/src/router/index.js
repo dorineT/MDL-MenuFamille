@@ -13,6 +13,7 @@ import FamilyView from '../views/FamilyView.vue'
 import ShoppingList from '../views/ShoppingList.vue'
 
 import CreationMenu from '../views/CreationMenu.vue'
+import Historique from '../views/Historique.vue'
 
 Vue.use(VueRouter)
 
@@ -50,8 +51,6 @@ const routes = [
   },
 
   {
-
-    // links to access to the creation menu page
     path: '/creationMenu',
     name: 'CreationMenu',
     component: CreationMenu
@@ -61,6 +60,11 @@ const routes = [
     name: 'ShoppingList',
     component: ShoppingList
   },
+  {
+    path: '/history',
+    name: 'Historique',
+    component: Historique
+  }
 ]
 
 const router = new VueRouter({
