@@ -239,6 +239,7 @@ INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'alcool');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'eau');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'sel');
+INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'laits');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
 INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');

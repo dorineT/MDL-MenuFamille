@@ -10,6 +10,14 @@ export default class MenuDao{
     }
 
     /**
+     * Get les menus verrouillés dont la date est passée
+     * @param idFamille
+     */
+     getMenuOld(idFamille) {        
+      return api.get("/menu/old/"+idFamille)        
+    }
+
+    /**
      * Envoie le nouveau menu à l'api par post
      * @param newMenu le nouveau menu
      * @param idFamille l'id de la famille
@@ -31,8 +39,7 @@ export default class MenuDao{
      * @param {*} suggestion la suggestion (object)
      */
     sendMenuAddSuggestion(suggestion){
-      console.log('send suggestion')
-      console.log(suggestion)
+
       api.post("/suggestion",suggestion)
     }
 
@@ -43,8 +50,6 @@ export default class MenuDao{
      * @param {*} periode 
      */
      sendPeriodeUpdate(periode){    
-      console.log("envoi")
-      console.log(periode)
       api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
     }
 

@@ -11,7 +11,7 @@
     </v-container>
 
     <div style="margin-top: 3em">
-      <v-card style="margin: 0 auto; width: 40em" class="elevation-12">
+      <v-card style="margin: 0 auto; width: 40em" class="elevation-12 noPadding">
         <v-toolbar color="#9CCC65" dark flat>
           <v-toolbar-title>Connexion</v-toolbar-title>
           <v-spacer />
@@ -133,6 +133,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "../style/globalStyle"
 .colorBackCont
   background-color: #DCEDC8
 

@@ -26,3 +26,5 @@ router.post('/', type.putType);
 router.put('/:id', type.UpdateType);
 
 router.delete('/:id', type.DeleteType);
+
+router.get('/all_info/:id',type.find_all_info_ById)

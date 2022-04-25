@@ -20,4 +20,3 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.get('/:product', scraping.getProduct);

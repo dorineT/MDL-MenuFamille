@@ -134,6 +134,7 @@
 <script>
 	import { eventBus } from "../main";
 	import moment from "moment";
+	moment.locale('fr')
 	import checkContrainte from "./../services/checkContrainteMenu";
 	import DialogModificationJourPlat from '../components/DialogModificationJourPlat.vue'
 	import MenuDao from "./../services/api.menu";
@@ -418,17 +419,17 @@
 					id_famille: this.$store.state.info.idFamilleActuel,
 					periode_debut: moment(this.formData.periode_debut).format("DD/MM/YYYY"),
 					periode_fin: moment(this.formData.periode_fin).format("DD/MM/YYYY"),
-					plat_identique_matin: this.formData.nbPlatMatin,
-					plat_identique_midi: this.formData.nbPlatMidi,
-					plat_identique_soir: this.formData.nbPlatSoir,
+					plat_identique_matin: this.formData.nbPlatMatin === null ? -1 : this.formData.nbPlatMatin ,
+					plat_identique_midi: this.formData.nbPlatMidi === null ? -1 : this.formData.nbPlatMidi,
+					plat_identique_soir: this.formData.nbPlatSoir === null ? -1 : this.formData.nbPlatSoir,
 					type: this.formData.choixTypeMenu,
 					verrou: false,
 					days_until_suggestion: this.formData.daysUntilSuggestion,
 					calendriers: structuredClone(this.items),
 				};							
 				
-				if(i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
-				i+=1
+				if(this.i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
+				this.i+=1
 			
 				this.$router.push("/");
 			},

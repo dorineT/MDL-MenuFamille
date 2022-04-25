@@ -31,3 +31,9 @@ router.get('/GetAllInfo/:id', menu.Get_Menu_All_Info_PK);
 router.get('/Get_suggest_periode/:id_fam',menu.Get_suggest_periode) // ne sert à rien
 
 router.post('/new_menu',menu.create_New_Menu);
+
+
+router.get('/food/:name', menu.getFood);
+
+router.get("/old/:id_fam",menu.old_menu);
+

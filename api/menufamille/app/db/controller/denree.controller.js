@@ -1,6 +1,8 @@
 const db = require("../models");
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
+const {asyncForEach} = require("../../middleware/asyncForEach");
+//const {get_stats_from_name} = require("../../middleware/openFoodFact");
 
 // Retrieve all denree from the database.
 exports.findAll = (req, res) => {
@@ -106,11 +108,27 @@ exports.PutDenree = (req, res) => {
 
   //// Find or Create 
 
-  exports.FindOrCreate = (req, res) => {
+  exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
-    Denree.findOrCreate({
-      where: { nom:  nomArg }
-    }).then(data => {
+    //const stats = get_stats_from_name(nomArg)[0]
+    await Denree.findOrCreate({
+      where: { nom:  nomArg },
+      /*defaults:{
+        nutriscore: stats[2].toUpperCase(),
+        calories: stats[3]
+      }*/
+    }).then( async (data) => {
+      if (data[1] == true){
+        const id_new_denree = data[0].id_denree;
+        const typesList = req.query.types
+        asyncForEach(typesList, async(link_type)=>{
+          await db.denree_type.create({
+            id_denree: id_new_denree,
+            id_type: link_type.id_type,
+          
+          })
+        })
+      }
       res.send(data);
     }).catch(err => {
       res.status(500).send({
@@ -135,4 +153,44 @@ exports.PutDenree = (req, res) => {
           err.message || "Some error occurred while retrieving denree."
       });
     });
+  }
+/**
+ *
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ * {
+    "nom":"CRAYON",
+    "nutriscore":"A",
+    "calories":300,
+    "type":[
+        {"id_type":1},
+        {"id_type":2}
+    ]
+}
+ */
+  exports.post_denree_and_type = async (req,res)=>{
+    await Denree.create({
+      nom: req.body.nom,
+      nutriscore: req.body.nutriscore,
+      calories:req.body.calories
+    })
+        .then(async(data) => {
+          const id_new_denree = data.id_denree;
+          asyncForEach(req.body.type,async(link_type)=>{
+            await db.denree_type.create({
+              id_denree: id_new_denree,
+              id_type: link_type.id_type
+            })
+          })
+          res.send(data)
+        })
+        .catch(err => {
+          res.status(500).send({
+            message:
+                err.message || "Some error occurred while inserting denree"
+          });
+
+        });
+
   }

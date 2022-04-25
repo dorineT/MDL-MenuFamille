@@ -23,7 +23,7 @@ router.get('/FindWithTags',[authJwt.verifyToken], recette.find_All_Tags); //KO, 
 
 router.get('/FindRecipe/:id',[authJwt.verifyToken], recette.find_Recipe);
 
-router.get('/FindFromTags/',[authJwt.verifyToken], recette.find_Recipe_tags);
+router.get('/FindFromTags/:periode',[authJwt.verifyToken], recette.find_Recipe_tags);
 
 // recettes et leurs tags
 router.get('/AllTags', recette.find_Recipe_With_Tags);

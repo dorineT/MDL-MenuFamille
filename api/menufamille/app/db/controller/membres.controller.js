@@ -203,7 +203,6 @@ exports.AddFavorites = (req, res) => {
 /// Retirer un favoris
 
 exports.RemoveFavorites = (req, res) => {
-  console.log('hello remove')
   const id_mem = req.id_membre;
   const id_rec = req.params.id_recette;
   db.favoris.destroy({
@@ -235,8 +234,7 @@ exports.RemoveFavorites = (req, res) => {
 
 /// Lister les favoris
 
-exports.FindFavorite = (req, res) =>{
-  console.log('hhhelleo')
+exports.FindFavorite = (req, res) =>{ 
   const id_mem = req.id_membre;
   const id_rec = req.params.id_recette;
   db.favoris.findOne({
