@@ -7,7 +7,8 @@ const Categorie = db.categorie;
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
-
+const {getProduct} = require("../../middleware/openFoodFact");
+const {get_comparse_for_product} = require("../../middleware/PingPrice");
 /// GetAllRecipes Simple for CRUD
 
 exports.findAll = (req, res) => {
@@ -353,5 +354,79 @@ exports.Get_From_Cat = (req, res) => {
         message:
           err.message || "Some error occurred while retrieving Recipes."
       });
+    });
+}
+// test avec id 102 = frite
+exports.get_price = async(req,res) => {
+    var shop = {
+        "colruyt" : "boni",
+        "delhaize": "365",
+        "carrefour":" carrefour",
+        "intermarche":"intermarche"
+    }
+    var list_for_retrun = {}
+    var temp = {}
+
+    Recipe.findByPk(req.params.id,{
+        include:[{
+            model: Denree,
+            include:[
+                {
+                    model:db.type
+                }
+            ]
+        }]
+    }).then(async(data) => {
+
+            await asyncForEach(data.denrees, async (denray) => {
+                let list_type = []
+                let name = denray.nom
+
+
+                await asyncForEach(denray.types,async(typent) => {
+                    list_type.push(`"${typent.nom}"`)
+                })
+                let request = `{"nom":"${name}","types":[${list_type}]}`
+                let list_answer = await getProduct(JSON.parse(request))
+
+
+                //id,region,brand,shops
+                await asyncForEach( list_answer,async(product) =>{
+
+
+
+
+                    let price_product = await get_comparse_for_product(product.code,10)
+                    //console.log(price_product.data)
+
+                    let json_price = []
+
+                    await asyncForEach(price_product.data,async(thisOne) => {
+
+                        let subOne = { toString(){return`{"product":{"name_fr":${thisOne.name_fr},"brand":${thisOne.brand},"shop_fr":${thisOne.shop_fr},"photo":${thisOne.photo},"unit":${thisOne.unit},"price":${thisOne.price},"price_per_unit":${thisOne.price_per_unit},"date":${thisOne.date},"url_fr":${thisOne.url_fr}}}`
+                            }
+                        };
+                        console.log("sub= ",JSON.parse(subOne))
+
+                        json_price.push(subOne)
+                    })
+
+                    //temp = `{nom:${product.nom},info:[${json_price}]}`
+                    list_for_retrun[`{"nom":"${product.nom}"`] = `info:[${json_price}]}`
+                    } )
+
+
+
+            })
+
+        res.send(list_for_retrun)
+        }
+
+
+    ).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Recipes."
+        });
     });
 }
