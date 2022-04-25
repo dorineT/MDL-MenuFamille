@@ -282,7 +282,7 @@ let DAOfamily = new FamilyDao;
         ];
       },
       isRequest() {
-        return this.requestFamily > 0;
+        return this.requestFamily.length > 0;
       },
       currentFamily() {
         return this.$store.state.info;
@@ -346,6 +346,7 @@ let DAOfamily = new FamilyDao;
               }
               this.requestFamily.push(value)
             })
+            console.log(this.requestFamily)
           }
         )
       },
