@@ -35,12 +35,10 @@ async function getProduct(product) {
     let link = "https://be-fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom.toLowerCase()
     for (let i = 0; i < product.types.length; i++) {
         link += "&tagtype_" + i + "=categories&tag_contains_" + i + "=contains&tag_" + i + "=" + product.types[i]
-        console.log(product.types[i])
 
     }
-    var raw_data =  await axios.get(encodeURI(link + "&page=1&search_simple=1&action=process&json=1"));
+    var raw_data =  await axios.get(encodeURI(link + "&page_size=1000&search_simple=1&action=process&json=1"));
 
-    console.log(raw_data.data)
     let request_name = product.nom.toLowerCase();
     let pluriel;
     let list_return = [];
@@ -52,7 +50,7 @@ async function getProduct(product) {
 
     raw_data.data.products.forEach( product => {
         if(product.product_name_fr !== undefined) {
-            let product_name = product.product_name_fr.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ' ').trim().replace(product.brands,"").toLowerCase();
+            let product_name = product.product_name_fr.replace(/[~!@#$%^&*()_|+\-=?;:",.<>\{\}\[\]\\\/]/gi, ' ').trim().replace(product.brands,"").toLowerCase();
             if(product_name.indexOf(request_name) === 0) {
                 var good_product =
                 {
