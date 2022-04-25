@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATEONLY,
         allowNull: true,
         get: function() {
-          return this.getDataValue('date_expiration').toLocaleString('fr-BE', {timeZone: 'UTC'}).slice(0,10);
+          return this.getDataValue('date_expiration').toLocaleString('fr-BE', {timeZone: 'Europe/Brussels'}).slice(0,10);
         }
       }
     },

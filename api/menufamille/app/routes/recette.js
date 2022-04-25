@@ -9,18 +9,6 @@ const router = new Router()
 module.exports = router
 
 
-
-// Retrieve all Recipes 
-router.get("/", recette.findAll);
-
-router.post('/', recette.PutRecipe);
-
-router.put('/:id', recette.UpdateRecipe);
-
-router.delete('/:id', recette.DeleteRecipe);
-
-router.get('/FindWithTags',[authJwt.verifyToken], recette.find_All_Tags); //KO, c'est quoi la différence avec allTags ?
-
 router.get('/FindRecipe/:id',[authJwt.verifyToken], recette.find_Recipe);
 
 router.get('/FindFromTags/:periode',[authJwt.verifyToken], recette.find_Recipe_tags);

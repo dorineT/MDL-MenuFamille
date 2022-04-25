@@ -179,17 +179,6 @@ exports.Get_Current_Locked_Menu = (req, res) => {
       verrou: true,
       periode_fin: { [Op.gte]: date }
     },
-    /*include: [ 
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: {model: db.recette, required: false, attributes: ['nom']}
-          }
-        ]
-      }
-    ],*/
     order: [
       ['periode_debut', 'ASC']
     ]
@@ -277,45 +266,6 @@ exports.Get_Menu_By_Id = (req, res) => {
     });
 };
 
-
-//verifier avec le nb de jour untils_days_suggestion pour l'envoi des periodes de suggestion
-exports.Get_suggest_periode = (req, res) => {
-  const id_fam = req.params.id_fam;
-  const date = Date.now();
-
-  db.menu.findAll({
-    where:
-    {
-      id_famille: id_fam,
-      verrou: false,
-      periode_fin: { [Op.gte]: moment().subtract(this.days_until_suggestion, 'days').format() },
-    },
-    include: [
-      {
-        model: db.calendrier,
-        include: [
-          {
-            model: db.calendrier_recette,
-            include: { model: db.recette, required: false, attributes: ['nom'] }
-          }
-        ]
-      }
-    ],
-    order: [
-      [db.calendrier, 'date', 'ASC'],
-      [db.calendrier, db.calendrier_recette, 'id_periode', 'ASC']
-    ]
-  }).then(response => {
-
-    res.send(response)
-  })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving locked Menus."
-      });
-    });
-};
 
 exports.old_menu = async(req,res) =>{
 
@@ -455,8 +405,7 @@ exports.old_menu = async(req,res) =>{
             }
         ]
     }
- * @param res
- */
+ **/
 
 
 

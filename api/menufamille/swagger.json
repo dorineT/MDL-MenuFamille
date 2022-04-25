@@ -35,6 +35,18 @@
     {
       "name": "denree",
       "description": "Operations on Denree"
+    },
+    {
+      "name" : "categorie",
+      "description": "Operations on categories"
+    },
+    {
+      "name" : "suggestion",
+      "description" : "Operations on the suggestion"
+    },
+    {
+      "name" : "tag",
+      "description" : "Operation of the tags"
     }
   ],
   "schemes": [
@@ -1176,7 +1188,7 @@
               }
             }
           },
-          "/denree/FindOrCreate/{nom}": {
+          "/denree/FindOrCreate/{nom}/{nutriscore}/{calories}": {
             "get": {
               "tags": [
                 "denree"
@@ -1194,11 +1206,37 @@
                   "description": "exact name of the denree",
                   "required": true,
                   "type": "string"
+                },
+                {
+                  "name": "nutriscore",
+                  "in": "path",
+                  "description": "number of the nutriscore",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "calories",
+                  "in": "path",
+                  "description": "number of the calories",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "types",
+                  "in" :"body",
+                  "description" : "list of the types",
+                  "required": true,
+                  "type" : "array", "items" :
+                  {"type": "object", "properties": 
+                    {
+                      "id_type": {"type": "integer","format": "int64"}
+                    }
+                  }
                 }
               ],
               "responses": {
                 "default": {
-                  "description": "successful operation (care that, it's a create taking place, nutriscore will be at null)",
+                  "description": "successful operation",
                   "schema": {
                     "type": "object",
                     "properties": {
@@ -1356,8 +1394,324 @@
             }
           }
         }
-      }
       },
+      "/categorie/": {
+        "get": {
+          "tags": [
+            "categorie"
+          ],
+          "summary": "get the list of all categories",
+          "description": "get a full list of categories",
+          "operationId": "findAll",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "default": {
+              "description": "successful operation",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categories": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Categorie_full"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/suggestion/": {
+      "post": {
+        "tags": [
+          "suggestion"
+        ],
+        "summary": "post a suggestion",
+        "description": "post a suggestion",
+        "operationId": "put_suggestion",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "suggestion",
+            "in": "body",
+            "description": "full information of a suggestion",
+            "required": true,
+            "type": "object",
+            "properties": {
+              "id_periode" : {"type" : "integer", "format": "int64"},
+              "id_recette" : {"type" : "integer", "format": "int64"},
+              "id_membre" : {"type" : "integer", "format": "int64"},
+              "id_menu" : {"type" : "integer", "format": "int64"}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "$ref": "#/definitions/Suggestion_full"
+            }
+          }
+        }
+      }
+    }
+  },
+      "/suggestion/{id_periode}/{id_recette}/{id_menu}": {
+        "put": {
+          "tags": [
+            "suggestion"
+          ],
+          "summary": "get the list of all suggestion",
+          "description": "get a full list of suggestion",
+          "operationId": "put_suggestion",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id_periode",
+              "in": "path",
+              "description": "id of a period",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "id_recette",
+              "in": "path",
+              "description": "id of the recipe",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "id_menu",
+              "in": "path",
+              "description": "id of the menu",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "default": {
+              "description": "successful operation",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "$ref": "#/definitions/Suggestion_full"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/new_menu": {
+      "post": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "Create a new menu",
+        "description": "Create a new menu by passing all of it's informations",
+        "operationId": "create_New_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "menu",
+            "in": "body",
+            "description": "full information of the menu",
+            "required": true,
+            "type": "object",
+            "properties": {
+              "période_debut" : {"type" : "string", "format": "date"},
+              "période_fin"   : {"type" : "string", "format": "date"},
+              "id_menu" : {"type" : "integer", "format": "int64"},
+              "id_famille" : {"type" : "integer", "format" : "int64"},
+              "plat_identique_matin" : {"type": "integer", "format": "int64"},
+              "plat_identique_midi" : {"type": "integer", "format": "int64"},
+              "plat_identique_soir" : {"type": "integer", "format": "int64"},
+              "days_until_suggestion": {"type": "integer", "format": "int64"},
+              "type" : {"type" : "string" },
+              "verrou" : {"type": "boolean"},
+              "calendrier" : { "$ref": "#/definitions/Calendrier_full"}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "$ref" :"#/definitions/Menu"
+              }
+            }
+          }
+        }
+      }
+    },
+    "menu/old/{id_fam}": {
+      "get": {
+        "tags": [
+          "menu"
+        ],
+        "summary": "get all the old menus for a familly",
+        "description": "Create a new menu by passing all of it's informations",
+        "operationId": "create_New_Menu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_fam",
+            "in": "path",
+            "description": "id of the familly",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "menus": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/AllTags": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "get all the recipes and their tags",
+        "description": "get all the recipes and their tagss",
+        "operationId": "find_Recipe_With_Tags",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "recipe": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Recette_with_tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/FindFromTags": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Gets all the recipe linked to a list of tags",
+        "description": "Gets all the recipe linked to a list of tags",
+        "operationId": "find_Recipe_tags",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "body",
+            "description": "a full list of tags",
+            "required": true,
+            "type": "array",
+            "items" : {
+              "nom" : "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+                "properties": {
+                  "recipe": { "type" : "array", "items" :
+                    {
+                      "$ref": "#/definitions/Recette_with_tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recette/FindRecipe/{id_recette}": {
+      "get": {
+        "tags": [
+          "recipe"
+        ],
+        "summary": "Gets all the recipe linked to a list of tags",
+        "description": "Gets all the recipe linked to a list of tags",
+        "operationId": "find_Recipe_tags",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_recette",
+            "in": "param",
+            "description": "the id of the recipe we search for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Recette_all_info"
+            }
+          }
+        }
+      }
+    },
+    "/tag/": {
+      "get": {
+        "tags": [
+          "tag"
+        ],
+        "summary": "Gets all the tags from the database",
+        "description": "Gets all the tags from the database",
+        "operationId": "findAll",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Tags_full"
+            }
+          }
+        }
+      }
+    }
+  },
   "securityDefinitions": {
     "api_key": {
       "type": "apiKey",
@@ -1596,6 +1950,21 @@
         "tags": { "$ref":"#/definitions/Tags_full"},
         "categorie": { "$ref": "#/definitions/Categorie_full"},
         "denree" : { "$ref": "#/definitions/Denree_full"}
+      }
+    },
+    "Recette_with_tag":{
+      "type": "object",
+      "properties": {
+        "nom" : {"type" : "string"},
+        "difficulte" : {"type" : "integer", "format": "int64"},
+        "calorie" : {"type" : "integer", "format": "int64"},
+        "temps_cuisson" : {"type" : "integer", "format": "int64"},
+        "temps_preparation" : {"type" : "integer", "format": "int64"},
+        "nb_personne" : {"type" : "integer", "format": "int64"},
+        "nutriscore" : {"type" : "string"},
+        "preparation" : {"type" : "string"},
+        "image_url" : {"type" : "string"},
+        "tags": { "$ref":"#/definitions/Tags_full"}
       }
     }
   }
