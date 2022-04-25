@@ -2,7 +2,7 @@ const db = require("../models");
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
-const {get_stats_from_name} = require("../../middleware/openFoodFact");
+//const {get_stats_from_name} = require("../../middleware/openFoodFact");
 
 // Retrieve all denree from the database.
 exports.findAll = (req, res) => {
@@ -108,16 +108,27 @@ exports.PutDenree = (req, res) => {
 
   //// Find or Create 
 
-  exports.FindOrCreate = (req, res) => {
+  exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
-    const stats = get_stats_from_name(nomArg)[0]
-    Denree.findOrCreate({
+    //const stats = get_stats_from_name(nomArg)[0]
+    await Denree.findOrCreate({
       where: { nom:  nomArg },
-      defaults:{
-        nutriscore:stats[2].toUpperCase(),
-        calories:stats[3]
+      /*defaults:{
+        nutriscore: stats[2].toUpperCase(),
+        calories: stats[3]
+      }*/
+    }).then( async (data) => {
+      if (data[1] == true){
+        const id_new_denree = data[0].id_denree;
+        const typesList = req.query.types
+        asyncForEach(typesList, async(link_type)=>{
+          await db.denree_type.create({
+            id_denree: id_new_denree,
+            id_type: link_type.id_type,
+          
+          })
+        })
       }
-    }).then(data => {
       res.send(data);
     }).catch(err => {
       res.status(500).send({

@@ -20,13 +20,13 @@
 
 
 
-          <v-expansion-panels>
+          <v-expansion-panels class="pa-7">
             <v-expansion-panel
               v-for="menu in menus"
               :key="menu.id_menu"
               @click="openPanel(menu)"
             >
-              <v-expansion-panel-header>
+              <v-expansion-panel-header class="ma-3">
                 {{menu.periode_debut }} - {{ menu.periode_fin}}
               </v-expansion-panel-header>
               <v-expansion-panel-content>

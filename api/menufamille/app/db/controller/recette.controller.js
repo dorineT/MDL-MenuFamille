@@ -27,7 +27,7 @@ exports.findAll = (req, res) => {
 /// Put CRUD
 
 exports.PutRecipe = (req, res) => {
-  console.log(req.body);
+
     Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson, temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, preparation: req.body.preparation})
     .then(data => { 
         res.send(data);
@@ -159,18 +159,24 @@ exports.find_Recipe_With_Tags= (req, res) => {
 
 exports.find_Recipe_tags = (req, res) => {
   const tagsListe = req.query.tag;
-  console.log('coucou')
-  console.log(tagsListe)
   let temp = []
   Recipe.findAll({
-    include:{
-      model: Tag,
-      where:{
-        nom: {
-          [Op.in]: tagsListe
+    include:[
+      {
+        model: Tag,
+        where:{
+          nom: {
+            [Op.in]: tagsListe
+          }          
+        },
+      },
+      {
+        model: Categorie, as: "categories", through: {attributes: []},
+        where: {
+          '$categories.periode$': req.params.periode
         }
       }
-    }
+    ]
   }).then( data =>{
 
     //refaire un filtre 

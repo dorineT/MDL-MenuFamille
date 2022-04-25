@@ -1,7 +1,7 @@
  <template>
 	<v-row justify="center">
 		<v-dialog v-model="dialogShow" persistent max-width="600px">
-			<v-card>
+			<v-card class="noPadding">
 				<v-toolbar dark color="#FFB74D">
 					<v-btn icon dark @click="$emit('closeDialog')">
 						<v-icon>mdi-close</v-icon>
@@ -115,7 +115,7 @@
 				//get recette si tag defini
 				if (this.infoMenu.tags.length > 0) {
 				
-					DAORecette.getFromTags(this.infoMenu.tags).then(
+					DAORecette.getFromTags(this.infoMenu.tags,this.itemReceived.periode).then(
 						  (response) => {
 							  this.itemRecettes = response.data
 						  }
@@ -178,6 +178,7 @@
 </script>
 
 <style lang="sass">
+@import '../style/globalStyle'
 .v-application .primary--text
   color: #FFB74D !important
   caret-color: #FFB74D !important

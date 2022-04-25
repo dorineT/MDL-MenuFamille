@@ -55,8 +55,8 @@
           <v-btn
             v-if= !isModified
             color="red"
+            rounded
             block
-            tile
             elevation="0"
             class="pa-6 font-weight-bold"
             style="color:white"
@@ -71,7 +71,7 @@
             color="#faa62a"
             class="pa-6 font-weight-bold"
             block
-            tile
+            rounded
             elevation="0"
             style="color:white"
             @click="modification"
@@ -87,7 +87,7 @@
             class="pa-6 font-weight-bold"
             v-if= !isModified
             block
-            tile
+            rounded
             elevation="0"
             style="color:white"
             @click="changePassword"

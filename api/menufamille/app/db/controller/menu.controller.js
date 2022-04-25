@@ -51,7 +51,6 @@ exports.PutMenu = (req, res) => {
 
 exports.UpdateMenu = (req, res) => {
   moment.locale('fr')
-  console.log("helllo")
   const id = req.params.id;
   req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
   req.body.periode_fin = moment(req.body.periode_fin,"DD/MM/YYYY")
@@ -239,13 +238,14 @@ exports.Get_Suggest_Unlocked_Menu = (req, res) => {
 
 exports.Get_Unlocked_Menu = (req, res) => {
   const id_fam = req.params.id_fam;
-  let menus = [];
+  const date = Date.now()
   Menu.findAll({
     where: {
       [Op.and]:
       {
         id_famille: id_fam,
         verrou: false,
+        periode_fin: { [Op.gte]: date }
       }
     }
   })

@@ -51,7 +51,14 @@
       </v-container>
 
       <component v-bind:is="componentName" :periodeMenu="periode" :idMenu="idMenu" @eventReceived="eventChild"></component>
-    
+      <div v-if="componentName===null">
+        <v-img
+           :aspect-ratio="16/9"                  
+          contain
+          max-height="400"
+          src="../assets/selectMenu.png">
+        </v-img>
+      </div>
 
     </v-card>
 </template>

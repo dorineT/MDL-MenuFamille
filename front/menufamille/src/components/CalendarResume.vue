@@ -10,7 +10,7 @@
       :items="itemPeriode"      
       v-model="comboboxMenuSelected"></v-select>-->
 
-        <div  style="margin: 4px">Menu : {{periodeMenu}} </div>
+        <div  style="margin: 4px">Menu de la semaine</div>
         <v-data-table
             :headers="headers"
             :items="items"                                  

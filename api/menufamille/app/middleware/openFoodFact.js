@@ -48,6 +48,7 @@ async function getProduct(product) {
         pluriel = plural(request_name)
     }
 
+
     raw_data.data.products.forEach( product => {
         if(product.product_name_fr !== undefined) {
             let product_name = product.product_name_fr.replace(/[~!@#$%^&*()_|+\-=?;:",.<>\{\}\[\]\\\/]/gi, ' ').trim().replace(product.brands,"").toLowerCase();
@@ -66,3 +67,4 @@ async function getProduct(product) {
 }
 
 module.exports = { getProduct };
+
