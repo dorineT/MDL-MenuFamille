@@ -2,6 +2,10 @@
 	<v-app>
 		
 		<v-navigation-drawer v-model="drawer" app color="#F5F5F5" elevation="10" v-if="loggedIn">
+      <v-img        
+        height="100%"
+        class="image"
+        src="./assets/verticalImage.jpg">
 			<v-list nav dense>
 				<v-list-item-group active-class="orange lighten-2--text text--accent-4">
 					<v-list-item to="/" @click="drawer = ! drawer; notification">
@@ -55,6 +59,7 @@
 					</v-list-item>
 				</v-list-item-group>
 			</v-list>
+      </v-img>
 		</v-navigation-drawer>
 
     <v-app-bar app color="#FFB74D" v-if="loggedIn">
