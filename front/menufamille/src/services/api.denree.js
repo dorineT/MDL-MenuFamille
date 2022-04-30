@@ -36,7 +36,7 @@ export default class DenreeDao{
         types.forEach(element => {
             sendTypes.push(element.nom)
         });   
-        return api.get("/menu/food/"+name,{
+        return api.get("/denree/food/"+name,{
           params: {
             types: sendTypes
           },

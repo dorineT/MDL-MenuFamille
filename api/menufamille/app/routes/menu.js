@@ -36,7 +36,7 @@ router.get("/old/:id_fam",menu.old_menu);
 router.get('/GetMenuId/:id', menu.Get_Menu_By_Id);
 
 
-router.get('/food/:name', menu.getFood);
+router.get('/food/:id_menu', menu.getFood);
 
 router.get("/old/:id_fam",menu.old_menu);
 

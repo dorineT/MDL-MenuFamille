@@ -1,6 +1,5 @@
 const { response } = require("express");
 const { calendrier, recette, sequelize, famille } = require("../models");
-const { getProduct } = require("../../middleware/openFoodFact")
 const db = require("../models");
 const Menu = db.menu;
 const Op = db.Sequelize.Op;
@@ -24,10 +23,48 @@ exports.findAll = (req, res) => {
 };
 
 exports.getFood = (req, res) => {
-  let product = {nom: req.params.name, types: req.query.types};
-  getProduct(product).then((data) => {
-    res.send(data)
-  })
+  db.denree.findAll(
+    {
+      attributes: ['nom',
+        [db.sequelize.col('recettes.nb_personne'), 'nb_personne'],
+        [db.sequelize.col('recette_denrees.quantite'), 'quantite'],
+        [db.sequelize.col('recette_denrees.mesure'), 'mesure']
+      ],
+      include: [{
+        model: db.recette,
+        required: true,
+        as: 'recettes',
+        attributes: [],
+        include: {
+          model: db.calendrier,
+          required: true,
+          attributes: [],
+          include: {
+            model: db.menu,
+            required: true,
+            where: { id_menu: req.params.id_menu },
+            attributes: []
+          }
+        }
+      },
+      {
+        model: db.recette_denree,
+        required: true,
+        as: 'recette_denrees',
+        attributes: []
+      }]
+    }
+  )
+    .then(data => {
+
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Menus."
+      });
+    });
 };
 
 
@@ -52,12 +89,12 @@ exports.PutMenu = (req, res) => {
 exports.UpdateMenu = (req, res) => {
   moment.locale('fr')
   const id = req.params.id;
-  req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
-  req.body.periode_fin = moment(req.body.periode_fin,"DD/MM/YYYY")
-    Menu.update(req.body, {
-      where: {id_menu: id}
-    })
-    .then(num =>{
+  req.body.periode_debut = moment(req.body.periode_debut, "DD/MM/YYYY")
+  req.body.periode_fin = moment(req.body.periode_fin, "DD/MM/YYYY")
+  Menu.update(req.body, {
+    where: { id_menu: id }
+  })
+    .then(num => {
       if (num == 1) {
         res.send({
           message: "Menu was Updated"
@@ -267,28 +304,29 @@ exports.Get_Menu_By_Id = (req, res) => {
 };
 
 
-exports.old_menu = async(req,res) =>{
+exports.old_menu = async (req, res) => {
 
-    const id_fam = req.params.id_fam;
-    await Menu.findAll({
+  const id_fam = req.params.id_fam;
+  await Menu.findAll({
 
-        where: {
-            id_famille: id_fam,
-            periode_fin: {[Op.lt]: moment().format()}},
-
-
-            through: {attributes: []}
+    where: {
+      id_famille: id_fam,
+      periode_fin: { [Op.lt]: moment().format() }
+    },
 
 
+    through: { attributes: [] }
 
-    }).then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving Menus."
-        });
+
+
+  }).then(data => {
+    res.send(data);
+  }).catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving Menus."
     });
+  });
 }
 
 
@@ -409,11 +447,11 @@ exports.old_menu = async(req,res) =>{
 
 
 
-exports.create_New_Menu = async(req,res) => {
-    moment.locale('fr')
-    await Menu.create({
-    periode_debut: moment(req.body.periode_debut,"DD/MM/YYYY") ,
-    periode_fin: moment(req.body.periode_fin,"DD/MM/YYYY"),
+exports.create_New_Menu = async (req, res) => {
+  moment.locale('fr')
+  await Menu.create({
+    periode_debut: moment(req.body.periode_debut, "DD/MM/YYYY"),
+    periode_fin: moment(req.body.periode_fin, "DD/MM/YYYY"),
     id_famille: req.body.id_famille,
     plat_identique_matin: req.body.plat_identique_matin,
     plat_identique_midi: req.body.plat_identique_midi,
