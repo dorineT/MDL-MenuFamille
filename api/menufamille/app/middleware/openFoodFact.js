@@ -25,6 +25,23 @@ function occurrences(string, otherString, search) {
     return false;
 }
 
+String.prototype.replaceAll = function(obj, replace) {
+    if (obj === null) return this;
+    let finalString = '';
+    let word = this;
+    for (let each of word){
+        console.log(each)
+        for (const o of obj){
+            if (each == o){
+                each = replace;
+            }
+        }
+        finalString += each;
+    }
+    
+    return finalString;
+};
+
 /**
  *
  * @param product
@@ -32,7 +49,7 @@ function occurrences(string, otherString, search) {
  */
 async function getProduct(product) {
 
-    let link = "https://be-fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom.toLowerCase()
+    let link = "https://fr.openfoodfacts.org/cgi/search.pl?search_terms2=" + product.nom.toLowerCase()
     for (let i = 0; i < product.types.length; i++) {
         link += "&tagtype_" + i + "=categories&tag_contains_" + i + "=contains&tag_" + i + "=" + product.types[i]
 
@@ -42,6 +59,7 @@ async function getProduct(product) {
     let request_name = product.nom.toLowerCase();
     let pluriel;
     let list_return = [];
+    let unity = ["kg","g"]
     if(request_name.trim().indexOf( " " ) != -1) {
         pluriel = plural(request_name[0])
     } else {
@@ -51,11 +69,15 @@ async function getProduct(product) {
 
     raw_data.data.products.forEach( product => {
         if(product.product_name_fr !== undefined) {
-            let product_name = product.product_name_fr.replace(/[~!@#$%^&*()_|+\-=?;:",.<>\{\}\[\]\\\/]/gi, ' ').trim().replace(product.brands,"").toLowerCase();
-            if(product_name.indexOf(request_name) === 0) {
+            let product_name = product.product_name_fr.replace(/[~!@#$%^&*()_|+\-=?;:",.<>\{\}\[\]\\\/]/gi, ' ').replace(product.brands,"").replaceAll(product.product_name_fr.match(/\d+/g), "").replaceAll(unity, "").trim().toLowerCase();
+            let nutriscore = product.nutrition_grade_fr;
+            let calorie = product.nutriments.energy_value;
+            if(product_name.indexOf(request_name) === 0 && countWords(product_name) > 1 && nutriscore !== undefined && calorie !== undefined) {
                 var good_product =
                 {
-                    "nom": product_name
+                    "nom": product_name,
+                    "nutriscore": nutriscore.toUpperCase(),
+                    "calorie": calorie
                 }
                 list_return.push(good_product);
             }

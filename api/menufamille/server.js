@@ -1,10 +1,13 @@
 const express = require('express')
 const cors = require("cors");
+const os = require('os');
 const bodyParser = require("body-parser");
 const mountRoutes = require('./app/routes')
 const app = express()
+const networkInterfaces = os.networkInterfaces();
+console.log(networkInterfaces)
 var corsOptions = {
-  origin: "http://localhost:8080"
+  origin: ["http://localhost:8080"]
 };
 
 const db = require("./app/db/models");
