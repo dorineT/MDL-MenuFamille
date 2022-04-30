@@ -27,13 +27,12 @@ const {asyncForEach} = require("../../middleware/asyncForEach");
 
   exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
-    //const stats = get_stats_from_name(nomArg)[0]
     await Denree.findOrCreate({
       where: { nom:  nomArg },
-      /*defaults:{
-        nutriscore: stats[2].toUpperCase(),
-        calories: stats[3]
-      }*/
+      defaults:{
+        nutriscore: req.params.nutriscore,
+        calories: req.params.calories
+      }
     }).then( async (data) => {
       if (data[1] == true){
         const id_new_denree = data[0].id_denree;
