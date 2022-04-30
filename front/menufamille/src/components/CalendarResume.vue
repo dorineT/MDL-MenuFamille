@@ -236,15 +236,6 @@ let DAOMenu = new MenuDao()
 .v-data-table
   white-space: pre-wrap
 
-@media (min-width: 601px)
-  .combobox-class
-    margin: 20px,
-    width: 7cm
-
-@media (max-width: 600px)
-  .combobox-class
-    margin: 10px
-
 .tdplat
   text-align: center
 

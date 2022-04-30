@@ -2,7 +2,7 @@
 	<v-row justify="center">
 		<v-dialog
 			v-model="dialogShow"
-			
+			scrollable
 			hide-overlay
 			transition="dialog-bottom-transition"
 		>
@@ -510,7 +510,5 @@
 
 <style lang="sass">
 @import '../style/globalStyle'
-.v-application .primary--text
-  color: #FFB74D !important
-  caret-color: #FFB74D !important
+
 </style>
