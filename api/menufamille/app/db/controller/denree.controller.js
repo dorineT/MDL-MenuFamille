@@ -1,4 +1,5 @@
 const db = require("../models");
+const { getProduct } = require("../../middleware/openFoodFact")
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
@@ -22,6 +23,12 @@ const {asyncForEach} = require("../../middleware/asyncForEach");
     }); 
   }
 
+  exports.getFood = (req, res) => {
+    let product = {nom: req.params.name, types: req.query.types};
+    getProduct(product).then((data) => {
+      res.send(data)
+    })
+  };
 
   //// Find or Create 
 

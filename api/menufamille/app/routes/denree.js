@@ -17,3 +17,5 @@ router.get('/FindOrCreate/:nom/:nutriscore/:calories', [authJwt.verifyToken],den
 router.get('/NutriAndCalo/:id_denree',[authJwt.verifyToken], denree.Get_Nut_and_Cal);
 
 router.post('/and_type',[authJwt.verifyToken],denree.post_denree_and_type);
+
+router.get('/food/:name', denree.getFood);
