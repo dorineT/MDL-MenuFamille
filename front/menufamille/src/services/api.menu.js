@@ -82,6 +82,9 @@ export default class MenuDao{
       return api.get("/menu/GetSuggestUnlockedMenu/"+idFamille)
     }
 
+    getShopList(menu){
+      return api.get("/menu/food/"+menu)
+    }
 
 }
 

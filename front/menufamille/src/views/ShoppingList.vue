@@ -82,16 +82,16 @@
                             >
       
                             <template v-slot:default="{item}">
-                                <v-list-item :key="item.name">
+                                <v-list-item :key="item.nom">
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            <span> <strong> {{item.name}}</strong> </span>
+                                            <span> <strong> {{item.nom}}</strong> </span>
                                         </v-list-item-title>
                                     </v-list-item-content> 
 
                     
                                     <v-list-item-action> 
-                                        <p>Quantité : {{item.quantité}}</p>
+                                        <p>Quantité : {{item.quantite}}</p>
                                     </v-list-item-action>
                                 </v-list-item>
                                 <v-divider></v-divider>
@@ -126,64 +126,64 @@ export default {
       itemsN: [],
       items:[
           {
-          name:"Tomate rouge",
-          quantité:"1",
+          nom:"Tomate rouge",
+          quantite:"1",
           image:"https://cdn.pixabay.com/photo/2013/07/12/18/19/tomato-153272_960_720.png"
                 
           },
           {
-          name: "lait",
-          quantité:"2",
+          nom: "lait",
+          quantite:"2",
           image:"https://cdn.pixabay.com/photo/2017/01/27/11/54/milk-bottle-2012800_960_720.png"
           },
           {
-          name:"tablette de chocolat",
-          quantité:"3",
+          nom:"tablette de chocolat",
+          quantite:"3",
           image:"https://cdn.pixabay.com/photo/2016/04/01/10/16/bar-1299829_960_720.png"
           },
           {
-          name:"fraise",
-          quantité:"4",
+          nom:"fraise",
+          quantite:"4",
           image:"https://thumbs.dreamstime.com/z/fraise-fra%C3%AEche-40742985.jpg"
           },
           {
-          name:"pomme",
-          quantité:"5",
+          nom:"pomme",
+          quantite:"5",
           image:"https://cdn.pixabay.com/photo/2015/06/11/13/40/apple-805819_960_720.png"
           },
           {
-          name:"fromage",
-          quantité:"6",
+          nom:"fromage",
+          quantite:"6",
           image:"https://cdn.pixabay.com/photo/2016/01/09/07/59/cheese-1129908_960_720.png"
           },
           {
-          name:"poire",
-          quantité:"7",
+          nom:"poire",
+          quantite:"7",
           image:"https://cdn.pixabay.com/photo/2013/07/12/16/56/pear-151526_960_720.png"
           },
           {
-          name:"beurre",
-          quantité:"8",
+          nom:"beurre",
+          quantite:"8",
           image:"https://media.istockphoto.com/vectors/brick-of-butter-on-plate-with-knife-milk-based-product-vector-id637120866?s=612x612"
           },
           {
-          name:"confiture",
-          quantité:"9",
+          nom:"confiture",
+          quantite:"9",
           image:"https://cdn.pixabay.com/photo/2020/06/24/07/34/strawberries-5335158_960_720.jpg"
           },
           {
-          name:"pain",
-          quantité:"10",
+          nom:"pain",
+          quantite:"10",
           image:"https://cdn.pixabay.com/photo/2016/03/26/18/23/bread-1281053_960_720.jpg"
           },
           {
-          name:"TV",
-          quantité:"11",
+          nom:"TV",
+          quantite:"11",
           image:"https://cdn.pixabay.com/photo/2019/12/10/01/10/vector-4684771_960_720.png"
           },
           {
-          name:"cola",
-          quantité:"12",
+          nom:"cola",
+          quantite:"12",
           image:"https://media.istockphoto.com/photos/image-of-cola-glass-with-ice-cubes-over-white-picture-id482707206"
           },
       ],
@@ -210,13 +210,24 @@ export default {
   computed:{
     calculatedHeight(){
       let x = 350
-      switch (this.$vuetify.breakpoint.name) {
+      switch (this.$vuetify.breakpoint.nom) {
           case 'xs': return this.$vuetify.breakpoint.height - x
           case 'sm': return this.$vuetify.breakpoint.height - x
           case 'md': return this.$vuetify.breakpoint.height - x
           case 'lg': return this.$vuetify.breakpoint.height - x
           case 'xl': return this.$vuetify.breakpoint.height - x
       }
+    }
+  },
+  watch:{
+    comboboxMenuSelected(slot){
+      if(this.comboboxMenuSelected === null) return
+
+      DAOMenu.getShopList(slot).then(
+        (response)=>{
+          this.items = response.data
+        }
+      )
     }
   },
   methods:{
