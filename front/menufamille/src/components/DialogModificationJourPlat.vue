@@ -5,6 +5,7 @@
 			scrollable
 			hide-overlay
 			transition="dialog-bottom-transition"
+			persistent
 		>
 			<v-card class="noPadding">
 				<v-toolbar dark color="#9CCC65">
@@ -294,7 +295,8 @@
 		},
 		watch:{
 			tagsChoix(){
-												
+				if(this.tagsChoix === null ) return 
+			
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -421,7 +423,8 @@
 				})
 				return cible
 			},
-			userActionListeRecette(){				
+			userActionListeRecette(){
+				if(this.comboboxRecetteSelected === null) return				
 				this.newRecetteChoix = this.comboboxRecetteSelected.nom		
 				this.resetSelectedSuggestion()										
 			},

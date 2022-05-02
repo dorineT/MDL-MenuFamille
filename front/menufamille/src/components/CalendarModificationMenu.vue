@@ -1,8 +1,9 @@
 <template>
-
+  
   <div style="margin: 4px">
+      <v-overlay :value="overlay"></v-overlay>
       <dialog-modification-jour-plat :dialogShow="showDialog" :itemReceived="itemSend" :dateJour="periodeSend" :stringUpdateModal="'updateMenuJour'" @closeDialog="closeDialogModification" @updatePeriode="updateMenuJour"></dialog-modification-jour-plat>
-
+      
       <div  style="margin: 4px">Mode modification </div>
       
       <v-data-table
@@ -135,8 +136,10 @@
 
       <v-snackbar v-model="errorMessage.error" text color="red">
         {{ errorMessage.message }}
-      </v-snackbar>
+      </v-snackbar>   
     </div>
+
+  
 
 </template>
 
@@ -161,6 +164,7 @@ export default {
         showDialog:false,
         itemSend: null,
         periodeSend: null,
+        overlay: false,
 
         //calendar
         headers: [],
@@ -201,7 +205,9 @@ export default {
           //open dialogue
           this.itemSend = periodeFind
           this.periodeSend = menuFind.date
-          this.showDialog = true          
+          this.overlay = true  
+          this.showDialog = true        
+          
         },
       fetchMenu(){
         DAOMenu.getMenuById(this.idMenu).then(
@@ -343,7 +349,34 @@ export default {
         }
 
       },
+      menuComplete(){        
+        let complete = true
+        let i = 0
+
+        while(complete && i < this.menu.calendriers.length){
+          let j = 0
+          let jour = this.menu.calendriers[i]
+          while(complete && j < jour.calendrier_recettes.length){
+            let per = jour.calendrier_recettes[j]
+            if(per.is_recette && per.id_recette === null){
+              complete = false
+              break
+            }
+            j+=1
+          }
+          i+=1
+        }
+
+        return complete
+      },
       async valideMenu(){
+        this.errorMessage.message = ""
+        if(!this.menuComplete()){
+          this.errorMessage.message = "Menu incomplet !"
+          this.errorMessage.error = true
+          return
+        }
+             
         this.menu.verrou = true
         let res = await DAOMenu.sendMenuUpdate(this.menu, this.$store.state.info.idFamilleActuel)
         this.$emit('eventReceived')        
@@ -353,7 +386,8 @@ export default {
         this.$emit('eventReceived')          
       },
       closeDialogModification(){
-        this.showDialog = false
+        this.overlay = false
+        this.showDialog = false        
       }
       
     }
