@@ -252,7 +252,7 @@ exports.GetMeanNutAndCal = (req, res) => {
     } else {
       retour.nutriscore = 'E';
     }
-    retour.tmp_nut = tmp_nut;
+    
     res.send(retour);
     })
     .catch(err => {
