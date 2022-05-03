@@ -8,8 +8,14 @@ const app = express()
 const ip = Object.values(networkInterfaces()).flat().filter(i => i.family == 'IPv4' && !i.internal);
 
 
+let origin = ["http://localhost:8080"];
+
+for (let i=0; i<ip.length;i++) {
+  origin.push("http://"+ ip[i].address +":8080")
+}
+
 var corsOptions = {
-  origin: ["http://localhost:8080", "http://"+ ip[0].address +":8080", "http://"+ ip[1].address +":8080"]
+  origin: origin
 };
 
 const db = require("./app/db/models");
