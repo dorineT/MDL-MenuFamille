@@ -56,28 +56,71 @@
 									:key="i + 'sugg'"
 								>
 									<p>{{ sugg.recette.nom }}</p>
-                  <span class="white--text ml-2">
-									<v-avatar color="indigo" size="30">
-										{{
-											sugg.membre.prenom.slice(0, 1) +
-											sugg.membre.nom.slice(0, 1)
-										}}
-									</v-avatar>
-                  </span>
+									<span class="white--text ml-2">
+										<v-menu       
+											open-on-hover
+											top
+											offset-x  
+											v-if="sugg.membre.id_membre === currentUser.id_membre"
+										>
+											<template v-slot:activator="{ on, attrs }">
+												<v-avatar color="indigo" size="30"           
+													v-bind="attrs"
+													v-on="on"
+												>
+													{{
+														sugg.membre.prenom.slice(0, 1) +
+														sugg.membre.nom.slice(0, 1)
+													}}
+												</v-avatar>
+											</template>
+											<v-list>
+												<v-list-item @click="removeSuggestion">
+													  <v-list-item-icon>
+														<v-icon >mdi-food-off</v-icon>
+													  </v-list-item-icon>
+													<v-list-item-title>
+														Supprimer
+													</v-list-item-title>
+												</v-list-item>
+											</v-list>							
+										</v-menu>
+										<v-avatar v-else color="indigo" size="30"           
+											v-bind="attrs"
+											v-on="on"
+										>
+											{{
+												sugg.membre.prenom.slice(0, 1) +
+												sugg.membre.nom.slice(0, 1)
+											}}
+										</v-avatar>
+									</span>
 								</div>
 							</div>
-              <v-btn v-if="item.suggestions.length > 0 && canSuggest(item.suggestions)" text @click="goToRecette(item)">               
-                  <v-icon color="green" large>mdi-plus</v-icon>            
-              </v-btn>
-              <v-btn v-else-if="item.plat === '' & item.suggestions.length === 0" text @click="goToRecette(item)">
-                  <p
-                    v-if="(item.tags.length > 0) & (item.suggestions.length === 0)"
-                    style="color: green"
-                  >
-                    <strong>Tags</strong>
-                  </p>						
-                    <v-icon v-else color="green" large>mdi-plus</v-icon>					
-                </v-btn>	
+							<v-btn
+								v-if="
+									item.suggestions.length > 0 && canSuggest(item.suggestions)
+								"
+								text
+								@click="goToRecette(item)"
+							>
+								<v-icon color="green" large>mdi-plus</v-icon>
+							</v-btn>
+							<v-btn
+								v-else-if="(item.plat === '') & (item.suggestions.length === 0)"
+								text
+								@click="goToRecette(item)"
+							>
+								<p
+									v-if="
+										(item.tags.length > 0) & (item.suggestions.length === 0)
+									"
+									style="color: green"
+								>
+									<strong>Tags</strong>
+								</p>
+								<v-icon v-else color="green" large>mdi-plus</v-icon>
+							</v-btn>
 							<p
 								v-if="
 									(item.nbPers !== null) &
@@ -108,28 +151,71 @@
 									:key="i + 'sugg'"
 								>
 									<p>{{ sugg.recette.nom }}</p>
-                  <span class="white--text ml-2">
-									<v-avatar color="indigo" size="30">
-										{{
-											sugg.membre.prenom.slice(0, 1) +
-											sugg.membre.nom.slice(0, 1)
-										}}
-									</v-avatar>
-                  </span>
+									<span class="white--text ml-2">
+										<v-menu       
+											open-on-hover
+											top
+											offset-x  
+											v-if="sugg.membre.id_membre === currentUser.id_membre"
+										>
+											<template v-slot:activator="{ on, attrs }">
+												<v-avatar color="indigo" size="30"           
+													v-bind="attrs"
+													v-on="on"
+												>
+													{{
+														sugg.membre.prenom.slice(0, 1) +
+														sugg.membre.nom.slice(0, 1)
+													}}
+												</v-avatar>
+											</template>
+											<v-list>
+												<v-list-item @click="removeSuggestion">
+													  <v-list-item-icon>
+														<v-icon >mdi-food-off</v-icon>
+													  </v-list-item-icon>
+													<v-list-item-title>
+														Supprimer
+													</v-list-item-title>
+												</v-list-item>
+											</v-list>							
+										</v-menu>
+										<v-avatar v-else color="indigo" size="30"           
+											v-bind="attrs"
+											v-on="on"
+										>
+											{{
+												sugg.membre.prenom.slice(0, 1) +
+												sugg.membre.nom.slice(0, 1)
+											}}
+										</v-avatar>
+									</span>
 								</div>
 							</div>
-              <v-btn v-if="item.suggestions.length > 0 && canSuggest(item.suggestions)" text @click="goToRecette(item)">               
-                  <v-icon color="green" large>mdi-plus</v-icon>            
-              </v-btn>
-              <v-btn v-else-if="item.plat === '' & item.suggestions.length === 0" text @click="goToRecette(item)">
-                  <p
-                    v-if="(item.tags.length > 0) & (item.suggestions.length === 0)"
-                    style="color: green"
-                  >
-                    <strong>Tags</strong>
-                  </p>						
-                    <v-icon v-else color="green" large>mdi-plus</v-icon>					
-                </v-btn>	
+							<v-btn
+								v-if="
+									item.suggestions.length > 0 && canSuggest(item.suggestions)
+								"
+								text
+								@click="goToRecette(item)"
+							>
+								<v-icon color="green" large>mdi-plus</v-icon>
+							</v-btn>
+							<v-btn
+								v-else-if="(item.plat === '') & (item.suggestions.length === 0)"
+								text
+								@click="goToRecette(item)"
+							>
+								<p
+									v-if="
+										(item.tags.length > 0) & (item.suggestions.length === 0)
+									"
+									style="color: green"
+								>
+									<strong>Tags</strong>
+								</p>
+								<v-icon v-else color="green" large>mdi-plus</v-icon>
+							</v-btn>
 							<p
 								v-if="
 									(item.nbPers !== null) &
@@ -160,29 +246,72 @@
 									:key="i + 'sugg'"
 								>
 									<p>{{ sugg.recette.nom }}</p>
-                  <span class="white--text ml-2">
-									<v-avatar color="indigo" size="30">
-										{{
-											sugg.membre.prenom.slice(0, 1) +
-											sugg.membre.nom.slice(0, 1)
-										}}
-									</v-avatar>
-                  </span>
+									<span class="white--text ml-2">
+										<v-menu       
+											open-on-hover
+											top
+											offset-x  
+											v-if="sugg.membre.id_membre === currentUser.id_membre"
+										>
+											<template v-slot:activator="{ on, attrs }">
+												<v-avatar color="indigo" size="30"           
+													v-bind="attrs"
+													v-on="on"
+												>
+													{{
+														sugg.membre.prenom.slice(0, 1) +
+														sugg.membre.nom.slice(0, 1)
+													}}
+												</v-avatar>
+											</template>
+											<v-list>
+												<v-list-item @click="removeSuggestion">
+													  <v-list-item-icon>
+														<v-icon >mdi-food-off</v-icon>
+													  </v-list-item-icon>
+													<v-list-item-title>
+														Supprimer
+													</v-list-item-title>
+												</v-list-item>
+											</v-list>							
+										</v-menu>
+										<v-avatar v-else color="indigo" size="30"           
+											v-bind="attrs"
+											v-on="on"
+										>
+											{{
+												sugg.membre.prenom.slice(0, 1) +
+												sugg.membre.nom.slice(0, 1)
+											}}
+										</v-avatar>
+									</span>
 								</div>
 							</div>
 
-              <v-btn v-if="item.suggestions.length > 0 && canSuggest(item.suggestions)" text @click="goToRecette(item)">               
-                  <v-icon color="green" large>mdi-plus</v-icon>            
-              </v-btn>
-							<v-btn v-else-if="item.plat === '' & item.suggestions.length === 0" text @click="goToRecette(item)">
-									<p
-										v-if="(item.tags.length > 0) & (item.suggestions.length === 0)"
-										style="color: green"
-									>
-										<strong>Tags</strong>
-									</p>						
-										<v-icon v-else color="green" large>mdi-plus</v-icon>					
-								</v-btn>							
+							<v-btn
+								v-if="
+									item.suggestions.length > 0 && canSuggest(item.suggestions)
+								"
+								text
+								@click="goToRecette(item)"
+							>
+								<v-icon color="green" large>mdi-plus</v-icon>
+							</v-btn>
+							<v-btn
+								v-else-if="(item.plat === '') & (item.suggestions.length === 0)"
+								text
+								@click="goToRecette(item)"
+							>
+								<p
+									v-if="
+										(item.tags.length > 0) & (item.suggestions.length === 0)
+									"
+									style="color: green"
+								>
+									<strong>Tags</strong>
+								</p>
+								<v-icon v-else color="green" large>mdi-plus</v-icon>
+							</v-btn>
 							<p
 								v-if="
 									item.nbPers !== null &&
@@ -251,17 +380,17 @@
 			currentUser() {
 				return this.$store.state.auth.user;
 			},
-      canSuggest() {
-        return (suggestions) => {
-          let ok = true
-          suggestions.forEach(sug => {
-            if(sug.id_membre === this.currentUser.id_membre) {                         
-              ok = false
-            }
-          });              
-          return ok
-        }
-      },
+			canSuggest() {
+				return (suggestions) => {
+					let ok = true;
+					suggestions.forEach((sug) => {
+						if (sug.id_membre === this.currentUser.id_membre) {
+							ok = false;
+						}
+					});
+					return ok;
+				};
+			},
 		},
 		// call api to get the menu
 		mounted() {
@@ -409,6 +538,9 @@
 			},
 			closeDialogSuggestion() {
 				this.showDialog = false;
+			},
+			removeSuggestion(){
+				alert('suggestion supprimée')
 			},
 
 			/// UPDATE CALENDRIER////
