@@ -55,7 +55,8 @@ exports.getFood = (req, res) => {
           let send = [];
           for (let i=0;i<data.length;i++) {
             for (let a=0;a<data[i].recette.denrees.length;a++) {
-              let quantite = Math.round(((data[i].recette.denrees[a].recette_denree.quantite * data[i].nb_personne) / data[i].recette.nb_personne) || 0)
+              let calc = Math.round(((data[i].recette.denrees[a].recette_denree.quantite * data[i].nb_personne) / data[i].recette.nb_personne) || 1)
+              let quantite = (calc === 0?1:calc)
               if(send.some(products => products.nom === data[i].recette.denrees[a].nom )) {
                 let index = send.indexOf(send.filter(products => products.nom === data[i].recette.denrees[a].nom )[0])
                 send[index].quantite = send[index].quantite + quantite

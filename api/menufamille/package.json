@@ -20,6 +20,7 @@
     "moment": "^2.29.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
+    "request_trimmer": "^1.0.0",
     "rosaenlg-pluralize-fr": "^2.2.2",
     "sequelize": "^6.17.0",
     "short-unique-id": "^4.4.4",
