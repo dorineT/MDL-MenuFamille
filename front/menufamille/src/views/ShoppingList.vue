@@ -193,7 +193,21 @@
 				let lMargin = 20; //left margin in mm
 				let rMargin = 20; //right margin in mm
 				let pdfInMM = 210;
+				let hauteur = 297;
 
+				let longList = []
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
+				longList = longList.concat(this.items)
 
 				//config
 				doc.setFont("times");
@@ -203,16 +217,30 @@
 				//text
 				doc.setFontSize(18);
 
-				doc.text(20, 25, "Liste de la période: "+this.comboboxMenuSelected.text);
-				doc.line(20, 35, 190, 35);
+				doc.text(lMargin, 25, "Liste de la période: "+this.comboboxMenuSelected.text);
+				doc.line(lMargin, 35, 190, 35);
 
 				doc.setFontSize(14);
-        let y = 50
-        this.items.forEach( el => {
-          let mesurePlu = el.mesure === "unité" ? (el.quantite > 1 ? "unités" : "unité") : el.mesure
-          doc.text(30, y, "- "+ el.nom + ", quantité: " + el.quantite + " " + mesurePlu);
-          y+=10
-        })
+
+				let y = 50
+				let x = 30
+				longList.forEach( el => {
+
+					// if y en bas et x 30 
+					if(y >= hauteur-20 && x === 30){
+						x = 120
+						y = 50
+					}
+					else if(y >= hauteur-20 && x === 100){
+						doc.addPage()
+						y = 50
+						x = 30
+					}
+
+					let mesurePlu = el.mesure === "unité" ? (el.quantite > 1 ? "unités" : "unité") : el.mesure
+					doc.text(x, y, "- "+ el.nom + ", quantité: " + el.quantite + " " + mesurePlu);
+					y+=10
+				})
 				
 
 				doc.save(pdfName + ".pdf");
