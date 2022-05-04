@@ -188,26 +188,8 @@
 				let pdfName = "Liste"+this.comboboxMenuSelected.text;
 				var doc = new jsPDF("p", "mm", "a4");
 
-				let normalSize = 16;
-				let subTitle = 18;
 				let lMargin = 20; //left margin in mm
-				let rMargin = 20; //right margin in mm
-				let pdfInMM = 210;
 				let hauteur = 297;
-
-				let longList = []
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
-				longList = longList.concat(this.items)
 
 				//config
 				doc.setFont("times");
@@ -224,9 +206,8 @@
 
 				let y = 50
 				let x = 30
-				longList.forEach( el => {
-
-					// if y en bas et x 30 
+				this.items.forEach( el => {
+		
 					if(y >= hauteur-20 && x === 30){
 						x = 120
 						y = 50
