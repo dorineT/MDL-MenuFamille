@@ -29,13 +29,13 @@ exports.put_suggestion = (req, res) => {
 
 /// Update CRUD
 
-exports.Update_suggestion = (req, res) => {
+exports.Update_suggestion = async(req, res) => {
     const id_periode = req.params.id_periode;
     const id_recette = req.params.id_recette;
     const id_membre = req.id_membre;
     const id_menu = req.params.id_menu;
 
-    Suggestion.update(req.body, {
+    await Suggestion.update(req.body, {
         where: {
             id_periode: id_periode,
             id_recette: id_recette,
@@ -58,6 +58,92 @@ exports.Update_suggestion = (req, res) => {
             res.status(500).send({
                 message:
                     err.message || `Some error occurred while updating Suggestion  id_periode =${id_periode} && id_recette =${id_recette} && id_membre =${id_membre} && id_menu =${id_menu} \``
+            });
+        });
+};
+
+
+
+
+
+exports.Delete_Suggestion = async(req, res) => {
+
+    const id_periode = req.params.id_periode;
+    const id_recette = req.params.id_recette;
+    const id_membre = req.id_membre;
+    const id_menu = req.params.id_menu;
+
+    await Suggestion.destroy({
+        where: {
+
+                    id_periode : id_periode,
+                    id_recette : id_recette,
+                    id_membre : id_membre,
+                    id_menu : id_menu
+
+        }
+        })
+        .then(num =>{
+            if (num == 1) {
+                res.send({
+                    message: "suggestion was deleted"
+                });
+            } else{
+                res.send({
+                    message: `Cannot delete suggestion with id_menu= ${id_menu} and id_recette = ${id_recette} and id_membre and = ${id_membre} id_êriode = ${id_periode} `
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || `Some error occurred while deleting suggestion with id_menu= ${id_menu} and id_recette = ${id_recette} and id_membre and = ${id_membre} id_êriode = ${id_periode}  `
+            });
+        });
+};
+
+
+
+/**
+
+    exports.Delete_Suggestion_menu = async(req, res) => {
+
+    const id_menu = req.params.id;
+    await Suggestion.destroy({
+        where: {
+                id_menu: id_menu
+                }
+    })
+        .then(num =>{
+            if (num == 1) {
+                res.send({
+                    message: "suggestion was deleted"
+                });
+            } else{
+                res.send({
+                    message: `Cannot delete suggestion with id_menu = ${id_menu} `
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || `Some error occurred while deleting suggestion with id_menu = ${id_menu}`
+            });
+        });
+};
+
+
+*/
+exports.findAll = (req, res) => {
+    Suggestion.findAll()
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving suggestion."
             });
         });
 };
