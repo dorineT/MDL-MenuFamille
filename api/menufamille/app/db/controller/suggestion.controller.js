@@ -2,6 +2,7 @@ const db = require("../models");
 var bcrypt = require("bcryptjs");
 const Suggestion = db.suggestion;
 const Op = db.Sequelize.Op;
+const { asyncForEach } = require("../../middleware/asyncForEach");
 
 /// Post CRUD
 
@@ -104,27 +105,47 @@ exports.Delete_Suggestion = async(req, res) => {
 
 
 
-/**
+
 
     exports.Delete_Suggestion_menu = async(req, res) => {
 
     const id_menu = req.params.id;
-    await Suggestion.destroy({
+    await Suggestion.findAll({
         where: {
-                id_menu: id_menu
-                }
+            id_menu : id_menu
+        }
+
     })
-        .then(num =>{
-            if (num == 1) {
-                res.send({
-                    message: "suggestion was deleted"
+        .then(async(data) => {
+            await asyncForEach(data,async(this_suggest)=>{
+                await Suggestion.destroy({
+                    where: {
+
+                        id_periode : this_suggest.id_periode,
+                        id_recette : this_suggest.id_recette,
+                        id_membre : this_suggest.id_membre,
+                        id_menu : this_suggest.id_menu
+
+                    }
+                }).then(num =>{
+                    if (num == 1) {
+                        res.send({
+                            message: "suggestion was deleted"
+                        });
+                    } else{
+                        res.send({
+                            message: `Cannot delete suggestion with id_menu= ${id_menu} and id_recette = ${id_recette} and id_membre and = ${id_membre} id_êriode = ${id_periode} `
+                        })
+                    }
+                }).catch(err => {
+                    res.status(500).send({
+                        message:
+                            err.message || `Some error occurred while deleting suggestion with id_menu= ${id_menu} and id_recette = ${id_recette} and id_membre and = ${id_membre} id_êriode = ${id_periode}  `
+                    });
                 });
-            } else{
-                res.send({
-                    message: `Cannot delete suggestion with id_menu = ${id_menu} `
-                })
-            }
-        })
+            })
+
+            })
         .catch(err => {
             res.status(500).send({
                 message:
@@ -134,7 +155,7 @@ exports.Delete_Suggestion = async(req, res) => {
 };
 
 
-*/
+
 exports.findAll = (req, res) => {
     Suggestion.findAll()
         .then(data => {

@@ -22,4 +22,4 @@ router.delete('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken],suggesti
 
 
 
-//router.delete('/withMenu/:id',suggestion.Delete_Suggestion_menu);
+router.delete('/withMenu/:id',suggestion.Delete_Suggestion_menu);
