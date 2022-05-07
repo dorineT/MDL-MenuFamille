@@ -19,6 +19,8 @@ router.put('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken] ,suggestion
 
 router.delete('/:id_periode/:id_recette/:id_menu',[authJwt.verifyToken],suggestion.Delete_Suggestion);
 
+router.delete("/with_menu/:id",suggestion.Delete_Suggestion_menu);
+
 
 
 

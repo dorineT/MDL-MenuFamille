@@ -87,6 +87,7 @@ exports.PutMenu = (req, res) => {
 /// Update CRUD
 
 exports.UpdateMenu = async (req, res) => {
+
   moment.locale('fr')
   const id = req.params.id;
   req.body.periode_debut = moment(req.body.periode_debut,"DD/MM/YYYY")
@@ -94,17 +95,44 @@ exports.UpdateMenu = async (req, res) => {
   await Menu.update(req.body, {
     where: {id_menu: id,verrou: false}
   })
-      .then(num =>{
+      .then(async(num) =>{
         if (num == 1) {
-          res.send({
-            message: "Menu was Updated"
-          });
+          if (req.body.verrou == true){
+
+
+          await db.suggestion.findAll({
+            where: {
+              id_menu : id
+            }
+          })
+              .then(async(data) => {
+
+                await asyncForEach(data,async(this_suggest)=>{
+                  await db.suggestion.destroy({
+                    where: {
+
+                      id_periode : this_suggest.id_periode,
+                      id_recette : this_suggest.id_recette,
+                      id_membre : this_suggest.id_membre,
+                      id_menu : this_suggest.id_menu
+
+                    }
+                  })
+                })
+                res.send({
+                  message: `menu was updated`
+                })
+              })
+
         } else {
           res.send({
-            message: `Cannot update Menu with id=${id}`
+            message: `menu was updated`
           })
         }
-      })
+      }else{
+          res.send({
+            message: `Cannot update Menu with id=${id}`})
+        }})
       .catch(err => {
         res.status(500).send({
           message:

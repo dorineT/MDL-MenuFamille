@@ -114,7 +114,6 @@ exports.Delete_Suggestion = async(req, res) => {
         where: {
             id_menu : id_menu
         }
-
     })
         .then(async(data) => {
             await asyncForEach(data,async(this_suggest)=>{
@@ -129,9 +128,7 @@ exports.Delete_Suggestion = async(req, res) => {
                     }
                 }).then(num =>{
                     if (num == 1) {
-                        res.send({
-                            message: "suggestion was deleted"
-                        });
+
                     } else{
                         res.send({
                             message: `Cannot delete suggestion with id_menu= ${id_menu} and id_recette = ${id_recette} and id_membre and = ${id_membre} id_êriode = ${id_periode} `
@@ -144,7 +141,7 @@ exports.Delete_Suggestion = async(req, res) => {
                     });
                 });
             })
-
+            res.send("updated")
             })
         .catch(err => {
             res.status(500).send({
