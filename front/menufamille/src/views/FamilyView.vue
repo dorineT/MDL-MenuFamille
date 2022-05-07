@@ -8,7 +8,7 @@
     
     <template v-slot:activator="{ on, attrs }">
     <v-card style="margin: 20px;opacity: 0.85"  outlined>
-      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" />
+      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" @familyCreated="updateMember"/>
       
       <v-card-title class="mt-2">Mes Familles</v-card-title>
      

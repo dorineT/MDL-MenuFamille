@@ -58,26 +58,34 @@ export const auth = {
     updateRoles(state, user) {
       state.status.loggedIn = true;
       state.user = { ...state.user, roles: user.roles};
+      localStorage.setItem("user", JSON.stringify(state.user));
+      console.log(localStorage.getItem('user'))
     },
     update(state, user) {
       state.status.loggedIn = true;
       state.user = { ...state.user, firstname: user.firstname, lastname: user.lastname};
+      localStorage.setItem("user", JSON.stringify(state.user));
+
     },
     refreshToken(state, accessToken) {
       state.status.loggedIn = true;
       state.user = { ...state.user, accessToken: accessToken };
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     loginFailure(state) {
       state.status.loggedIn = false;
       state.user = null;
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     logout(state) {
       state.status.loggedIn = false;
       state.user = null;
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     registerSuccess(state) {
       state.status.loggedIn = false;

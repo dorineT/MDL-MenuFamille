@@ -95,6 +95,7 @@ export default {
         if (!this.$refs.form.validate()) return;
         DAOfamily.createFamily(this.$store.state.auth.user.id_membre, {nom: this.name, count: this.count}).then(
           (response) => {
+            this.$emit('familyCreated');
             this.$emit('closeFam');
           }
         )
