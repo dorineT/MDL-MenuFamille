@@ -448,7 +448,20 @@ exports.old_menu = async (req, res) => {
 
 
 exports.create_New_Menu = async (req, res) => {
+
+
+  var no_days_is_empty = true
+  req.body.calendriers.forEach(calen =>{
+    calen.calendrier_recettes.forEach(days=>{
+      if ((isNaN(days.id_recette))&& days.is_recette){
+        no_days_is_empty = false
+
+      }
+    })
+  })
+
   moment.locale('fr')
+  if (no_days_is_empty){
   await Menu.create({
     periode_debut: moment(req.body.periode_debut, "DD/MM/YYYY"),
     periode_fin: moment(req.body.periode_fin, "DD/MM/YYYY"),
@@ -531,6 +544,6 @@ exports.create_New_Menu = async (req, res) => {
       message:
         err.message || "Some error occurred while retrieving locked Menus."
     })
-  })
+  })}
 }
 
