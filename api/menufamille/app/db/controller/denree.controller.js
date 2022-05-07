@@ -1,4 +1,5 @@
 const db = require("../models");
+const { getProduct } = require("../../middleware/openFoodFact")
 const Denree = db.denree;
 const Op = db.Sequelize.Op;
 const {asyncForEach} = require("../../middleware/asyncForEach");
@@ -22,18 +23,23 @@ const {asyncForEach} = require("../../middleware/asyncForEach");
     }); 
   }
 
+  exports.getFood = (req, res) => {
+    let product = {nom: req.params.name, types: req.query.types};
+    getProduct(product).then((data) => {
+      res.send(data)
+    })
+  };
 
   //// Find or Create 
 
   exports.FindOrCreate = async (req, res) => {
     const nomArg = req.params.nom;
-    //const stats = get_stats_from_name(nomArg)[0]
     await Denree.findOrCreate({
       where: { nom:  nomArg },
-      /*defaults:{
-        nutriscore: stats[2].toUpperCase(),
-        calories: stats[3]
-      }*/
+      defaults:{
+        nutriscore: req.params.nutriscore,
+        calories: req.params.calories
+      }
     }).then( async (data) => {
       if (data[1] == true){
         const id_new_denree = data[0].id_denree;

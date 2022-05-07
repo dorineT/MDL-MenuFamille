@@ -2,9 +2,10 @@
 	<v-row justify="center">
 		<v-dialog
 			v-model="dialogShow"
-			
+			scrollable
 			hide-overlay
 			transition="dialog-bottom-transition"
+			persistent
 		>
 			<v-card class="noPadding">
 				<v-toolbar dark color="#9CCC65">
@@ -237,6 +238,7 @@
 			:timeout="timeout"
 			text
 			color="orange lighten-2"
+			rounded
 		>
 			Menu sauvegardé !
 		</v-snackbar>
@@ -294,7 +296,8 @@
 		},
 		watch:{
 			tagsChoix(){
-												
+				if(this.tagsChoix === null ) return 
+			
 				let tempTags = this.copyTab(this.tagsChoix)
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
@@ -421,7 +424,8 @@
 				})
 				return cible
 			},
-			userActionListeRecette(){				
+			userActionListeRecette(){
+				if(this.comboboxRecetteSelected === null) return				
 				this.newRecetteChoix = this.comboboxRecetteSelected.nom		
 				this.resetSelectedSuggestion()										
 			},
@@ -510,7 +514,5 @@
 
 <style lang="sass">
 @import '../style/globalStyle'
-.v-application .primary--text
-  color: #FFB74D !important
-  caret-color: #FFB74D !important
+
 </style>

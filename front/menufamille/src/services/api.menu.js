@@ -31,7 +31,7 @@ export default class MenuDao{
      * @param {*} newMenu le menu a modifier
      */
     sendMenuUpdate(menu){
-      api.put("/menu/"+menu.id_menu, menu)
+      return api.put("/menu/"+menu.id_menu, menu)
     }
 
     /**
@@ -40,9 +40,17 @@ export default class MenuDao{
      */
     sendMenuAddSuggestion(suggestion){
 
-      api.post("/suggestion",suggestion)
+      return api.post("/suggestion",suggestion)
     }
 
+    /**
+     * Supprimer une suggestion données
+     * @param {*} suggestion a supprimer
+     * @returns 
+     */
+    deleteSuggestion(suggestion){
+      return api.delete("/suggestion/"+suggestion.id_periode+"/"+suggestion.id_recette+"/"+suggestion.id_menu)
+    }
 
 
     /**
@@ -50,7 +58,7 @@ export default class MenuDao{
      * @param {*} periode 
      */
      sendPeriodeUpdate(periode){    
-      api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
+      return api.put("/calendrier_recette/Update_Periode_with_Tag/"+periode.id_periode,periode)
     }
 
     /**
@@ -82,6 +90,9 @@ export default class MenuDao{
       return api.get("/menu/GetSuggestUnlockedMenu/"+idFamille)
     }
 
+    getShopList(menu){
+      return api.get("/menu/food/"+menu)
+    }
 
 }
 

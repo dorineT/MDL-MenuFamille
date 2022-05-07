@@ -36,6 +36,7 @@
           </v-col>
           <v-col cols="12" sm="12" md="3" lg="3" xl="3" >          
             <v-select
+              color="orange lighten-2"     
               v-model="selectedFamille"
               :items="famille"
               menu-props="auto"
@@ -133,7 +134,9 @@
        }
     },
     methods:{
-      async changeFamille(){       
+      async changeFamille(){  
+        console.log("change famille page home")
+        console.log(this.$store.state.auth.user.roles)      
         //select les menus correspondants
         if(this.selectedFamille !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)
@@ -226,6 +229,7 @@
 </script>
 
 <style lang="sass">
+@import "../style/globalStyle"
 .cardmargin
   margin: 10px
   padding: 10px

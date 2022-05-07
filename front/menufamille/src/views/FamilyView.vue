@@ -1,6 +1,6 @@
 <template>
     <v-dialog
-    
+      v-if="!isLoading"   
       v-model="dialogSup"
       persistent
       max-width="700"
@@ -19,14 +19,14 @@
             <v-select
                 :items="select"
                 v-model="selected"
+                no-data-text="Aucune famille"
                 label="Liste familles"
-                @change="changeFamille()"
+                @change="changeFamille()"              
             ></v-select>  
            </v-col>
            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
-              <v-btn
-              color="#FFB74D"
-              class="mr-3"
+              <v-btn              
+              class="mr-3 colorbtnOrange"
               elevation="2"
               rounded
               small
@@ -44,8 +44,8 @@
               </v-col>
           </v-row>
           
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" >
+          <v-row >
+            <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" v-if="famillyExist > 0" >
               <v-card>
                 <v-card-title>Membre de la famille</v-card-title>
                 <v-card-text>
@@ -53,6 +53,11 @@
                     :headers="headers"
                     :items="membresFamily"         
                     class="elevation-1"
+                    :footer-props="{                     
+                      itemsPerPage: 4,
+                      'items-per-page-options': [4,8],
+                      'items-per-page-text': 'Membres par page',
+                    }"
                   >
                     <template v-slot:top>
                       <v-toolbar
@@ -113,7 +118,7 @@
               </v-card>
               
             </v-col>
-            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="isRequest">
+            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="famillyExist > 0 && isRequest">
               <v-card height="200px">
                 <v-toolbar flat>
                   <v-toolbar-title>Demandes en attente</v-toolbar-title>
@@ -129,10 +134,10 @@
               </v-card>
              
             </v-col>
-            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6">
+            <v-col cols="12"  xs="12" sm="12" md="6" lg="6" xl="6" v-if="famillyExist > 0">
               <v-card>
 
-                                  <v-container fluid>
+                  <v-container fluid>
                     <v-row>
                       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
                         <v-text-field
@@ -148,7 +153,7 @@
                          <qr-code :size="150" :text="accessCode" error-level="L"></qr-code>
                       </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row >
                       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
                         <v-btn
                         color="red"
@@ -191,7 +196,7 @@
         </v-container>
     </v-card>
     </template>
-    <v-card>
+    <v-card v-if="famillyExist > 0">
         <v-card-title class="text-h5">
           Suppression de la famille!
         </v-card-title>
@@ -254,7 +259,7 @@ let DAOfamily = new FamilyDao;
     },
     watch: {
     '$store.state.auth.user': function () {
-      this.updateView()
+      this.updateView();       
     }
     },
     computed: {
@@ -293,10 +298,19 @@ let DAOfamily = new FamilyDao;
       accessCode() {
         const host = window.location.protocol + "//" + window.location.host;
         return host+"/family?code="+this.code;
-      }
+      },
+      famillyExist(){
+        return this.select.length
+      },
+      isLoading() {
+        return this.$store.state.loading.isLoading;
+      },
     },
     mounted() {
         this.updateView();
+
+        if(this.famillyExist === 0) return;
+        
         this.updateMember();
         this.generateCode();
         if(this.currentRole === 'parent')  this.updateRequest();
@@ -311,9 +325,9 @@ let DAOfamily = new FamilyDao;
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })
-        if(this.currentFamily.nomFamille !== null) {
+        if(this.currentFamily.nomFamille !== null) {     
           this.selected = this.currentFamily.nomFamille
-        } else {
+        } else {       
           this.selected = this.select.length > 0 ? this.select[0] : null
         }
       },
@@ -321,12 +335,15 @@ let DAOfamily = new FamilyDao;
         DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.dialogSup = false;
-            this.selected = this.select[0];
+            if(this.select.length > 0) this.selected = this.select[0];
+            this.$store.dispatch("info/reset");
             this.changeFamille();
           }
         )
       },
-      changeFamille(){
+      changeFamille(){ 
+        console.log("change famille page famille")
+        console.log(this.$store.state.auth.user.roles)       
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
@@ -345,8 +362,7 @@ let DAOfamily = new FamilyDao;
                 membre: membre.nom + " " +membre.prenom,
               }
               this.requestFamily.push(value)
-            })
-            console.log(this.requestFamily)
+            })            
           }
         )
       },
@@ -446,3 +462,8 @@ let DAOfamily = new FamilyDao;
     }
 }
 </script>
+
+
+<style lang="sass">
+@import "../style/globalStyle"
+</style>
