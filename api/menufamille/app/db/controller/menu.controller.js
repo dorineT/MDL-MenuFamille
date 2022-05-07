@@ -1,5 +1,3 @@
-const { response } = require("express");
-const { calendrier, recette, sequelize, famille } = require("../models");
 const db = require("../models");
 const Menu = db.menu;
 const Op = db.Sequelize.Op;
@@ -23,50 +21,63 @@ exports.findAll = (req, res) => {
 };
 
 exports.getFood = (req, res) => {
-  db.denree.findAll(
-    {
-      attributes: ['nom',
-        [db.sequelize.col('recettes.nb_personne'), 'nb_personne'],
-        [db.sequelize.col('recette_denrees.quantite'), 'quantite'],
-        [db.sequelize.col('recette_denrees.mesure'), 'mesure']
-      ],
-      include: [{
-        model: db.recette,
-        required: true,
-        as: 'recettes',
-        attributes: [],
-        include: {
-          model: db.calendrier,
-          required: true,
-          attributes: [],
-          include: {
-            model: db.menu,
-            required: true,
-            where: { id_menu: req.params.id_menu },
-            attributes: []
-          }
-        }
-      },
+  db.calendrier_recette.findAll({
+    attributes: ['nb_personne'],
+    include: [{
+      model: db.calendrier,
+      required: true,
+      attributes: [],
+      include: 
       {
-        model: db.recette_denree,
+        model: db.menu,
         required: true,
-        as: 'recette_denrees',
-        attributes: []
-      }]
+        attributes: [],
+        where: { id_menu: req.params.id_menu }
+      }
+    },
+  {
+    model: db.recette,
+    required: true,
+    attributes: ['nb_personne'],
+    include: {
+      model: db.denree,
+      as: 'denrees',
+      required: true,
+      attributes: ['nom'],
+      through: {model: db.recette_denree, required: true, attributes: ['mesure','quantite']}
+      
     }
-  )
-    .then(data => {
-
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Menus."
-      });
-    });
-};
-
+  }]
+  })
+  .then(data => {
+          let send = [];
+          for (let i=0;i<data.length;i++) {
+            for (let a=0;a<data[i].recette.denrees.length;a++) {
+              let calc = Math.round(((data[i].recette.denrees[a].recette_denree.quantite * data[i].nb_personne) / data[i].recette.nb_personne) || 1)
+              let quantite = (calc === 0?1:calc)
+              if(send.some(products => products.nom === data[i].recette.denrees[a].nom )) {
+                let index = send.indexOf(send.filter(products => products.nom === data[i].recette.denrees[a].nom )[0])
+                send[index].quantite = send[index].quantite + quantite
+              } else {
+                send.push(
+                  {
+                    'nom': data[i].recette.denrees[a].nom,
+                    'quantite': quantite,
+                    'mesure': data[i].recette.denrees[a].recette_denree.mesure
+                  }
+                )
+              }
+            }
+          }
+          res.send(send);
+        })
+        .catch(err => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while retrieving Menus."
+          });
+        });
+}
 
 /// Put CRUD
 
