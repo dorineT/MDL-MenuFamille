@@ -335,7 +335,7 @@
 			@input="changePageEvent"
 		></v-pagination>
 
-		<v-snackbar v-model="errorMessage.error" text color="red">
+		<v-snackbar rounded v-model="errorMessage.error" :color="errorMessage.color">
 			{{ errorMessage.message }}
 		</v-snackbar>
 	</div>
@@ -372,6 +372,7 @@
 				errorMessage: {
 					message: "",
 					error: false,
+					color: "red",
 				},
 				loading: true,
 			};
@@ -555,6 +556,13 @@
 				this.fillPlat(this.items, iStart, iEnd);
 
 				//call api
+				menuSuggest.deleteSuggestion(suggestion).then(
+					(response) =>{
+						this.errorMessage.message = "Suggestion supprimée"
+						this.errorMessage.color = "green"
+						this.errorMessage.error = true
+					}
+				)
 			},
 
 			/// UPDATE CALENDRIER////
@@ -567,6 +575,7 @@
 					(elem) => elem.id_periode === item.id_periode
 				);
 				this.errorMessage.message = "";
+				this.errorMessage.color = "red";
 
 				//copy all attribute from menuPeriodeOld to periodeSave
 				//let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
@@ -624,6 +633,7 @@
 
 
 <style lang="sass">
+@import "../style/globalStyle"
 .v-data-table
   white-space: pre-wrap
 

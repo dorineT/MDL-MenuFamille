@@ -8,7 +8,7 @@
             <v-select
             color="orange lighten-2"
             label="Choix du menu"
-            class="combobox-class"
+            class="combobox-class orange"
             no-data-text="Aucun menu disponible"
             :items="itemPeriode"
             return-object     
@@ -36,6 +36,8 @@
           </v-col>
           <v-col cols="12" sm="12" md="3" lg="3" xl="3" >          
             <v-select
+              color="orange lighten-2"
+              class="orange"
               v-model="selectedFamille"
               :items="famille"
               menu-props="auto"
@@ -226,6 +228,7 @@
 </script>
 
 <style lang="sass">
+@import "../style/globalStyle"
 .cardmargin
   margin: 10px
   padding: 10px

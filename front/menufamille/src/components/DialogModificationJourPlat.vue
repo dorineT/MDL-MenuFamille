@@ -238,6 +238,7 @@
 			:timeout="timeout"
 			text
 			color="orange lighten-2"
+			rounded
 		>
 			Menu sauvegardé !
 		</v-snackbar>

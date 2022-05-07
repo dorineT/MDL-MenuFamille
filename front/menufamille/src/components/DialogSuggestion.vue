@@ -60,6 +60,7 @@
 			v-model="snackbar"
 			:timeout="timeout"
 			text
+			rounded
 			color="orange lighten-2"
 		>
 			Menu suggéré sauvegardé !

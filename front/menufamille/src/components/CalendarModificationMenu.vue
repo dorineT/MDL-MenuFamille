@@ -134,7 +134,7 @@
 
       </div>
 
-      <v-snackbar v-model="errorMessage.error" text color="red">
+      <v-snackbar rounded v-model="errorMessage.error" text color="red">
         {{ errorMessage.message }}
       </v-snackbar>   
     </div>
