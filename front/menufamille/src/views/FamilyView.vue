@@ -341,7 +341,9 @@ let DAOfamily = new FamilyDao;
           }
         )
       },
-      changeFamille(){        
+      changeFamille(){ 
+        console.log("change famille page famille")
+        console.log(this.$store.state.auth.user.roles)       
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
