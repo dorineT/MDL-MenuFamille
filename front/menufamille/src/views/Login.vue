@@ -29,15 +29,19 @@
                 required
                 :rules="emailRules"
                 v-model="user.email"
+              color="#9CCC65"
               />
             </div>
             <div>
               <v-text-field
-                label="Mot de passe"
-                type="password"
+                label="Mot de passe"        
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"            
+                :type="show1 ? 'text' : 'password'"
                 required
                 :rules="passwordRules"
                 v-model="user.password"
+                @click:append="show1 = !show1"
+              color="#9CCC65"
               />
             </div>
             <v-btn
@@ -82,16 +86,17 @@ export default {
   name: "Login",
   data() {
     return {
+      show1: false,
       user: new User("", ""),
       loading: false,
       invalid: false,
       message: "",
       emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        v => !!v || 'E-mail requis',
+        v => /.+@.+\..+/.test(v) || 'E-mail non valide',
       ],
       passwordRules: [
-        v => !!v || 'Name is required'
+        v => !!v || 'Mot de passe requis'
       ],
     };
   },

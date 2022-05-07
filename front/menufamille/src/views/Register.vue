@@ -11,7 +11,7 @@
     </v-container>
 
     <div style="margin-top: 3em">
-      <v-card style="margin: 0 auto; width: 40em" class="elevation-12">
+      <v-card style="margin: 0 auto; width: 40em" class="elevation-12 noPadding">
         <v-toolbar color="#9CCC65" dark flat>
           <v-toolbar-title>Inscription</v-toolbar-title>
           <v-spacer />
@@ -24,6 +24,7 @@
           >
           <div>
               <v-text-field
+                color="#9CCC65"
                 label="Prénom"
                 type="text"
                 required
@@ -38,6 +39,7 @@
                 required
                 :rules="lastnameRules"
                 v-model="user.lastname"
+                color="#9CCC65"
               />
             </div>
             <div>
@@ -47,15 +49,19 @@
                 required
                 :rules="emailRules"
                 v-model="user.email"
+                color="#9CCC65"
               />
             </div>
             <div>
               <v-text-field
                 label="Mot de passe"
-                type="password"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"            
+                :type="show1 ? 'text' : 'password'"
+                @click:append="show1 = !show1"
                 required
                 :rules="passwordRules"
                 v-model="user.password"
+                color="#9CCC65"
               />
             </div>
             <v-btn
@@ -104,22 +110,23 @@ export default {
   name: 'Register',
   data() {
     return {
+      show1: false,
       user: new User('', '', '', ''),
       submitted: false,
       invalid: false,
       message: '',
       emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        v => !!v || 'E-mail requis',
+        v => /.+@.+\..+/.test(v) || 'E-mail non valide',
       ],
       passwordRules: [
-        v => !!v || 'Password is required'
+        v => !!v || 'Mot de passe requis'
       ],
       lastnameRules: [
-        v => !!v || 'Lastname is required'
+        v => !!v || 'Nom requis'
       ],
       firstnameRules: [
-        v => !!v || 'Fisrtname is required'
+        v => !!v || 'Prénom requis'
       ]
     };
   },
@@ -160,6 +167,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "../style/globalStyle"
 .colorBackCont
   background-color: #DCEDC8
 
