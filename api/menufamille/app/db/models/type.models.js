@@ -20,8 +20,8 @@ module.exports = (sequelize, Sequelize) => {
 
     Type.sync();
 
-    Type.findOne({where: {id_type: 1}}).then(data => {
-      if (data === null) {
+    Type.findAndCountAll().then(count => {
+      if (count === 0) {
         getTypes().then(async types => {
           await asyncForEach(types, async (type) => {
             Type.create({nom: type})
