@@ -21,7 +21,7 @@
                 v-model="selected"
                 no-data-text="Aucune famille"
                 label="Liste familles"
-                @change="changeFamille()"
+                @change="changeFamille()"              
             ></v-select>  
            </v-col>
            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
@@ -53,10 +53,9 @@
                     :headers="headers"
                     :items="membresFamily"         
                     class="elevation-1"
-                    :footer-props="{
-                      'disable-items-per-page': false,
+                    :footer-props="{                     
                       itemsPerPage: 4,
-                      'items-per-page-options': [4],
+                      'items-per-page-options': [4,8],
                       'items-per-page-text': 'Membres par page',
                     }"
                   >
@@ -260,7 +259,7 @@ let DAOfamily = new FamilyDao;
     },
     watch: {
     '$store.state.auth.user': function () {
-      this.updateView()
+      this.updateView();       
     }
     },
     computed: {
@@ -326,9 +325,9 @@ let DAOfamily = new FamilyDao;
         this.$store.state.auth.user.roles.forEach(element => {        
         this.select.push(element[1])
         })
-        if(this.currentFamily.nomFamille !== null) {
+        if(this.currentFamily.nomFamille !== null) {     
           this.selected = this.currentFamily.nomFamille
-        } else {
+        } else {       
           this.selected = this.select.length > 0 ? this.select[0] : null
         }
       },
@@ -336,12 +335,13 @@ let DAOfamily = new FamilyDao;
         DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.dialogSup = false;
-            this.selected = this.select[0];
+            if(this.select.length > 0) this.selected = this.select[0];
+            this.$store.dispatch("info/reset");
             this.changeFamille();
           }
         )
       },
-      changeFamille(){
+      changeFamille(){        
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])
@@ -360,8 +360,7 @@ let DAOfamily = new FamilyDao;
                 membre: membre.nom + " " +membre.prenom,
               }
               this.requestFamily.push(value)
-            })
-            console.log(this.requestFamily)
+            })            
           }
         )
       },

@@ -75,7 +75,7 @@
 												</v-avatar>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
+												<v-list-item @click="removeSuggestion(sugg,  item.id_jour)">
 													  <v-list-item-icon>
 														<v-icon >mdi-food-off</v-icon>
 													  </v-list-item-icon>
@@ -170,7 +170,7 @@
 												</v-avatar>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
+												<v-list-item @click="removeSuggestion(sugg, item.id_jour)">
 													  <v-list-item-icon>
 														<v-icon >mdi-food-off</v-icon>
 													  </v-list-item-icon>
@@ -265,7 +265,7 @@
 												</v-avatar>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
+												<v-list-item @click="removeSuggestion(sugg, item.id_jour)">
 													  <v-list-item-icon>
 														<v-icon >mdi-food-off</v-icon>
 													  </v-list-item-icon>
@@ -539,8 +539,22 @@
 			closeDialogSuggestion() {
 				this.showDialog = false;
 			},
-			removeSuggestion(){
-				alert('suggestion supprimée')
+			removeSuggestion(suggestion, id_jour){				
+				console.log(suggestion)
+				console.log(id_jour)
+				// delete from item
+				let  jour = this.items.find( el => el.id_calendrier === id_jour)
+				console.log(jour)
+				let periode = jour.calendrier_recettes.find( el => el.id_periode === suggestion.id_periode)
+				periode.suggestions = periode.suggestions.filter( x => {
+					return x.id_membre !== suggestion.id_membre
+				})				
+
+				let iStart = (this.page - 1) * 7;
+				let iEnd = this.page * 7;
+				this.fillPlat(this.items, iStart, iEnd);
+
+				//call api
 			},
 
 			/// UPDATE CALENDRIER////
