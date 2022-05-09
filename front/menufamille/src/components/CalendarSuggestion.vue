@@ -169,7 +169,7 @@
 							</div>
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -334,7 +334,7 @@
 							</div>
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -500,7 +500,7 @@
 
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -520,7 +520,7 @@
 								>
 									<strong>Tags</strong>
 								</p>
-								<v-icon v-else color="green" large>mdi-plus</v-icon>
+								<v-icon v-else color="green" large>mdi-minus</v-icon>
 							</v-btn>
 							<p
 								v-if="
@@ -765,8 +765,6 @@
 						});
 					}
 				}
-
-				console.log(bullesSugg);
 
 				return bullesSugg;
 			},

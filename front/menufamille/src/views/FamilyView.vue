@@ -8,7 +8,7 @@
     
     <template v-slot:activator="{ on, attrs }">
     <v-card style="margin: 20px;opacity: 0.85"  outlined>
-      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" @familyCreated="updateMember"/>
+      <dialog-create-family v-bind:dialog="dialogFm" @closeFam="createFamily" @familyCreated="snackbarShow('Famille créée avec succès !', 'green')"/>
       
       <v-card-title class="mt-2">Mes Familles</v-card-title>
      
@@ -219,6 +219,18 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+
+
+      <v-snackbar
+        v-model="snackbar"
+        :timeout="timeout"
+        text
+        :color="colorSnackbar"
+        rounded
+      >
+        {{snackbarText}}
+      </v-snackbar>
+
     </v-dialog>
 </template>
 
@@ -254,7 +266,16 @@ let DAOfamily = new FamilyDao;
         },
         membresFamily:[],
         requestFamily:[],
-        joinFamillyInput: null
+        joinFamillyInput: null,
+
+
+
+        //snackbar
+        colorSnackbar: "green",
+        snackbar: false,
+        timeout: 3000,
+        snackbarText: ''
+
       }
     },
     watch: {
@@ -318,6 +339,11 @@ let DAOfamily = new FamilyDao;
       createFamily() {
         this.dialogFm = !this.dialogFm;
       },
+      snackbarShow(text, color){
+        this.snackbarText = text
+        this.colorSnackbar = color
+        this.snackbar = true
+      },
       updateView() {
         this.select = []
         this.$store.state.auth.user.roles.forEach(element => {        
@@ -340,6 +366,7 @@ let DAOfamily = new FamilyDao;
         DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.dialogSup = false;
+            this.snackbarShow('Famille suprimmée avec succès !', 'red')
             this.$store.dispatch("info/reset");
             if(this.updateView()) {
               this.changeFamille();

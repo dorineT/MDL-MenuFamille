@@ -131,14 +131,14 @@
 														:key="n"
 														class="d-flex flex-row">
 														<v-radio
-															:label="sug.recette.nom"
-															:value="sug"
+															:label="sug.suggestion.recette.nom"
+															:value="sug.suggestion"
 															return-object
 															color="orange lighten-2"
 														></v-radio>
 
-														<v-avatar style="margin:25px" color="light-green lighten-1" size="35">
-															<span class="white--text text-h5">{{sug.membre.prenom.substring(0, 1)}}{{sug.membre.nom.substring(0, 1)}}</span>
+														<v-avatar v-for="(pers,i) in sug.listeMembres" :key="i" style="margin:25px" color="light-green lighten-1" size="35">
+															<span class="white--text text-h5">{{pers.prenom.substring(0, 1)}}{{pers.nom.substring(0, 1)}}</span>
 														</v-avatar>
 													</div>
 													<span v-if="suggestionsListe.length===0">Aucune suggestion proposé</span>
@@ -359,7 +359,7 @@
 				this.infoMenu.tags = this.copyTab(this.itemReceived.tags)				
 				this.infoMenu.suggestions = structuredClone(this.itemReceived.suggestions)
 				
-				this.suggestionsListe = structuredClone(this.itemReceived.suggestions)
+				this.suggestionsListe = this.transformSuggestions(this.itemReceived.suggestions)//structuredClone(this.itemReceived.suggestions)
 				
 				this.tagsChoix = []
 
@@ -412,6 +412,33 @@
 			},
 			increment() {
 				this.recipe.nbPers++;
+			},
+			transformSuggestions(liste) {
+				let bulles = {};
+
+				liste.forEach((el) => {
+					if (bulles[el.recette.nom]) bulles[el.recette.nom].push(el.membre);
+					else {
+						bulles[el.recette.nom] = [];
+						bulles[el.recette.nom].push(el.membre);
+					}
+				});
+
+				let bullesSugg = [];
+
+				for (let bulle in bulles) {
+					let sugg = liste.find((el) => el.recette.nom === bulle);
+					if (sugg !== null) {
+						bullesSugg.push({
+							suggestion: sugg,
+							listeMembres: bulles[bulle],
+						});
+					}
+				}
+
+				console.log(bullesSugg);
+
+				return bullesSugg;
 			},
 			/**Copier un tableau - superficielle
 			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */

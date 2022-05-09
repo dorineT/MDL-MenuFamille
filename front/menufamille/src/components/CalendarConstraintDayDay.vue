@@ -428,10 +428,13 @@
 					calendriers: structuredClone(this.items),
 				};							
 				
-				if(this.i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
-				this.i+=1
-			
-				this.$router.push("/");
+				if(this.i===0) DAOMenu.sendMenuCreate(menuNew).then(
+					(response) => {
+						this.i+=1 // prevent to send multiple times to api
+						this.$router.push("/");
+					}
+				);
+
 			},
 		},
 	};
