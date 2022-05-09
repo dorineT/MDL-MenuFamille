@@ -59,7 +59,6 @@ export const auth = {
       state.status.loggedIn = true;
       state.user = { ...state.user, roles: user.roles};
       localStorage.setItem("user", JSON.stringify(state.user));
-      console.log(localStorage.getItem('user'))
     },
     update(state, user) {
       state.status.loggedIn = true;
