@@ -275,7 +275,7 @@ for each row
 execute procedure delete_famille();
 
 
-CREATE OR REPLACE FUNCTION public.delete_update_membre()
+CREATE OR REPLACE FUNCTION delete_update_membre()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
@@ -313,7 +313,7 @@ on famille_membre
 for each row 
 execute procedure delete_update_membre();
 
-CREATE OR REPLACE FUNCTION public.update_nb_famille()
+CREATE OR REPLACE FUNCTION update_nb_famille()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
@@ -338,4 +338,25 @@ end; $function$;
 create trigger update_nb_famille before
 delete or insert
 on
-public.famille_membre for each row execute function update_nb_famille();
+famille_membre for each row execute function update_nb_famille();
+
+CREATE OR REPLACE FUNCTION control_date_menu()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+declare
+	nb_response  integer;
+begin
+   		select count(*) into nb_response from menu m where m.id_famille = new.id_famille and (new.periode_debut  between  m.periode_debut and m.periode_fin or new.periode_fin between  m.periode_debut and m.periode_fin);
+   		if nb_response > 0 then 
+   			raise exception 'chevauchement des dates!' using ERRCODE = 23500;
+   		end if;
+    	return new;  
+end; $function$;
+
+create trigger control_menu
+before update or insert
+on menu
+for each row 
+execute procedure control_date_menu();
+

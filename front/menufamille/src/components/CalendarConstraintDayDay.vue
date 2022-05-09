@@ -125,7 +125,7 @@
 				class="marginClass"
 			></v-pagination>
 		</div>
-		<v-snackbar v-model="errorMessage.error" text color="red">
+		<v-snackbar rounded v-model="errorMessage.error" text color="red">
 			{{ errorMessage.message }}
 		</v-snackbar>
 	</v-card>
@@ -428,10 +428,13 @@
 					calendriers: structuredClone(this.items),
 				};							
 				
-				if(this.i===0) DAOMenu.sendMenuCreate(menuNew); // prevent to send multiple times to api
-				this.i+=1
-			
-				this.$router.push("/");
+				if(this.i===0) DAOMenu.sendMenuCreate(menuNew).then(
+					(response) => {
+						this.i+=1 // prevent to send multiple times to api
+						this.$router.push("/");
+					}
+				);
+
 			},
 		},
 	};

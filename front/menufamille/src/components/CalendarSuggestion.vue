@@ -51,55 +51,125 @@
 								class="d-inline-flex flex-column"
 							>
 								<div
-									class="d-inline-flex flex-row"
-									v-for="(sugg, i) in item.suggestions"
+									v-for="(sugg, i) in item.suggestionsBulles"
 									:key="i + 'sugg'"
 								>
-									<p>{{ sugg.recette.nom }}</p>
-									<span class="white--text ml-2">
-										<v-menu       
-											open-on-hover
-											top
-											offset-x  
-											v-if="sugg.membre.id_membre === currentUser.id_membre"
+									<!--Début UNE pers sur un plat-->
+									<div
+										v-if="sugg.listeMembres.length === 1"
+										class="d-inline-flex flex-row"
+									>
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+										<span class="white--text ml-2">
+											<v-menu																								
+												offset-x
+												v-if="
+													sugg.suggestion.membre.id_membre ===
+													currentUser.id_membre
+												"
+											>
+												<template v-slot:activator="{ on, attrs }">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														{{
+															sugg.suggestion.membre.prenom.slice(0, 1) +
+															sugg.suggestion.membre.nom.slice(0, 1)
+														}}
+													</v-avatar>
+												</template>
+												<v-list>
+													<v-list-item
+														@click="
+															removeSuggestion(sugg.suggestion, item.id_jour)
+														"
+													>
+														<v-list-item-icon>
+															<v-icon>mdi-food-off</v-icon>
+														</v-list-item-icon>
+														<v-list-item-title> Supprimer </v-list-item-title>
+													</v-list-item>
+												</v-list>
+											</v-menu>
+											<v-avatar v-else color="indigo" size="30">
+												{{
+													sugg.suggestion.membre.prenom.slice(0, 1) +
+													sugg.suggestion.membre.nom.slice(0, 1)
+												}}
+											</v-avatar>
+										</span>
+									</div>
+									<!--FIN UNE pers sur un plat-->
+									<!--debut plusieurs pers sur un plat-->
+									<div v-else class="d-inline-flex flex-row">
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+
+										<v-menu																						
+											offset-x
+											v-if="checkMembreInList(sugg.listeMembres)"
 										>
-											<template v-slot:activator="{ on, attrs }">
-												<v-avatar color="indigo" size="30"           
-													v-bind="attrs"
-													v-on="on"
-												>
-													{{
-														sugg.membre.prenom.slice(0, 1) +
-														sugg.membre.nom.slice(0, 1)
-													}}
-												</v-avatar>
+											<template v-slot:activator="{ on: menu, attrs }">
+												<v-tooltip bottom>
+													<template v-slot:activator="{ on: tooltip }">
+														<span class="white--text ml-2">
+														<v-avatar
+															color="indigo"
+															size="30"
+															v-bind="attrs"
+															v-on="{ ...tooltip, ...menu }"
+														>
+															+ {{ sugg.listeMembres.length }}
+														</v-avatar>
+														</span>
+													</template>
+													<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+														{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+														<br />
+													</span>
+												</v-tooltip>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
-													  <v-list-item-icon>
-														<v-icon >mdi-food-off</v-icon>
-													  </v-list-item-icon>
-													<v-list-item-title>
-														Supprimer
-													</v-list-item-title>
+												<v-list-item
+													@click="
+														removeSuggestion(sugg.suggestion, item.id_jour)
+													"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-food-off</v-icon>
+													</v-list-item-icon>
+													<v-list-item-title> Supprimer </v-list-item-title>
 												</v-list-item>
-											</v-list>							
+											</v-list>
 										</v-menu>
-										<v-avatar v-else color="indigo" size="30"           
-											v-bind="attrs"
-											v-on="on"
-										>
-											{{
-												sugg.membre.prenom.slice(0, 1) +
-												sugg.membre.nom.slice(0, 1)
-											}}
-										</v-avatar>
-									</span>
+
+										<v-tooltip v-else bottom>
+											<template v-slot:activator="{ on, attrs }">
+												<span class="white--text ml-2">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														+ {{ sugg.listeMembres.length }}
+													</v-avatar>
+												</span>
+											</template>
+											<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+												{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+												<br />
+											</span>
+										</v-tooltip>
+									</div>
+									<!--FIN plusieurs pers sur un plat-->
 								</div>
 							</div>
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -146,55 +216,125 @@
 								class="d-inline-flex flex-column"
 							>
 								<div
-									class="d-inline-flex flex-row"
-									v-for="(sugg, i) in item.suggestions"
+									v-for="(sugg, i) in item.suggestionsBulles"
 									:key="i + 'sugg'"
 								>
-									<p>{{ sugg.recette.nom }}</p>
-									<span class="white--text ml-2">
-										<v-menu       
-											open-on-hover
-											top
-											offset-x  
-											v-if="sugg.membre.id_membre === currentUser.id_membre"
+									<!--Début UNE pers sur un plat-->
+									<div
+										v-if="sugg.listeMembres.length === 1"
+										class="d-inline-flex flex-row"
+									>
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+										<span class="white--text ml-2">
+											<v-menu																								
+												offset-x
+												v-if="
+													sugg.suggestion.membre.id_membre ===
+													currentUser.id_membre
+												"
+											>
+												<template v-slot:activator="{ on, attrs }">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														{{
+															sugg.suggestion.membre.prenom.slice(0, 1) +
+															sugg.suggestion.membre.nom.slice(0, 1)
+														}}
+													</v-avatar>
+												</template>
+												<v-list>
+													<v-list-item
+														@click="
+															removeSuggestion(sugg.suggestion, item.id_jour)
+														"
+													>
+														<v-list-item-icon>
+															<v-icon>mdi-food-off</v-icon>
+														</v-list-item-icon>
+														<v-list-item-title> Supprimer </v-list-item-title>
+													</v-list-item>
+												</v-list>
+											</v-menu>
+											<v-avatar v-else color="indigo" size="30">
+												{{
+													sugg.suggestion.membre.prenom.slice(0, 1) +
+													sugg.suggestion.membre.nom.slice(0, 1)
+												}}
+											</v-avatar>
+										</span>
+									</div>
+									<!--FIN UNE pers sur un plat-->
+									<!--debut plusieurs pers sur un plat-->
+									<div v-else class="d-inline-flex flex-row">
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+
+										<v-menu																						
+											offset-x
+											v-if="checkMembreInList(sugg.listeMembres)"
 										>
-											<template v-slot:activator="{ on, attrs }">
-												<v-avatar color="indigo" size="30"           
-													v-bind="attrs"
-													v-on="on"
-												>
-													{{
-														sugg.membre.prenom.slice(0, 1) +
-														sugg.membre.nom.slice(0, 1)
-													}}
-												</v-avatar>
+											<template v-slot:activator="{ on: menu, attrs }">
+												<v-tooltip bottom>
+													<template v-slot:activator="{ on: tooltip }">
+														<span class="white--text ml-2">
+														<v-avatar
+															color="indigo"
+															size="30"
+															v-bind="attrs"
+															v-on="{ ...tooltip, ...menu }"
+														>
+															+ {{ sugg.listeMembres.length }}
+														</v-avatar>
+														</span>
+													</template>
+													<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+														{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+														<br />
+													</span>
+												</v-tooltip>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
-													  <v-list-item-icon>
-														<v-icon >mdi-food-off</v-icon>
-													  </v-list-item-icon>
-													<v-list-item-title>
-														Supprimer
-													</v-list-item-title>
+												<v-list-item
+													@click="
+														removeSuggestion(sugg.suggestion, item.id_jour)
+													"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-food-off</v-icon>
+													</v-list-item-icon>
+													<v-list-item-title> Supprimer </v-list-item-title>
 												</v-list-item>
-											</v-list>							
+											</v-list>
 										</v-menu>
-										<v-avatar v-else color="indigo" size="30"           
-											v-bind="attrs"
-											v-on="on"
-										>
-											{{
-												sugg.membre.prenom.slice(0, 1) +
-												sugg.membre.nom.slice(0, 1)
-											}}
-										</v-avatar>
-									</span>
+
+										<v-tooltip v-else bottom>
+											<template v-slot:activator="{ on, attrs }">
+												<span class="white--text ml-2">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														+ {{ sugg.listeMembres.length }}
+													</v-avatar>
+												</span>
+											</template>
+											<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+												{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+												<br />
+											</span>
+										</v-tooltip>
+									</div>
+									<!--FIN plusieurs pers sur un plat-->
 								</div>
 							</div>
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -240,57 +380,127 @@
 								v-else-if="item.suggestions.length > 0"
 								class="d-inline-flex flex-column"
 							>
-								<div
-									class="d-inline-flex flex-row"
-									v-for="(sugg, i) in item.suggestions"
+							<div
+									v-for="(sugg, i) in item.suggestionsBulles"
 									:key="i + 'sugg'"
 								>
-									<p>{{ sugg.recette.nom }}</p>
-									<span class="white--text ml-2">
-										<v-menu       
-											open-on-hover
-											top
-											offset-x  
-											v-if="sugg.membre.id_membre === currentUser.id_membre"
+									<!--Début UNE pers sur un plat-->
+									<div
+										v-if="sugg.listeMembres.length === 1"
+										class="d-inline-flex flex-row"
+									>
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+										<span class="white--text ml-2">
+											<v-menu																								
+												offset-x
+												v-if="
+													sugg.suggestion.membre.id_membre ===
+													currentUser.id_membre
+												"
+											>
+												<template v-slot:activator="{ on, attrs }">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														{{
+															sugg.suggestion.membre.prenom.slice(0, 1) +
+															sugg.suggestion.membre.nom.slice(0, 1)
+														}}
+													</v-avatar>
+												</template>
+												<v-list>
+													<v-list-item
+														@click="
+															removeSuggestion(sugg.suggestion, item.id_jour)
+														"
+													>
+														<v-list-item-icon>
+															<v-icon>mdi-food-off</v-icon>
+														</v-list-item-icon>
+														<v-list-item-title> Supprimer </v-list-item-title>
+													</v-list-item>
+												</v-list>
+											</v-menu>
+											<v-avatar v-else color="indigo" size="30">
+												{{
+													sugg.suggestion.membre.prenom.slice(0, 1) +
+													sugg.suggestion.membre.nom.slice(0, 1)
+												}}
+											</v-avatar>
+										</span>
+									</div>
+									<!--FIN UNE pers sur un plat-->
+									<!--debut plusieurs pers sur un plat-->
+									<div v-else class="d-inline-flex flex-row">
+										<p>{{ sugg.suggestion.recette.nom }}</p>
+
+										<v-menu																						
+											offset-x
+											v-if="checkMembreInList(sugg.listeMembres)"
 										>
-											<template v-slot:activator="{ on, attrs }">
-												<v-avatar color="indigo" size="30"           
-													v-bind="attrs"
-													v-on="on"
-												>
-													{{
-														sugg.membre.prenom.slice(0, 1) +
-														sugg.membre.nom.slice(0, 1)
-													}}
-												</v-avatar>
+											<template v-slot:activator="{ on: menu, attrs }">
+												<v-tooltip bottom>
+													<template v-slot:activator="{ on: tooltip }">
+														<span class="white--text ml-2">
+														<v-avatar
+															color="indigo"
+															size="30"
+															v-bind="attrs"
+															v-on="{ ...tooltip, ...menu }"
+														>
+															+ {{ sugg.listeMembres.length }}
+														</v-avatar>
+														</span>
+													</template>
+													<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+														{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+														<br />
+													</span>
+												</v-tooltip>
 											</template>
 											<v-list>
-												<v-list-item @click="removeSuggestion">
-													  <v-list-item-icon>
-														<v-icon >mdi-food-off</v-icon>
-													  </v-list-item-icon>
-													<v-list-item-title>
-														Supprimer
-													</v-list-item-title>
+												<v-list-item
+													@click="
+														removeSuggestion(sugg.suggestion, item.id_jour)
+													"
+												>
+													<v-list-item-icon>
+														<v-icon>mdi-food-off</v-icon>
+													</v-list-item-icon>
+													<v-list-item-title> Supprimer </v-list-item-title>
 												</v-list-item>
-											</v-list>							
+											</v-list>
 										</v-menu>
-										<v-avatar v-else color="indigo" size="30"           
-											v-bind="attrs"
-											v-on="on"
-										>
-											{{
-												sugg.membre.prenom.slice(0, 1) +
-												sugg.membre.nom.slice(0, 1)
-											}}
-										</v-avatar>
-									</span>
+
+										<v-tooltip v-else bottom>
+											<template v-slot:activator="{ on, attrs }">
+												<span class="white--text ml-2">
+													<v-avatar
+														color="indigo"
+														size="30"
+														v-bind="attrs"
+														v-on="on"
+													>
+														+ {{ sugg.listeMembres.length }}
+													</v-avatar>
+												</span>
+											</template>
+											<span v-for="(pers, i) in sugg.listeMembres" :key="i">
+												{{ pers.prenom.slice(0, 1) + pers.nom.slice(0, 1) }}
+												<br />
+											</span>
+										</v-tooltip>
+									</div>
+									<!--FIN plusieurs pers sur un plat-->
 								</div>
 							</div>
 
 							<v-btn
 								v-if="
-									item.suggestions.length > 0 && canSuggest(item.suggestions)
+									item.suggestions.length > 0 && canSuggest(item.suggestions) && item.plat === ''
 								"
 								text
 								@click="goToRecette(item)"
@@ -310,7 +520,7 @@
 								>
 									<strong>Tags</strong>
 								</p>
-								<v-icon v-else color="green" large>mdi-plus</v-icon>
+								<v-icon v-else color="green" large>mdi-minus</v-icon>
 							</v-btn>
 							<p
 								v-if="
@@ -335,7 +545,11 @@
 			@input="changePageEvent"
 		></v-pagination>
 
-		<v-snackbar v-model="errorMessage.error" text color="red">
+		<v-snackbar
+			rounded
+			v-model="errorMessage.error"
+			:color="errorMessage.color"
+		>
 			{{ errorMessage.message }}
 		</v-snackbar>
 	</div>
@@ -372,6 +586,7 @@
 				errorMessage: {
 					message: "",
 					error: false,
+					color: "red",
 				},
 				loading: true,
 			};
@@ -388,6 +603,16 @@
 							ok = false;
 						}
 					});
+					return ok;
+				};
+			},
+			checkMembreInList() {
+				return (liste) => {
+					let ok = false;
+					let member = liste.find(
+						(el) => el.id_membre === this.currentUser.id_membre
+					);
+					if (member) ok = true;
 					return ok;
 				};
 			},
@@ -480,6 +705,7 @@
 						nbPers: periode.nb_personne,
 						tags: periode.tags,
 						suggestions: periode.suggestions,
+						suggestionsBulles: this.transformSuggestions(periode.suggestions),
 					});
 
 					periode = jourPlat.calendrier_recettes[1];
@@ -495,6 +721,7 @@
 						nbPers: periode.nb_personne,
 						tags: periode.tags,
 						suggestions: periode.suggestions,
+						suggestionsBulles: this.transformSuggestions(periode.suggestions),
 					});
 
 					periode = jourPlat.calendrier_recettes[2];
@@ -510,10 +737,36 @@
 						nbPers: periode.nb_personne,
 						tags: periode.tags,
 						suggestions: periode.suggestions,
+						suggestionsBulles: this.transformSuggestions(periode.suggestions),
 					});
 
 					iStart++;
 				}
+			},
+			transformSuggestions(liste) {
+				let bulles = {};
+
+				liste.forEach((el) => {
+					if (bulles[el.recette.nom]) bulles[el.recette.nom].push(el.membre);
+					else {
+						bulles[el.recette.nom] = [];
+						bulles[el.recette.nom].push(el.membre);
+					}
+				});
+
+				let bullesSugg = [];
+
+				for (let bulle in bulles) {
+					let sugg = liste.find((el) => el.recette.nom === bulle);
+					if (sugg !== null) {
+						bullesSugg.push({
+							suggestion: sugg,
+							listeMembres: bulles[bulle],
+						});
+					}
+				}
+
+				return bullesSugg;
 			},
 			//event quand on clique sur page suivante
 			nextPageMenu() {
@@ -539,8 +792,31 @@
 			closeDialogSuggestion() {
 				this.showDialog = false;
 			},
-			removeSuggestion(){
-				alert('suggestion supprimée')
+			removeSuggestion(suggestion, id_jour) {
+				console.log(suggestion);
+				console.log(id_jour);
+				// delete from item
+				let jour = this.items.find((el) => el.id_calendrier === id_jour);
+				console.log(jour);
+				let periode = jour.calendrier_recettes.find(
+					(el) => el.id_periode === suggestion.id_periode
+				);
+				periode.suggestions = periode.suggestions.filter((x) => {
+					return x.id_membre !== this.currentUser.id_membre;
+				});
+
+				let iStart = (this.page - 1) * 7;
+				let iEnd = this.page * 7;
+				this.fillPlat(this.items, iStart, iEnd);
+
+				//call api
+				menuSuggest
+					.deleteSuggestion(suggestion)
+					.then((response) => {
+						this.errorMessage.message = "Suggestion supprimée";
+						this.errorMessage.color = "green";
+						this.errorMessage.error = true;
+					});
 			},
 
 			/// UPDATE CALENDRIER////
@@ -553,6 +829,7 @@
 					(elem) => elem.id_periode === item.id_periode
 				);
 				this.errorMessage.message = "";
+				this.errorMessage.color = "red";
 
 				//copy all attribute from menuPeriodeOld to periodeSave
 				//let periodeSave = JSON.parse(JSON.stringify(menuPeriodeOld))
@@ -610,6 +887,7 @@
 
 
 <style lang="sass">
+@import "../style/globalStyle"
 .v-data-table
   white-space: pre-wrap
 

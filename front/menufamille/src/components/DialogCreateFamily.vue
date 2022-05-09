@@ -18,6 +18,7 @@
                   v-model="name"
                   required
                   :rules="nameRules"
+                  color="#9CCC65"
                 ></v-text-field>
                   </v-form>
               </v-col>
@@ -36,6 +37,7 @@
                 always-dirty
                 min="1"
                 max="50"
+                color="#9CCC65"
               >
                 <template v-slot:prepend>
                   <v-icon @click="decrement"> mdi-minus </v-icon>
@@ -50,10 +52,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('closeFam')">
+          <v-btn rounded class="grey" text @click="$emit('closeFam')">
             Annuler
           </v-btn>
-          <v-btn color="blue darken-1" text @click="create"> Créer </v-btn>
+          <v-btn rounded class="colorbtnGreen" @click="create"> Créer </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -93,6 +95,7 @@ export default {
         if (!this.$refs.form.validate()) return;
         DAOfamily.createFamily(this.$store.state.auth.user.id_membre, {nom: this.name, count: this.count}).then(
           (response) => {
+            this.$emit('familyCreated');
             this.$emit('closeFam');
           }
         )
