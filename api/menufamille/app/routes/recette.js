@@ -22,9 +22,6 @@ router.post('/CreateRecipeAllInfo',[authJwt.verifyToken], recette.Create_Recipe_
 // Get all nutriscores and calories
 router.get('/GetAllNutAndCal/:id_recette',[authJwt.verifyToken], recette.GetAllNutAndCal);
 
-// Get mean nutriscores and calories
-router.get('/GetMeanNutAndCal/:id_recette', recette.GetMeanNutAndCal);
-
 // Get recipe from it's categories
 router.get('/GetFromCategory/:periode', recette.Get_From_Cat);
 
