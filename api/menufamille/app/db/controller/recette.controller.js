@@ -107,9 +107,77 @@ exports.find_Recipe_tags = (req, res) => {
 
 // Créer une recette avec absolument tout (recette + tags + catégories + denrées ) --> impossible à faire avec des includes, on va tout cascader
 //ici
+
 exports.Create_Recipe_All_Infos = async(req, res) => {
-  await Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: req.body.calorie, temps_cuisson: req.body.temps_cuisson,
-                  temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: req.body.nutriscore, 
+    
+  // on doit d'abords creer les nutriscores et les calories qu'on va ajouter à la recette
+
+  let tmp_nut = 0;
+  let tmp_cal = 0;
+  let nb_iter_nut = 0;
+  let nb_iter_cal = 0;
+  let nutriscore = 0;
+  let calorie = 0; 
+  await asyncForEach(req.body.denrees, async (denree) =>{
+      
+      quantite = 0 ;
+
+        switch(denree.recette_denree.mesure) {
+          case 'gr' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'unite' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'ml' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'kg' : quantite = denree.recette_denree.quantite * 1000; 
+           break;
+          case 'l' : quantite = denree.recette_denree.quantite * 1000; 
+           break;
+        }
+
+        if (denree.calories != null){
+        
+        tmp_cal = tmp_cal + (denree.calories * quantite);
+        nb_iter_cal = nb_iter_cal + quantite / 10;
+
+        }
+        switch(denree.nutriscore) {
+          case 'A' : tmp_nut = tmp_nut + (1 * quantite)  
+                     nb_iter_nut = nb_iter_nut + quantite;
+            break;
+          case 'B' : tmp_nut = tmp_nut + (2 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
+            break;
+          case 'C' : tmp_nut = tmp_nut + (3 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
+            break;
+          case 'D' : tmp_nut = tmp_nut + (4 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
+            break;
+          case 'E' : tmp_nut = tmp_nut + (5 * quantite)
+                    nb_iter_nut = nb_iter_nut + quantite;
+            break;
+        }
+      }); 
+    
+    
+    calorie = tmp_cal /  nb_iter_cal
+    tmp_nut = tmp_nut / nb_iter_nut
+
+      if (1 <= tmp_nut && tmp_nut <= 1.5){
+      nutriscore = 'A';
+    } else if (1.5 < tmp_nut && tmp_nut <= 2.5) {
+      nutriscore = 'B';
+    } else if (2.5 < tmp_nut && tmp_nut <= 3.5) {
+      nutriscore = 'C';
+    } else if (3.5 < tmp_nut && tmp_nut <= 4.5) {
+      nutriscore = 'D';
+    } else {
+      nutriscore = 'E';
+    }
+
+  await Recipe.create({ nom: req.body.nom, difficulte: req.body.difficulte, calorie: calorie, temps_cuisson: req.body.temps_cuisson,
+                  temps_preparation: req.body.temps_preparation, nb_personne: req.body.nb_personne, nutriscore: nutriscore, 
                   preparation: req.body.preparation, url_image: req.body.url_image})
   .then(async(data) => {
     const id_new_recette = data.id_recette;;
@@ -181,87 +249,6 @@ exports.GetAllNutAndCal = (req, res) => {
       });  
 }
 
-/// get mean of nutriscore and calories for a recipe
-
-exports.GetMeanNutAndCal = (req, res) => {
-
-  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: ["quantite", "mesure"]}}})
-  .then(data => {
-    
-    let tmp_nut = 0;
-    let tmp_cal = 0;
-    let nb_iter_nut = 0;
-    let nb_iter_cal = 0;
-    let retour = new Object(); 
-
-    data.denrees.forEach(denree =>{
-      
-      quantite = 0 ;
-
-        switch(denree.recette_denree.mesure) {
-          case 'gr' : quantite = denree.recette_denree.quantite;
-           break;
-          case 'unite' : quantite = denree.recette_denree.quantite;
-           break;
-          case 'ml' : quantite = denree.recette_denree.quantite;
-           break;
-          case 'kg' : quantite = denree.recette_denree.quantite * 1000; 
-           break;
-          case 'l' : quantite = denree.recette_denree.quantite * 1000; 
-           break;
-        }
-
-        if (denree.calories != null){
-        
-        tmp_cal = tmp_cal + (denree.calories * quantite);
-        nb_iter_cal = nb_iter_cal + quantite / 10;
-
-        }
-        switch(denree.nutriscore) {
-          case 'A' : tmp_nut = tmp_nut + (1 * quantite)  
-                     nb_iter_nut = nb_iter_nut + quantite;
-            break;
-          case 'B' : tmp_nut = tmp_nut + (2 * quantite)
-                     nb_iter_nut = nb_iter_nut + quantite;
-            break;
-          case 'C' : tmp_nut = tmp_nut + (3 * quantite)
-                     nb_iter_nut = nb_iter_nut + quantite;
-            break;
-          case 'D' : tmp_nut = tmp_nut + (4 * quantite)
-                     nb_iter_nut = nb_iter_nut + quantite;
-            break;
-          case 'E' : tmp_nut = tmp_nut + (5 * quantite)
-                    nb_iter_nut = nb_iter_nut + quantite;
-            break;
-        }
-      })
-    
-    
-    retour.calorie = tmp_cal /  nb_iter_cal
-    tmp_nut = tmp_nut / nb_iter_nut
-
-
-      if (1 <= tmp_nut && tmp_nut <= 1.5){
-      retour.nutriscore = 'A';
-    } else if (1.5 < tmp_nut && tmp_nut <= 2.5) {
-      retour.nutriscore = 'B';
-    } else if (2.5 < tmp_nut && tmp_nut <= 3.5) {
-      retour.nutriscore = 'C';
-    } else if (3.5 < tmp_nut && tmp_nut <= 4.5) {
-      retour.nutriscore = 'D';
-    } else {
-      retour.nutriscore = 'E';
-    }
-    
-    res.send(retour);
-    })
-    .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving Recipes."
-        });
-      });  
-}
 
 /// get back a list of recipe from it's categories
 
