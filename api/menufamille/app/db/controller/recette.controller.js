@@ -123,10 +123,10 @@ exports.Create_Recipe_All_Infos = async (req, res) => {
     console.log(denree.recette_denree.quantite + " : "+ typeof(denree.recette_denree.quantite))
     quantite = 0;
     let quantite_denree = parseInt(denree.recette_denree.quantite)
-    switch (denree.recette_denree.mesure) {
+    switch (denree.recette_denree.mesure.toLowerCase()) {
       case 'gr': quantite = quantite_denree;
         break;
-      case 'unite': quantite = quantite_denree;
+      case 'unité': quantite = quantite_denree;
         break;
       case 'ml': quantite = quantite_denree;
         break;
@@ -134,12 +134,17 @@ exports.Create_Recipe_All_Infos = async (req, res) => {
         break;
       case 'l': quantite = quantite_denree * 1000;
         break;
+      case 'dl' : quantite = quantite_denree * 100;
+        break;
+      case 'cl' : quantite = quantite_denree * 10;
+        break;
+      case 'cr' : quantite = quantite_denree / 100
     }
 
     if (denree.calories != null) {
 
       tmp_cal = tmp_cal + (parseInt(denree.calories) * quantite);
-      nb_iter_cal = nb_iter_cal + quantite / 10;
+      nb_iter_cal = nb_iter_cal + quantite;
 
     }
     switch (denree.nutriscore) {
@@ -162,8 +167,10 @@ exports.Create_Recipe_All_Infos = async (req, res) => {
   });
 
 
-  calorie = tmp_cal / nb_iter_cal
-  tmp_nut = tmp_nut / nb_iter_nut
+  calorie = tmp_cal / nb_iter_cal;
+  tmp_nut = tmp_nut / nb_iter_nut;
+
+  calorie = Math.floor(calorie);
 
   if (1 <= tmp_nut && tmp_nut <= 1.5) {
     nutriscore = 'A';
