@@ -47,5 +47,3 @@ router.get('/GetMenuId/:id',[authJwt.verifyToken], menu.Get_Menu_By_Id);
 
 router.get('/food/:id_menu', menu.getFood);
 
-router.get("/old/:id_fam",menu.old_menu);
-
