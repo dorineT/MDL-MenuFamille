@@ -146,6 +146,7 @@
 							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								<v-autocomplete
 									:rules="[required]"
+									required
 									label="Catégories"
 									chips
 									clearable
@@ -162,6 +163,7 @@
 							</v-col>
 							<v-col cols="12" sm="6" md="6" lg="6" xl="6">
 								<v-autocomplete
+									:rules="[required]"
 									required
 									label="Tags"
 									chips
@@ -586,8 +588,7 @@
 				};
 
 				DAORecette.sendRecette(newRecette).then(
-					(response) => {
-						alert("Recette enregistrée");
+					(response) => {						
 						newRecette.id_recette = response.data.id_recette;
 						this.closeDialogueEvent(newRecette);
 					},

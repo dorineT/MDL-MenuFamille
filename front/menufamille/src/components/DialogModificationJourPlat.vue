@@ -436,8 +436,6 @@
 					}
 				}
 
-				console.log(bullesSugg);
-
 				return bullesSugg;
 			},
 			/**Copier un tableau - superficielle

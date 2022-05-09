@@ -134,9 +134,7 @@
        }
     },
     methods:{
-      async changeFamille(){  
-        console.log("change famille page home")
-        console.log(this.$store.state.auth.user.roles)      
+      async changeFamille(){       
         //select les menus correspondants
         if(this.selectedFamille !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selectedFamille)

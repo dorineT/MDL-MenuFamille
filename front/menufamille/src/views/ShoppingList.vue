@@ -74,7 +74,7 @@
 										</v-list-item-content>
 
 										<v-list-item-action>
-											<p>Quantité : {{ item.quantite }}</p>
+											<p>Quantité : {{ item.quantite }}  {{item.mesure}}</p>
 										</v-list-item-action>
 									</v-list-item>
 									<v-divider></v-divider>
@@ -183,8 +183,7 @@
 					}
 				);
 			},
-			generatePDF() {
-				console.log(this.comboboxMenuSelected);
+			generatePDF() {			
 				let pdfName = "Liste"+this.comboboxMenuSelected.text;
 				var doc = new jsPDF("p", "mm", "a4");
 
@@ -208,14 +207,9 @@
 				let x = 30
 				this.items.forEach( el => {
 		
-					if(y >= hauteur-20 && x === 30){
-						x = 120
-						y = 50
-					}
-					else if(y >= hauteur-20 && x === 100){
+					 if(y >= hauteur-20 ){
 						doc.addPage()
-						y = 50
-						x = 30
+						y = 50			
 					}
 
 					let mesurePlu = el.mesure === "unité" ? (el.quantite > 1 ? "unités" : "unité") : el.mesure

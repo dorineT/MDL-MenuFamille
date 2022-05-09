@@ -793,11 +793,9 @@
 				this.showDialog = false;
 			},
 			removeSuggestion(suggestion, id_jour) {
-				console.log(suggestion);
-				console.log(id_jour);
+
 				// delete from item
-				let jour = this.items.find((el) => el.id_calendrier === id_jour);
-				console.log(jour);
+				let jour = this.items.find((el) => el.id_calendrier === id_jour);			
 				let periode = jour.calendrier_recettes.find(
 					(el) => el.id_periode === suggestion.id_periode
 				);
