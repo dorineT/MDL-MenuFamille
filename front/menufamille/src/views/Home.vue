@@ -3,8 +3,8 @@
         class="cardmargin"
     >
       <v-container fluid>
-        <v-row class="d-flex justify-end ">
-          <v-col>
+        <v-row class="d-flex space-around">
+          <v-col >
             <v-select
             color="orange lighten-2"
             label="Choix du menu"
@@ -34,13 +34,14 @@
             
             </v-select>
           </v-col>
-          <v-col cols="12" sm="12" md="3" lg="3" xl="3" >          
+          <v-col >          
             <v-select
               color="orange lighten-2"     
               v-model="selectedFamille"
               :items="famille"
               menu-props="auto"
               label="Famille"
+              class="combobox-class-r"
               hide-details
               prepend-icon="mdi-account-group"
               single-line     
