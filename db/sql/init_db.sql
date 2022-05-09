@@ -347,7 +347,7 @@ AS $function$
 declare
 	nb_response  integer;
 begin
-   		select count(*) into nb_response from menu m where new.periode_fin  between  m.periode_debut and m.periode_fin and m.id_famille = new.id_famille and new.periode_debut between  m.periode_debut and m.periode_fin ;
+   		select count(*) into nb_response from menu m where m.id_famille = new.id_famille and (new.periode_debut  between  m.periode_debut and m.periode_fin or new.periode_fin between  m.periode_debut and m.periode_fin);
    		if nb_response > 0 then 
    			raise exception 'chevauchement des dates!' using ERRCODE = 23500;
    		end if;
