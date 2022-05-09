@@ -1,6 +1,6 @@
 <template>
     <v-dialog
-      v-if="!isLoading"   
+      v-if = "!isLoading || !famillyExist"   
       v-model="dialogSup"
       persistent
       max-width="700"
@@ -196,7 +196,7 @@
         </v-container>
     </v-card>
     </template>
-    <v-card v-if="famillyExist > 0">
+    <v-card>
         <v-card-title class="text-h5">
           Suppression de la famille!
         </v-card-title>
@@ -300,20 +300,18 @@ let DAOfamily = new FamilyDao;
         return host+"/family?code="+this.code;
       },
       famillyExist(){
-        return this.select.length
+        return this.select.length > 0
       },
       isLoading() {
         return this.$store.state.loading.isLoading;
       },
     },
     mounted() {
-        this.updateView();
-
-        if(this.famillyExist === 0) return;
-        
-        this.updateMember();
-        this.generateCode();
-        if(this.currentRole === 'parent')  this.updateRequest();
+        if(this.updateView()) {
+          this.updateMember();
+          this.generateCode();
+          if(this.currentRole === 'parent')  this.updateRequest();
+        }
         if(this.$route.query.code) this.joinFamily(this.$route.query.code);
     },
     methods : {
@@ -327,23 +325,29 @@ let DAOfamily = new FamilyDao;
         })
         if(this.currentFamily.nomFamille !== null) {     
           this.selected = this.currentFamily.nomFamille
+          return true;
         } else {       
-          this.selected = this.select.length > 0 ? this.select[0] : null
+          if(this.famillyExist) {
+            this.selected = this.select[0];
+            return true;
+          } else {
+            this.selected = null;
+            return false;
+          }
         }
       },
       deleteFamily() {
         DAOfamily.removeFamily(this.currentFamily.idFamilleActuel).then(
           (response) => {
             this.dialogSup = false;
-            if(this.select.length > 0) this.selected = this.select[0];
             this.$store.dispatch("info/reset");
-            this.changeFamille();
+            if(this.updateView()) {
+              this.changeFamille();
+            }
           }
         )
       },
-      changeFamille(){ 
-        console.log("change famille page famille")
-        console.log(this.$store.state.auth.user.roles)       
+      changeFamille(){       
         if(this.selected !== null){
           let famille = this.$store.state.auth.user.roles.find(el => el[1] === this.selected)
           this.$store.dispatch("info/changeFamille", [famille[0], famille[1], famille[2], famille[3]])

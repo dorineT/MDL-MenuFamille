@@ -17,6 +17,12 @@ class TokenService {
     }
     setUser(user) {
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("info", JSON.stringify({
+        'idFamilleActuel': null,
+        'nbMembreActuel': null,
+        'roleActuel' : 'enfant',
+        'nomFamille': null
+      }));
     }
     removeUser() {
       localStorage.removeItem("user");
