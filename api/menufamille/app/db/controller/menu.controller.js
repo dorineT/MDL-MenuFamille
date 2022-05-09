@@ -178,7 +178,7 @@ exports.Get_Menu_All_Info_PK = (req, res) => {
                 include: [
                   {
                     model: db.membres,
-                    attributes: ['nom','prenom']
+                    attributes: ['nom','prenom','id_membre']
                   },
                   {
                     model: db.recette, required: false, attributes: ['nom'],
