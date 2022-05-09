@@ -355,7 +355,7 @@ begin
 end; $function$;
 
 create trigger control_menu
-before update or insert
+before insert
 on menu
 for each row 
 execute procedure control_date_menu();
