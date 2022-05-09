@@ -1,5 +1,5 @@
 
-const { recette } = require("../models");
+const { recette, denree } = require("../models");
 const db = require("../models");
 const Recipe = db.recette;
 const Tag = db.tag;
@@ -185,7 +185,7 @@ exports.GetAllNutAndCal = (req, res) => {
 
 exports.GetMeanNutAndCal = (req, res) => {
 
-  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: []}}})
+  Recipe.findByPk(req.params.id_recette, {include: {model: Denree, attributes: ["nutriscore", "calories"], through : {attributes: ["quantite", "mesure"]}}})
   .then(data => {
     
     let tmp_nut = 0;
@@ -195,37 +195,59 @@ exports.GetMeanNutAndCal = (req, res) => {
     let retour = new Object(); 
 
     data.denrees.forEach(denree =>{
+      
+      quantite = 0 ;
+
+        switch(denree.recette_denree.mesure) {
+          case 'gr' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'unite' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'ml' : quantite = denree.recette_denree.quantite;
+           break;
+          case 'kg' : quantite = denree.recette_denree.quantite * 1000; 
+           break;
+          case 'l' : quantite = denree.recette_denree.quantite * 1000; 
+           break;
+        }
+
         if (denree.calories != null){
-        tmp_cal = tmp_cal + denree.calories;
-        nb_iter_cal = nb_iter_cal + 1;
+        
+        tmp_cal = tmp_cal + (denree.calories * quantite);
+        nb_iter_cal = nb_iter_cal + quantite / 10;
+
         }
         switch(denree.nutriscore) {
-          case 'A' : tmp_nut = tmp_nut + 1 
-                     nb_iter_nut = nb_iter_nut + 1;
+          case 'A' : tmp_nut = tmp_nut + (1 * quantite)  
+                     nb_iter_nut = nb_iter_nut + quantite;
             break;
-          case 'B' : tmp_nut = tmp_nut + 2
-                     nb_iter_nut = nb_iter_nut + 1;
+          case 'B' : tmp_nut = tmp_nut + (2 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
             break;
-          case 'C' : tmp_nut = tmp_nut + 3
-                     nb_iter_nut = nb_iter_nut + 1;
+          case 'C' : tmp_nut = tmp_nut + (3 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
             break;
-          case 'D' : tmp_nut = tmp_nut + 4
-                     nb_iter_nut = nb_iter_nut + 1;
+          case 'D' : tmp_nut = tmp_nut + (4 * quantite)
+                     nb_iter_nut = nb_iter_nut + quantite;
             break;
-          case 'E' : tmp_nut = tmp_nut + 5
-                    nb_iter_nut = nb_iter_nut + 1;
+          case 'E' : tmp_nut = tmp_nut + (5 * quantite)
+                    nb_iter_nut = nb_iter_nut + quantite;
             break;
         }
       })
-    retour.calorie = tmp_cal /  nb_iter_cal;
-    tmp_nut = tmp_nut / nb_iter_nut;
-    if (1 <= tmp_nut <= 1.5 ){
+    
+    
+    retour.calorie = tmp_cal /  nb_iter_cal
+    tmp_nut = tmp_nut / nb_iter_nut
+
+
+      if (1 <= tmp_nut && tmp_nut <= 1.5){
       retour.nutriscore = 'A';
-    } else if (1.5 < tmp_nut <= 2.5) {
+    } else if (1.5 < tmp_nut && tmp_nut <= 2.5) {
       retour.nutriscore = 'B';
-    } else if (2.5 < tmp_nut <= 3.5) {
+    } else if (2.5 < tmp_nut && tmp_nut <= 3.5) {
       retour.nutriscore = 'C';
-    } else if (3.5 < tmp_nut <= 4.5) {
+    } else if (3.5 < tmp_nut && tmp_nut <= 4.5) {
       retour.nutriscore = 'D';
     } else {
       retour.nutriscore = 'E';
