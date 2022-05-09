@@ -46,7 +46,13 @@ isChild = (req, res, next) => {
 };
 
 isParent = (req, res, next) => {
-  Role.findOne({where: {id_membre: req.id_membre, id_famille:  parseInt(req.params.id_famille)}}).then(role => {
+  let id_famille;
+  if(isNaN(req.params.id_famille)) {
+    id_famille = req.body.id_famille;
+  } else {
+    id_famille = req.params.id_famille;
+  }
+  Role.findOne({where: {id_membre: req.id_membre, id_famille:  parseInt(id_famille)}}).then(role => {
     if (role.role === "parent") {
       next();
       return;
