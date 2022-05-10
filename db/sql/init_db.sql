@@ -120,7 +120,7 @@ CREATE TABLE DENREE (
     id_denree SERIAL NOT NULL,
     nom VARCHAR NOT NULL UNIQUE ,
     nutriscore VARCHAR,
-    calories INTEGER NOT NULL,
+    calories FLOAT NOT NULL,
     PRIMARY KEY (id_denree)
 
 );
@@ -229,20 +229,6 @@ INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'gaterie');
-
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruit');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'légume');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit laitier');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'viande');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'poisson');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'fruits de mer');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'alcool');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'eau');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'sel');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'laits');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'produit sucrée');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'matière grasse');
-INSERT INTO TYPE (id_type, nom) VALUES (DEFAULT, 'céréale');
 
 
 /* Contraintes */
