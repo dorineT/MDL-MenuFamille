@@ -27,6 +27,7 @@
               label="Ingrédient"
               v-model="newIngredient"
               @change="callOpenFoodFact"
+			  @keydown.enter="callOpenFoodFact"
               dense
               outlined
               rounded
@@ -50,7 +51,8 @@
               v-model="typeChoix"
               color="green lighten-2"
               no-data-text="Aucun type correspondant"
-              @blur="callOpenFoodFact"
+			  :menu-props="{closeOnContentClick:true}"
+              @blur="callOpenFoodFact"			  
             ></v-autocomplete>
 
 
@@ -245,7 +247,7 @@
 								<v-card color="blue-grey lighten-4">
 									<v-card-title> Quantités </v-card-title>
 									<v-card-text class="d-flex">
-										<v-form>
+										
 											<div
 												class="ml-6 d-inline-block"
 												v-for="(ingredient, index) in currentIngredients"
@@ -279,7 +281,7 @@
 													</div>
 												</div>
 											</div>
-										</v-form>
+										
 									</v-card-text>
 								</v-card>
 							</v-col>
@@ -342,7 +344,7 @@
 								<v-card color="blue-grey lighten-4">
 									<v-card-title>Préparation</v-card-title>
 									<v-card-text>
-										<v-form>
+										
 											<v-container fluid>
 												<v-row
 													v-for="(step, index) in currentSteps"
@@ -389,7 +391,7 @@
 													</v-col>
 												</v-row>
 											</v-container>
-										</v-form>
+										
 									</v-card-text>
 								</v-card>
 							</v-col>
@@ -651,6 +653,7 @@
 			},
 			// update de l'input type dans le modal ajout ingredient
 			callOpenFoodFact() {
+				this.openFoodFactList = []
 				if (this.typeChoix.length === 0 || this.newIngredient === null) return;
 				this.foodLoading = true;
 				DAODenree.getOpenFoodFactProduct(this.newIngredient, this.typeChoix).then(
