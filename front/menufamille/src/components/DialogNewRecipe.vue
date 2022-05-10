@@ -255,11 +255,12 @@
 													{{ ingredient.nom }}<br />
 													<div class="d-inline-flex">
 														<v-text-field
-															:rules="ruleRequired"
+															:rules="[numberRule]"
 															:value="ingredient.quantite"
 															@blur="updateQuantity(index, $event.target.value)"
 															placeholder="200"
 															type="number"
+															min="1"
 															required
 															class="text-field-width-small mr-3"
 														></v-text-field>
@@ -426,15 +427,14 @@
 		data() {
 			return {
 				mesureListe: [
-					"cr",
+					"cg",
 					"gr",
 					"kg",
 					"ml",
 					"cl",
 					"dl",
 					"L",
-					"cm",
-					"mm",
+					"cm",					
 					"unité",
 				],
 				categorieListe: [],
@@ -455,6 +455,12 @@
 				currentIngredients: [],
 
 				ruleRequired: [(v) => !!v || "Champs requis"],
+				numberRule: v  => {
+				  if(v === undefined || v.length === 0 ) return 'Champs requis'
+				  if (!isNaN(parseFloat(v)) && v >= 1 && v <= 999) return true;
+				  return 'Nb négatif!';
+				},
+
 
 				//combobox
 				activator: null,

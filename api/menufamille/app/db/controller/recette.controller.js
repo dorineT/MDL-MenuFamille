@@ -130,6 +130,8 @@ exports.Create_Recipe_All_Infos = async (req, res) => {
         break;
       case 'ml': quantite = quantite_denree;
         break;
+      case 'cm': quantite = quantite_denree;
+        break;
       case 'kg': quantite = quantite_denree * 1000;
         break;
       case 'l': quantite = quantite_denree * 1000;
@@ -138,7 +140,7 @@ exports.Create_Recipe_All_Infos = async (req, res) => {
         break;
       case 'cl' : quantite = quantite_denree * 10;
         break;
-      case 'cr' : quantite = quantite_denree / 100
+      case 'cg' : quantite = quantite_denree / 100
     }
 
     if (denree.calories != null) {
