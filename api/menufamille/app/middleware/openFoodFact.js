@@ -108,7 +108,7 @@ async function getProduct(product) {
             }
             let nutriscore = product.nutrition_grade_fr;
             let calorie = product.nutriments.energy_value;
-            if (product_name.indexOf(request_name) === 0 && countWords(product_name) > 1 && nutriscore !== undefined && calorie !== undefined) {
+            if (product_name.indexOf(request_name) === 0 && nutriscore !== undefined && calorie !== undefined) {
                 var good_product =
                 {
                     "nom": product_name,
