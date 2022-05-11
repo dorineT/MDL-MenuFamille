@@ -139,7 +139,7 @@ CREATE TABLE DENREE_TYPE (
 
 CREATE TABLE CALENDRIER (
                             id_calendrier SERIAL NOT NULL,
-                            date TIMESTAMP NOT NULL
+                            date TIMESTAMP NOT NULL,
                             PRIMARY KEY (id_calendrier)
 );
 
@@ -155,7 +155,7 @@ CREATE TABLE CALENDRIER_RECETTE (
                                     id_recette INTEGER NOT NULL,
                                     periode periode,
                                     is_recette Bool NOT NULL DEFAULT false,
-                                    nb_personne INTEGER
+                                    nb_personne INTEGER,
                                     UNIQUE (id_calendrier, periode),
                                     PRIMARY KEY (id_periode)
 );
