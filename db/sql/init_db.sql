@@ -230,7 +230,7 @@ INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'salé');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunch-box');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'vegan');
-INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'reaps complet');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'repas complet');
 
 
 /* Contraintes */
