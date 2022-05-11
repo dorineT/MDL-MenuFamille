@@ -225,10 +225,12 @@ ALTER TABLE SUGGESTION ADD CONSTRAINT pk_SNmenu FOREIGN KEY (id_menu) REFERENCES
 
 
 /*insert tag + type*/
-INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'soupe');
-INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunchBox');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'sucré');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'salé');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'lunch-box');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
-INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'gaterie');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'vegan');
+INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'reaps complet');
 
 
 /* Contraintes */
