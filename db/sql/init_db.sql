@@ -156,7 +156,7 @@ CREATE TABLE CALENDRIER_RECETTE (
                                     periode periode,
                                     is_recette Bool NOT NULL DEFAULT false,
                                     nb_personne INTEGER
-                                    UNIQUE (id_calendrier, id_recette, periode),
+                                    UNIQUE (id_calendrier, periode),
                                     PRIMARY KEY (id_periode)
 );
 
@@ -165,7 +165,7 @@ CREATE TABLE SUGGESTION (
                                     id_recette INTEGER NOT NULL,
                                     id_membre INTEGER NOT NULL,
                                     id_menu INTEGER NOT NULL,
-                                    PRIMARY KEY (id_periode, id_recette, id_membre, id_menu)
+                                    PRIMARY KEY (id_periode, id_membre, id_menu)
 );
 
 CREATE TABLE TAG_PERIODE (
