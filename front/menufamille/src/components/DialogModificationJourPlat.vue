@@ -359,8 +359,10 @@
 				this.infoMenu.tags = this.copyTab(this.itemReceived.tags)				
 				this.infoMenu.suggestions = structuredClone(this.itemReceived.suggestions)
 				
-				this.suggestionsListe = this.transformSuggestions(this.itemReceived.suggestions)//structuredClone(this.itemReceived.suggestions)
-				
+				if(this.stringUpdateModal !=="updateMenuJourCreate"){
+					this.suggestionsListe = this.transformSuggestions(this.itemReceived.suggestions)//structuredClone(this.itemReceived.suggestions)				
+				}
+
 				this.tagsChoix = []
 
 				//charger tous les tags de la bd
