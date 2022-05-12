@@ -183,6 +183,8 @@ export default {
       DAOUser.removeUser(this.currentUser.id_membre).then(
         () => {
               this.$store.dispatch("auth/logout");
+              this.$store.dispatch("info/reset");
+              this.$store.dispatch("loading/reset");
               this.$router.push("/login");
             }
       )

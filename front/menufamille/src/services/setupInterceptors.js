@@ -20,7 +20,9 @@ const setup = (store) => {
   axiosInstance.interceptors.response.use(
     (res) => {
       store.dispatch("loading/reset");
-      if(res.data.roles === undefined) {
+      const originalConfig = res.config;
+      console.log(!originalConfig.url.includes("/user/remove/"))
+      if(res.data.roles === undefined && !originalConfig.url.includes("/user/remove/")) {
         axiosInstance.get("/user/roles/update").then(
           (response) => {
               store.dispatch("auth/updateRoles", response.data);
@@ -30,12 +32,13 @@ const setup = (store) => {
       return res;
     },
     async (err) => {
+      const originalConfig = err.config;
       if(store.state.auth.status.loggedIn) {
         if(err.response.data !== undefined) {
           store.dispatch("loading/error", err.response.data.message);
         }
       }
-      const originalConfig = err.config;
+      
       if (originalConfig.url !== "/user/signin" && err.response) {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {

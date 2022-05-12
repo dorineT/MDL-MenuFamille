@@ -84,6 +84,7 @@ export const auth = {
     logout(state) {
       state.status.loggedIn = false;
       state.user = null;
+      console.log(state)
       localStorage.setItem("user", JSON.stringify(state.user));
     },
     registerSuccess(state) {

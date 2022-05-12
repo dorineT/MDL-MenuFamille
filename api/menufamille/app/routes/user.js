@@ -26,7 +26,7 @@ router.post("/signin", auth.signin);
 router.post("/refreshtoken", auth.refreshToken);
 
 router.get("/parent", [authJwt.verifyToken, authJwt.isParent], role.parentBoard);
-router.delete('/:id',[authJwt.verifyToken],membres.DeleteMember);
+router.delete('/remove/:id',[authJwt.verifyToken],membres.DeleteMember);
 router.put("/:id", [authJwt.verifyToken], membres.UpdateMember);
 router.put("/pwd/:id",[authJwt.verifyToken, authJwt.VerifyPwd], membres.UpdateMember)
 

@@ -6,7 +6,7 @@ export default class UserDao{
      * @param idMembre
      */
     removeUser(idMembre) {        
-        return api.delete("/user/"+ idMembre);
+        return api.delete("/user/remove/"+ idMembre);
     }
 
     updateUser(user) {

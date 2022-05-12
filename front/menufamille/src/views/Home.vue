@@ -101,7 +101,8 @@
       this.$store.state.auth.user.roles.forEach(element => {        
         this.famille.push(element[1])
       });
-      if(this.$store.state.info.nomFamille !== null) {
+      console.log(this.$store.state.info.idFamilleActuel === null)
+      if(this.$store.state.info.idFamilleActuel !== undefined && this.$store.state.info.idFamilleActuel !== null) {
         this.selectedFamille = this.$store.state.info.nomFamille
         this.itemPeriode = []  
         this.i = 0     

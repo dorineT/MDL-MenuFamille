@@ -151,7 +151,8 @@ export default {
       return this.$store.state.loading.message;
     },
     isError() {
-      return this.$store.state.loading.isError;
+      console.log(this.loggedIn)
+      return this.$store.state.loading.isError && this.loggedIn;
     },
     isLoading() {
       return this.$store.state.loading.isLoading;
