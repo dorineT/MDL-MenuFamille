@@ -329,8 +329,7 @@ let DAOfamily = new FamilyDao;
     },
     mounted() {
         if(this.updateView()) {
-          this.updateMember();
-          this.generateCode();
+          this.changeFamille()
           if(this.currentRole === 'parent')  this.updateRequest();
         }
         if(this.$route.query.code) this.joinFamily(this.$route.query.code);
