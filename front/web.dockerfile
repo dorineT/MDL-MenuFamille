@@ -7,5 +7,6 @@ WORKDIR $CONTAINER_PATH
 COPY ./menufamille .
 
 RUN npm install
+RUN chown -R node:node /app/node_modules
 
 CMD ["npm", "run", "serve"]
