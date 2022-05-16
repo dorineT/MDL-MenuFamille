@@ -5,8 +5,13 @@ const { trim_all} = require('request_trimmer');
 const mountRoutes = require('./app/routes')
 const app = express()
 
+var corsOptions = {
+  origin: "http://web:8080"
+};
+
 const db = require("./app/db/models");
 db.sequelize.sync();
+app.use(cors(corsOptions));
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 // trim content
