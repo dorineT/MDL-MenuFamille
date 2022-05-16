@@ -1,8 +1,8 @@
 module.exports = {
-    HOST: "abul.db.elephantsql.com",
-    USER: "rzstjrds",
-    PASSWORD: "fqjIHrkdJpRQ9tml-RUrOgJVHHmpgdSp",
-    DB: "rzstjrds",
+    HOST: "db:5492",
+    USER: "postgres",
+    PASSWORD: "postgres",
+    DB: "menufamille",
     dialect: "postgres",
     pool: {
       max: 5,
