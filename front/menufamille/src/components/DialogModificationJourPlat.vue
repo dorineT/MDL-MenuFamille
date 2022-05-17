@@ -198,6 +198,7 @@
 									v-model="tagsChoix"
 									color="orange lighten-2"
 									no-data-text="Aucun tag correspondant"
+									@click:clear="resetNewRecette"
 								></v-autocomplete>
 								</v-card>
 							</v-col>
@@ -295,10 +296,10 @@
 			},
 		},
 		watch:{
-			tagsChoix(){
+			tagsChoix(){				
 				if(this.tagsChoix === null ) return 
-			
-				let tempTags = this.copyTab(this.tagsChoix)
+
+				let tempTags = structuredClone(this.tagsChoix)	
 				this.itemRecettes = this.itemRecettesAll.filter(function(recette){							
 					let tagReTemp = []
 					recette.tags.forEach(tagRecette => {
@@ -309,10 +310,10 @@
 					if(tempTags.every(el => {					
 						return tagReTemp.includes(el.nom)
 					}))return recette
-				})
+				})								
 			},
-			newRecetteChoix(){
-				if(this.newRecetteChoix === null ) return 
+			newRecetteChoix(){		
+				if(this.newRecetteChoix === null ) return; 
 				
 				if(this.radioSelectionSuggestion !== null){	
 					this.tagsChoix = []			
@@ -330,9 +331,7 @@
 				}
 			},
 			/** evenement modification d'une periode, recupération et affichage des informations du menu sur une période */
-			async dialogShow() {
-				
-				
+			async dialogShow() {								
 				this.suggestionsListe = []
 				this.showModifMenu = false; //display les cartes de mofification de la recette				
 
@@ -344,7 +343,7 @@
 				this.infoMenu.recette = {}		
 				if(this.itemReceived.recette !== null){						
 					this.infoMenu.recette.nom = this.itemReceived.recette.nom;
-					this.infoMenu.recette.tags = this.copyTab(this.itemReceived.recette.tags)
+					this.infoMenu.recette.tags = structuredClone(this.itemReceived.recette.tags)
 				}else{
 					let recette = {}
 					recette.nom = "Pas de recette prévue"
@@ -356,49 +355,34 @@
 				this.date = this.dateJour;	
 				this.jourSemaine = moment(this.dateJour, 'DD-MM-YYYY').locale('fr').format('dddd')
 				this.periode = this.itemReceived.periode;
-				this.infoMenu.tags = this.copyTab(this.itemReceived.tags)				
+				this.infoMenu.tags = structuredClone(this.itemReceived.tags)				
 				this.infoMenu.suggestions = structuredClone(this.itemReceived.suggestions)
 				
 				if(this.stringUpdateModal !=="updateMenuJourCreate"){
 					this.suggestionsListe = this.transformSuggestions(this.itemReceived.suggestions)//structuredClone(this.itemReceived.suggestions)				
-				}
-
-				this.tagsChoix = []
+				}		
 
 				//charger tous les tags de la bd
-				DAOTag.getAll().then(
+				await DAOTag.getAll().then(
 					(response) =>{
 						this.tagsListeAll = response.data
-						this.tagsListe = this.copyTab(this.tagsListeAll)
+						this.tagsListe = structuredClone(this.tagsListeAll)
 					}
 				)
 
 						
 				//charger toutes les recettes et leur tags
-				DAORecette.getAllByCategory(this.periode).then(
-					(response) => {
+				await DAORecette.getAllByCategory(this.periode).then(
+					(response) => {					
 						this.itemRecettesAll = response.data
-						this.itemRecettes = this.copyTab(this.itemRecettesAll)
 					}
 				)
-				
+						
 
 				//menu prévu ?
 				this.selectedRadioMenuOuiNon = this.infoMenu.is_recette === false ? "non" : "oui"
 				this.numberPersonneOld = this.infoMenu.nb_personne
-				this.recetteChoisie =  this.infoMenu.recette.nom
-
-				//si on a des tags déjà prédéfini dans l'item recu (periode ou recette)
-			
-				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){				
-					this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
-				}
-				else if (this.infoMenu.tags.length > 0) {
-				
-					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-				
-					//filtrer les recettes qu'on peut choisir => done avec le watch property		
-				}				
+				this.recetteChoisie =  this.infoMenu.recette.nom		
 				
 
 				//reset
@@ -440,17 +424,6 @@
 
 				return bullesSugg;
 			},
-			/**Copier un tableau - superficielle
-			 * (uniquement les tab contenant des objets qui ne sont pas destinés à être modifiés) */
-			copyTab(source){
-				let cible = []
-				if(source === null ) return []
-
-				source.forEach(elem => {
-					cible.push(elem)
-				})
-				return cible
-			},
 			userActionListeRecette(){
 				if(this.comboboxRecetteSelected === null) return				
 				this.newRecetteChoix = this.comboboxRecetteSelected.nom		
@@ -473,20 +446,18 @@
 				this.resetTag()		
 			},
 			/** Reset les tags à ceux de la recette prévue */
-			resetTag(){				
+			resetTag(){							
 				this.tagsChoix = []
 				if(this.infoMenu.recette.nom !== "Pas de recette prévue"){
 					
 					if(this.radioSelectionSuggestion !== null){						
-						this.tagsChoix = this.copyTab(this.radioSelectionSuggestion.recette.tags)						
+						this.tagsChoix = structuredClone(this.radioSelectionSuggestion.recette.tags)						
 					}else{
-						this.tagsChoix = this.copyTab(this.infoMenu.recette.tags)
+						this.tagsChoix = structuredClone(this.infoMenu.recette.tags)
 					}
 				}
-				else if (this.infoMenu.tags.length > 0) {
-				
-					this.tagsChoix = this.copyTab(this.infoMenu.tags)
-					
+				else if (this.infoMenu.tags.length > 0) {					
+					this.tagsChoix = structuredClone(this.infoMenu.tags)					
 					//filtrer les recettes qu'on peut choisir => done avec le watch property		
 				}
 			},
@@ -510,11 +481,11 @@
 					this.infoMenu.id_recette = null			
 					this.infoMenu.is_recette = true					
 					this.infoMenu.recette = null	
-					this.infoMenu.tags = this.copyTab(this.tagsChoix)
+					this.infoMenu.tags = structuredClone(this.tagsChoix)
 				}
 				else{				
 					let recette = this.itemRecettesAll.find(r => r.nom === this.newRecetteChoix)
-					this.infoMenu.tags = this.copyTab(this.tagsChoix)
+					this.infoMenu.tags = structuredClone(this.tagsChoix)
 					this.infoMenu.recette = recette
 					this.infoMenu.is_recette = true
 					this.infoMenu.id_recette = recette.id_recette					
@@ -531,8 +502,7 @@
 
 				// envoi uniquement le menu jour modifie					
 				this.$emit('updatePeriode', this.infoMenu)
-				this.$emit('closeDialog')
-				//if(this.stringUpdateModal !== 'updateMenuJourCreate'){this.snackbar = true}
+				this.$emit('closeDialog')				
 				this.snackbar = true
 			},
 		},

@@ -520,7 +520,7 @@
 								>
 									<strong>Tags</strong>
 								</p>
-								<v-icon v-else color="green" large>mdi-minus</v-icon>
+								<v-icon v-else color="green" large>mdi-plus</v-icon>
 							</v-btn>
 							<p
 								v-if="

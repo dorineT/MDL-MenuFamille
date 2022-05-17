@@ -296,7 +296,7 @@
 							recette: null,
 							id_recette: null,
 							tags: this.formData.tagsMatin,
-							suggestion: null,
+							suggestions: null,
 						},
 						{
 							id_periode: idPer + 2,
@@ -307,7 +307,7 @@
 							recette: null,
 							id_recette: null,
 							tags: this.formData.tagsMidi,
-							suggestion: null,
+							suggestions: null,
 						},
 						{
 							id_periode: idPer + 3,
@@ -318,7 +318,7 @@
 							recette: null,
 							id_recette: null,
 							tags: this.formData.tagsSoir,
-							suggestion: null,
+							suggestions: null,
 						},
 					];
 
