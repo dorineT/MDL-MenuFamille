@@ -1,6 +1,4 @@
-/*** Définition de l'utilisateur API ***/
-create user api with encrypted password 'AF8ns#.<kY:K?b6tH.<^.ft/';
-grant all privileges on database root to api;
+
 
 
 
