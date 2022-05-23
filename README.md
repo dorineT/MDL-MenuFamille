@@ -15,20 +15,21 @@ Requis:
 - node js v16
 - vue cli 2
 - initialisation d'une base de données postgres à l'aide du fichier db/sql/init_db.sql
+- MDL-MenuFamille/api/menufamille/app/config/db.config.js  : configurer les accès à la base de données (host, port, user, password, db)
 
 ### Frontend
 
 dans le dossier front/menufamille
 - npm install
 - npm run serve
-=> localhost:8080/
+=> http://localhost:8080/
 
 ## Backend
 
 dans le dossier api/menufamille
 - npm install
 - node server
-=> localhost:3000/info 
+=> http://localhost:3000/info 
 
 
 ## Docker
@@ -37,6 +38,7 @@ Se placer dans le dossier root MDL-MenuFamille
 
 docker-compose up
 
-accès au frontend via localhost:80/
-accès à l'api via localhost:80/api/info
+accès au frontend via http://localhost/
+
+accès à l'api via http://localhost/api/info
 
