@@ -1,5 +1,5 @@
 ## Menu-Famille
-Projet réalisé dans un carde pédagogique de l'université de Namur
+Projet réalisé dans un cadre pédagogique de l'université de Namur
 
 Gestion des menus d'une famille par différents rôle (enfant - parent)
 
