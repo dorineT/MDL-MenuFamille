@@ -54,7 +54,7 @@ CREATE TABLE FAMILLE_MEMBRE (
                                 id_famille INTEGER NOT NULL ,
                                 id_membre INTEGER NOT NULL,
                                 role arbre NOT NULL,
-                                valid statut NOT NULL DEFAULT 'attente',
+                                statut statut NOT NULL DEFAULT 'attente',
                                 PRIMARY KEY (id_famille,id_membre)
 );
 
