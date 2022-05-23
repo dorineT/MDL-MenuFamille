@@ -230,6 +230,10 @@ INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'light');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'vegan');
 INSERT INTO TAG (id_tag, nom) VALUES (DEFAULT, 'repas complet');
 
+INSERT INTO CATEGORIE (id_categorie, periode) VALUES (DEFAULT, 'matin');
+INSERT INTO CATEGORIE (id_categorie, periode) VALUES (DEFAULT, 'midi');
+INSERT INTO CATEGORIE (id_categorie, periode) VALUES (DEFAULT, 'soir');
+
 
 /* Contraintes */
 create function delete_famille()
