@@ -14,7 +14,7 @@ Gestion des menus d'une famille par différents rôle (enfant - parent)
 Requis: 
 - node js v16
 - vue cli 2
-- initialisation d'une base de données postgres à l'aide du fichier db/sql/init_db.sql
+- initialisation d'une base de données postgresql 14 à l'aide du fichier db/sql/init_db.sql
 - MDL-MenuFamille/api/menufamille/app/config/db.config.js  : configurer les accès à la base de données (host, port, user, password, db)
 
 ### Frontend
