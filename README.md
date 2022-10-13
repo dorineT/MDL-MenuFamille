@@ -1,7 +1,7 @@
 ## Menu-Famille
 Projet réalisé dans un cadre pédagogique de l'université de Namur
 
-Gestion des menus d'une famille par différents rôle (enfant - parent)
+Gestion des menus d'une famille par différents rôles (enfant - parent)
 
 - gestion de la famille (création, gestion des membres et rôles, gestion des adhésions)
 - gestion des menus de la semaine (contrainte, création, suggestion, modification)
